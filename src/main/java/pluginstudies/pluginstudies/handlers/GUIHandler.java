@@ -1,0 +1,321 @@
+package pluginstudies.pluginstudies.handlers;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.components.Skills;
+import pluginstudies.pluginstudies.managers.ProfileManager;
+import pluginstudies.pluginstudies.managers.UIManager;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+
+import static pluginstudies.pluginstudies.utils.Utils.*;
+
+public class GUIHandler implements Listener {
+
+    private pluginstudies.pluginstudies.managers.UIManager UIManager;
+    private ProfileManager profileManager;
+    private PluginStudies plugin;
+
+    private HashMap<UUID, ArmorStand> playersArmorStands = new HashMap<>(); //Note this data does not persist through restarts
+
+    public GUIHandler(PluginStudies p){
+        plugin = p;
+        Bukkit.getPluginManager().registerEvents(this, plugin);
+        profileManager = plugin.getProfileManager();
+    }
+
+    @EventHandler
+    public void onMenuClick(InventoryClickEvent event){
+
+        if (!(event.getWhoClicked() instanceof Player)){
+            return;
+        }
+        if (event.getClickedInventory() == null){
+            return;
+        }
+        if (event.getCurrentItem() == null){
+            return;
+        }
+
+        Player player = (Player) event.getWhoClicked();
+//        Inventory playerInventory = player.getInventory();
+        UIManager = new UIManager(plugin, player);
+
+//        if (event.getClickedInventory().equals(inventory)){
+//            return;
+//        }
+
+//        event.setCancelled(true);
+
+        if (checkLabel(event, UIManager.getASMain())){ // ---------Armor Stand Main GUI---------
+            event.setCancelled(true);
+            // 1. Initial Armor Stand builder Interface Behaviour
+            Material item = event.getCurrentItem().getType(); //retorna o material do item clicado
+
+            switch (item){
+                case ARMOR_STAND:
+                    UIManager.closeInterface();
+                    UIManager.openASCustomizationInterface();
+                    break;
+                case BARRIER:
+                    UIManager.closeInterface();
+                    break;
+                default:
+                    break;
+            }
+
+        }else if(checkLabel(event, UIManager.getASCustomize())){ // ---------Armor Stand Customization UI---------
+            event.setCancelled(true);
+            // 2. Customize Interface Behaviour
+            Material item = event.getCurrentItem().getType();
+
+            //Create a armor stand that corresponds to a specific player. Any changes to the player's armor stand
+            //can be made accessing the playersArmorStands variable
+            if (!(playersArmorStands.containsKey(player.getUniqueId()))){
+                ArmorStand stand = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
+                stand.setVisible(false);
+                playersArmorStands.put(player.getUniqueId(), stand);
+            }
+
+            switch (item){
+                case ARMOR_STAND:
+                    msgPlayer(player, "testing hasArms");
+                    UIManager.closeInterface();
+                    UIManager.openConfirmMenu(item);
+                    break;
+                case NETHER_STAR:
+                    msgPlayer(player, "testing hasGlow");
+                    UIManager.closeInterface();
+                    UIManager.openConfirmMenu(item);
+                    break;
+                case LEATHER_CHESTPLATE:
+                    msgPlayer(player, "testing hasArmor");
+                    UIManager.closeInterface();
+                    UIManager.openConfirmMenu(item);
+                    break;
+                case SMOOTH_STONE_SLAB:
+                    msgPlayer(player, "testing hasBase");
+                    UIManager.closeInterface();
+                    UIManager.openConfirmMenu(item);
+                    break;
+                case GREEN_WOOL:
+                    if (playersArmorStands.containsKey(player.getUniqueId())){
+                    playersArmorStands.get(player.getUniqueId()).setVisible(true);
+                    msgPlayer(player, "armor stand created");
+                    playersArmorStands.remove(player.getUniqueId()); //Once created, is unavailable for customization
+                    }
+                    UIManager.closeInterface();
+                    UIManager.openMainASInterface();
+                    break;
+                case RED_WOOL:
+                    if(playersArmorStands.containsKey(player.getUniqueId())){
+                        playersArmorStands.get(player.getUniqueId()).setVisible(true);
+                        playersArmorStands.get(player.getUniqueId()).remove(); //First we remove the entity itself
+                        playersArmorStands.remove(player.getUniqueId()); //Then the key in the hashmap
+                        msgPlayer(player, "cancelling dummy creation");
+                    }
+                    UIManager.closeInterface();
+                    UIManager.openMainASInterface();
+                    break;
+            }
+
+        }else if (checkLabel(event, UIManager.getConfirmLabel())){// ---------Confirmation GUI---------
+            event.setCancelled(true);
+            // 3.1 Confirmation GUI Behaviour
+            Material clickedItem = event.getCurrentItem().getType();
+            Material selectedChangeIndicator = event.getView().getItem(4).getType();
+
+
+            switch (clickedItem){
+                case GREEN_WOOL:
+                    //Confirms the selected option and returns to the Customize GUI
+                    switch (selectedChangeIndicator){
+                        case ARMOR_STAND:
+                            // We want to confirm the toggling of the armor stand's arms
+                            if (!playersArmorStands.get(player.getUniqueId()).hasArms()){ //If no arms, give arms
+                                playersArmorStands.get(player.getUniqueId()).setArms(true);
+                            } else {
+                                playersArmorStands.get(player.getUniqueId()).setArms(false); //Else, remove arms
+                            }
+                            break;
+                        case NETHER_STAR:
+                            // If we click confirm and the option is Glow, lets toggle it
+                            if (!playersArmorStands.get(player.getUniqueId()).isGlowing()){ //If no glow, make it glow
+                                playersArmorStands.get(player.getUniqueId()).setGlowing(true);
+                            } else {
+                                playersArmorStands.get(player.getUniqueId()).setGlowing(false); //Else, remove glow
+                            }
+                            break;
+                        case LEATHER_CHESTPLATE:
+                            break;
+                        case SMOOTH_STONE_SLAB:
+                            // We want to toggle the armor's stand base
+                            if (!playersArmorStands.get(player.getUniqueId()).hasBasePlate()){
+                                playersArmorStands.get(player.getUniqueId()).setBasePlate(true);
+                            }else {
+                                playersArmorStands.get(player.getUniqueId()).setBasePlate(false);
+                            }
+                            break;
+                    }
+                    msgPlayer(player, "Action confirmed, returning to the builder...");
+                    UIManager.closeInterface();
+                    UIManager.openASCustomizationInterface();
+                    break;
+                case RED_WOOL:
+                    //Cancels any changes, goes back to the Customize GUI
+                    UIManager.closeInterface();
+                    UIManager.openASCustomizationInterface();
+                    break;
+                default:
+                    break;
+            }
+
+        }else if(checkLabel(event, UIManager.getSkillsLabel())){//  ---------Skill allocation UI---------
+            event.setCancelled(true);
+
+//            ItemStack clickedItem = event.getCurrentItem(); //também é possível usar os materiais no switch
+            int slot = event.getSlot();
+
+            ClickType click = event.getClick();
+            if (click != ClickType.LEFT && click != ClickType.RIGHT){
+                log("testando L/R");
+                return;
+            }
+
+            Skills skills = profileManager.getPlayerProfile(player.getUniqueId()).getSkills();
+            int points = skills.getPoints(); int intelligence = skills.getIntelligence();
+            int agility = skills.getAgility(); int strength = skills.getStrength();
+
+            switch (slot){ //só tem 3 slots desejados, vamos checar qual foi e então agir de acordo
+                case(19):
+                    if ((click == ClickType.RIGHT && intelligence == 0) || (click == ClickType.LEFT && intelligence == 10)){
+                        //se tentarmos passar do minimo ou do máximo de pontos, nada ocorre
+                        return;
+                    }
+
+                    //agora podemos considerar apenas os clicks, sem se preocupar com os casos extremos
+                    // LEFT -> adicionar pontos, RIGHT -> retirar
+                    if (click == ClickType.LEFT){
+                        //clicou com o left, ainda tem pontos?
+                        if (points == 0){
+                            // se não, retorne
+                            return;
+                        } else { // o player tem pontos, então vamos atualizá-los
+                            skills.setPoints(points-1);
+                            skills.setIntelligence(intelligence+1);
+                        }
+                    }else{ //se não é left, é right
+                        //se queremos desalocar pontos, basta alterar os stats, já que não podemos descer abaixo de 0
+                        skills.setPoints(points+1);
+                        skills.setIntelligence(intelligence-1);
+                    }
+                    break;
+                case(20):
+                    if ((click == ClickType.RIGHT && agility == 0) || (click == ClickType.LEFT && agility == 10)){
+                        return;
+                    }
+
+                    if(click == ClickType.LEFT){
+                        if(points ==0){
+                            return;
+                        }else {
+                            skills.setPoints(points-1);
+                            skills.setAgility(agility+1);
+                        }
+                    }else{
+                        skills.setPoints(points+1);
+                        skills.setAgility(agility-1);
+                    }
+                    break;
+                case(21):
+                    if ((click == ClickType.RIGHT && strength == 0) || (click == ClickType.LEFT && strength == 10)){
+                        return;
+                    }
+
+                    if(click == ClickType.LEFT){
+                        if(points ==0){
+                            return;
+                        }else {
+                            skills.setPoints(points-1);
+                            skills.setStrength(strength+1);
+                        }
+                    }else{
+                        skills.setPoints(points+1);
+                        skills.setStrength(strength-1);
+                    }
+                    break;
+            }
+            Inventory skillsInventory = event.getInventory();
+            //vamos pegar os itens do inventário e atualizálos ao fim dos clicks, mesmo que não haja nada
+            ItemStack pointsItem = skillsInventory.getItem(4);
+            ItemStack intItem = skillsInventory.getItem(19);
+            ItemStack agiItem = skillsInventory.getItem(20);
+            ItemStack strItem = skillsInventory.getItem(21);
+
+            skillsInventory.setItem(4, editItem(pointsItem.clone(), skills.getPoints(), Arrays.asList(
+                    color("&fYou have " + skills.getPoints() + " points left"),
+                    color("&7"),
+                    color("Allocate points to enhance your abilities") )));
+            skillsInventory.setItem(19, editItem(intItem.clone(), skills.getIntelligence(), Arrays.asList(
+                    color("&7You have " + "&9" + skills.getIntelligence() + " &7points allocated"),
+                    color("&7"),
+                    color("&7Click here to allocate more"))));
+            skillsInventory.setItem(20, editItem(agiItem.clone(), skills.getAgility(), Arrays.asList(
+                    color("&7You have " + "&a" + skills.getAgility() + " &7points allocated"),
+                    color("&7"),
+                    color("&7Click here to allocate more"))));
+            skillsInventory.setItem(21, editItem(strItem.clone(), skills.getStrength(), Arrays.asList(
+                    color("&7You have " + "&c" + skills.getStrength() + " &7points allocated"),
+                    color("&7"),
+                    color("&7Click here to allocate more"))));
+
+            //1- Aplicar mudança de vida com base na Strength (valor base é 20 (double) )
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20D + skills.getStrength());
+            //2- Aplicar mudança de speed baseado na Agility  (valor base é 0.2 (float) )
+            player.setWalkSpeed((float) (0.2 + ((skills.getAgility()) / 10)*0.2));
+            //3- TODO Aplicar mudanças da Intelligence
+
+        }
+
+        else {
+
+        }
+
+    }
+
+    public boolean checkLabel(Event event, String label){
+        if (!(event instanceof InventoryClickEvent)){
+            return false;
+        }
+        InventoryClickEvent clickEvent = (InventoryClickEvent) event;
+        return clickEvent.getView().getTitle().equalsIgnoreCase(color(label));
+    }
+    private ItemStack editItem(ItemStack item, int amount, List<String> lore){
+        if (amount == 0){
+            //se tentarmos colocar 0 items, resetamos para 1, que é o mínimo
+            amount = 1;
+        }
+
+        item.setAmount(amount);
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.setLore(lore);
+        item.setItemMeta(itemMeta);
+        return item;
+    }
+}
