@@ -36,3 +36,14 @@ commands:
     description: Opens a armor stand GUI
     usage: /trainingdummy
     aliases: [tdui, td]
+  updatenbt:
+    description: Updates a item's item level NBT data.
+    usage: /updatenbt
+  identify:
+    description: Identifies a custom item.
+    usage: /id
+    aliases: [identify]
+  generateweapon:
+    description: generates a custom weapon.
+    usage: /weapon
+    aliases: [generateweapon]

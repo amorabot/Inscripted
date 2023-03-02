@@ -61,6 +61,9 @@ public final class PluginStudies extends JavaPlugin {
 
         SkillsUI skillsUI = new SkillsUI(this);
 
+        getCommand("updatenbt").setExecutor(new UpdateNBT(this));
+        getCommand("generateweapon").setExecutor(new GenerateWeapon(this));
+        getCommand("identify").setExecutor(new Identify(this));
         getCommand("skills").setExecutor(skillsUI);
         getCommand("skills").setTabCompleter(skillsUI);
         getCommand("fly").setExecutor(new Fly());

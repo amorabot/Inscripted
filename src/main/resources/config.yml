@@ -1,4 +1,65 @@
-basic-weapons:
-  - WOODEN_SWORD
-  - WOODEN_AXE
-  - STICK
+affixes:
+  armor:
+    helmet:
+      armor:
+
+      ward:
+
+      evasion:
+
+      armor_ward:
+
+      armor_evasion:
+
+      ward_evasion:
+
+  weapons:
+    axe:
+      prefixes:
+        physical:
+          flat_phys:
+
+          percent_phys:
+
+        elemental:
+          percent_ele:
+
+          flat_fire:
+
+          flat_cold:
+
+          flat_lightning:
+
+          flat_poison:
+        utility:
+          leech:
+
+      suffixes:
+        attributes:
+          intelligence:
+
+          agility:
+
+          strength:
+
+        ailments:
+          chance_poison:
+
+          chance_bleed:
+
+          bleed_duration:
+
+        utility:
+          accuracy:
+
+          percent_accuracy:
+        resistances:
+          fire_res:
+
+          cold_res:
+
+          lighning_res:
+
+    sword:
+
+    wand:
