@@ -16,7 +16,8 @@ import static pluginstudies.pluginstudies.utils.Utils.*;
 
 public enum CustomMob {
 
-    NAGA_SHAMAN("&3Naga Shaman", 15, 60, EntityType.ZOMBIE, null, null,
+    NAGA_SHAMAN("&3Naga Shaman", 15, 60, EntityType.ZOMBIE, null,
+            makeArmorSet(new ItemStack(Material.LEATHER_HELMET), null, null, null),
             new LootItem(createItem(Material.WOODEN_HOE, 1, false, false, false, "&fNaga Staff",
                     "&7A simple wooden staff used by nagas"), 30)),
     SKELETAL_MAGE("&dSkeletal Mage", 20, 25, EntityType.SKELETON,

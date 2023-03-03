@@ -23,7 +23,7 @@ public class GenerateWeapon implements CommandExecutor {
         }
         Player player = (Player) sender;
         if (player.getInventory().getItemInMainHand().getType() == Material.AIR){
-            player.getInventory().addItem(new CraftableWeapon(Integer.parseInt(args[0]), Integer.parseInt(args[1])).generateItem(plugin));
+            player.getInventory().addItem(new CraftableWeapon(Integer.parseInt(args[0])).generateItem(plugin, Integer.parseInt(args[1])));
             return true;
         }
 

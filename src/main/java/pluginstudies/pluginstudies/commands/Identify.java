@@ -12,8 +12,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static pluginstudies.pluginstudies.utils.Utils.color;
 
@@ -37,35 +40,48 @@ public class Identify implements CommandExecutor {
         }
         ItemStack heldItem = player.getInventory().getItemInMainHand();
         if (!heldItem.hasItemMeta()){
-            return true; //Se ele estivar algo que não tenha ItemMeta (no caso, um persistentDataContainer
+            return true; //Se ele estivar algo que não tenha ItemMeta (no caso, um persistentDataContainer)
         }
         ItemMeta heldItemMeta = heldItem.getItemMeta();
         PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
         if (dataContainer.has(new NamespacedKey(plugin, "state"), PersistentDataType.STRING)){
             if (!dataContainer.get(new NamespacedKey(plugin, "state"), PersistentDataType.STRING).equalsIgnoreCase("UNIDED")){
+                player.sendMessage(color("&cThis item is already identified."));
                 return true;
             }
             String ilvl = dataContainer.get(new NamespacedKey(plugin, "ilvl"), PersistentDataType.INTEGER).toString();
+            List<String> lore = new ArrayList<>();
+            int modifiers = dataContainer.get(new NamespacedKey(plugin,"modifiers"), PersistentDataType.INTEGER);
+
             switch (dataContainer.get(new NamespacedKey(plugin, "rarity"), PersistentDataType.INTEGER)){
                 case 0:
-                    heldItemMeta.setDisplayName(color("&f&lCommon item"));
-                    heldItemMeta.setLore(Arrays.asList(color("&7Item level: " + "&6&l" + ilvl)));
+                    player.sendMessage("Common items cannot be identified.");
                     break;
                 case 1:
                     heldItemMeta.setDisplayName(color("&9&lMagic item"));
-                    heldItemMeta.setLore(Arrays.asList(color("&7Item level: " + "&6&l" + ilvl)));
+                    lore.add(color("&7Item level: " + "&6&l" + ilvl));
+                    lore.add(color("&7"));
+                    for (int i = 0; i < modifiers; i++){
+                        String genericKey = String.format("stat%d", i);
+                        String genericValue = dataContainer.get(new NamespacedKey(plugin, genericKey), PersistentDataType.INTEGER).toString();
+                        lore.add(color("&1Stat: " + genericValue));
+                    }
+                    heldItemMeta.setLore(lore);
                     break;
                 case 2:
                     heldItemMeta.setDisplayName(color("&e&lRare item"));
-                    heldItemMeta.setLore(Arrays.asList(
-                            color("&7Item level: " + "&6&l" + ilvl),
-                            color("&7"),
-                            color("&4" + dataContainer.get(new NamespacedKey(plugin, "stat1"), PersistentDataType.INTEGER_ARRAY)[1] + "&c% Increased Physical Damage")));
+                    lore.add(color("&7Item level: " + "&6&l" + ilvl));
+                    lore.add(color("&7"));
+                    for (int i = 0; i < modifiers; i++){
+                        String genericKey = String.format("stat%d", i);
+                        String genericValue = dataContainer.get(new NamespacedKey(plugin, genericKey), PersistentDataType.INTEGER).toString();
+                        lore.add(color("&7Stat: " + "&e" + genericValue));
+                    }
+                    heldItemMeta.setLore(lore);
                     break;
             }
             dataContainer.set(new NamespacedKey(plugin, "state"), PersistentDataType.STRING, "IDED");
         }
-        heldItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         heldItem.setItemMeta(heldItemMeta);
 
         return false;
