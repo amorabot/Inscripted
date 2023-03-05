@@ -11,7 +11,10 @@ import pluginstudies.pluginstudies.Crafting.Weapons.AxeAffixes;
 import pluginstudies.pluginstudies.PluginStudies;
 import pluginstudies.pluginstudies.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import static pluginstudies.pluginstudies.utils.Utils.color;
 
@@ -79,6 +82,12 @@ public abstract class CraftableItem {
             dataContainer.set(new NamespacedKey(plugin, genericStatKey), PersistentDataType.INTEGER, (int) (Math.random()*10));
         }
 
+        //TESTING BLOCK
+        List<String> affixes = selectAffixes(modifiers);
+        for (String affix : affixes){
+            Utils.log(affix);
+        }
+
         itemMeta.setDisplayName(color("&4&lUnidentified item"));
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(itemMeta);
@@ -105,6 +114,45 @@ public abstract class CraftableItem {
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(itemMeta);
         return item;
+    }
+    private Map<String, Integer[]> selectTiers(){
+        return null;
+    }
+    private List<String> selectAffixes(int modifiers){ //TODO fazer o método de geração de affixes (testes com magic)
+        List<String> selectedAffixes = new ArrayList<>();
+        for (int i = 0; i < modifiers; i++){
+            selectedAffixes.add(getRandomAffix(selectedAffixes));
+        }
+        return selectedAffixes;
+    }
+    private String getRandomAffix(List<String> selectedAffixes){
+        String affix = "";
+
+        double selector = Math.random();
+        if (selector > 0.5){
+            //Prefix
+            boolean found = false;
+            while (!found){
+                int rng = (int) (Math.random() * (AxeAffixes.PREFIXES.getAffixList().length));
+                String randomAffix = AxeAffixes.PREFIXES.getAffixList()[rng];
+                if (!(selectedAffixes.contains(randomAffix))){
+                    affix = randomAffix;
+                    found = true;
+                }
+            }
+        } else {
+            //Suffix
+            boolean found = false;
+            while (!found){
+                int rng = (int) (Math.random() * (AxeAffixes.SUFFIXES.getAffixList().length));
+                String randomAffix = AxeAffixes.SUFFIXES.getAffixList()[rng];
+                if (!(selectedAffixes.contains(randomAffix))){
+                    affix = randomAffix;
+                    found = true;
+                }
+            }
+        }
+        return affix;
     }
     private int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * ((max - min)+1)) + min);

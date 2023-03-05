@@ -18,10 +18,6 @@ public class UIManager {
 
     private Player player;
     private ProfileManager profileManager;
-//    private boolean hasArms = false;
-//    private boolean glows = false;
-//    private boolean hasArmor = false;
-//    private boolean hasBase = false;
 
     private final String AS_MAIN_LABEL = "&8&lArmor Stand GUI";
     private final String AS_CUSTOMIZATION_LABEL = "&2&lCustomization";
@@ -141,7 +137,6 @@ public class UIManager {
                 editItem(itemIndicator, "&f&lToggle base?", null);
                 break;
         }
-//        editItem(itemIndicator, "&f&lToggle arms?", null);
 
         ItemStack cancel = new ItemStack(Material.RED_WOOL);
         editItem(cancel, "&4&lCancel", null);
@@ -180,7 +175,7 @@ public class UIManager {
 
     private void editItem(ItemStack item, String displayName, List<String> lore){
         ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setDisplayName(color(displayName));
+        itemMeta.setDisplayName(color(displayName)); // TODO: unificar os métodos editItem()
         itemMeta.setLore(lore);
 
         item.setItemMeta(itemMeta);
