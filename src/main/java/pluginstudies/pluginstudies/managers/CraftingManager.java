@@ -14,12 +14,6 @@ public class CraftingManager {
     }
 
     public ItemStack generateWeapon(int ilvl, int rarity){
-//        StringBuilder stringBuilder = new StringBuilder();
-//        String itemPool = "Item Pool: ";
-//        for (String affixName : AxeAffixes.PREFIXES.getAffixList()){
-//            itemPool += (affixName + ", ");
-//        }
-//        Utils.log(itemPool);
-        return new CraftableWeapon(ilvl).generateItem(plugin, rarity);
+        return new CraftableWeapon(ilvl, "AXE").generate(plugin, rarity);
     }
 }

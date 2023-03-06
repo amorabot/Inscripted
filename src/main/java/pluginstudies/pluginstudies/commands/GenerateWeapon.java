@@ -39,7 +39,7 @@ public class GenerateWeapon implements CommandExecutor {
             player.getInventory().addItem(craftingManager.generateWeapon(ilvlArg, rarityArg));
             return true;
         }
-
+        player.sendMessage(color("&cThis command must be used with a empty hand."));
         return false;
     }
 }

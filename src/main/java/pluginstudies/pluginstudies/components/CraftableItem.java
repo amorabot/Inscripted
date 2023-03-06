@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import static pluginstudies.pluginstudies.utils.Utils.color;
+import static pluginstudies.pluginstudies.utils.Utils.log;
 
 public abstract class CraftableItem {
 
@@ -26,11 +27,11 @@ public abstract class CraftableItem {
     protected int affixLimit;
     protected Material itemType;
     protected String implicit;
-    protected String[] prefixes;
-    protected String[] suffixes;
-    protected String[][] affixes = {prefixes, suffixes};
+    protected List<String> prefixes = new ArrayList<>();
+    protected List<String> suffixes = new ArrayList<>();
+    protected List<String>[] affixes = new List[]{prefixes, suffixes};
 
-    public ItemStack generateItem(PluginStudies plugin, int rarity){
+    protected ItemStack generateItem(PluginStudies plugin, int rarity){
         ItemStack item = null;
         switch(rarity){
             case 0:
@@ -52,6 +53,7 @@ public abstract class CraftableItem {
         ItemStack item = new ItemStack(itemType);
         ItemMeta itemMeta = item.getItemMeta();
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
+        List<String> lore = new ArrayList<>();
 
         dataContainer.set(new NamespacedKey(plugin, "state"), PersistentDataType.STRING, "IDED");
         dataContainer.set(new NamespacedKey(plugin, "ilvl"), PersistentDataType.INTEGER, ilvl);
@@ -59,7 +61,16 @@ public abstract class CraftableItem {
         dataContainer.set(new NamespacedKey(plugin, "modifiers"), PersistentDataType.INTEGER, 0);
 
         itemMeta.setDisplayName(color("&f&lCommon item"));
-        itemMeta.setLore(Arrays.asList(color("&7Item level: " + "&6&l" + ilvl)));
+        lore.add(color("&7Item level: " + "&6&l" + ilvl));
+        if (this instanceof CraftableWeapon){
+            log("DMG: " + ((CraftableWeapon) this).getBaseDmg()[0] + "/" + ((CraftableWeapon) this).getBaseDmg()[1]);
+            dataContainer.set(new NamespacedKey(plugin, "type"), PersistentDataType.STRING, "WEAPON");
+            dataContainer.set(new NamespacedKey(plugin, "baseDMG"), PersistentDataType.INTEGER_ARRAY, ((CraftableWeapon) this).getBaseDmg());
+
+            lore.add(color("&c DMG: " + ((CraftableWeapon) this).getBaseDmg()[0] + "-" + ((CraftableWeapon) this).getBaseDmg()[1]));
+//            lore.add(color("&7"));
+        }
+        itemMeta.setLore(lore);
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 
         item.setItemMeta(itemMeta);
@@ -77,16 +88,24 @@ public abstract class CraftableItem {
         dataContainer.set(new NamespacedKey(plugin, "ilvl"), PersistentDataType.INTEGER, ilvl);
         dataContainer.set(new NamespacedKey(plugin, "rarity"), PersistentDataType.INTEGER, rarity);
         dataContainer.set(new NamespacedKey(plugin, "modifiers"), PersistentDataType.INTEGER, modifiers);
+
+        if (this instanceof CraftableWeapon){
+            dataContainer.set(new NamespacedKey(plugin, "type"), PersistentDataType.STRING, "WEAPON");
+            dataContainer.set(new NamespacedKey(plugin, "baseDMG"), PersistentDataType.INTEGER_ARRAY, ((CraftableWeapon) this).getBaseDmg());
+        }
+        //TODO: fazer a equivalência para armaduras
+
+        //TODO: o item deve conter uma lista de String contendo os modificadores na ordem certa (remover/adicionar com base nela)
         for (int i = 0; i<modifiers; i++){ //ADICIONANDO STATS BASEADOS NO RNG
             String genericStatKey = String.format("stat%d",i);
             dataContainer.set(new NamespacedKey(plugin, genericStatKey), PersistentDataType.INTEGER, (int) (Math.random()*10));
         }
 
-        //TESTING BLOCK
-        List<String> affixes = selectAffixes(modifiers);
+        //TESTING BLOCK--------------------------------------
+        List<String> affixes = selectAffixes(modifiers); //SERVIRÁ COMO BASE PARA UM MAP COM OS MODS CERTOS
         for (String affix : affixes){
             Utils.log(affix);
-        }
+        }//--------------------------------------------------
 
         itemMeta.setDisplayName(color("&4&lUnidentified item"));
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -105,10 +124,22 @@ public abstract class CraftableItem {
         dataContainer.set(new NamespacedKey(plugin, "ilvl"), PersistentDataType.INTEGER, ilvl);
         dataContainer.set(new NamespacedKey(plugin, "rarity"), PersistentDataType.INTEGER, rarity);
         dataContainer.set(new NamespacedKey(plugin, "modifiers"), PersistentDataType.INTEGER, modifiers);
+
+        if (this instanceof CraftableWeapon){
+            dataContainer.set(new NamespacedKey(plugin, "type"), PersistentDataType.STRING, "WEAPON");
+            dataContainer.set(new NamespacedKey(plugin, "baseDMG"), PersistentDataType.INTEGER_ARRAY, ((CraftableWeapon) this).getBaseDmg());
+        }
+
         for (int i = 0; i<modifiers; i++){ //ADICIONANDO STATS BASEADOS NO RNG
             String genericStatKey = String.format("stat%d",i);
             dataContainer.set(new NamespacedKey(plugin, genericStatKey), PersistentDataType.INTEGER, (int) (Math.random()*10));
         }
+
+        //TESTING BLOCK--------------------------------------
+        List<String> affixes = selectAffixes(modifiers);
+        for (String affix : affixes){
+            Utils.log(affix);
+        }//--------------------------------------------------
 
         itemMeta.setDisplayName(color("&4&lUnidentified item"));
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -118,7 +149,7 @@ public abstract class CraftableItem {
     private Map<String, Integer[]> selectTiers(){
         return null;
     }
-    private List<String> selectAffixes(int modifiers){ //TODO fazer o método de geração de affixes (testes com magic)
+    private List<String> selectAffixes(int modifiers){
         List<String> selectedAffixes = new ArrayList<>();
         for (int i = 0; i < modifiers; i++){
             selectedAffixes.add(getRandomAffix(selectedAffixes));
@@ -126,33 +157,88 @@ public abstract class CraftableItem {
         return selectedAffixes;
     }
     private String getRandomAffix(List<String> selectedAffixes){
-        String affix = "";
+        String affix;
 
         double selector = Math.random();
         if (selector > 0.5){
             //Prefix
-            boolean found = false;
-            while (!found){
-                int rng = (int) (Math.random() * (AxeAffixes.PREFIXES.getAffixList().length));
-                String randomAffix = AxeAffixes.PREFIXES.getAffixList()[rng];
-                if (!(selectedAffixes.contains(randomAffix))){
-                    affix = randomAffix;
-                    found = true;
-                }
+            if (!hasOpenPrefix()){
+                affix = getRandomSuffix(selectedAffixes);
+                return affix;
             }
+            affix = getRandomPrefix(selectedAffixes);
         } else {
             //Suffix
-            boolean found = false;
-            while (!found){
-                int rng = (int) (Math.random() * (AxeAffixes.SUFFIXES.getAffixList().length));
-                String randomAffix = AxeAffixes.SUFFIXES.getAffixList()[rng];
-                if (!(selectedAffixes.contains(randomAffix))){
-                    affix = randomAffix;
-                    found = true;
-                }
-            }
+            if (!hasOpenSuffix()){ //Se não tiver um suffix disponivel, gere um prefixo
+                affix = getRandomPrefix(selectedAffixes);
+                return affix;
+            } //senão, gere o suffix
+            affix = getRandomSuffix(selectedAffixes);
         }
         return affix;
+    }
+    private String getRandomPrefix(List<String> selectedAffixes){
+        String prefix = "";
+
+        boolean found = false;
+        while (!found){
+            int rng = (int) (Math.random() * (AxeAffixes.PREFIXES.getAffixList().length));
+            String randomPrefix = AxeAffixes.PREFIXES.getAffixList()[rng];
+            if (!(selectedAffixes.contains(randomPrefix))){
+                prefix = randomPrefix;
+                found = true;
+            }
+        }
+        this.prefixes.add(prefix);
+        return prefix;
+    }
+    private boolean hasOpenPrefix(){
+        switch (rarity){
+            case 1:
+                //checar se tem mod livre
+                if ((this.prefixes.size()+this.suffixes.size()) < affixLimit){
+                    return true;
+                }
+                break;
+            case 2:
+                //checar prefixes.size()
+                if (this.prefixes.size()<3){
+                    return true;
+                }
+                break;
+        }
+        return false;
+    }
+    private String getRandomSuffix(List<String> selectedAffixes){
+        String suffix = "";
+
+        boolean found = false;
+        while (!found){
+            int rng = (int) (Math.random() * (AxeAffixes.SUFFIXES.getAffixList().length));
+            String randomSuffix = AxeAffixes.SUFFIXES.getAffixList()[rng];
+            if (!(selectedAffixes.contains(randomSuffix))){
+                suffix = randomSuffix;
+                found = true;
+            }
+        }
+        this.suffixes.add(suffix);
+        return suffix;
+    }
+    private boolean hasOpenSuffix(){
+        switch (rarity){
+            case 1:
+                //checar se tem mod livre
+                if ((this.prefixes.size()+this.suffixes.size()) < affixLimit){
+                    return true;
+                }
+                break;
+            case 2:
+                if (this.suffixes.size()<3){
+                    return true;
+                }
+                break;
+        }
+        return false;
     }
     private int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * ((max - min)+1)) + min);

@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.components.CraftableWeapon;
 import pluginstudies.pluginstudies.utils.Utils;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static pluginstudies.pluginstudies.utils.Utils.color;
+import static pluginstudies.pluginstudies.utils.Utils.log;
 
 public class Identify implements CommandExecutor {
 
@@ -59,6 +61,14 @@ public class Identify implements CommandExecutor {
                     break;
                 case 1:
                     heldItemMeta.setDisplayName(color("&9&lMagic item"));
+                    if (dataContainer.get(new NamespacedKey(plugin, "type"), PersistentDataType.STRING).equalsIgnoreCase("WEAPON")){
+                        // Garantimos que é uma weapon magica
+                        int[] dmgRange = dataContainer.get(new NamespacedKey(plugin, "baseDMG"), PersistentDataType.INTEGER_ARRAY);
+                        lore.add(color("&c DMG: " + dmgRange[0] + "-" + dmgRange[1]));
+                        lore.add(color("&7"));
+                    } else {
+                        //se não é arma, é armadura
+                    }
                     lore.add(color("&7Item level: " + "&6&l" + ilvl));
                     lore.add(color("&7"));
                     for (int i = 0; i < modifiers; i++){
@@ -70,6 +80,14 @@ public class Identify implements CommandExecutor {
                     break;
                 case 2:
                     heldItemMeta.setDisplayName(color("&e&lRare item"));
+                    if (dataContainer.get(new NamespacedKey(plugin, "type"), PersistentDataType.STRING).equalsIgnoreCase("WEAPON")){
+                        // Garantimos que é uma weapon magica
+                        int[] dmgRange = dataContainer.get(new NamespacedKey(plugin, "baseDMG"), PersistentDataType.INTEGER_ARRAY);
+                        lore.add(color("&c DMG: " + dmgRange[0] + "-" + dmgRange[1]));
+                        lore.add(color("&7"));
+                    } else {
+                        //se não é arma, é armadura
+                    }
                     lore.add(color("&7Item level: " + "&6&l" + ilvl));
                     lore.add(color("&7"));
                     for (int i = 0; i < modifiers; i++){
@@ -84,6 +102,6 @@ public class Identify implements CommandExecutor {
         }
         heldItem.setItemMeta(heldItemMeta);
 
-        return false;
+        return true;
     }
 }
