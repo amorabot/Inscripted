@@ -6,11 +6,10 @@ import pluginstudies.pluginstudies.PluginStudies;
 
 import java.util.*;
 
-import static pluginstudies.pluginstudies.utils.Utils.log;
-
 public class CraftableWeapon extends CraftableItem{
 
     private Map<Integer, int[]> baseDamageMap = new HashMap<>();
+    private String weaponType;
     private int[] baseDmg = new int[2]; // vai conter valores do tipo {4, 15} como range de dano
 
     public CraftableWeapon(int ilvl, String weaponType){
@@ -20,16 +19,17 @@ public class CraftableWeapon extends CraftableItem{
         } else {
             this.ilvl = 1;
         }
+        this.weaponType = weaponType;
         switch (weaponType){
             case "AXE":
-                this.itemType = Material.WOODEN_AXE;
+                pickAxeBaseType();
                 mapAxeBases();
                 break;
             case "POLEARM":
-                this.itemType = Material.STONE_SHOVEL;
+                this.material = Material.STONE_SHOVEL;
                 break;
             case "SHORTSWORD":
-                this.itemType = Material.WOODEN_SWORD;
+                this.material = Material.WOODEN_SWORD;
                 break;
         }
     }
@@ -52,23 +52,23 @@ public class CraftableWeapon extends CraftableItem{
         int match = matchItemLevel(levelRanges);
         baseDmg = baseDamageMap.get(match);
     }
-    private int matchItemLevel(Set<Integer> ilvlRanges){
-        int match = 0;
-        List<Integer> list = new ArrayList<>();
-        for (int ilvl : ilvlRanges){
-            list.add(ilvl);
-        }
-        if (!(list.contains(this.ilvl))){
-            list.add(this.ilvl);
-        } else { //é um match
-            match = this.ilvl;
-            return match;
-        }
-        list.sort(Comparator.naturalOrder()); //ordenando a lista
-        match = list.get(list.indexOf(this.ilvl)-1);
-        return match;
-    }
     public int[] getBaseDmg(){
         return this.baseDmg;
+    }
+    public String getWeaponType(){
+        return this.weaponType;
+    }
+    private void pickAxeBaseType(){
+        if (ilvl <= 10){
+            this.material = Material.WOODEN_AXE;
+        } else if (ilvl <= 25) {
+            this.material = Material.STONE_AXE;
+        } else if (ilvl <= 45) {
+            this.material = Material.IRON_AXE;
+        } else if (ilvl <= 75) {
+            this.material = Material.DIAMOND_AXE;
+        } else {
+            this.material = Material.GOLDEN_AXE;
+        }
     }
 }

@@ -7,10 +7,10 @@ import static pluginstudies.pluginstudies.utils.Utils.*;
 public enum AxeAffixes {
 
     PREFIXES( new String[]{
-            "FLAT_PHYS",
-            "INCREASED_PHYS",
-            "FIRE_DMG",
-            "INCREASED_ELE"
+            "Physical DMG",
+            "Physical%",
+            "Fire DMG",
+            "Elemental%"
     },      mapRanges(new int[]
                     {2,13,21,29,36,46,54,65,77},
                     generateRange(1,1,2,3),
@@ -51,10 +51,10 @@ public enum AxeAffixes {
                     generateRange(31,37),
                     generateRange(38,42)) ),
     SUFFIXES( new String[]{
-            "FLAT_ACCURACY",
-            "LIFE_ON_KILL",
+            "Accuracy",
+            "Life on kill",
             "STR",
-            "BLEED_ON_HIT"
+            "Bleed on hit%"
     },      mapRanges(new int[]
                     {1, 12, 20, 26, 33, 41, 50, 63},
                     generateRange(5,15),
