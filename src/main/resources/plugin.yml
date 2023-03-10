@@ -41,9 +41,9 @@ commands:
     usage: /updatenbt
   identify:
     description: Identifies a custom item.
-    usage: /id
-    aliases: [identify]
+    usage: /identify
+    aliases: [id]
   generateweapon:
     description: generates a custom weapon.
-    usage: /weapon
-    aliases: [generateweapon]
+    usage: /generateweapon
+    aliases: [weapon, genw]

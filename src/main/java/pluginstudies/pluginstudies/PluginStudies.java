@@ -29,7 +29,7 @@ public final class PluginStudies extends JavaPlugin {
     private BukkitTask task; //vai receber o bukkit runnable que vai operar a logica do spawn
     private World world;
 //    private List<Entity> entities = new ArrayList<>();
-    private Map<Entity, CustomMob> entities = new HashMap<>();
+    private Map<Entity, CustomMob> entities = new HashMap<>(); //TODO: limpar o hashmap no shutdown
 
     @Override
     public void onEnable() {

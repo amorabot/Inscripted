@@ -13,7 +13,7 @@ public class CraftingManager {
         this.plugin = plugin;
     }
 
-    public ItemStack generateWeapon(int ilvl, int rarity){
-        return new CraftableWeapon(ilvl, "AXE").generate(plugin, rarity);
+    public ItemStack generateWeapon(int ilvl, int rarity, String weaponType){
+        return new CraftableWeapon(ilvl, weaponType).generate(plugin, rarity);
     }
 }

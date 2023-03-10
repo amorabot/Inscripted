@@ -27,16 +27,18 @@ public class GenerateWeapon implements CommandExecutor {
             return true;
         }
         Player player = (Player) sender;
-        if (args.length != 2){
+        if (args.length != 3 || (Integer.parseInt(args[1]) >3 || Integer.parseInt(args[1])<1)){
             player.sendMessage(color("&cInvalid command syntax"));
+            player.sendMessage(color("&cCorrect syntax: /generateweapon ilvl [1,2,3] type"));
             return true;
         }
+        //TODO check dos tipos de arma
         int ilvlArg = Integer.parseInt(args[0]);
         int rarityArg = Integer.parseInt(args[1]);
+        String weaponType = args[2];
 
         if (player.getInventory().getItemInMainHand().getType() == Material.AIR){
-//            player.getInventory().addItem(new CraftableWeapon(Integer.parseInt(args[0])).generateItem(plugin, Integer.parseInt(args[1])));
-            player.getInventory().addItem(craftingManager.generateWeapon(ilvlArg, rarityArg));
+            player.getInventory().addItem(craftingManager.generateWeapon(ilvlArg, rarityArg, weaponType));
             return true;
         }
         player.sendMessage(color("&cThis command must be used with a empty hand."));

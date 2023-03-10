@@ -94,33 +94,4 @@ public class Utils {
 
         return armor;
     }
-    // METHODS FOR THE CREATION OF CRAFTING ENUM TYPES ---------------------------------------------
-    public static List<int[]> generateRange(int min, int max){
-//        List<int[]> range = Arrays.asList(new int[]{min, max});
-        List<int[]> range = new ArrayList<>();
-        range.add(new int[]{min, max});
-
-        return range;
-    }
-    public static List<int[]> generateRange(int min1, int max1, int min2, int max2){
-//        List<int[]> range = Arrays.asList(new int[]{min1, max1}, new int[]{min2, max2});
-        List<int[]> range = new ArrayList<>();
-        range.add(new int[]{min1, max1});
-        range.add(new int[]{min2, max2});
-
-        return range;
-    }
-    public static Map<Integer, List<int[]>> mapRanges(int[] itemLevels, List<int[]>... ranges){
-        //A lista de valores de ilvl será associada manualmente com os ranges correspondentes
-        //Primeiro precisamos checar se a quantidade de Keys equivale a de Values
-        List<List<int[]>> rangeList = Arrays.asList(ranges);
-        if (!(itemLevels.length == rangeList.size())){
-            return null;
-        }
-        Map<Integer, List<int[]>> ilvlMap = new HashMap<>();
-        for (int i = 0; i<itemLevels.length; i++){
-            ilvlMap.put(itemLevels[i], rangeList.get(i));
-        }
-        return ilvlMap;
-    }
 }
