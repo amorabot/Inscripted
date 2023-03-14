@@ -27,9 +27,9 @@ public class GenerateWeapon implements CommandExecutor {
             return true;
         }
         Player player = (Player) sender;
-        if (args.length != 3 || (Integer.parseInt(args[1]) >3 || Integer.parseInt(args[1])<1)){
+        if (args.length != 3 || (Integer.parseInt(args[1]) >2 || Integer.parseInt(args[1])<0)){
             player.sendMessage(color("&cInvalid command syntax"));
-            player.sendMessage(color("&cCorrect syntax: /generateweapon ilvl [1,2,3] type"));
+            player.sendMessage(color("&cCorrect syntax: /generateweapon ilvl [0,1,2] type"));
             return true;
         }
         //TODO check dos tipos de arma

@@ -5,7 +5,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -41,7 +40,8 @@ public final class PluginStudies extends JavaPlugin {
         this.profileConfig = new ConfigUtil(this, "profiles.yml");
 
         this.profileManager = new ProfileManager(this);
-        this.profileManager.loadProfilesFromConfig();
+//        this.profileManager.loadProfilesFromConfig(); usado quando se carregava todos os players ao iniciar o plugin
+        //a nova abordagem será detectar o join e então armazenar na memória do profile manager
 
 //        saveDefaultConfig();
 
@@ -73,7 +73,8 @@ public final class PluginStudies extends JavaPlugin {
 
         //---------   LISTENERS   ------------
         new TorchHandler(this);
-        new PlayerHandler(this);
+        new JoinQuitHandler(this);
+        new WeaponEquipHandler(this);
         new DelayedTask(this);
 //        new SkillsUIHandler(this);
         new GUIHandler(this);

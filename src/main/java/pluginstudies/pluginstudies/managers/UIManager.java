@@ -7,7 +7,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pluginstudies.pluginstudies.PluginStudies;
-import pluginstudies.pluginstudies.components.Skills;
+import pluginstudies.pluginstudies.components.Attributes;
 
 import java.util.Arrays;
 import java.util.List;
@@ -149,25 +149,25 @@ public class UIManager {
     }
 
     public void openSkillsUI(ItemStack points, ItemStack intelligence, ItemStack agility, ItemStack strength){
-        Skills skills = profileManager.getPlayerProfile(player.getUniqueId()).getSkills();
+        Attributes attributes = profileManager.getPlayerProfile(player.getUniqueId()).getAttributes();
 
 
         Inventory skillsGUI = Bukkit.createInventory(null, 9*5, color("&e&lBasic skills"));
-        skillsGUI.setItem(4, editItem(points, skills.getPoints(),
+        skillsGUI.setItem(4, editItem(points, attributes.getPoints(),
                 Arrays.asList(
-                        color("&fYou have " + skills.getPoints() + " points left"),
+                        color("&fYou have " + attributes.getPoints() + " points left"),
                         color("&7"),
                         color("Allocate points to enhance your abilities") )));
-        skillsGUI.setItem(19, editItem(intelligence, skills.getIntelligence(), Arrays.asList(
-                color("&7You have " + "&9" + skills.getIntelligence() + " &7points allocated"),
+        skillsGUI.setItem(19, editItem(intelligence, attributes.getIntelligence(), Arrays.asList(
+                color("&7You have " + "&9" + attributes.getIntelligence() + " &7points allocated"),
                 color("&7"),
                 color("&7Click here to allocate points"))));
-        skillsGUI.setItem(20, editItem(agility, skills.getAgility(), Arrays.asList(
-                color("&7You have " + "&a" + skills.getAgility() + " &7points allocated"),
+        skillsGUI.setItem(20, editItem(agility, attributes.getAgility(), Arrays.asList(
+                color("&7You have " + "&a" + attributes.getAgility() + " &7points allocated"),
                 color("&7"),
                 color("&7Click here to allocate points"))));
-        skillsGUI.setItem(21, editItem(strength, skills.getStrength(), Arrays.asList(
-                color("&7You have " + "&c" + skills.getStrength() + " &7points allocated"),
+        skillsGUI.setItem(21, editItem(strength, attributes.getStrength(), Arrays.asList(
+                color("&7You have " + "&c" + attributes.getStrength() + " &7points allocated"),
                 color("&7"),
                 color("&7Click here to allocate points"))));
         player.openInventory(skillsGUI);

@@ -1,15 +1,13 @@
 package pluginstudies.pluginstudies.components;
 
-public class Skills {
+public class Attributes {
     private int points;
-    private int health;
     private int intelligence;
     private int agility;
     private int strength;
 
-    public Skills(int points, int health, int intelligence, int agility, int strength) {
+    public Attributes(int points, int intelligence, int agility, int strength) {
         this.points = points;
-        this.health = health;
         this.intelligence = intelligence;
         this.agility = agility;
         this.strength = strength;
@@ -22,11 +20,6 @@ public class Skills {
     public void setPoints(int points) {
         this.points = points;
     }
-
-    public int getHealth() {
-        return health;
-    }
-
     public int getIntelligence() {
         return intelligence;
     }
@@ -37,10 +30,6 @@ public class Skills {
 
     public int getStrength() {
         return strength;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
     }
 
     public void setIntelligence(int intelligence) {

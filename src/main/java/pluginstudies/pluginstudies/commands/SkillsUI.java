@@ -1,18 +1,13 @@
 package pluginstudies.pluginstudies.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pluginstudies.pluginstudies.PluginStudies;
-import pluginstudies.pluginstudies.components.Profile;
-import pluginstudies.pluginstudies.components.Skills;
-import pluginstudies.pluginstudies.managers.ProfileManager;
 import pluginstudies.pluginstudies.managers.UIManager;
 
 import static pluginstudies.pluginstudies.utils.Utils.*;

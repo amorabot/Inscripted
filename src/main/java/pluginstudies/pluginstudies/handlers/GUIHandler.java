@@ -15,7 +15,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pluginstudies.pluginstudies.PluginStudies;
-import pluginstudies.pluginstudies.components.Skills;
+import pluginstudies.pluginstudies.components.Attributes;
 import pluginstudies.pluginstudies.managers.ProfileManager;
 import pluginstudies.pluginstudies.managers.UIManager;
 
@@ -194,13 +194,13 @@ public class GUIHandler implements Listener {
 
             ClickType click = event.getClick();
             if (click != ClickType.LEFT && click != ClickType.RIGHT){
-                log("testando L/R");
+//                log("testando L/R");
                 return;
             }
 
-            Skills skills = profileManager.getPlayerProfile(player.getUniqueId()).getSkills();
-            int points = skills.getPoints(); int intelligence = skills.getIntelligence();
-            int agility = skills.getAgility(); int strength = skills.getStrength();
+            Attributes attributes = profileManager.getPlayerProfile(player.getUniqueId()).getAttributes();
+            int points = attributes.getPoints(); int intelligence = attributes.getIntelligence();
+            int agility = attributes.getAgility(); int strength = attributes.getStrength();
 
             switch (slot){ //só tem 3 slots desejados, vamos checar qual foi e então agir de acordo
                 case(19):
@@ -217,30 +217,30 @@ public class GUIHandler implements Listener {
                             // se não, retorne
                             return;
                         } else { // o player tem pontos, então vamos atualizá-los
-                            skills.setPoints(points-1);
-                            skills.setIntelligence(intelligence+1);
+                            attributes.setPoints(points-1);
+                            attributes.setIntelligence(intelligence+1);
                         }
                     }else{ //se não é left, é right
                         //se queremos desalocar pontos, basta alterar os stats, já que não podemos descer abaixo de 0
-                        skills.setPoints(points+1);
-                        skills.setIntelligence(intelligence-1);
+                        attributes.setPoints(points+1);
+                        attributes.setIntelligence(intelligence-1);
                     }
                     break;
                 case(20):
                     if ((click == ClickType.RIGHT && agility == 0) || (click == ClickType.LEFT && agility == 10)){
-                        return;
+                        return; //TODO arrumar sistema de allocation
                     }
 
                     if(click == ClickType.LEFT){
                         if(points ==0){
                             return;
                         }else {
-                            skills.setPoints(points-1);
-                            skills.setAgility(agility+1);
+                            attributes.setPoints(points-1);
+                            attributes.setAgility(agility+1);
                         }
                     }else{
-                        skills.setPoints(points+1);
-                        skills.setAgility(agility-1);
+                        attributes.setPoints(points+1);
+                        attributes.setAgility(agility-1);
                     }
                     break;
                 case(21):
@@ -252,12 +252,12 @@ public class GUIHandler implements Listener {
                         if(points ==0){
                             return;
                         }else {
-                            skills.setPoints(points-1);
-                            skills.setStrength(strength+1);
+                            attributes.setPoints(points-1);
+                            attributes.setStrength(strength+1);
                         }
                     }else{
-                        skills.setPoints(points+1);
-                        skills.setStrength(strength-1);
+                        attributes.setPoints(points+1);
+                        attributes.setStrength(strength-1);
                     }
                     break;
             }
@@ -268,27 +268,27 @@ public class GUIHandler implements Listener {
             ItemStack agiItem = skillsInventory.getItem(20);
             ItemStack strItem = skillsInventory.getItem(21);
 
-            skillsInventory.setItem(4, editItem(pointsItem.clone(), skills.getPoints(), Arrays.asList(
-                    color("&fYou have " + skills.getPoints() + " points left"),
+            skillsInventory.setItem(4, editItem(pointsItem.clone(), attributes.getPoints(), Arrays.asList(
+                    color("&fYou have " + attributes.getPoints() + " points left"),
                     color("&7"),
                     color("Allocate points to enhance your abilities") )));
-            skillsInventory.setItem(19, editItem(intItem.clone(), skills.getIntelligence(), Arrays.asList(
-                    color("&7You have " + "&9" + skills.getIntelligence() + " &7points allocated"),
+            skillsInventory.setItem(19, editItem(intItem.clone(), attributes.getIntelligence(), Arrays.asList(
+                    color("&7You have " + "&9" + attributes.getIntelligence() + " &7points allocated"),
                     color("&7"),
                     color("&7Click here to allocate more"))));
-            skillsInventory.setItem(20, editItem(agiItem.clone(), skills.getAgility(), Arrays.asList(
-                    color("&7You have " + "&a" + skills.getAgility() + " &7points allocated"),
+            skillsInventory.setItem(20, editItem(agiItem.clone(), attributes.getAgility(), Arrays.asList(
+                    color("&7You have " + "&a" + attributes.getAgility() + " &7points allocated"),
                     color("&7"),
                     color("&7Click here to allocate more"))));
-            skillsInventory.setItem(21, editItem(strItem.clone(), skills.getStrength(), Arrays.asList(
-                    color("&7You have " + "&c" + skills.getStrength() + " &7points allocated"),
+            skillsInventory.setItem(21, editItem(strItem.clone(), attributes.getStrength(), Arrays.asList(
+                    color("&7You have " + "&c" + attributes.getStrength() + " &7points allocated"),
                     color("&7"),
                     color("&7Click here to allocate more"))));
 
             //1- Aplicar mudança de vida com base na Strength (valor base é 20 (double) )
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20D + skills.getStrength());
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20D + attributes.getStrength());
             //2- Aplicar mudança de speed baseado na Agility  (valor base é 0.2 (float) )
-            player.setWalkSpeed((float) (0.2 + ((skills.getAgility()) / 10)*0.2));
+            player.setWalkSpeed((float) (0.2 + ((attributes.getAgility()) / 10)*0.2));
             //3- TODO Aplicar mudanças da Intelligence
 
         }

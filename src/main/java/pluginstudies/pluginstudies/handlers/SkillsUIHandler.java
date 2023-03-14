@@ -1,24 +1,15 @@
 package pluginstudies.pluginstudies.handlers;
 
 import org.bukkit.Bukkit;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pluginstudies.pluginstudies.PluginStudies;
-import pluginstudies.pluginstudies.components.Skills;
 import pluginstudies.pluginstudies.managers.ProfileManager;
 
-import java.util.Arrays;
 import java.util.List;
-
-import static pluginstudies.pluginstudies.utils.Utils.color;
-import static pluginstudies.pluginstudies.utils.Utils.log;
 
 public class SkillsUIHandler implements Listener {
 
