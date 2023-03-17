@@ -19,16 +19,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import pluginstudies.pluginstudies.CustomDataTypes.ModifierInfoDataType;
 import pluginstudies.pluginstudies.CustomDataTypes.ModifierInformation;
 import pluginstudies.pluginstudies.PluginStudies;
-import pluginstudies.pluginstudies.components.Attributes;
-import pluginstudies.pluginstudies.components.Profile;
-import pluginstudies.pluginstudies.components.Stats;
+import pluginstudies.pluginstudies.components.PlayerComponents.Attributes;
+import pluginstudies.pluginstudies.components.PlayerComponents.Profile;
+import pluginstudies.pluginstudies.components.PlayerComponents.Stats;
 import pluginstudies.pluginstudies.managers.ProfileManager;
 import pluginstudies.pluginstudies.utils.DelayedTask;
 
-import java.util.Objects;
-
-import static pluginstudies.pluginstudies.utils.StatCalculator.applyIntelligenceToWard;
 import static pluginstudies.pluginstudies.utils.StatCalculator.applyStrengthToHealth;
+import static pluginstudies.pluginstudies.utils.StatCalculator.updateMaxHealth;
 import static pluginstudies.pluginstudies.utils.Utils.*;
 
 public class WeaponEquipHandler implements Listener {
@@ -50,42 +48,44 @@ public class WeaponEquipHandler implements Listener {
 
         //Let's check fist if we are changing FROM a weapon, so we can deduce what stats to change
         if (isEquipable(previousItem)){ //If the previous item was a equipable weapon, let's remove all it's stats from the player before checking anything
-            ItemMeta heldItemMeta = previousItem.getItemMeta();
-            PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
-
-            if (dataContainer.has(new NamespacedKey(plugin, "modifier-data"), new ModifierInfoDataType())){ //Magic - Rare - Unique
-                ModifierInformation modData = dataContainer.get(new NamespacedKey(plugin, "modifier-data"), new ModifierInfoDataType());
-                if (modData.getModifierNames().contains("STR")){
-                    applyAttributes(modData, event.getPlayer(), false); //Subtracting strength
-                }
-            } else{ //Common
-//                return; //por enquanto nada, não estou mudando o base dmg ainda.
-            }
+//            ItemMeta heldItemMeta = previousItem.getItemMeta();
+//            PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
+//
+//            if (dataContainer.has(new NamespacedKey(plugin, "modifier-data"), new ModifierInfoDataType())){ //Magic - Rare - Unique
+//                ModifierInformation modData = dataContainer.get(new NamespacedKey(plugin, "modifier-data"), new ModifierInfoDataType());
+//                if (modData.getModifierNames().contains("STR")){
+//                    applyAttributes(modData, event.getPlayer(), false); //Subtracting strength
+//                }
+//            } else{ //Common
+////                return; //por enquanto nada, não estou mudando o base dmg ainda.
+//            }
+            applyStats(previousItem, event.getPlayer(), false); //Applying the previous held item stat's (subtracting)
         }
 
         if (isEquipable(heldItem)){
-            ItemMeta heldItemMeta = heldItem.getItemMeta();
-            PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
-
-            if (dataContainer.has(new NamespacedKey(plugin, "modifier-data"), new ModifierInfoDataType())){
-                ModifierInformation modData = dataContainer.get(new NamespacedKey(plugin, "modifier-data"), new ModifierInfoDataType());
-                event.getPlayer().sendMessage(color("&7---------------------------"));
-                for (String mod : modData.getModifierNames()){
-//                    int[] currentModValue = modData.getMappedModifiers().get(mod);
-//                    if (currentModValue.length == 2){
-//                        event.getPlayer().sendMessage(color("&c"+ mod + ": +" + currentModValue[0] + "/" + currentModValue[1]));
-//                    } else{
-//                        event.getPlayer().sendMessage(color("&c"+ mod + ": +" + currentModValue[0]));
+//            ItemMeta heldItemMeta = heldItem.getItemMeta();
+//            PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
+//
+//            if (dataContainer.has(new NamespacedKey(plugin, "modifier-data"), new ModifierInfoDataType())){
+//                ModifierInformation modData = dataContainer.get(new NamespacedKey(plugin, "modifier-data"), new ModifierInfoDataType());
+//                event.getPlayer().sendMessage(color("&7---------------------------"));
+//                for (String mod : modData.getModifierNames()){
+////                    int[] currentModValue = modData.getMappedModifiers().get(mod);
+////                    if (currentModValue.length == 2){
+////                        event.getPlayer().sendMessage(color("&c"+ mod + ": +" + currentModValue[0] + "/" + currentModValue[1]));
+////                    } else{
+////                        event.getPlayer().sendMessage(color("&c"+ mod + ": +" + currentModValue[0]));
+////                    }
+//                    if (mod.equalsIgnoreCase("STR")){
+//                        applyAttributes(modData, event.getPlayer(), true);
 //                    }
-                    if (mod.equalsIgnoreCase("STR")){
-                        applyAttributes(modData, event.getPlayer(), true);
-                    }
-                }
-            } else{
-                int[] baseDmg = dataContainer.get(new NamespacedKey(plugin, "base-dmg"), PersistentDataType.INTEGER_ARRAY);
-                event.getPlayer().sendMessage(color("&7---------------------------"));
-                event.getPlayer().sendMessage(color("&cDMG: " + baseDmg[0] + "/" + baseDmg[1]));
-            }
+//                }
+//            } else{
+//                int[] baseDmg = dataContainer.get(new NamespacedKey(plugin, "base-dmg"), PersistentDataType.INTEGER_ARRAY);
+//                event.getPlayer().sendMessage(color("&7---------------------------"));
+//                event.getPlayer().sendMessage(color("&cDMG: " + baseDmg[0] + "/" + baseDmg[1]));
+//            }
+            applyStats(heldItem, event.getPlayer(), true); //Then the new item stat's are added in (if its equipable)
         }
     }
     @EventHandler
@@ -100,7 +100,7 @@ public class WeaponEquipHandler implements Listener {
         Player player = (Player) event.getWhoClicked();
         Inventory playerInventory = player.getInventory();
 
-        if (event.getClickedInventory().equals(playerInventory)){
+        if (event.getClickedInventory().equals(playerInventory)){ //TODO simplificar os if/elses E CHECAR SE O ITEM TA VINDO DE OUTROS INVENTÁRIOS
             ClickType click = event.getClick();
 
             if (click == ClickType.DOUBLE_CLICK && (isEquipable(event.getCurrentItem()) || isEquipable(player.getItemOnCursor()))){
@@ -208,12 +208,6 @@ public class WeaponEquipHandler implements Listener {
             ModifierInformation modData = dataContainer.get(new NamespacedKey(plugin, "modifier-data"), new ModifierInfoDataType());
             player.sendMessage(color("&7---------------------------"));
             for (String mod : modData.getModifierNames()){
-//                    int[] currentModValue = modData.getMappedModifiers().get(mod);
-//                    if (currentModValue.length == 2){
-//                        event.getPlayer().sendMessage(color("&c"+ mod + ": +" + currentModValue[0] + "/" + currentModValue[1]));
-//                    } else{
-//                        event.getPlayer().sendMessage(color("&c"+ mod + ": +" + currentModValue[0]));
-//                    }
                 if (mod.equalsIgnoreCase("STR")){
                     applyAttributes(modData, player, adding);
                 }
@@ -242,8 +236,10 @@ public class WeaponEquipHandler implements Listener {
             // Apply change to profile
             playerAttributes.setStrength(playerAttributes.getStrength() + (strength[0])*signal);
             log("STR changed: " + playerAttributes.getStrength());
-            //Apply changes to health based on STR
-            playerStats.setHealth(applyStrengthToHealth(playerStats.getHealth(), playerAttributes.getStrength(),adding) );
+            //Apply changes to base health based on STR
+            playerStats.setBaseHealth(applyStrengthToHealth(playerStats.getBaseHealth(), strength[0],adding));
+            playerStats.setMaxHealth(updateMaxHealth(playerStats.getBaseHealth(), playerStats.getHealthPercent()));
+
         }
 //        if (modData.getModifierNames().contains("DEX")){ //APPLY DEXTERITY
 //

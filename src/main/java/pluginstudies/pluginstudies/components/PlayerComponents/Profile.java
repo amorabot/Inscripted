@@ -1,4 +1,4 @@
-package pluginstudies.pluginstudies.components;
+package pluginstudies.pluginstudies.components.PlayerComponents;
 
 public class Profile {
 

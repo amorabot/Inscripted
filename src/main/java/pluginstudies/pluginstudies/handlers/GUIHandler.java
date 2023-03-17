@@ -15,7 +15,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pluginstudies.pluginstudies.PluginStudies;
-import pluginstudies.pluginstudies.components.Attributes;
+import pluginstudies.pluginstudies.components.PlayerComponents.Attributes;
 import pluginstudies.pluginstudies.managers.ProfileManager;
 import pluginstudies.pluginstudies.managers.UIManager;
 

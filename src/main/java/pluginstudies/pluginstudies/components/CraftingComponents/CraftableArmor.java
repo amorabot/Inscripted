@@ -1,8 +1,8 @@
-package pluginstudies.pluginstudies.components;
+package pluginstudies.pluginstudies.components.CraftingComponents;
 
 import java.util.Map;
 
-public class CraftableArmor extends CraftableItem{
+public class CraftableArmor extends CraftableItem {
     private Map<String, Integer> baseDef;
     // Irá conter <K, V> do tipo:
     // "Armor": 20

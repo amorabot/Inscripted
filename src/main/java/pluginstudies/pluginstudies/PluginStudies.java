@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -18,6 +19,8 @@ import pluginstudies.pluginstudies.utils.Utils;
 
 import java.util.*;
 import java.util.logging.Logger;
+
+import static pluginstudies.pluginstudies.utils.Utils.msgPlayerAB;
 
 public final class PluginStudies extends JavaPlugin {
     private static Logger logger;
@@ -70,6 +73,7 @@ public final class PluginStudies extends JavaPlugin {
         getCommand("combatmenu").setExecutor(new Menu(this));
         getCommand("buildertoolkit").setExecutor(new BuilderToolkit());
         getCommand("trainingdummy").setExecutor(new ArmorStand(this));
+        getCommand("resetattributes").setExecutor(new ResetAttributes(this));
 
         //---------   LISTENERS   ------------
         new TorchHandler(this);
@@ -82,7 +86,7 @@ public final class PluginStudies extends JavaPlugin {
 
         world = Bukkit.getWorld("world");
         spawnMobs(8,12, 5 * 20);
-        new BukkitRunnable(){
+        new BukkitRunnable(){ //TODO: transformar em uma task separada
             Map<Entity, Integer> indicatorMap = dropHandler.getDamageIndicators();
             Set<Entity> indicators = indicatorMap.keySet();
             List<Entity> removal = new ArrayList<>();
@@ -105,6 +109,16 @@ public final class PluginStudies extends JavaPlugin {
                 indicators.removeAll(removal);
             }
         }.runTaskTimer(this, 0L, 1L);
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for (Player currentPlayer : Bukkit.getOnlinePlayers()){
+                    int health = profileManager.getPlayerProfile(currentPlayer.getUniqueId()).getStats().getMaxHealth();
+                    msgPlayerAB(currentPlayer, "&c HP[" + health +"]");
+                }
+            }
+        }.runTaskTimer(this, 0L, 10L);
     }
 
     @Override

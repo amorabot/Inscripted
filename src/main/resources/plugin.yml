@@ -47,3 +47,6 @@ commands:
     description: generates a custom weapon.
     usage: /generateweapon
     aliases: [weapon, genw]
+  resetattributes:
+    description: resets the attribute data for the sender.
+    usage: /resetatt

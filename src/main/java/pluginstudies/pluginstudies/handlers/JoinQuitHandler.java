@@ -7,9 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import pluginstudies.pluginstudies.PluginStudies;
-import pluginstudies.pluginstudies.components.Profile;
 import pluginstudies.pluginstudies.managers.ProfileManager;
-import pluginstudies.pluginstudies.utils.Utils;
 
 import java.util.UUID;
 

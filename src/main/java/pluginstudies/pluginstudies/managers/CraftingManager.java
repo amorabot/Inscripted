@@ -1,10 +1,8 @@
 package pluginstudies.pluginstudies.managers;
 
 import org.bukkit.inventory.ItemStack;
-import pluginstudies.pluginstudies.Crafting.Weapons.AxeAffixes;
 import pluginstudies.pluginstudies.PluginStudies;
-import pluginstudies.pluginstudies.components.CraftableWeapon;
-import pluginstudies.pluginstudies.utils.Utils;
+import pluginstudies.pluginstudies.components.CraftingComponents.CraftableWeapon;
 
 public class CraftingManager {
 

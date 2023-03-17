@@ -7,7 +7,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pluginstudies.pluginstudies.PluginStudies;
-import pluginstudies.pluginstudies.components.Attributes;
+import pluginstudies.pluginstudies.components.PlayerComponents.Attributes;
 
 import java.util.Arrays;
 import java.util.List;

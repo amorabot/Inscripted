@@ -6,7 +6,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import pluginstudies.pluginstudies.PluginStudies;
-import pluginstudies.pluginstudies.components.CraftableWeapon;
 import pluginstudies.pluginstudies.managers.CraftingManager;
 
 import static pluginstudies.pluginstudies.utils.Utils.color;

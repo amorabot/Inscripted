@@ -1,13 +1,14 @@
-package pluginstudies.pluginstudies.components;
+package pluginstudies.pluginstudies.components.CraftingComponents;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import pluginstudies.pluginstudies.Crafting.ItemBaseImplicits;
 import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.components.CraftingComponents.CraftableItem;
 
 import java.util.*;
 
-public class CraftableWeapon extends CraftableItem{
+public class CraftableWeapon extends CraftableItem {
 
     private Map<Integer, int[]> baseDamageMap = new HashMap<>();
     private String weaponType;
@@ -27,8 +28,8 @@ public class CraftableWeapon extends CraftableItem{
                 pickAxeBaseType();
                 mapAxeBases();
                 break;
-            case "POLEARM":
-                implicit = ItemBaseImplicits.POLEARM.getBasicImplicit();
+            case "STAFF":
+                implicit = ItemBaseImplicits.STAFF.getBasicImplicit();
                 break;
             case "SHORTSWORD":
                 implicit = ItemBaseImplicits.SHORTSWORD.getBasicImplicit();

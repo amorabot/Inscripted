@@ -3,9 +3,9 @@ package pluginstudies.pluginstudies.managers;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import pluginstudies.pluginstudies.PluginStudies;
-import pluginstudies.pluginstudies.components.Profile;
-import pluginstudies.pluginstudies.components.Attributes;
-import pluginstudies.pluginstudies.components.Stats;
+import pluginstudies.pluginstudies.components.PlayerComponents.Profile;
+import pluginstudies.pluginstudies.components.PlayerComponents.Attributes;
+import pluginstudies.pluginstudies.components.PlayerComponents.Stats;
 import pluginstudies.pluginstudies.utils.ConfigUtil;
 
 import java.util.HashMap;
@@ -42,7 +42,7 @@ public class ProfileManager {
 //            //assim temos um set com Strings que será percorrido e então usado para carregar as informações desejadas
 //            //com base nos IDs lidos
         String id = player.getUniqueId().toString();
-
+//         config.getList()
         UUID uuid = UUID.fromString(id);
         int points = config.getInt(uuid + ".attributes.points");
 
@@ -51,12 +51,22 @@ public class ProfileManager {
         int strength = config.getInt(uuid + ".attributes.strength");
         Attributes attributes = new Attributes(points, intelligence, agility, strength);
 
-        int health = config.getInt(uuid + ".stats.health");
-        //TODO: health% e ward%
-        int ward = config.getInt(uuid + ".stats.ward");
+        int maxHealth = config.getInt(uuid + ".stats.maxHealth");
+        int health = config.getInt(uuid + ".stats.baseHealth");
+        int healthPercent = config.getInt(uuid + ".stats.health%");
+
+        int ward = config.getInt(uuid + ".stats.baseWard");
+        int wardPercent = config.getInt(uuid + ".stats.ward%");
+
+        int evasion = config.getInt(uuid + ".stats.evasion");
+        int evasionPercent = config.getInt(uuid + ".stats.evasion%");
+
+        int armor = config.getInt(uuid + ".stats.armor");
+        int armorPercent = config.getInt(uuid + ".stats.armor%");
+
         int dps = config.getInt(uuid + ".stats.DPS");
 
-        Stats stats = new Stats(health, ward, dps);
+        Stats stats = new Stats(health, healthPercent, ward, wardPercent, armor, armorPercent, evasion, evasionPercent);
 
         Profile profile = new Profile(attributes, stats);
         profiles.put(uuid, profile); //instancia esse perfil na memória do servidor
@@ -81,15 +91,31 @@ public class ProfileManager {
         //              points:
         //              intelligence:
         //              ...
-        config.set(uuid + ".attributes.points", attributes.getPoints());
+        config.set(uuid + ".attributes.points", attributes.getPoints());// ---------------- STATS ----------------
         config.set(uuid + ".attributes.intelligence", attributes.getIntelligence());
         config.set(uuid + ".attributes.agility", attributes.getAgility());
         config.set(uuid + ".attributes.strength", attributes.getStrength());
 
-        config.set(uuid + ".stats.health", stats.getHealth());
-        config.set(uuid + ".stats.ward", stats.getWard());
-        config.set(uuid + ".stats.DPS", stats.getDPS());
+        config.set(uuid + ".stats.maxHealth", stats.getMaxHealth());
+        config.set(uuid + ".stats.baseHealth", stats.getBaseHealth());          // ---------------- HEALTH ----------------
+        config.set(uuid + ".stats.health%", stats.getHealthPercent());
+
+        config.set(uuid + ".stats.maxWard", stats.getMaxWard());
+        config.set(uuid + ".stats.baseWard", stats.getBaseWard());              // ---------------- WARD ----------------
+        config.set(uuid + ".stats.ward%", stats.getWardPercent());
+
+        config.set(uuid + ".stats.armor", stats.getArmor());            // ---------------- ARMOR ----------------
+        config.set(uuid + ".stats.armor%", stats.getArmorPercent());
+
+        config.set(uuid + ".stats.evasion", stats.getEvasion());        // ---------------- EVASION ----------------
+        config.set(uuid + ".stats.evasion%", stats.getEvasionPercent());
+
+        config.set(uuid + ".stats.DPS", stats.getDPS());                // ---------------- DPS ----------------
         log("Saving profile for the user " + uuid);
+
+//        Field[] profileFields = Profile.class.getDeclaredFields();
+//        Field (0/1)
+//        Field.DECLARED
     }
     public Profile createNewProfile(Player player){
         Attributes attributes = new Attributes(10, 0, 0, 0);
@@ -105,12 +131,6 @@ public class ProfileManager {
     public boolean isNewPlayer(Player player) {
         String id = player.getUniqueId().toString();
         UUID uuid = player.getUniqueId();
-//        log("attempting to fetch UUID:" + id);
-//        config.getConfigurationSection(id);
-//        config.contains(id);
-//        if (!config.contains(uuid + "")){
-//            log("its a new player");
-//        }
         return !config.contains(uuid + "");
     }
     public void unloadProfile(UUID uuid){

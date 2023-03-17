@@ -1,4 +1,4 @@
-package pluginstudies.pluginstudies.components;
+package pluginstudies.pluginstudies.components.CraftingComponents;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -175,7 +175,7 @@ public abstract class CraftableItem {
 
                         //Tier selection
                         return generateTiers(sortedList, axePrefixes, AxeAffixes.PREFIXES, AxeAffixes.SUFFIXES);
-                    case "POLEARM":
+                    case "STAFF":
                         break;
                     case "SHORTSWORD":
                         //Sorting sword affixes
@@ -323,7 +323,7 @@ public abstract class CraftableItem {
                     prefix = randomizeAffix(ShortswordAffixes.PREFIXES, selectedAffixes);
                     this.prefixes.add(prefix);
                     break;
-                case "POLEARM":
+                case "STAFF":
                     break;
             }
             return prefix;
@@ -365,7 +365,7 @@ public abstract class CraftableItem {
                     suffix = randomizeAffix(ShortswordAffixes.SUFFIXES, selectedAffixes);
                     this.suffixes.add(suffix);
                     break;
-                case "POLEARM":
+                case "STAFF":
                     break;
             }
             return suffix;

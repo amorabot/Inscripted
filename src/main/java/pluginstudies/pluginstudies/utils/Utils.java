@@ -1,5 +1,7 @@
 package pluginstudies.pluginstudies.utils;
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -46,6 +48,9 @@ public class Utils {
         for (String msg : strings){
             player.sendMessage(color(msg));
         }
+    }
+    public static void msgPlayerAB(Player player, String msg){
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color(msg)));
     }
 
     public static ItemStack createItem(Material type, int amount, boolean enchanted, boolean unbreakable, boolean hideUnbreakable
