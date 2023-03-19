@@ -12,14 +12,18 @@ import org.bukkit.scheduler.BukkitTask;
 import pluginstudies.pluginstudies.commands.*;
 import pluginstudies.pluginstudies.components.CustomMob;
 import pluginstudies.pluginstudies.handlers.*;
+import pluginstudies.pluginstudies.managers.JSONProfileManager;
 import pluginstudies.pluginstudies.managers.ProfileManager;
 import pluginstudies.pluginstudies.utils.ConfigUtil;
 import pluginstudies.pluginstudies.utils.DelayedTask;
 import pluginstudies.pluginstudies.utils.Utils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static pluginstudies.pluginstudies.utils.Utils.log;
 import static pluginstudies.pluginstudies.utils.Utils.msgPlayerAB;
 
 public final class PluginStudies extends JavaPlugin {
@@ -38,11 +42,24 @@ public final class PluginStudies extends JavaPlugin {
         // Plugin startup logic
 //        Bukkit.getLogger().info("Hello, World!");
         logger = getLogger(); //pega o logger desse plugin, que dá acesso aos chats e mensagens (?)
-        Utils.log("O novo hello world!");
+        log("O novo hello world!");
 
         this.profileConfig = new ConfigUtil(this, "profiles.yml");
 
         this.profileManager = new ProfileManager(this);
+
+        new JSONProfileManager(this);
+        if (!new File(this.getDataFolder().getAbsolutePath() + "/profiles.json").exists()){
+            try {
+                String uuid = UUID.randomUUID().toString();
+                JSONProfileManager.createProfile(uuid);
+                log("creating dummy profile: " + uuid);
+                log("attempting to do the save operation");
+                JSONProfileManager.saveToJSON(); //vai criar o arquivo se ele não existe
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 //        this.profileManager.loadProfilesFromConfig(); usado quando se carregava todos os players ao iniciar o plugin
         //a nova abordagem será detectar o join e então armazenar na memória do profile manager
 

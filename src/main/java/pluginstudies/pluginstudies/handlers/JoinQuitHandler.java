@@ -7,8 +7,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.managers.JSONProfileManager;
 import pluginstudies.pluginstudies.managers.ProfileManager;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import static pluginstudies.pluginstudies.utils.Utils.log;
@@ -36,6 +38,14 @@ public class JoinQuitHandler implements Listener {
             profileManager.loadProfileFromConfig(player);
             log("Bem vindo de volta " + player.getDisplayName() + "!");
         }
+
+        if (JSONProfileManager.isNewPlayer(player.getUniqueId())){ //If new player:
+            JSONProfileManager.createProfile(player.getUniqueId().toString()); //Creates and instantiates the profile.
+            log("O perfil para o player " + player.getDisplayName() + " foi criado. (JSON)");
+        } else {
+            JSONProfileManager.loadProfileFromJSON(player.getUniqueId().toString()); //Loads specific profile into memory
+            log("Bem vindo de volta " + player.getDisplayName() + "! (JSON)");
+        }
         //Agora vamos checar se o player que logou ja existe na DB (se existe é retornado, senão, o hashMap retorna null)
 //        Profile profile = profileManager.getPlayerProfile(player.getUniqueId()); //null se não existe
 //        if (profile == null){ //aqui é o caso onde o player não existe na DB, portanto, vamos registrá-lo
@@ -46,12 +56,6 @@ public class JoinQuitHandler implements Listener {
 //        else{
 //            profileManager.loadProfileFromConfig(player);
 //            Utils.log("Bem vindo de volta " + player.getDisplayName() + "!");
-//        }
-
-//    @EventHandler
-//    public void onEntityDamage(EntityDamageEvent event){
-//        if (!(event.getEntity() instanceof Player) && (event.getCause() == EntityDamageEvent.DamageCause.FALL)){
-//            return;
 //        }
 //
 //        Player player = (Player) event.getEntity();
@@ -73,5 +77,11 @@ public class JoinQuitHandler implements Listener {
         profileManager.saveProfile(uuid);
         profileManager.unloadProfile(uuid);
         log(event.getPlayer().getDisplayName() + " has quit. Saving profile...");
+
+        try {
+            JSONProfileManager.saveToJSON();
+        } catch (IOException exception){
+            log("Error accessing and saving profiles");
+        }
     }
 }

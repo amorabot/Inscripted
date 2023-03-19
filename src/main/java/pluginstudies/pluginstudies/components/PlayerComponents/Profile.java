@@ -2,6 +2,10 @@ package pluginstudies.pluginstudies.components.PlayerComponents;
 
 public class Profile {
 
+    private int health;
+    private int ward;
+    private int armor;
+    private int evasion;
     private Attributes attributes;
     private Stats stats;
     public Profile(Attributes attributes, Stats stats){
