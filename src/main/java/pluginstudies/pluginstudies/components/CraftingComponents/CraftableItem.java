@@ -7,9 +7,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.javatuples.Triplet;
 import pluginstudies.pluginstudies.Crafting.TableAcessInterface;
 import pluginstudies.pluginstudies.Crafting.Weapons.AxeAffixes;
 import pluginstudies.pluginstudies.Crafting.Weapons.ShortswordAffixes;
+import pluginstudies.pluginstudies.Crafting.Weapons.WeaponModifiers;
 import pluginstudies.pluginstudies.CustomDataTypes.ModifierInfoDataType;
 import pluginstudies.pluginstudies.CustomDataTypes.ModifierInformation;
 import pluginstudies.pluginstudies.PluginStudies;
@@ -36,7 +38,7 @@ public abstract class CraftableItem {
         ItemStack item = null;
         switch(rarity){
             case 0:
-                item =  generateCommon(plugin);
+                item =  generateCommon(plugin); //TODO: refatorar os atributos do item em um data type unico.
                 break;
             case 1:
                 item = generateMagic(plugin);
@@ -61,6 +63,16 @@ public abstract class CraftableItem {
         dataContainer.set(new NamespacedKey(plugin, "rarity"), PersistentDataType.INTEGER, rarity);
         dataContainer.set(new NamespacedKey(plugin, "implicit"), PersistentDataType.STRING, implicit);
         dataContainer.set(new NamespacedKey(plugin, "modifiers"), PersistentDataType.INTEGER, 0);
+
+        /*
+        Estrutura pra guardar mods internamente:
+
+        Prefixes = [WeaponModifiers mod, int tier, List<Integer> [int value1, int value2]]
+        Triplet<WeaponModifiers, Integer, List<Integer>> prefixes;
+
+        -Triplet é serializable *tem um id de série próprio para serialização* e pode ser usado
+        -o array contendo os prefixes e suffixes pode ser uma linked list, facilitando a mudança de termos intermediários (crafting)
+         */
 
         itemMeta.setDisplayName(color("&f&lCommon item"));
         if (this instanceof CraftableWeapon){
@@ -293,7 +305,7 @@ public abstract class CraftableItem {
         }
         return affix;
     }
-    private <T extends Enum<T > & TableAcessInterface> String randomizeAffix(T affixTable, List<String> selectedAffixes){
+    private <T extends Enum<T> & TableAcessInterface> String randomizeAffix(T affixTable, List<String> selectedAffixes){
         String chosenAffix = "";
 
         boolean found = false;
