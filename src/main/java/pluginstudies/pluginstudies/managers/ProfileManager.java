@@ -2,7 +2,7 @@ package pluginstudies.pluginstudies.managers;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.components.PlayerComponents.Profile;
 import pluginstudies.pluginstudies.components.PlayerComponents.Attributes;
 import pluginstudies.pluginstudies.components.PlayerComponents.Stats;
@@ -16,7 +16,7 @@ import static pluginstudies.pluginstudies.utils.Utils.log;
 
 public class ProfileManager {
 
-    private PluginStudies plugin; //precisaremos de uma instância do plugin principal para podermos utilizar depois
+    private RPGElements plugin; //precisaremos de uma instância do plugin principal para podermos utilizar depois
     private Map<UUID, Profile> profiles = new HashMap<>();
     //aqui criamos um Map<K, V> onde K são os os ids únicos de jogadores e Profiles são os perfis que iremos criar
     //para cada jogador e associar ao seu UUID específico. O UUID erá extraído com base no objeto player e guardado
@@ -24,7 +24,7 @@ public class ProfileManager {
     private ConfigUtil profileConfig;
     private FileConfiguration config;
 
-    public ProfileManager(PluginStudies plugin){
+    public ProfileManager(RPGElements plugin){
         this.plugin = plugin;
         this.profileConfig = plugin.getProfileConfig();
         this.config = profileConfig.getConfig();

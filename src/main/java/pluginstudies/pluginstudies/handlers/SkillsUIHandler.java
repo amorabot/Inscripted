@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.managers.ProfileManager;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class SkillsUIHandler implements Listener {
     private ProfileManager profileManager;
 
 
-    public SkillsUIHandler(PluginStudies plugin){
+    public SkillsUIHandler(RPGElements plugin){
         this.profileManager = plugin.getProfileManager();
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }

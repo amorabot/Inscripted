@@ -7,7 +7,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.managers.UIManager;
 
 import static pluginstudies.pluginstudies.utils.Utils.*;
@@ -18,7 +18,7 @@ import java.util.List;
 public class SkillsUI implements TabExecutor { //Tab executor é um 2 em 1. Combina CommandExecutor com TabCompletion
     //tab completion nos dá a funcionalidade de completar args com o tab.
 
-    private PluginStudies pluginStudies;
+    private RPGElements RPGElements;
 //    private ProfileManager profileManager;
     private UIManager UIManager;
     private ItemStack pointsIndicator;
@@ -26,8 +26,8 @@ public class SkillsUI implements TabExecutor { //Tab executor é um 2 em 1. Comb
     private ItemStack agilityIndicator;
     private ItemStack strengthIndicator;
 
-    public SkillsUI(PluginStudies plugin){
-        pluginStudies = plugin;
+    public SkillsUI(RPGElements plugin){
+        RPGElements = plugin;
 //        profileManager = plugin.getProfileManager();
 
         pointsIndicator = new ItemStack(Material.EXPERIENCE_BOTTLE, 1);
@@ -79,7 +79,7 @@ public class SkillsUI implements TabExecutor { //Tab executor é um 2 em 1. Comb
             player.sendMessage("&cVocê não tem permissão para usar esse comando.");
             return true;
         }
-        UIManager = new UIManager(pluginStudies, player);
+        UIManager = new UIManager(RPGElements, player);
 
         UIManager.openSkillsUI(pointsIndicator, intelligenceIndicator, agilityIndicator, strengthIndicator);
 /*

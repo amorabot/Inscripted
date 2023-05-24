@@ -2,7 +2,7 @@ package pluginstudies.pluginstudies.managers;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.components.PlayerComponents.Attributes;
 import pluginstudies.pluginstudies.components.PlayerComponents.Profile;
 import pluginstudies.pluginstudies.components.PlayerComponents.Stats;
@@ -17,9 +17,9 @@ import static pluginstudies.pluginstudies.utils.Utils.log;
 public class JSONProfileManager {
 
     private static Map<UUID, Profile> profiles = new HashMap<>();
-    private static PluginStudies plugin;
+    private static RPGElements plugin;
 
-    public JSONProfileManager (PluginStudies pluginInstance){
+    public JSONProfileManager (RPGElements pluginInstance){
         plugin = pluginInstance;
     }
 

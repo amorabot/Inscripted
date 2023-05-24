@@ -14,7 +14,7 @@ import pluginstudies.pluginstudies.Crafting.Weapons.AxeAffixes;
 import pluginstudies.pluginstudies.Crafting.Weapons.ShortswordAffixes;
 import pluginstudies.pluginstudies.CustomDataTypes.ModifierInfoDataType;
 import pluginstudies.pluginstudies.CustomDataTypes.ModifierInformation;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +23,9 @@ import static pluginstudies.pluginstudies.utils.Utils.color;
 
 public class Identify implements CommandExecutor {
 
-    private PluginStudies plugin;
+    private RPGElements plugin;
 
-    public Identify(PluginStudies plugin){
+    public Identify(RPGElements plugin){
         this.plugin = plugin;
     }
 

@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 import static pluginstudies.pluginstudies.utils.Utils.log;
 import static pluginstudies.pluginstudies.utils.Utils.msgPlayerAB;
 
-public final class PluginStudies extends JavaPlugin {
+public final class RPGElements extends JavaPlugin {
     private static Logger logger;
     private ProfileManager profileManager;
     private ConfigUtil profileConfig;
@@ -82,6 +82,7 @@ public final class PluginStudies extends JavaPlugin {
         SkillsUI skillsUI = new SkillsUI(this);
 
         getCommand("updatenbt").setExecutor(new UpdateNBT(this));
+        getCommand("getnbt").setExecutor(new GetNBT(this));
         getCommand("generateweapon").setExecutor(new GenerateWeapon(this));
         getCommand("identify").setExecutor(new Identify(this));
         getCommand("skills").setExecutor(skillsUI);
@@ -276,5 +277,4 @@ public final class PluginStudies extends JavaPlugin {
     public World getWorld(){
         return world;
     }
-
 }

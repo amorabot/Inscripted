@@ -18,7 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import pluginstudies.pluginstudies.CustomDataTypes.ModifierInfoDataType;
 import pluginstudies.pluginstudies.CustomDataTypes.ModifierInformation;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.components.PlayerComponents.Attributes;
 import pluginstudies.pluginstudies.components.PlayerComponents.Profile;
 import pluginstudies.pluginstudies.components.PlayerComponents.Stats;
@@ -31,8 +31,8 @@ import static pluginstudies.pluginstudies.utils.Utils.*;
 
 public class WeaponEquipHandler implements Listener {
     private ProfileManager profileManager;
-    private PluginStudies plugin;
-    public WeaponEquipHandler(PluginStudies plugin){
+    private RPGElements plugin;
+    public WeaponEquipHandler(RPGElements plugin){
         this.plugin = plugin;
         this.profileManager = plugin.getProfileManager();
         Bukkit.getPluginManager().registerEvents(this, plugin);

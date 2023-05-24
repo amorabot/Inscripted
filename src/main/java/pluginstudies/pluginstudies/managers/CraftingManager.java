@@ -1,13 +1,13 @@
 package pluginstudies.pluginstudies.managers;
 
 import org.bukkit.inventory.ItemStack;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.components.CraftingComponents.CraftableWeapon;
 
 public class CraftingManager {
 
-    private PluginStudies plugin;
-    public CraftingManager(PluginStudies plugin){
+    private RPGElements plugin;
+    public CraftingManager(RPGElements plugin){
         this.plugin = plugin;
     }
 

@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.components.PlayerComponents.Attributes;
 
 import java.util.Arrays;
@@ -25,7 +25,7 @@ public class UIManager {
     private final String CONFIRM_MENU_LABEL = "&8&lConfirm changes";
 
 
-    public UIManager(PluginStudies plugin, Player p){
+    public UIManager(RPGElements plugin, Player p){
         profileManager = plugin.getProfileManager();
         player = p;
     }

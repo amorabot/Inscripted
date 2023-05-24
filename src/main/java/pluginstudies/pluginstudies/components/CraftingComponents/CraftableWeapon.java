@@ -3,8 +3,7 @@ package pluginstudies.pluginstudies.components.CraftingComponents;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import pluginstudies.pluginstudies.Crafting.ItemBaseImplicits;
-import pluginstudies.pluginstudies.PluginStudies;
-import pluginstudies.pluginstudies.components.CraftingComponents.CraftableItem;
+import pluginstudies.pluginstudies.RPGElements;
 
 import java.util.*;
 
@@ -39,7 +38,7 @@ public class CraftableWeapon extends CraftableItem {
         }
     }
 
-    public ItemStack generate(PluginStudies plugin, int rarity){
+    public ItemStack generate(RPGElements plugin, int rarity){
         setBaseDmg();
         return generateItem(plugin, rarity);
     }

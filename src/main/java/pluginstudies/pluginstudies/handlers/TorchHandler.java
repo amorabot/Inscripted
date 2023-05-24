@@ -6,13 +6,12 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 
 public class TorchHandler implements Listener {
-    public TorchHandler(PluginStudies plugin){
+    public TorchHandler(RPGElements plugin){
         Bukkit.getPluginManager().registerEvents(this, plugin); //2 parametros: Listener-> Quem vai escutar/registrar
                                                              //                        Plugin -> Quem vai usar evento
    //todos os eventos captados por essa classe e suas funcionali. estarão disponíveis ao inicializá-la no plugin principal

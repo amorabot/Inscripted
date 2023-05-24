@@ -6,7 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.managers.JSONProfileManager;
 import pluginstudies.pluginstudies.managers.ProfileManager;
 
@@ -17,10 +17,10 @@ import static pluginstudies.pluginstudies.utils.Utils.log;
 
 public class JoinQuitHandler implements Listener {
 
-    private PluginStudies plugin;
+    private RPGElements plugin;
     private ProfileManager profileManager;
 
-    public JoinQuitHandler(PluginStudies plugin){
+    public JoinQuitHandler(RPGElements plugin){
         this.plugin = plugin;
         this.profileManager = plugin.getProfileManager();
         Bukkit.getPluginManager().registerEvents(this, plugin);

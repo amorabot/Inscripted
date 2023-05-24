@@ -4,7 +4,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.managers.UIManager;
 
 import static pluginstudies.pluginstudies.utils.Utils.*;
@@ -12,10 +12,10 @@ import static pluginstudies.pluginstudies.utils.Utils.*;
 public class ArmorStand implements CommandExecutor {
 
     private UIManager UIManager;
-    private PluginStudies plugin;
+    private RPGElements plugin;
 
-    public ArmorStand(PluginStudies pluginStudies){
-        plugin = pluginStudies;
+    public ArmorStand(RPGElements plugin){
+        this.plugin = plugin;
     }
 
     @Override

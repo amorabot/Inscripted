@@ -1,7 +1,7 @@
 package pluginstudies.pluginstudies.components.PlayerComponents;
 
 public class Profile {
-
+    //TODO: SEPARAÇÃO EM COMPONENTS
     private int health;
     private int ward;
     private int armor;

@@ -14,7 +14,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.components.PlayerComponents.Attributes;
 import pluginstudies.pluginstudies.managers.ProfileManager;
 import pluginstudies.pluginstudies.managers.UIManager;
@@ -30,11 +30,11 @@ public class GUIHandler implements Listener {
 
     private pluginstudies.pluginstudies.managers.UIManager UIManager;
     private ProfileManager profileManager;
-    private PluginStudies plugin;
+    private RPGElements plugin;
 
     private HashMap<UUID, ArmorStand> playersArmorStands = new HashMap<>(); //Note this data does not persist through restarts
 
-    public GUIHandler(PluginStudies p){
+    public GUIHandler(RPGElements p){
         plugin = p;
         Bukkit.getPluginManager().registerEvents(this, plugin);
         profileManager = plugin.getProfileManager();

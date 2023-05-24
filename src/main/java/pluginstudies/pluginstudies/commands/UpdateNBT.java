@@ -10,15 +10,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 
 import static pluginstudies.pluginstudies.utils.Utils.color;
 
 public class UpdateNBT implements CommandExecutor {
 
-    private PluginStudies plugin;
+    private RPGElements plugin;
 
-    public UpdateNBT(PluginStudies plugin){
+    public UpdateNBT(RPGElements plugin){
         this.plugin = plugin;
 
     }
@@ -48,34 +48,38 @@ public class UpdateNBT implements CommandExecutor {
         if (args.length == 0){ //No arguments were passed in
             player.sendMessage(meta.getAsString());
             if(dataContainer.isEmpty()){
+                player.sendMessage("datacontainerVazio");
+                return true;
+            } else {
+                player.sendMessage("Item tem conteúdo no dataContainer!");
                 return true;
             }
-            if (dataContainer.has(new NamespacedKey(plugin, "rarity"),PersistentDataType.STRING)){
-                //Se tem uma key "rarity" que é STRING, mostre
-                String rarityDisplay = dataContainer.get(new NamespacedKey(plugin, "rarity"), PersistentDataType.STRING);
-                switch (rarityDisplay){
-                    case "common":
-                        player.sendMessage(color("&7Rarity: " + "&f&l" + rarityDisplay ));
-                        break;
-                    case "magic":
-                        player.sendMessage(color("&7Rarity: " + "&9&l" + rarityDisplay ));
-                        break;
-                    case "rare":
-                        player.sendMessage(color("&7Rarity: " + "&e&l" + rarityDisplay ));
-                        break;
-                    case "unique":
-                        player.sendMessage(color("&7Rarity: " + "&4&l" + rarityDisplay ));
-                        break;
-                }
-            }
-            if (dataContainer.has(new NamespacedKey(plugin, "ilvl"), PersistentDataType.INTEGER)){
-                //Se tem uma key "ilvl" que é INTEGER, mostre
-                player.sendMessage(color("&7ilvl: " + "&6&l" + dataContainer.get(new NamespacedKey(plugin, "ilvl"), PersistentDataType.INTEGER)));
-            }
-            if (dataContainer.has(new NamespacedKey(plugin, "equipment-type"), PersistentDataType.STRING)){
-                player.sendMessage(color("&7Type: " + dataContainer.get(new NamespacedKey(plugin, "equipment-type"), PersistentDataType.STRING)));
-            }
-            return true;
+//            if (dataContainer.has(new NamespacedKey(plugin, "rarity"),PersistentDataType.STRING)){
+//                //Se tem uma key "rarity" que é STRING, mostre
+//                String rarityDisplay = dataContainer.get(new NamespacedKey(plugin, "rarity"), PersistentDataType.STRING);
+//                switch (rarityDisplay){
+//                    case "common":
+//                        player.sendMessage(color("&7Rarity: " + "&f&l" + rarityDisplay ));
+//                        break;
+//                    case "magic":
+//                        player.sendMessage(color("&7Rarity: " + "&9&l" + rarityDisplay ));
+//                        break;
+//                    case "rare":
+//                        player.sendMessage(color("&7Rarity: " + "&e&l" + rarityDisplay ));
+//                        break;
+//                    case "unique":
+//                        player.sendMessage(color("&7Rarity: " + "&4&l" + rarityDisplay ));
+//                        break;
+//                }
+//            }
+//            if (dataContainer.has(new NamespacedKey(plugin, "ilvl"), PersistentDataType.INTEGER)){
+//                //Se tem uma key "ilvl" que é INTEGER, mostre
+//                player.sendMessage(color("&7ilvl: " + "&6&l" + dataContainer.get(new NamespacedKey(plugin, "ilvl"), PersistentDataType.INTEGER)));
+//            }
+//            if (dataContainer.has(new NamespacedKey(plugin, "equipment-type"), PersistentDataType.STRING)){
+//                player.sendMessage(color("&7Type: " + dataContainer.get(new NamespacedKey(plugin, "equipment-type"), PersistentDataType.STRING)));
+//            }
+//            return true;
         } else if (args.length == 2) { //If 2 arguments were passed (stat - value)
             String stat = args[0];
             switch (stat){

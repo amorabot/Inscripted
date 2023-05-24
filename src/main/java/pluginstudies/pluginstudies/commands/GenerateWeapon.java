@@ -1,20 +1,23 @@
 package pluginstudies.pluginstudies.commands;
 
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import pluginstudies.pluginstudies.PluginStudies;
+import org.bukkit.inventory.ItemStack;
+import pluginstudies.pluginstudies.Crafting.ItemBaseImplicits;
+import pluginstudies.pluginstudies.Crafting.ItemRarities;
+import pluginstudies.pluginstudies.Crafting.ItemTypes;
+import pluginstudies.pluginstudies.Crafting.Weapons.Enums.WeaponTypes;
+import pluginstudies.pluginstudies.RPGElements;
+import pluginstudies.pluginstudies.components.CraftingComponents.Equippable.Weapon;
 import pluginstudies.pluginstudies.managers.CraftingManager;
-
-import static pluginstudies.pluginstudies.utils.Utils.color;
 
 public class GenerateWeapon implements CommandExecutor {
 
-    private PluginStudies plugin;
+    private RPGElements plugin;
     private CraftingManager craftingManager;
-    public GenerateWeapon(PluginStudies plugin){
+    public GenerateWeapon(RPGElements plugin){
         this.plugin = plugin;
         this.craftingManager = new CraftingManager(plugin);
     }
@@ -26,21 +29,25 @@ public class GenerateWeapon implements CommandExecutor {
             return true;
         }
         Player player = (Player) sender;
-        if (args.length != 3 || (Integer.parseInt(args[1]) >2 || Integer.parseInt(args[1])<0)){
-            player.sendMessage(color("&cInvalid command syntax"));
-            player.sendMessage(color("&cCorrect syntax: /generateweapon ilvl [0,1,2] type"));
-            return true;
-        }
         //TODO check dos tipos de arma
         int ilvlArg = Integer.parseInt(args[0]);
-        int rarityArg = Integer.parseInt(args[1]);
+        String rarityArg = args[1];
         String weaponType = args[2];
 
-        if (player.getInventory().getItemInMainHand().getType() == Material.AIR){
-            player.getInventory().addItem(craftingManager.generateWeapon(ilvlArg, rarityArg, weaponType));
-            return true;
-        }
-        player.sendMessage(color("&cThis command must be used with a empty hand."));
-        return false;
+        Weapon weapon =
+                new Weapon(plugin, ItemTypes.WEAPON, WeaponTypes.valueOf(weaponType),
+                        false, ilvlArg, ItemRarities.valueOf(rarityArg), ItemBaseImplicits.valueOf(weaponType).getBasicImplicit(), rarityArg);
+
+        ItemStack item = weapon.getItemForm();
+//        ItemMeta meta = item.getItemMeta();
+//        if (meta.getPersistentDataContainer().has(new NamespacedKey(plugin, "data"),new ItemInfoDataType())){
+//            ItemInformation itemData = item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "data"), new ItemInfoDataType());
+//            if (!itemData.isIdentified()){
+//                meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+//                item.setItemMeta(meta);
+//            }
+//        }
+        player.getInventory().addItem(item);
+        return true;
     }
 }

@@ -9,14 +9,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 
 import java.util.*;
 import java.util.logging.Logger;
 
 public class Utils {
 
-    private static Logger logger = PluginStudies.getPluginLogger();
+    private static Logger logger = RPGElements.getPluginLogger();
 
     public static void log(String ... messages){ // ... indica um numero indefinido de strings a serem passadas
         for (String message : messages){

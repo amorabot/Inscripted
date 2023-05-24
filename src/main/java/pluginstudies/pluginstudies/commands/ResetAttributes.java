@@ -4,16 +4,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.components.PlayerComponents.Attributes;
 
 import static pluginstudies.pluginstudies.utils.Utils.log;
 
 public class ResetAttributes implements CommandExecutor {
 
-    private PluginStudies plugin;
+    private RPGElements plugin;
 
-    public ResetAttributes(PluginStudies plugin){
+    public ResetAttributes(RPGElements plugin){
         this.plugin = plugin;
     }
 

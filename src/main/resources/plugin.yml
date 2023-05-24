@@ -1,6 +1,6 @@
 name: RPGElements
-version: '${project.version}'
-main: pluginstudies.pluginstudies.PluginStudies
+version: '${0.2}'
+main: pluginstudies.pluginstudies.RPGElements
 api-version: 1.19
 permissions:
     pluginstudies.fly:
@@ -50,3 +50,6 @@ commands:
   resetattributes:
     description: resets the attribute data for the sender.
     usage: /resetatt
+  getnbt:
+    description: gets a specified NBT data tag.
+    usage: /getnbt

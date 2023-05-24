@@ -7,14 +7,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.javatuples.Triplet;
-import pluginstudies.pluginstudies.Crafting.TableAcessInterface;
+import pluginstudies.pluginstudies.Crafting.Interfaces.AffixTableAcessInterface;
 import pluginstudies.pluginstudies.Crafting.Weapons.AxeAffixes;
 import pluginstudies.pluginstudies.Crafting.Weapons.ShortswordAffixes;
-import pluginstudies.pluginstudies.Crafting.Weapons.WeaponModifiers;
 import pluginstudies.pluginstudies.CustomDataTypes.ModifierInfoDataType;
 import pluginstudies.pluginstudies.CustomDataTypes.ModifierInformation;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 
 import java.util.*;
 
@@ -34,7 +32,7 @@ public abstract class CraftableItem {
     protected List<String> affixes = new ArrayList<>();
     protected List<Integer> affixTiers = new ArrayList<>();
 
-    protected ItemStack generateItem(PluginStudies plugin, int rarity){
+    protected ItemStack generateItem(RPGElements plugin, int rarity){
         ItemStack item = null;
         switch(rarity){
             case 0:
@@ -50,7 +48,7 @@ public abstract class CraftableItem {
         return item;
     }
 
-    private ItemStack generateCommon(PluginStudies plugin){
+    private ItemStack generateCommon(RPGElements plugin){
         setRarity(0);
 
         ItemStack item = new ItemStack(material);
@@ -91,8 +89,6 @@ public abstract class CraftableItem {
         }
         lore.add(color("&7    Ilvl: " + "&6&l" + ilvl + "&8&l    " + dataContainer.get(new NamespacedKey(plugin, "implicit"), PersistentDataType.STRING)));
         lore.add(color("&7&l___________________"));
-//        lore.add(color("&7Item level: " + "&6&l" + ilvl)); //VERSÃO ANTIGA DE DISPLAY
-//        lore.add(color("&7&l______" + "&7&l&n" + dataContainer.get(new NamespacedKey(plugin, "implicit"), PersistentDataType.STRING) +"&7&l______")); //toda arma/armor pode ter impl.
 
         itemMeta.setLore(lore);
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -100,7 +96,7 @@ public abstract class CraftableItem {
         item.setItemMeta(itemMeta);
         return item;
     }
-    private ItemStack generateMagic(PluginStudies plugin){
+    private ItemStack generateMagic(RPGElements plugin){
         setRarity(1);
         int modifiers = getRandomNumber(1, affixLimit);
 
@@ -134,7 +130,7 @@ public abstract class CraftableItem {
         item.setItemMeta(itemMeta);
         return item;
     }
-    private ItemStack generateRare(PluginStudies plugin){
+    private ItemStack generateRare(RPGElements plugin){
         setRarity(2);
         int modifiers = getRandomNumber(3, affixLimit);
 
@@ -211,7 +207,7 @@ public abstract class CraftableItem {
         return null;
     }
 
-    private <T extends Enum<T> & TableAcessInterface> Map<String, int[]> generateTiers(List<String> sortedList, String[] prefixArray, T genericPrefixMap, T genericSuffixMap){
+    private <T extends Enum<T> & AffixTableAcessInterface> Map<String, int[]> generateTiers(List<String> sortedList, String[] prefixArray, T genericPrefixMap, T genericSuffixMap){
         Map<String, int[]> tierMapping = new HashMap<>();
         List<Integer> tierList = new ArrayList<>();
         for (String affix : sortedList){
@@ -305,7 +301,7 @@ public abstract class CraftableItem {
         }
         return affix;
     }
-    private <T extends Enum<T> & TableAcessInterface> String randomizeAffix(T affixTable, List<String> selectedAffixes){
+    private <T extends Enum<T> & AffixTableAcessInterface> String randomizeAffix(T affixTable, List<String> selectedAffixes){
         String chosenAffix = "";
 
         boolean found = false;
@@ -442,7 +438,7 @@ public abstract class CraftableItem {
         }
         return list.get(0);
     }
-    private <T extends Enum<T> & TableAcessInterface> boolean prefixCanBeSelected(String prefix, T prefixTable){
+    private <T extends Enum<T> & AffixTableAcessInterface> boolean prefixCanBeSelected(String prefix, T prefixTable){
         List<Integer> sortedLevelRanges = new ArrayList<>(prefixTable.getAffix(prefix).keySet());
         if (sortedLevelRanges.contains(this.ilvl)){
             return true;
@@ -452,7 +448,7 @@ public abstract class CraftableItem {
         sortedLevelRanges.sort(Comparator.naturalOrder());
         return (this.ilvl >= sortedLevelRanges.get(1));
     }
-    private <T extends Enum<T> & TableAcessInterface> boolean suffixCanBeSelected(String suffix, T suffixTable){
+    private <T extends Enum<T> & AffixTableAcessInterface> boolean suffixCanBeSelected(String suffix, T suffixTable){
         List<Integer> sortedLevelRanges = new ArrayList<>(suffixTable.getAffix(suffix).keySet());
 
         if (sortedLevelRanges.contains(this.ilvl)){
