@@ -1,4 +1,4 @@
-package pluginstudies.pluginstudies.Crafting.Weapons;
+package pluginstudies.pluginstudies.deprecated;
 
 import pluginstudies.pluginstudies.Crafting.Interfaces.AffixTableAcessInterface;
 import pluginstudies.pluginstudies.utils.PairDT;
@@ -7,7 +7,7 @@ import java.util.*;
 
 import static pluginstudies.pluginstudies.Crafting.CraftingUtils.generateRange;
 import static pluginstudies.pluginstudies.Crafting.CraftingUtils.mapRanges;
-
+@Deprecated
 public enum ShortswordAffixes implements AffixTableAcessInterface {
 
     PREFIXES(               new PairDT<>("Added physical DMG",

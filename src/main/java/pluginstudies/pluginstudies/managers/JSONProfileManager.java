@@ -3,9 +3,7 @@ package pluginstudies.pluginstudies.managers;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import pluginstudies.pluginstudies.RPGElements;
-import pluginstudies.pluginstudies.components.PlayerComponents.Attributes;
-import pluginstudies.pluginstudies.components.PlayerComponents.Profile;
-import pluginstudies.pluginstudies.components.PlayerComponents.Stats;
+import pluginstudies.pluginstudies.components.PlayerComponents.*;
 
 import java.io.*;
 import java.util.HashMap;
@@ -27,11 +25,12 @@ public class JSONProfileManager {
 
     public static Profile createProfile(String uuid){
         Attributes attributes = new Attributes(10, 0,0,0);
-        Stats stats = new Stats(40, 0, 1);
+        Stats stats = new Stats();
         UUID id = UUID.fromString(uuid);
-        profiles.put(id, new Profile(attributes, stats));
+        Profile createdProfile = new Profile(new HealthComponent(), new DefenceComponent(), new DamageComponent(), attributes, stats);
+        profiles.put(id, createdProfile);
 
-        return new Profile(attributes, stats);
+        return createdProfile;
     }
 
     public static Profile getProfile(String uuid){
@@ -82,7 +81,7 @@ public class JSONProfileManager {
             exception.printStackTrace();
         }
     }
-    public static void loadFromJSON() throws IOException{ //Loads EVERY profile registered, refrain from using this operation casually
+    public static void loadAllFromJSON() throws IOException{ //Loads EVERY profile registered, refrain from using this operation casually
         Gson gson = new Gson();
         File file = new File(plugin.getDataFolder().getAbsolutePath() + "/profiles.json");
         if (file.exists()){
@@ -106,7 +105,7 @@ public class JSONProfileManager {
                 JsonObject JSONProfileMap = gson.fromJson(reader, JsonObject.class);
                 JsonElement JSONProfile = JSONProfileMap.get(uuid);
                 String stringifiedProfile = JSONProfile.toString();
-                log(stringifiedProfile);
+//                log(stringifiedProfile); //debuggin
                 Profile playerProfile = gson.fromJson(stringifiedProfile, Profile.class);
                 profiles.put(UUID.fromString(uuid), playerProfile);
             } catch (FileNotFoundException e) {
@@ -131,7 +130,7 @@ public class JSONProfileManager {
                 throw new RuntimeException(e);
             }
         }
-        log("The profiles JSON file is currently unavailable.");
+        log("The profiles.JSON file is currently unavailable.");
         return false;
     }
 }

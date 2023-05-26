@@ -2,7 +2,6 @@ package pluginstudies.pluginstudies.handlers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,27 +13,16 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
-import pluginstudies.pluginstudies.CustomDataTypes.ModifierInfoDataType;
-import pluginstudies.pluginstudies.CustomDataTypes.ModifierInformation;
+import pluginstudies.pluginstudies.deprecated.ModifierInformation;
 import pluginstudies.pluginstudies.RPGElements;
-import pluginstudies.pluginstudies.components.PlayerComponents.Attributes;
-import pluginstudies.pluginstudies.components.PlayerComponents.Profile;
-import pluginstudies.pluginstudies.components.PlayerComponents.Stats;
-import pluginstudies.pluginstudies.managers.ProfileManager;
 import pluginstudies.pluginstudies.utils.DelayedTask;
-
-import static pluginstudies.pluginstudies.utils.StatCalculator.applyStrengthToHealth;
-import static pluginstudies.pluginstudies.utils.StatCalculator.updateMaxHealth;
-import static pluginstudies.pluginstudies.utils.Utils.*;
+import static pluginstudies.pluginstudies.utils.Utils.log;
 
 public class WeaponEquipHandler implements Listener {
-    private ProfileManager profileManager;
     private RPGElements plugin;
     public WeaponEquipHandler(RPGElements plugin){
         this.plugin = plugin;
-        this.profileManager = plugin.getProfileManager();
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -44,47 +32,15 @@ public class WeaponEquipHandler implements Listener {
         ItemStack heldItem = inventory.getItem(event.getNewSlot());
         ItemStack previousItem = inventory.getItem(event.getPreviousSlot());
         log("held item changed!");
-//        event.getPlayer().getInventory().getHeldItemSlot();
 
         //Let's check fist if we are changing FROM a weapon, so we can deduce what stats to change
         if (isEquipable(previousItem)){ //If the previous item was a equipable weapon, let's remove all it's stats from the player before checking anything
-//            ItemMeta heldItemMeta = previousItem.getItemMeta();
-//            PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
-//
-//            if (dataContainer.has(new NamespacedKey(plugin, "modifier-data"), new ModifierInfoDataType())){ //Magic - Rare - Unique
-//                ModifierInformation modData = dataContainer.get(new NamespacedKey(plugin, "modifier-data"), new ModifierInfoDataType());
-//                if (modData.getModifierNames().contains("STR")){
-//                    applyAttributes(modData, event.getPlayer(), false); //Subtracting strength
-//                }
-//            } else{ //Common
-////                return; //por enquanto nada, não estou mudando o base dmg ainda.
-//            }
+
             applyStats(previousItem, event.getPlayer(), false); //Applying the previous held item stat's (subtracting)
         }
 
         if (isEquipable(heldItem)){
-//            ItemMeta heldItemMeta = heldItem.getItemMeta();
-//            PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
-//
-//            if (dataContainer.has(new NamespacedKey(plugin, "modifier-data"), new ModifierInfoDataType())){
-//                ModifierInformation modData = dataContainer.get(new NamespacedKey(plugin, "modifier-data"), new ModifierInfoDataType());
-//                event.getPlayer().sendMessage(color("&7---------------------------"));
-//                for (String mod : modData.getModifierNames()){
-////                    int[] currentModValue = modData.getMappedModifiers().get(mod);
-////                    if (currentModValue.length == 2){
-////                        event.getPlayer().sendMessage(color("&c"+ mod + ": +" + currentModValue[0] + "/" + currentModValue[1]));
-////                    } else{
-////                        event.getPlayer().sendMessage(color("&c"+ mod + ": +" + currentModValue[0]));
-////                    }
-//                    if (mod.equalsIgnoreCase("STR")){
-//                        applyAttributes(modData, event.getPlayer(), true);
-//                    }
-//                }
-//            } else{
-//                int[] baseDmg = dataContainer.get(new NamespacedKey(plugin, "base-dmg"), PersistentDataType.INTEGER_ARRAY);
-//                event.getPlayer().sendMessage(color("&7---------------------------"));
-//                event.getPlayer().sendMessage(color("&cDMG: " + baseDmg[0] + "/" + baseDmg[1]));
-//            }
+
             applyStats(heldItem, event.getPlayer(), true); //Then the new item stat's are added in (if its equipable)
         }
     }
@@ -189,63 +145,19 @@ public class WeaponEquipHandler implements Listener {
         }
         ItemMeta heldItemMeta = heldItem.getItemMeta();
         PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
-        if (!dataContainer.has(new NamespacedKey(plugin, "state"), PersistentDataType.STRING)){ //If it doesn't have an "identifiable" state
-            return false;
-        }
-        if (!dataContainer.get(new NamespacedKey(plugin, "state"), PersistentDataType.STRING).equalsIgnoreCase("IDED")){ //If it's not identified
-            return false;
-        }
-        if (!dataContainer.get(new NamespacedKey(plugin, "type"), PersistentDataType.STRING).equalsIgnoreCase("WEAPON")){//If it's not a weapon
-            return false;
-        }
+
+
+
         return true;
     }
     private void applyStats(ItemStack heldItem, Player player, boolean adding){
         ItemMeta heldItemMeta = heldItem.getItemMeta();
         PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
 
-        if (dataContainer.has(new NamespacedKey(plugin, "modifier-data"), new ModifierInfoDataType())){
-            ModifierInformation modData = dataContainer.get(new NamespacedKey(plugin, "modifier-data"), new ModifierInfoDataType());
-            player.sendMessage(color("&7---------------------------"));
-            for (String mod : modData.getModifierNames()){
-                if (mod.equalsIgnoreCase("STR")){
-                    applyAttributes(modData, player, adding);
-                }
-            }
-        } else{
-            int[] baseDmg = dataContainer.get(new NamespacedKey(plugin, "base-dmg"), PersistentDataType.INTEGER_ARRAY);
-            player.sendMessage(color("&7---------------------------"));
-            player.sendMessage(color("&cDMG: " + baseDmg[0] + "/" + baseDmg[1]));
-        }
+
     }
 
     private void applyAttributes(ModifierInformation modData, Player player, boolean adding){
-        int signal;
-        Profile playerProfile = profileManager.getPlayerProfile(player.getUniqueId());
-        Attributes playerAttributes = playerProfile.getAttributes();
-        Stats playerStats = playerProfile.getStats();
 
-        if (adding){
-            signal = 1;
-        } else {
-            signal = -1;
-        }
-
-        if (modData.getModifierNames().contains("STR")){ //APPLY STRENGTH
-            int[] strength = modData.getMappedModifiers().get("STR"); //get attribute from item
-            // Apply change to profile
-            playerAttributes.setStrength(playerAttributes.getStrength() + (strength[0])*signal);
-            log("STR changed: " + playerAttributes.getStrength());
-            //Apply changes to base health based on STR
-            playerStats.setBaseHealth(applyStrengthToHealth(playerStats.getBaseHealth(), strength[0],adding));
-            playerStats.setMaxHealth(updateMaxHealth(playerStats.getBaseHealth(), playerStats.getHealthPercent()));
-
-        }
-//        if (modData.getModifierNames().contains("DEX")){ //APPLY DEXTERITY
-//
-//        }
-//        if (modData.getModifierNames().contains("INT")){ //APPLY INTELLIGENCE
-//            applyIntelligenceToWard(playerStats.getWard(), playerAttributes.getIntelligence());
-//        }
     }
 }

@@ -1,10 +1,10 @@
-package pluginstudies.pluginstudies.CustomDataTypes;
+package pluginstudies.pluginstudies.deprecated;
 
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.*;
-
+@Deprecated
 public class ModifierInfoDataType implements PersistentDataType<byte[], ModifierInformation> {
     @Override
     public Class<byte[]> getPrimitiveType() {

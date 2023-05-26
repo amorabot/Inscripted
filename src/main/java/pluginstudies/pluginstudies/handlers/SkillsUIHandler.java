@@ -7,17 +7,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pluginstudies.pluginstudies.RPGElements;
-import pluginstudies.pluginstudies.managers.ProfileManager;
 
 import java.util.List;
 
 public class SkillsUIHandler implements Listener {
 
-    private ProfileManager profileManager;
-
-
     public SkillsUIHandler(RPGElements plugin){
-        this.profileManager = plugin.getProfileManager();
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
     @EventHandler
@@ -152,7 +147,7 @@ public class SkillsUIHandler implements Listener {
 */
     }
 
-    public ItemStack editItem(ItemStack item, int amount, List<String> lore){
+    public ItemStack editItem(ItemStack item, int amount, List<String> lore){ //TODO: mover para utils
         if (amount == 0){
             //se tentarmos colocar 0 items, resetamos para 1, que é o mínimo
             amount = 1;

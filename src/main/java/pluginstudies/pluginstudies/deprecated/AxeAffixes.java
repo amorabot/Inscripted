@@ -1,4 +1,4 @@
-package pluginstudies.pluginstudies.Crafting.Weapons;
+package pluginstudies.pluginstudies.deprecated;
 
 import pluginstudies.pluginstudies.Crafting.Interfaces.AffixTableAcessInterface;
 import pluginstudies.pluginstudies.utils.PairDT;
@@ -6,7 +6,7 @@ import pluginstudies.pluginstudies.utils.PairDT;
 import java.util.*;
 
 import static pluginstudies.pluginstudies.Crafting.CraftingUtils.*;
-
+@Deprecated
 public enum AxeAffixes implements AffixTableAcessInterface {
     PREFIXES(                 new PairDT<>("Added physical DMG",
                     mapRanges(new PairDT<>(2, generateRange(1,1,2,3)),

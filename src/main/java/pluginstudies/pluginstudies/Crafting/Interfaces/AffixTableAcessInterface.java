@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface AffixTableAcessInterface {
-    default Map<Integer, List<int[]>> getAffix(String affixName){
+    default Map<Integer, List<int[]>> getAffix(String affixName){//TODO: LIMPAR USAGES DE getAffix e getAffixNameArrat
         return null;
     }
     default String[] getAffixNameArray(){

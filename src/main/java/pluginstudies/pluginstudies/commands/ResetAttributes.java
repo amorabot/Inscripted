@@ -24,9 +24,7 @@ public class ResetAttributes implements CommandExecutor {
             return false;
         }
         Player player = (Player) sender;
-        plugin.getProfileManager().getPlayerProfile(player.getUniqueId()).setAttributes(new Attributes(10, 0, 0, 0));
-        log("resetting " + player.getDisplayName()+ "'s profile.");
-        plugin.getProfileManager().saveProfile(player.getUniqueId());
+        //TODO: implementar reset de perfis
         return true;
     }
 }

@@ -13,8 +13,6 @@ import pluginstudies.pluginstudies.commands.*;
 import pluginstudies.pluginstudies.components.CustomMob;
 import pluginstudies.pluginstudies.handlers.*;
 import pluginstudies.pluginstudies.managers.JSONProfileManager;
-import pluginstudies.pluginstudies.managers.ProfileManager;
-import pluginstudies.pluginstudies.utils.ConfigUtil;
 import pluginstudies.pluginstudies.utils.DelayedTask;
 import pluginstudies.pluginstudies.utils.Utils;
 
@@ -28,25 +26,16 @@ import static pluginstudies.pluginstudies.utils.Utils.msgPlayerAB;
 
 public final class RPGElements extends JavaPlugin {
     private static Logger logger;
-    private ProfileManager profileManager;
-    private ConfigUtil profileConfig;
-
-
     private BukkitTask task; //vai receber o bukkit runnable que vai operar a logica do spawn
     private World world;
-//    private List<Entity> entities = new ArrayList<>();
     private Map<Entity, CustomMob> entities = new HashMap<>(); //TODO: limpar o hashmap no shutdown
 
     @Override
     public void onEnable() {
         // Plugin startup logic
 //        Bukkit.getLogger().info("Hello, World!");
-        logger = getLogger(); //pega o logger desse plugin, que dá acesso aos chats e mensagens (?)
+        logger = getLogger(); //pega o logger desse plugin, que dá acesso ao console do servidor
         log("O novo hello world!");
-
-        this.profileConfig = new ConfigUtil(this, "profiles.yml");
-
-        this.profileManager = new ProfileManager(this);
 
         new JSONProfileManager(this);
         if (!new File(this.getDataFolder().getAbsolutePath() + "/profiles.json").exists()){
@@ -56,24 +45,18 @@ public final class RPGElements extends JavaPlugin {
                 log("creating dummy profile: " + uuid);
                 log("attempting to do the save operation");
                 JSONProfileManager.saveToJSON(); //vai criar o arquivo se ele não existe
+                log("initial JSON saving complete.");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-//        this.profileManager.loadProfilesFromConfig(); usado quando se carregava todos os players ao iniciar o plugin
-        //a nova abordagem será detectar o join e então armazenar na memória do profile manager
 
 //        saveDefaultConfig();
-
-//        List<String> basicWeap = (List<String>) getConfig().getList("basic-weapons");
-        //getConfig() lê o arquivo config.yml disponível no momento (em resources)
-        //getList() procura, no arquivo, a key com o nome do path indicado. retorna uma List<> com os itens
-
-        //Como um dos usos para o config file, podemos ler o conteúdo e usá-lo no código de forma rápida:
-//        for (String weapon : basicWeap){
-//            Bukkit.getLogger().info(weapon);//irá logar as armas basicas no console
-//        }
-
+//        getConfig() lê o arquivo config.yml disponível no momento (em resources)
+//        getList() procura, no arquivo, a key com o nome do path indicado. retorna uma List<> com os itens
+//
+//        Como um dos usos para o config file, podemos ler o conteúdo e usá-lo no código de forma rápida:
+//
 //        ConfigUtil config = new ConfigUtil(this, "test.yml");
 //        config.getConfig().set("hello", "world");//existem os gets e os sets para escrever ou recuperar info. do arquivo.
 //        //ao setar, definimos a primeira string como key e a segunda como value
@@ -132,8 +115,9 @@ public final class RPGElements extends JavaPlugin {
             @Override
             public void run() {
                 for (Player currentPlayer : Bukkit.getOnlinePlayers()){
-                    int health = profileManager.getPlayerProfile(currentPlayer.getUniqueId()).getStats().getMaxHealth();
-                    msgPlayerAB(currentPlayer, "&c HP[" + health +"]");
+                    int health = JSONProfileManager.getProfile(currentPlayer.getUniqueId().toString()).getHealth().getBaseHealth();
+                    int ward = JSONProfileManager.getProfile(currentPlayer.getUniqueId().toString()).getHealth().getBaseWard();
+                    msgPlayerAB(currentPlayer, "&c HP[" + health +"]" + "&7//" + "&bWard[" + ward+ "]");
                 }
             }
         }.runTaskTimer(this, 0L, 10L);
@@ -141,22 +125,13 @@ public final class RPGElements extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        profileManager.saveProfilesToConfig(); //passando as mudanças para o configFile
         // Plugin shutdown logic
-        //salvar efetivamente as mudanças em no configFile profileConfig
-        profileConfig.save();
         Bukkit.getLogger().info("Shutting Down...");
     }
 
-    public ConfigUtil getProfileConfig(){
-        return this.profileConfig;
-    }
 
     public static Logger getPluginLogger(){
         return logger;
-    }
-    public ProfileManager getProfileManager(){
-        return this.profileManager;
     }
 
     public void spawnMobs(int areaSize, int mobCap, int timer){

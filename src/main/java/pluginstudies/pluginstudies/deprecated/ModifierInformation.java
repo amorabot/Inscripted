@@ -1,11 +1,11 @@
-package pluginstudies.pluginstudies.CustomDataTypes;
+package pluginstudies.pluginstudies.deprecated;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+@Deprecated
 public class ModifierInformation implements Serializable {
 
     private static final long serialversionUID = 1L;

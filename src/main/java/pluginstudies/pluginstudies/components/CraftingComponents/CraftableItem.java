@@ -8,10 +8,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import pluginstudies.pluginstudies.Crafting.Interfaces.AffixTableAcessInterface;
-import pluginstudies.pluginstudies.Crafting.Weapons.AxeAffixes;
-import pluginstudies.pluginstudies.Crafting.Weapons.ShortswordAffixes;
-import pluginstudies.pluginstudies.CustomDataTypes.ModifierInfoDataType;
-import pluginstudies.pluginstudies.CustomDataTypes.ModifierInformation;
+import pluginstudies.pluginstudies.deprecated.AxeAffixes;
+import pluginstudies.pluginstudies.deprecated.ShortswordAffixes;
+import pluginstudies.pluginstudies.deprecated.ModifierInfoDataType;
+import pluginstudies.pluginstudies.deprecated.ModifierInformation;
 import pluginstudies.pluginstudies.RPGElements;
 
 import java.util.*;
@@ -62,15 +62,6 @@ public abstract class CraftableItem {
         dataContainer.set(new NamespacedKey(plugin, "implicit"), PersistentDataType.STRING, implicit);
         dataContainer.set(new NamespacedKey(plugin, "modifiers"), PersistentDataType.INTEGER, 0);
 
-        /*
-        Estrutura pra guardar mods internamente:
-
-        Prefixes = [WeaponModifiers mod, int tier, List<Integer> [int value1, int value2]]
-        Triplet<WeaponModifiers, Integer, List<Integer>> prefixes;
-
-        -Triplet é serializable *tem um id de série próprio para serialização* e pode ser usado
-        -o array contendo os prefixes e suffixes pode ser uma linked list, facilitando a mudança de termos intermediários (crafting)
-         */
 
         itemMeta.setDisplayName(color("&f&lCommon item"));
         if (this instanceof CraftableWeapon){
