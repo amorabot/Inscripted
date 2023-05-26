@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static pluginstudies.pluginstudies.Crafting.CraftingUtils.rangeOf;
 
-public enum AxeMods implements AffixTableAcessInterface {
+public enum AxeMods implements AffixTableAcessInterface { // TODO: re-estruturar usando arquivos .yml / json
 
     PREFIXES(new ModTableEntry(WeaponModifiers.STAMINA,
                     new ItemLevelRange(  4, rangeOf(1,3)),

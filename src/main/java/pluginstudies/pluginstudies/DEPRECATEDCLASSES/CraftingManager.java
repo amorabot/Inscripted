@@ -1,8 +1,8 @@
-package pluginstudies.pluginstudies.deprecated;
+package pluginstudies.pluginstudies.DEPRECATEDCLASSES;
 
 import org.bukkit.inventory.ItemStack;
 import pluginstudies.pluginstudies.RPGElements;
-import pluginstudies.pluginstudies.deprecated.CraftableWeapon;
+
 @Deprecated
 public class CraftingManager {
 

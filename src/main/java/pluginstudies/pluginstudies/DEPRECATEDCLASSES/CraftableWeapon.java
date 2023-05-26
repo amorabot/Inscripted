@@ -1,10 +1,9 @@
-package pluginstudies.pluginstudies.deprecated;
+package pluginstudies.pluginstudies.DEPRECATEDCLASSES;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import pluginstudies.pluginstudies.Crafting.ItemBaseImplicits;
 import pluginstudies.pluginstudies.RPGElements;
-import pluginstudies.pluginstudies.deprecated.CraftableItem;
 
 import java.util.*;
 @Deprecated

@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.scheduler.BukkitRunnable;
-import pluginstudies.pluginstudies.deprecated.ModifierInformation;
+import pluginstudies.pluginstudies.DEPRECATEDCLASSES.ModifierInformation;
 import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.utils.DelayedTask;
 import static pluginstudies.pluginstudies.utils.Utils.log;

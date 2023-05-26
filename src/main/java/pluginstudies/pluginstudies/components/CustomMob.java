@@ -14,7 +14,7 @@ import java.util.List;
 
 import static pluginstudies.pluginstudies.utils.Utils.*;
 
-public enum CustomMob {
+public enum CustomMob { // TODO: redesign da estrutura dos mobs
 
     NAGA_SHAMAN("&3Naga Shaman", 15, 60, EntityType.ZOMBIE, null,
             makeArmorSet(new ItemStack(Material.LEATHER_HELMET), null, null, null),

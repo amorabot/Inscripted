@@ -1,4 +1,4 @@
-package pluginstudies.pluginstudies.deprecated;
+package pluginstudies.pluginstudies.DEPRECATEDCLASSES;
 
 import org.bukkit.inventory.ItemStack;
 @Deprecated

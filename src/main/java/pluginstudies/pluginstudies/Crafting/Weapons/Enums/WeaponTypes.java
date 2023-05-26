@@ -2,7 +2,7 @@ package pluginstudies.pluginstudies.Crafting.Weapons.Enums;
 
 import pluginstudies.pluginstudies.Crafting.Interfaces.ItemModifierAccess;
 import pluginstudies.pluginstudies.Crafting.Weapons.Modifiers.AxeMods;
-import pluginstudies.pluginstudies.deprecated.ShortswordAffixes;
+import pluginstudies.pluginstudies.DEPRECATEDCLASSES.ShortswordAffixes;
 
 public enum WeaponTypes implements ItemModifierAccess {
 

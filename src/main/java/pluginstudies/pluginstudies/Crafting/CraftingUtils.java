@@ -1,6 +1,6 @@
 package pluginstudies.pluginstudies.Crafting;
 
-import pluginstudies.pluginstudies.deprecated.PairDT;
+import pluginstudies.pluginstudies.DEPRECATEDCLASSES.PairDT;
 
 import java.util.*;
 

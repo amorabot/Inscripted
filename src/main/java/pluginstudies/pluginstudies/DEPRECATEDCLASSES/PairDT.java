@@ -1,4 +1,4 @@
-package pluginstudies.pluginstudies.deprecated;
+package pluginstudies.pluginstudies.DEPRECATEDCLASSES;
 @Deprecated
 public class PairDT<T , V>{
     // para uso com affixes: <T extends java.lang.String, V extends Map<Integer, List<int[]>>>
