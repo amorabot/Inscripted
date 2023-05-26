@@ -1,7 +1,7 @@
-package pluginstudies.pluginstudies.utils;
+package pluginstudies.pluginstudies.deprecated;
 
 import org.bukkit.inventory.ItemStack;
-
+@Deprecated
 public class StatCalculator {
     public static int updateMaxHealth(int baseHealth, int healthPercent){
         //get base health and apply the added percentage

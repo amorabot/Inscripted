@@ -1,7 +1,6 @@
 package pluginstudies.pluginstudies.deprecated;
 
 import pluginstudies.pluginstudies.Crafting.Interfaces.AffixTableAcessInterface;
-import pluginstudies.pluginstudies.utils.PairDT;
 
 import java.util.*;
 

@@ -1,7 +1,7 @@
-package pluginstudies.pluginstudies.components.CraftingComponents;
+package pluginstudies.pluginstudies.deprecated;
 
 import java.util.Map;
-
+@Deprecated
 public class CraftableArmor extends CraftableItem {
     private Map<String, Integer> baseDef;
     // Irá conter <K, V> do tipo:

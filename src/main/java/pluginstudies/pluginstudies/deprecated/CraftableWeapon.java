@@ -1,12 +1,13 @@
-package pluginstudies.pluginstudies.components.CraftingComponents;
+package pluginstudies.pluginstudies.deprecated;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import pluginstudies.pluginstudies.Crafting.ItemBaseImplicits;
 import pluginstudies.pluginstudies.RPGElements;
+import pluginstudies.pluginstudies.deprecated.CraftableItem;
 
 import java.util.*;
-
+@Deprecated
 public class CraftableWeapon extends CraftableItem {
 
     private Map<Integer, int[]> baseDamageMap = new HashMap<>();

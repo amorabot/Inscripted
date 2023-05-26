@@ -11,7 +11,7 @@ import pluginstudies.pluginstudies.Crafting.ItemTypes;
 import pluginstudies.pluginstudies.Crafting.Weapons.Enums.WeaponTypes;
 import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.components.CraftingComponents.Equippable.Weapon;
-import pluginstudies.pluginstudies.managers.CraftingManager;
+import pluginstudies.pluginstudies.deprecated.CraftingManager;
 
 public class GenerateWeapon implements CommandExecutor {
 

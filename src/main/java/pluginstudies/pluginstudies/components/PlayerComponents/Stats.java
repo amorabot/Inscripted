@@ -1,8 +1,5 @@
 package pluginstudies.pluginstudies.components.PlayerComponents;
 
-import static pluginstudies.pluginstudies.utils.StatCalculator.updateMaxHealth;
-import static pluginstudies.pluginstudies.utils.StatCalculator.updateMaxWard;
-
 public class Stats {
 //    private int baseHealth;
 //    private int healthPercent;

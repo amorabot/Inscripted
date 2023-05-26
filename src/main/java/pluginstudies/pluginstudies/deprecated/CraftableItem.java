@@ -1,4 +1,4 @@
-package pluginstudies.pluginstudies.components.CraftingComponents;
+package pluginstudies.pluginstudies.deprecated;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -8,17 +8,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import pluginstudies.pluginstudies.Crafting.Interfaces.AffixTableAcessInterface;
-import pluginstudies.pluginstudies.deprecated.AxeAffixes;
-import pluginstudies.pluginstudies.deprecated.ShortswordAffixes;
-import pluginstudies.pluginstudies.deprecated.ModifierInfoDataType;
-import pluginstudies.pluginstudies.deprecated.ModifierInformation;
 import pluginstudies.pluginstudies.RPGElements;
 
 import java.util.*;
 
 import static pluginstudies.pluginstudies.utils.Utils.color;
 import static pluginstudies.pluginstudies.utils.Utils.log;
-
+@Deprecated
 public abstract class CraftableItem {
 
     protected boolean identified;
