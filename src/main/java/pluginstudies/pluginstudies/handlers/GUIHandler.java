@@ -14,9 +14,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.components.PlayerComponents.Attributes;
-import pluginstudies.pluginstudies.managers.ProfileManager;
+//import pluginstudies.pluginstudies.managers.ProfileManager;
 import pluginstudies.pluginstudies.managers.UIManager;
 
 import java.util.Arrays;
@@ -29,15 +29,15 @@ import static pluginstudies.pluginstudies.utils.Utils.*;
 public class GUIHandler implements Listener {
 
     private pluginstudies.pluginstudies.managers.UIManager UIManager;
-    private ProfileManager profileManager;
-    private PluginStudies plugin;
+//    private ProfileManager profileManager;
+    private RPGElements plugin;
 
     private HashMap<UUID, ArmorStand> playersArmorStands = new HashMap<>(); //Note this data does not persist through restarts
 
-    public GUIHandler(PluginStudies p){
+    public GUIHandler(RPGElements p){
         plugin = p;
         Bukkit.getPluginManager().registerEvents(this, plugin);
-        profileManager = plugin.getProfileManager();
+//        profileManager = plugin.getProfileManager();
     }
 
     @EventHandler
@@ -187,109 +187,110 @@ public class GUIHandler implements Listener {
             }
 
         }else if(checkLabel(event, UIManager.getSkillsLabel())){//  ---------Skill allocation UI---------
-            event.setCancelled(true);
-
-//            ItemStack clickedItem = event.getCurrentItem(); //também é possível usar os materiais no switch
-            int slot = event.getSlot();
-
-            ClickType click = event.getClick();
-            if (click != ClickType.LEFT && click != ClickType.RIGHT){
-//                log("testando L/R");
-                return;
-            }
-
-            Attributes attributes = profileManager.getPlayerProfile(player.getUniqueId()).getAttributes();
-            int points = attributes.getPoints(); int intelligence = attributes.getIntelligence();
-            int agility = attributes.getAgility(); int strength = attributes.getStrength();
-
-            switch (slot){ //só tem 3 slots desejados, vamos checar qual foi e então agir de acordo
-                case(19):
-                    if ((click == ClickType.RIGHT && intelligence == 0) || (click == ClickType.LEFT && intelligence == 10)){
-                        //se tentarmos passar do minimo ou do máximo de pontos, nada ocorre
-                        return;
-                    }
-
-                    //agora podemos considerar apenas os clicks, sem se preocupar com os casos extremos
-                    // LEFT -> adicionar pontos, RIGHT -> retirar
-                    if (click == ClickType.LEFT){
-                        //clicou com o left, ainda tem pontos?
-                        if (points == 0){
-                            // se não, retorne
-                            return;
-                        } else { // o player tem pontos, então vamos atualizá-los
-                            attributes.setPoints(points-1);
-                            attributes.setIntelligence(intelligence+1);
-                        }
-                    }else{ //se não é left, é right
-                        //se queremos desalocar pontos, basta alterar os stats, já que não podemos descer abaixo de 0
-                        attributes.setPoints(points+1);
-                        attributes.setIntelligence(intelligence-1);
-                    }
-                    break;
-                case(20):
-                    if ((click == ClickType.RIGHT && agility == 0) || (click == ClickType.LEFT && agility == 10)){
-                        return; //TODO arrumar sistema de allocation
-                    }
-
-                    if(click == ClickType.LEFT){
-                        if(points ==0){
-                            return;
-                        }else {
-                            attributes.setPoints(points-1);
-                            attributes.setAgility(agility+1);
-                        }
-                    }else{
-                        attributes.setPoints(points+1);
-                        attributes.setAgility(agility-1);
-                    }
-                    break;
-                case(21):
-                    if ((click == ClickType.RIGHT && strength == 0) || (click == ClickType.LEFT && strength == 10)){
-                        return;
-                    }
-
-                    if(click == ClickType.LEFT){
-                        if(points ==0){
-                            return;
-                        }else {
-                            attributes.setPoints(points-1);
-                            attributes.setStrength(strength+1);
-                        }
-                    }else{
-                        attributes.setPoints(points+1);
-                        attributes.setStrength(strength-1);
-                    }
-                    break;
-            }
-            Inventory skillsInventory = event.getInventory();
-            //vamos pegar os itens do inventário e atualizálos ao fim dos clicks, mesmo que não haja nada
-            ItemStack pointsItem = skillsInventory.getItem(4);
-            ItemStack intItem = skillsInventory.getItem(19);
-            ItemStack agiItem = skillsInventory.getItem(20);
-            ItemStack strItem = skillsInventory.getItem(21);
-
-            skillsInventory.setItem(4, editItem(pointsItem.clone(), attributes.getPoints(), Arrays.asList(
-                    color("&fYou have " + attributes.getPoints() + " points left"),
-                    color("&7"),
-                    color("Allocate points to enhance your abilities") )));
-            skillsInventory.setItem(19, editItem(intItem.clone(), attributes.getIntelligence(), Arrays.asList(
-                    color("&7You have " + "&9" + attributes.getIntelligence() + " &7points allocated"),
-                    color("&7"),
-                    color("&7Click here to allocate more"))));
-            skillsInventory.setItem(20, editItem(agiItem.clone(), attributes.getAgility(), Arrays.asList(
-                    color("&7You have " + "&a" + attributes.getAgility() + " &7points allocated"),
-                    color("&7"),
-                    color("&7Click here to allocate more"))));
-            skillsInventory.setItem(21, editItem(strItem.clone(), attributes.getStrength(), Arrays.asList(
-                    color("&7You have " + "&c" + attributes.getStrength() + " &7points allocated"),
-                    color("&7"),
-                    color("&7Click here to allocate more"))));
-
-            //1- Aplicar mudança de vida com base na Strength (valor base é 20 (double) )
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20D + attributes.getStrength());
-            //2- Aplicar mudança de speed baseado na Agility  (valor base é 0.2 (float) )
-            player.setWalkSpeed((float) (0.2 + ((attributes.getAgility()) / 10)*0.2));
-            //3- TODO Aplicar mudanças da Intelligence
+            //TODO: re-implementar skill allocation
+//            event.setCancelled(true);
+//
+////            ItemStack clickedItem = event.getCurrentItem(); //também é possível usar os materiais no switch
+//            int slot = event.getSlot();
+//
+//            ClickType click = event.getClick();
+//            if (click != ClickType.LEFT && click != ClickType.RIGHT){
+////                log("testando L/R");
+//                return;
+//            }
+//
+//            Attributes attributes = profileManager.getPlayerProfile(player.getUniqueId()).getAttributes();
+//            int points = attributes.getPoints(); int intelligence = attributes.getIntelligence();
+//            int agility = attributes.getAgility(); int strength = attributes.getStrength();
+//
+//            switch (slot){ //só tem 3 slots desejados, vamos checar qual foi e então agir de acordo
+//                case(19):
+//                    if ((click == ClickType.RIGHT && intelligence == 0) || (click == ClickType.LEFT && intelligence == 10)){
+//                        //se tentarmos passar do minimo ou do máximo de pontos, nada ocorre
+//                        return;
+//                    }
+//
+//                    //agora podemos considerar apenas os clicks, sem se preocupar com os casos extremos
+//                    // LEFT -> adicionar pontos, RIGHT -> retirar
+//                    if (click == ClickType.LEFT){
+//                        //clicou com o left, ainda tem pontos?
+//                        if (points == 0){
+//                            // se não, retorne
+//                            return;
+//                        } else { // o player tem pontos, então vamos atualizá-los
+//                            attributes.setPoints(points-1);
+//                            attributes.setIntelligence(intelligence+1);
+//                        }
+//                    }else{ //se não é left, é right
+//                        //se queremos desalocar pontos, basta alterar os stats, já que não podemos descer abaixo de 0
+//                        attributes.setPoints(points+1);
+//                        attributes.setIntelligence(intelligence-1);
+//                    }
+//                    break;
+//                case(20):
+//                    if ((click == ClickType.RIGHT && agility == 0) || (click == ClickType.LEFT && agility == 10)){
+//                        return; //TODO arrumar sistema de allocation
+//                    }
+//
+//                    if(click == ClickType.LEFT){
+//                        if(points ==0){
+//                            return;
+//                        }else {
+//                            attributes.setPoints(points-1);
+//                            attributes.setAgility(agility+1);
+//                        }
+//                    }else{
+//                        attributes.setPoints(points+1);
+//                        attributes.setAgility(agility-1);
+//                    }
+//                    break;
+//                case(21):
+//                    if ((click == ClickType.RIGHT && strength == 0) || (click == ClickType.LEFT && strength == 10)){
+//                        return;
+//                    }
+//
+//                    if(click == ClickType.LEFT){
+//                        if(points ==0){
+//                            return;
+//                        }else {
+//                            attributes.setPoints(points-1);
+//                            attributes.setStrength(strength+1);
+//                        }
+//                    }else{
+//                        attributes.setPoints(points+1);
+//                        attributes.setStrength(strength-1);
+//                    }
+//                    break;
+//            }
+//            Inventory skillsInventory = event.getInventory();
+//            //vamos pegar os itens do inventário e atualizálos ao fim dos clicks, mesmo que não haja nada
+//            ItemStack pointsItem = skillsInventory.getItem(4);
+//            ItemStack intItem = skillsInventory.getItem(19);
+//            ItemStack agiItem = skillsInventory.getItem(20);
+//            ItemStack strItem = skillsInventory.getItem(21);
+//
+//            skillsInventory.setItem(4, editItem(pointsItem.clone(), attributes.getPoints(), Arrays.asList(
+//                    color("&fYou have " + attributes.getPoints() + " points left"),
+//                    color("&7"),
+//                    color("Allocate points to enhance your abilities") )));
+//            skillsInventory.setItem(19, editItem(intItem.clone(), attributes.getIntelligence(), Arrays.asList(
+//                    color("&7You have " + "&9" + attributes.getIntelligence() + " &7points allocated"),
+//                    color("&7"),
+//                    color("&7Click here to allocate more"))));
+//            skillsInventory.setItem(20, editItem(agiItem.clone(), attributes.getAgility(), Arrays.asList(
+//                    color("&7You have " + "&a" + attributes.getAgility() + " &7points allocated"),
+//                    color("&7"),
+//                    color("&7Click here to allocate more"))));
+//            skillsInventory.setItem(21, editItem(strItem.clone(), attributes.getStrength(), Arrays.asList(
+//                    color("&7You have " + "&c" + attributes.getStrength() + " &7points allocated"),
+//                    color("&7"),
+//                    color("&7Click here to allocate more"))));
+//
+//            //1- Aplicar mudança de vida com base na Strength (valor base é 20 (double) )
+//            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20D + attributes.getStrength());
+//            //2- Aplicar mudança de speed baseado na Agility  (valor base é 0.2 (float) )
+//            player.setWalkSpeed((float) (0.2 + ((attributes.getAgility()) / 10)*0.2));
+//            //3- TODO Aplicar mudanças da Intelligence
 
         }
 

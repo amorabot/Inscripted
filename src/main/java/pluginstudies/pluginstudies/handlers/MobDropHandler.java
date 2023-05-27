@@ -9,25 +9,23 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.components.CustomMob;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static pluginstudies.pluginstudies.utils.Utils.color;
 
 public class MobDropHandler implements Listener {
 
-    private PluginStudies plugin;
+    private RPGElements plugin;
     private Map<Entity, CustomMob> customEntities;
     private Map<Entity, Integer> damageIndicators = new HashMap<>(); //Map de entity e duração do indicator
     private DecimalFormat formatter = new DecimalFormat("#.##");
 
-    public MobDropHandler(PluginStudies p){
+    public MobDropHandler(RPGElements p){
         plugin = p;
         Bukkit.getPluginManager().registerEvents(this, plugin);
         customEntities = plugin.getCustomEntities();

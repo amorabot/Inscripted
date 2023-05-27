@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.components.PlayerComponents.Attributes;
 
 import java.util.Arrays;
@@ -17,7 +17,7 @@ import static pluginstudies.pluginstudies.utils.Utils.color;
 public class UIManager {
 
     private Player player;
-    private ProfileManager profileManager;
+//    private ProfileManager profileManager;
 
     private final String AS_MAIN_LABEL = "&8&lArmor Stand GUI";
     private final String AS_CUSTOMIZATION_LABEL = "&2&lCustomization";
@@ -25,8 +25,8 @@ public class UIManager {
     private final String CONFIRM_MENU_LABEL = "&8&lConfirm changes";
 
 
-    public UIManager(PluginStudies plugin, Player p){
-        profileManager = plugin.getProfileManager();
+    public UIManager(RPGElements plugin, Player p){
+//        profileManager = plugin.getProfileManager();
         player = p;
     }
 
@@ -149,28 +149,28 @@ public class UIManager {
     }
 
     public void openSkillsUI(ItemStack points, ItemStack intelligence, ItemStack agility, ItemStack strength){
-        Attributes attributes = profileManager.getPlayerProfile(player.getUniqueId()).getAttributes();
-
-
-        Inventory skillsGUI = Bukkit.createInventory(null, 9*5, color("&e&lBasic skills"));
-        skillsGUI.setItem(4, editItem(points, attributes.getPoints(),
-                Arrays.asList(
-                        color("&fYou have " + attributes.getPoints() + " points left"),
-                        color("&7"),
-                        color("Allocate points to enhance your abilities") )));
-        skillsGUI.setItem(19, editItem(intelligence, attributes.getIntelligence(), Arrays.asList(
-                color("&7You have " + "&9" + attributes.getIntelligence() + " &7points allocated"),
-                color("&7"),
-                color("&7Click here to allocate points"))));
-        skillsGUI.setItem(20, editItem(agility, attributes.getAgility(), Arrays.asList(
-                color("&7You have " + "&a" + attributes.getAgility() + " &7points allocated"),
-                color("&7"),
-                color("&7Click here to allocate points"))));
-        skillsGUI.setItem(21, editItem(strength, attributes.getStrength(), Arrays.asList(
-                color("&7You have " + "&c" + attributes.getStrength() + " &7points allocated"),
-                color("&7"),
-                color("&7Click here to allocate points"))));
-        player.openInventory(skillsGUI);
+//        Attributes attributes = profileManager.getPlayerProfile(player.getUniqueId()).getAttributes();
+//
+//
+//        Inventory skillsGUI = Bukkit.createInventory(null, 9*5, color("&e&lBasic skills"));
+//        skillsGUI.setItem(4, editItem(points, attributes.getPoints(),
+//                Arrays.asList(
+//                        color("&fYou have " + attributes.getPoints() + " points left"),
+//                        color("&7"),
+//                        color("Allocate points to enhance your abilities") )));
+//        skillsGUI.setItem(19, editItem(intelligence, attributes.getIntelligence(), Arrays.asList(
+//                color("&7You have " + "&9" + attributes.getIntelligence() + " &7points allocated"),
+//                color("&7"),
+//                color("&7Click here to allocate points"))));
+//        skillsGUI.setItem(20, editItem(agility, attributes.getAgility(), Arrays.asList(
+//                color("&7You have " + "&a" + attributes.getAgility() + " &7points allocated"),
+//                color("&7"),
+//                color("&7Click here to allocate points"))));
+//        skillsGUI.setItem(21, editItem(strength, attributes.getStrength(), Arrays.asList(
+//                color("&7You have " + "&c" + attributes.getStrength() + " &7points allocated"),
+//                color("&7"),
+//                color("&7Click here to allocate points"))));
+//        player.openInventory(skillsGUI);
     }
 
     private void editItem(ItemStack item, String displayName, List<String> lore){

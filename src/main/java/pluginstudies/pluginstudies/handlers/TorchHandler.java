@@ -6,13 +6,12 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
-import pluginstudies.pluginstudies.PluginStudies;
+import pluginstudies.pluginstudies.RPGElements;
 
 public class TorchHandler implements Listener {
-    public TorchHandler(PluginStudies plugin){
+    public TorchHandler(RPGElements plugin){
         Bukkit.getPluginManager().registerEvents(this, plugin); //2 parametros: Listener-> Quem vai escutar/registrar
                                                              //                        Plugin -> Quem vai usar evento
    //todos os eventos captados por essa classe e suas funcionali. estarão disponíveis ao inicializá-la no plugin principal
@@ -33,20 +32,6 @@ public class TorchHandler implements Listener {
      * na legibilidade apenas. Os nomes das funções tem que ser diferentes. Se não especificarmos nada na @, o evento
      * terá prioridade normal
      */
-
-//    @EventHandler(priority = EventPriority.LOW)
-//    public void onTorchPlace_low(BlockPlaceEvent event){
-//        if (event.getBlock().getType() == Material.TORCH){
-////            event.getBlock().setType(Material.DIAMOND_BLOCK);
-//
-////            event.setCancelled(true);
-//            // isso permite simplesmente negar a ação. o evento chega no servidor e o cancela
-//            //é possível pedir para um evento posterior ignorar ações, se elas foram canceladas em uma prio. anterior
-//            //(se colocarmos uma tocha, podemos cancelar o evento e colocar um param. na anot. para as próximas ações
-//            //serem ignoradas, como mostrado abaixo) [o evento deixa de existir a partir desse ponto]
-//        }
-//
-//    }
 
     @EventHandler//(ignoreCancelled = true)
     public void onTorchPlace_normal(BlockPlaceEvent event){ //aqui o que importa é o argumento (BlockPlaceEvent e)

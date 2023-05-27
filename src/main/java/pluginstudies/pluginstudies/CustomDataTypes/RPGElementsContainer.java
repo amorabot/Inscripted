@@ -1,4 +1,4 @@
 package pluginstudies.pluginstudies.CustomDataTypes;
 
-public class ItemInfoDataType {
+public interface RPGElementsContainer {
 }
