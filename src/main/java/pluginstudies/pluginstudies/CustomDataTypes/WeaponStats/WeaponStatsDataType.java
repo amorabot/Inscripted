@@ -2,25 +2,27 @@ package pluginstudies.pluginstudies.CustomDataTypes.WeaponStats;
 
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
-import pluginstudies.pluginstudies.CustomDataTypes.WeaponStats.WeaponStats;
 
 import java.io.*;
 
 import static pluginstudies.pluginstudies.utils.Utils.log;
 
-public class WeaponStatsDataType implements PersistentDataType<byte[], WeaponStats> {
+@Deprecated
+public class WeaponStatsDataType implements PersistentDataType<byte[], Weapon> { //TODO: implementar generics
+    //implementação com T extends SuperClasseDesejada
+    // public class <T extends EquippableItem> ItemContainer implements PersistentDataType<byte[], T>... --> ItemContainer<Weapon>
     @Override
     public Class<byte[]> getPrimitiveType() {
         return byte[].class;
     }
 
     @Override
-    public Class<WeaponStats> getComplexType() {
-        return WeaponStats.class;
+    public Class<Weapon> getComplexType() {
+        return Weapon.class;
     }
 
     @Override
-    public byte[] toPrimitive(WeaponStats complex, PersistentDataAdapterContext context) {
+    public byte[] toPrimitive(Weapon complex, PersistentDataAdapterContext context) {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         ObjectOutputStream out = null;
 
@@ -40,7 +42,7 @@ public class WeaponStatsDataType implements PersistentDataType<byte[], WeaponSta
     }
 
     @Override
-    public WeaponStats fromPrimitive(byte[] primitive, PersistentDataAdapterContext context) {
+    public Weapon fromPrimitive(byte[] primitive, PersistentDataAdapterContext context) {
         ByteArrayInputStream byteIn = new ByteArrayInputStream(primitive);
         ObjectInputStream in = null;
 
@@ -48,7 +50,7 @@ public class WeaponStatsDataType implements PersistentDataType<byte[], WeaponSta
 
             in = new ObjectInputStream(byteIn);
 
-            return (WeaponStats) in.readObject();
+            return (Weapon) in.readObject();
 
         } catch (IOException | ClassNotFoundException exception){
             exception.printStackTrace();

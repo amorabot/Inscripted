@@ -2,11 +2,11 @@ package pluginstudies.pluginstudies.Crafting.Weapons.Enums;
 
 import pluginstudies.pluginstudies.Crafting.Interfaces.ItemModifierAccess;
 import pluginstudies.pluginstudies.Crafting.Weapons.Modifiers.AxeMods;
-import pluginstudies.pluginstudies.DEPRECATEDCLASSES.ShortswordAffixes;
+import pluginstudies.pluginstudies.Crafting.Weapons.Modifiers.SwordMods;
 
 public enum WeaponTypes implements ItemModifierAccess {
 
-    AXE{ //AXE SERÁ O UNICO TESTADO POR ENQUANTO
+    AXE{
         @Override
         public Enum<?> getPrefixTable() {
             return AxeMods.PREFIXES;
@@ -20,12 +20,12 @@ public enum WeaponTypes implements ItemModifierAccess {
     SHORTSWORD {
         @Override
         public Enum<?> getPrefixTable() {
-            return ShortswordAffixes.PREFIXES;
+            return SwordMods.PREFIXES;
         }
 
         @Override
         public Enum<?> getSuffixTable() {
-            return ShortswordAffixes.SUFFIXES;
+            return SwordMods.SUFFIXES;
         }
     }
 //    BOW,

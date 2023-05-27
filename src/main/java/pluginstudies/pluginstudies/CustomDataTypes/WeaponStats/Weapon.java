@@ -7,6 +7,7 @@ import pluginstudies.pluginstudies.Crafting.Weapons.Modifiers.AxeMods;
 import pluginstudies.pluginstudies.Crafting.Weapons.Modifiers.WeaponModifiers;
 import pluginstudies.pluginstudies.Crafting.Weapons.Enums.WeaponNames;
 import pluginstudies.pluginstudies.Crafting.Weapons.Enums.WeaponTypes;
+import pluginstudies.pluginstudies.CustomDataTypes.RPGElementsContainer;
 
 import java.io.Serializable;
 import java.util.*;
@@ -14,7 +15,7 @@ import java.util.*;
 import static pluginstudies.pluginstudies.Crafting.CraftingUtils.getRandomNumber;
 import static pluginstudies.pluginstudies.utils.Utils.log;
 
-public class WeaponStats implements Serializable {
+public class Weapon implements Serializable, RPGElementsContainer {
 
     private static final long serialversionUID = 100069L;
 
@@ -23,7 +24,7 @@ public class WeaponStats implements Serializable {
     private Map<DamageTypes, int[]> baseDmg = new HashMap<>();
     private Map<WeaponModifiers, Map<Integer, int[]>> modifierTierMap = new HashMap<>();
 
-    public WeaponStats (WeaponTypes type, List<WeaponModifiers> prefixes, List<WeaponModifiers> suffixes, int ilvl){
+    public Weapon(WeaponTypes type, List<WeaponModifiers> prefixes, List<WeaponModifiers> suffixes, int ilvl){
         switch (type){
             case AXE:
                 generateTiers(AxeMods.PREFIXES, prefixes, AxeMods.SUFFIXES, suffixes, ilvl);

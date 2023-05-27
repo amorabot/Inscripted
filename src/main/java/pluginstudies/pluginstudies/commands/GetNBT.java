@@ -8,8 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
-import pluginstudies.pluginstudies.CustomDataTypes.ItemInfo.ItemInfoDataType;
-import pluginstudies.pluginstudies.CustomDataTypes.ItemInfo.ItemInformation;
+import pluginstudies.pluginstudies.CustomDataTypes.ItemInfo.ItemInformationDataType;
+import pluginstudies.pluginstudies.CustomDataTypes.ItemInfo.BaseItem;
+import pluginstudies.pluginstudies.CustomDataTypes.RPGElementsContainerDataType;
 import pluginstudies.pluginstudies.RPGElements;
 
 public class GetNBT implements CommandExecutor {
@@ -31,7 +32,7 @@ public class GetNBT implements CommandExecutor {
         ItemMeta meta = item.getItemMeta();
         PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
 
-        ItemInformation itemInfo = dataContainer.get(new NamespacedKey(plugin, "data"), new ItemInfoDataType());
+        BaseItem itemInfo = dataContainer.get(new NamespacedKey(plugin, "data"), new RPGElementsContainerDataType<>(BaseItem.class));
         for (Enum<?> prefix : itemInfo.getPrefixes()){
             player.sendMessage(prefix.toString());
         }

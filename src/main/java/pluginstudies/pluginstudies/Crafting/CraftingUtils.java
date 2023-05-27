@@ -1,7 +1,5 @@
 package pluginstudies.pluginstudies.Crafting;
 
-import pluginstudies.pluginstudies.DEPRECATEDCLASSES.PairDT;
-
 import java.util.*;
 
 public class CraftingUtils {
@@ -18,13 +16,6 @@ public class CraftingUtils {
         range.add(new int[]{min2, max2});
 
         return range;
-    }
-    public static Map<Integer, List<int[]>> mapRanges(PairDT<Integer, List<int[]>>... ilvlRangePairs){
-        Map<Integer, List<int[]>> mappedPairs = new HashMap<>();
-        for (PairDT<Integer, List<int[]>> pair : ilvlRangePairs){
-            mappedPairs.put(pair.getName(), pair.getRange());
-        }
-        return mappedPairs;
     }
     public static int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * ((max - min)+1)) + min);

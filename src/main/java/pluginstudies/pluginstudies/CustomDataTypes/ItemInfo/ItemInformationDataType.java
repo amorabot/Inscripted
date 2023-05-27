@@ -7,19 +7,20 @@ import java.io.*;
 
 import static pluginstudies.pluginstudies.utils.Utils.log;
 
-public class ItemInfoDataType implements PersistentDataType<byte[], ItemInformation> {
+@Deprecated
+public class ItemInformationDataType implements PersistentDataType<byte[], BaseItem> {
     @Override
     public Class<byte[]> getPrimitiveType() {
         return byte[].class;
     }
 
     @Override
-    public Class<ItemInformation> getComplexType() {
-        return ItemInformation.class;
+    public Class<BaseItem> getComplexType() {
+        return BaseItem.class;
     }
 
     @Override
-    public byte[] toPrimitive(ItemInformation complex, PersistentDataAdapterContext context) {
+    public byte[] toPrimitive(BaseItem complex, PersistentDataAdapterContext context) {
         /*
         A classe ItemInformation deve implementar Serializable para o processo funcionar.
 
@@ -52,7 +53,7 @@ public class ItemInfoDataType implements PersistentDataType<byte[], ItemInformat
     }
 
     @Override
-    public ItemInformation fromPrimitive(byte[] primitive, PersistentDataAdapterContext context) {
+    public BaseItem fromPrimitive(byte[] primitive, PersistentDataAdapterContext context) {
         /*
         Aqui será feito o processo reverso. Iremos pegar o byte[] serializado em toPrimitive() e transformá-lo em
         um objeto novamente.
@@ -65,7 +66,7 @@ public class ItemInfoDataType implements PersistentDataType<byte[], ItemInformat
 
             in = new ObjectInputStream(byteIn);
 
-            return (ItemInformation) in.readObject();
+            return (BaseItem) in.readObject();
 
         } catch (IOException | ClassNotFoundException exception){
             exception.printStackTrace();

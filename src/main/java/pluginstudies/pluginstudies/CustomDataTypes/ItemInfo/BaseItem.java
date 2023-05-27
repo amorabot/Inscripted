@@ -6,6 +6,7 @@ import pluginstudies.pluginstudies.Crafting.ItemTypes;
 import pluginstudies.pluginstudies.Crafting.Weapons.Modifiers.AxeMods;
 import pluginstudies.pluginstudies.Crafting.Weapons.Modifiers.WeaponModifiers;
 import pluginstudies.pluginstudies.Crafting.Weapons.Enums.WeaponTypes;
+import pluginstudies.pluginstudies.CustomDataTypes.RPGElementsContainer;
 
 import java.io.Serializable;
 import java.util.*;
@@ -13,7 +14,7 @@ import java.util.*;
 import static pluginstudies.pluginstudies.Crafting.CraftingUtils.getRandomNumber;
 import static pluginstudies.pluginstudies.utils.Utils.log;
 
-public class ItemInformation implements Serializable {
+public class BaseItem implements Serializable, RPGElementsContainer {
 
     private static final long serialversionUID = 1000101L;
 
@@ -26,7 +27,7 @@ public class ItemInformation implements Serializable {
     private List<Enum<?>> selectedPrefixes = new ArrayList<>();
     private List<Enum<?>> selectedSuffixes = new ArrayList<>();
 
-    public <T extends Enum<ItemTypes>, C extends Enum<C> & ItemModifierAccess> ItemInformation(T itemType, C itemCategory, boolean id, int ilvl, ItemRarities rarity, String implicit){
+    public <T extends Enum<ItemTypes>, C extends Enum<C> & ItemModifierAccess> BaseItem(T itemType, C itemCategory, boolean id, int ilvl, ItemRarities rarity, String implicit){
         this.itemType = itemType;
         this.category = itemCategory;
 

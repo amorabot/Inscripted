@@ -10,16 +10,15 @@ import pluginstudies.pluginstudies.Crafting.ItemRarities;
 import pluginstudies.pluginstudies.Crafting.ItemTypes;
 import pluginstudies.pluginstudies.Crafting.Weapons.Enums.WeaponTypes;
 import pluginstudies.pluginstudies.RPGElements;
-import pluginstudies.pluginstudies.components.CraftingComponents.Equippable.Weapon;
-import pluginstudies.pluginstudies.DEPRECATEDCLASSES.CraftingManager;
+import pluginstudies.pluginstudies.components.CraftingComponents.Equippable.WeaponService;
 
 public class GenerateWeapon implements CommandExecutor {
 
     private RPGElements plugin;
-    private CraftingManager craftingManager;
+//    private CraftingManager craftingManager;
     public GenerateWeapon(RPGElements plugin){
         this.plugin = plugin;
-        this.craftingManager = new CraftingManager(plugin);
+//        this.craftingManager = new CraftingManager(plugin);
     }
 
     @Override
@@ -34,19 +33,11 @@ public class GenerateWeapon implements CommandExecutor {
         String rarityArg = args[1];
         String weaponType = args[2];
 
-        Weapon weapon =
-                new Weapon(plugin, ItemTypes.WEAPON, WeaponTypes.valueOf(weaponType),
+        WeaponService weapon =
+                new WeaponService(plugin, ItemTypes.WEAPON, WeaponTypes.valueOf(weaponType),
                         false, ilvlArg, ItemRarities.valueOf(rarityArg), ItemBaseImplicits.valueOf(weaponType).getBasicImplicit(), rarityArg);
 
         ItemStack item = weapon.getItemForm();
-//        ItemMeta meta = item.getItemMeta();
-//        if (meta.getPersistentDataContainer().has(new NamespacedKey(plugin, "data"),new ItemInfoDataType())){
-//            ItemInformation itemData = item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "data"), new ItemInfoDataType());
-//            if (!itemData.isIdentified()){
-//                meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-//                item.setItemMeta(meta);
-//            }
-//        }
         player.getInventory().addItem(item);
         return true;
     }

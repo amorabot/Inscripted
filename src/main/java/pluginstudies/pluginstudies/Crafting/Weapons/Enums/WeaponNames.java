@@ -1,6 +1,5 @@
 package pluginstudies.pluginstudies.Crafting.Weapons.Enums;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
