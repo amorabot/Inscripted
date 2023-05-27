@@ -19,12 +19,12 @@ import pluginstudies.pluginstudies.utils.DelayedTask;
 import static pluginstudies.pluginstudies.utils.Utils.log;
 
 public class WeaponEquipHandler implements Listener {
-    private RPGElements plugin;
+    private final RPGElements plugin;
     public WeaponEquipHandler(RPGElements plugin){
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
-
+    //Consider using event priority!!
     @EventHandler
     public void onSlotChange(PlayerItemHeldEvent event){
         Inventory inventory = event.getPlayer().getInventory();
@@ -155,8 +155,4 @@ public class WeaponEquipHandler implements Listener {
 
 
     }
-
-//    private void applyAttributes(ModifierInformation modData, Player player, boolean adding){
-//
-//    }
 }

@@ -1,4 +1,4 @@
-package pluginstudies.pluginstudies.CustomDataTypes.WeaponStats;
+package pluginstudies.pluginstudies.components.CraftingComponents.Items;
 
 import org.bukkit.Material;
 import pluginstudies.pluginstudies.Crafting.Interfaces.AffixTableAcessInterface;

@@ -1,4 +1,4 @@
-package pluginstudies.pluginstudies.CustomDataTypes.ItemInfo;
+package pluginstudies.pluginstudies.components.CraftingComponents.Items;
 
 import pluginstudies.pluginstudies.Crafting.Interfaces.ItemModifierAccess;
 import pluginstudies.pluginstudies.Crafting.ItemRarities;

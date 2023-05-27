@@ -10,7 +10,7 @@ import pluginstudies.pluginstudies.Crafting.ItemRarities;
 import pluginstudies.pluginstudies.Crafting.ItemTypes;
 import pluginstudies.pluginstudies.Crafting.Weapons.Enums.WeaponTypes;
 import pluginstudies.pluginstudies.RPGElements;
-import pluginstudies.pluginstudies.components.CraftingComponents.Equippable.WeaponService;
+import pluginstudies.pluginstudies.components.CraftingComponents.Builders.WeaponBuilder;
 
 public class GenerateWeapon implements CommandExecutor {
 
@@ -33,8 +33,8 @@ public class GenerateWeapon implements CommandExecutor {
         String rarityArg = args[1];
         String weaponType = args[2];
 
-        WeaponService weapon =
-                new WeaponService(plugin, ItemTypes.WEAPON, WeaponTypes.valueOf(weaponType),
+        WeaponBuilder weapon =
+                new WeaponBuilder(plugin, ItemTypes.WEAPON, WeaponTypes.valueOf(weaponType),
                         false, ilvlArg, ItemRarities.valueOf(rarityArg), ItemBaseImplicits.valueOf(weaponType).getBasicImplicit(), rarityArg);
 
         ItemStack item = weapon.getItemForm();

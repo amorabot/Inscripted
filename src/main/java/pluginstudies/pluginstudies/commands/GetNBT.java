@@ -8,8 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
-import pluginstudies.pluginstudies.CustomDataTypes.ItemInfo.ItemInformationDataType;
-import pluginstudies.pluginstudies.CustomDataTypes.ItemInfo.BaseItem;
+import pluginstudies.pluginstudies.components.CraftingComponents.Items.BaseItem;
 import pluginstudies.pluginstudies.CustomDataTypes.RPGElementsContainerDataType;
 import pluginstudies.pluginstudies.RPGElements;
 

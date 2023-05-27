@@ -1,4 +1,4 @@
-package pluginstudies.pluginstudies.components.CraftingComponents.Equippable;
+package pluginstudies.pluginstudies.components.CraftingComponents.Builders;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemFlag;
@@ -10,11 +10,9 @@ import pluginstudies.pluginstudies.Crafting.ItemTypes;
 import pluginstudies.pluginstudies.Crafting.Weapons.Enums.DamageTypes;
 import pluginstudies.pluginstudies.Crafting.Weapons.Enums.WeaponTypes;
 import pluginstudies.pluginstudies.Crafting.Weapons.Modifiers.WeaponModifiers;
-import pluginstudies.pluginstudies.CustomDataTypes.ItemInfo.ItemInformationDataType;
-import pluginstudies.pluginstudies.CustomDataTypes.ItemInfo.BaseItem;
+import pluginstudies.pluginstudies.components.CraftingComponents.Items.BaseItem;
 import pluginstudies.pluginstudies.CustomDataTypes.RPGElementsContainerDataType;
-import pluginstudies.pluginstudies.CustomDataTypes.WeaponStats.Weapon;
-import pluginstudies.pluginstudies.CustomDataTypes.WeaponStats.WeaponStatsDataType;
+import pluginstudies.pluginstudies.components.CraftingComponents.Items.Weapon;
 import pluginstudies.pluginstudies.RPGElements;
 import pluginstudies.pluginstudies.components.CraftingComponents.CraftableItem;
 import pluginstudies.pluginstudies.utils.ColorUtils;
@@ -26,14 +24,14 @@ import java.util.Set;
 
 import static pluginstudies.pluginstudies.utils.Utils.color;
 
-public class WeaponService implements CraftableItem { //Em caso de novos protocoloss de tratamento de weapons, um novo service é criado
+public class WeaponBuilder implements CraftableItem { //Em caso de novos protocoloss de tratamento de weapons, um novo service é criado
 
     private RPGElements plugin;
     String tag;
     BaseItem itemData; //NÃO IMPLEMENTADO, POIS É REPONSABILIDADE DO WEAPON SERVICE MANEJAR AS INFOS DE ITEM
     Weapon weaponData;
 
-    public <T extends Enum<ItemTypes>> WeaponService
+    public <T extends Enum<ItemTypes>> WeaponBuilder
             (RPGElements plugin, T itemType, WeaponTypes itemCategory, boolean id, int ilvl, ItemRarities rarity, String implicit, String coloredTag) {
 
 //        super(coloredTag);

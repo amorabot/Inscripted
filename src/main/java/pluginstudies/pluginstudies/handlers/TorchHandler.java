@@ -33,20 +33,6 @@ public class TorchHandler implements Listener {
      * terá prioridade normal
      */
 
-//    @EventHandler(priority = EventPriority.LOW)
-//    public void onTorchPlace_low(BlockPlaceEvent event){
-//        if (event.getBlock().getType() == Material.TORCH){
-////            event.getBlock().setType(Material.DIAMOND_BLOCK);
-//
-////            event.setCancelled(true);
-//            // isso permite simplesmente negar a ação. o evento chega no servidor e o cancela
-//            //é possível pedir para um evento posterior ignorar ações, se elas foram canceladas em uma prio. anterior
-//            //(se colocarmos uma tocha, podemos cancelar o evento e colocar um param. na anot. para as próximas ações
-//            //serem ignoradas, como mostrado abaixo) [o evento deixa de existir a partir desse ponto]
-//        }
-//
-//    }
-
     @EventHandler//(ignoreCancelled = true)
     public void onTorchPlace_normal(BlockPlaceEvent event){ //aqui o que importa é o argumento (BlockPlaceEvent e)
         // ele permite detectar especificamente o evento de colocar blocos e fazer algo com isso (o nome da func n importa)
