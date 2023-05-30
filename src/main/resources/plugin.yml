@@ -1,6 +1,6 @@
 name: RPGElements
 version: '${0.2}'
-main: pluginstudies.pluginstudies.RPGElements
+main: com.amorabot.rpgelements.RPGElements
 api-version: 1.19
 permissions:
     pluginstudies.fly:
