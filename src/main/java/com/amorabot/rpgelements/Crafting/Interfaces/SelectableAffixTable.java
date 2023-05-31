@@ -1,6 +1,6 @@
 package com.amorabot.rpgelements.Crafting.Interfaces;
 
-public interface ItemModifierAccess {
+public interface SelectableAffixTable {
     Enum<?> getPrefixTable();
     Enum<?> getSuffixTable();
 }

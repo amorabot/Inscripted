@@ -2,9 +2,11 @@ package com.amorabot.rpgelements.components.CraftingComponents.Items;
 
 import com.amorabot.rpgelements.Crafting.CraftingUtils;
 import com.amorabot.rpgelements.Crafting.Weapons.Modifiers.AxeMods;
+import com.amorabot.rpgelements.Crafting.Weapons.Modifiers.TierData;
+import com.amorabot.rpgelements.Crafting.Weapons.Modifiers.TierValuePair;
 import com.amorabot.rpgelements.Crafting.Weapons.Modifiers.WeaponModifiers;
 import org.bukkit.Material;
-import com.amorabot.rpgelements.Crafting.Interfaces.AffixTableAcessInterface;
+import com.amorabot.rpgelements.Crafting.Interfaces.TableDataAccess;
 import com.amorabot.rpgelements.Crafting.Weapons.Enums.DamageTypes;
 import com.amorabot.rpgelements.Crafting.Weapons.Enums.WeaponNames;
 import com.amorabot.rpgelements.Crafting.Weapons.Enums.WeaponTypes;
@@ -22,7 +24,7 @@ public class Weapon implements Serializable, RPGElementsContainer {
     private String name;
     private Material material;
     private Map<DamageTypes, int[]> baseDmg = new HashMap<>();
-    private Map<WeaponModifiers, Map<Integer, int[]>> modifierTierMap = new HashMap<>();
+    private Map<WeaponModifiers, TierValuePair> modifierTierMap = new HashMap<>();
 
     public Weapon(WeaponTypes type, List<WeaponModifiers> prefixes, List<WeaponModifiers> suffixes, int ilvl){
         switch (type){
@@ -35,54 +37,37 @@ public class Weapon implements Serializable, RPGElementsContainer {
                 break;
         }
     }
-    public <E extends Enum<E> & AffixTableAcessInterface> void generateTiers(E prefixTable, List<WeaponModifiers> prefixes, E suffixTable, List<WeaponModifiers> suffixes, int ilvl){
-//        Map<Integer, int[]> affixMap = new HashMap<>();
+    public <E extends Enum<E> & TableDataAccess> void generateTiers(E prefixTable, List<WeaponModifiers> prefixes, E suffixTable, List<WeaponModifiers> suffixes, int ilvl){
 
         generateAffixTiers(prefixTable, prefixes, ilvl);
         generateAffixTiers(suffixTable, suffixes, ilvl);
 
-//        return affixMap;
     }
-    public <E extends Enum<E> & AffixTableAcessInterface> void generateAffixTiers(E modTable, List<WeaponModifiers> affixes, int ilvl){
-//        log("chamando affixgeneration");
-//        for (WeaponModifiers affix : affixes){
-//            log(affix.toString());
-//        }
+    public <E extends Enum<E> & TableDataAccess> void generateAffixTiers(E modTable, List<WeaponModifiers> affixes, int ilvl){
 
         for (WeaponModifiers affix : affixes){
-            Map<Integer, int[]> affixMap = new HashMap<>(); //map containing tier -> values  for each affix ( 1, [3, 8])
+            TierData[] tierData = modTable.getModTiers(affix);
 
             //--------------SORTING TIERS--------------------
-            Map<Integer, int[]> tierMapping = modTable.getModTable(affix); //Getting this affix tier/lvl mapping (11, [2,3,  6,9])
-            List<Integer> sortedTierMapping = new ArrayList<>(tierMapping.keySet()); //List of all ilvls that indicate a tier bracket
+            List<Integer> sortedTierIlvls = modTable.getSortedTierIlvls(affix);
+            int highestTier = getMaximumTier(sortedTierIlvls, ilvl);
+            int chosenTier = CraftingUtils.getRandomNumber(0, highestTier);
 
-            sortedTierMapping.sort(Comparator.naturalOrder()); //Sorting the entire set
-            int maxTier = getMaximumTier(sortedTierMapping, ilvl);
+            TierData chosenTierData = tierData[chosenTier];
+            int[] chosenValues = chosenTierData.getRandomValue();
 
-            int chosenTier = CraftingUtils.getRandomNumber(0, maxTier); //Tier that will be the key of affixMap
-            int tierMapKey = sortedTierMapping.get(chosenTier); //Ilvl in the map corresponding to the chosen tier
-
-            if (affix.hasSingleRange()){ // [#, @]
-                int[] tierValues = tierMapping.get(tierMapKey); //Accessing the values associated with the chose tier
-                int finalValue = CraftingUtils.getRandomNumber(tierValues[0], tierValues[1]); //Generating a final set of values based on it
-                affixMap.put(chosenTier, new int[]{finalValue}); // Tier, [value1, value2]
-
-                log(affix.toString());
-                log(""+chosenTier);
-                log(String.valueOf(finalValue));
-                modifierTierMap.put(affix, affixMap);
-            } else { // [#, @,  !, $]
-                int[] tierValues = tierMapping.get(tierMapKey);
-                int[] finalValues = new int[2]; //Values associated with that tier
-                finalValues[0] = CraftingUtils.getRandomNumber(tierValues[0], tierValues[1]);
-                finalValues[1] = CraftingUtils.getRandomNumber(tierValues[2], tierValues[3]);
-                affixMap.put(chosenTier, finalValues);
-
-                log(affix.toString());
-                log(""+chosenTier);
-                log(String.valueOf(finalValues[0]), String.valueOf(finalValues[1]));
-                modifierTierMap.put(affix, affixMap);
-            }
+            log(affix.toString());
+            log(""+chosenTier);
+            modifierTierMap.put(affix, new TierValuePair(chosenTier, chosenValues));
+//            switch (rangeType){
+//                case SINGLE_VALUE:
+//
+//                    break;
+//                case SINGLE_RANGE:
+//                    break;
+//                case DOUBLE_RANGE:
+//                    break;
+//            }
         }
     }
 
@@ -90,18 +75,15 @@ public class Weapon implements Serializable, RPGElementsContainer {
         if (sortedIlvlKeySet.get(0) > ilvl){ //Se o ilvl mais baixo para o mod for maior que ilvl do item
             log("Invalid affix at current item level.");
             return -1;
-            //TODO: tratamento de affix indevido para o item level baixo
         }
         List<Integer> aux = new ArrayList<>(sortedIlvlKeySet);
 
         if (!(aux.contains(ilvl))){ //Se a lista não tiver o item level desejado, adicione
             aux.add(ilvl);
-        } else { //Senão, já temos o número desejado
             aux.sort(Comparator.naturalOrder());
+        } else { //Senão, já temos o número desejado
             return aux.indexOf(ilvl);
         }
-
-        aux.sort(Comparator.naturalOrder()); //ordenando a lista após a adição
 
         if (aux.indexOf(ilvl) != 0){ //Se o ilvl não for o primeiro da lista
             return aux.indexOf(ilvl)-1; //retorne o item antes dele (maior tier alcançável)
@@ -109,7 +91,7 @@ public class Weapon implements Serializable, RPGElementsContainer {
         return 0; //Se for o ultimo retorne o tier mais basico
     }
 
-    public void getName(WeaponTypes type){
+    public void getName(WeaponTypes type){ // TODO: relocate some functions to weaponbuilder Class
         WeaponNames names = WeaponNames.valueOf(type.toString());
         this.name = names.getRandomName();
     }
@@ -138,24 +120,31 @@ public class Weapon implements Serializable, RPGElementsContainer {
         } else {
             baseDmg.put(DamageTypes.PHYSICAL, new int[]{60,150});
         }
+        mapBonusDamages();
+    }
+    public void mapBonusDamages(){
         Set<WeaponModifiers> mods = modifierTierMap.keySet();
-        for (WeaponModifiers mod : mods){
-            switch (mod){
-                case ADDED_FIRE:
-                    for (int[] value : modifierTierMap.get(mod).values()){
-                        baseDmg.put(DamageTypes.FIRE, value);
-                    }
-                    break;
-                case ADDED_COLD:
-                    break;
-                case ADDED_LIGHTNING:
-                    break;
-                case ADDED_ABYSSAL:
-                    for (int[] value : modifierTierMap.get(mod).values()){
-                        baseDmg.put(DamageTypes.ABYSSAL, value);
-                    }
-                    break;
-            }
+        if (mods.contains(WeaponModifiers.ADDED_PHYSICAL)){
+            int[] physDmg = baseDmg.get(DamageTypes.PHYSICAL);
+            physDmg[0] = physDmg[0] + modifierTierMap.get(WeaponModifiers.ADDED_PHYSICAL).value()[0];
+            physDmg[1] = physDmg[1] + modifierTierMap.get(WeaponModifiers.ADDED_PHYSICAL).value()[1];
+            baseDmg.put(DamageTypes.PHYSICAL, physDmg);
+        }
+        if (mods.contains(WeaponModifiers.ADDED_FIRE)){
+            baseDmg.put(DamageTypes.FIRE, modifierTierMap.get(WeaponModifiers.ADDED_FIRE).value());
+            //CHECK POR PERCENT ELEMENTAL
+        }
+        if (mods.contains(WeaponModifiers.ADDED_ABYSSAL)){
+            baseDmg.put(DamageTypes.ABYSSAL, modifierTierMap.get(WeaponModifiers.ADDED_ABYSSAL).value());
+        }
+        if (mods.contains(WeaponModifiers.PERCENT_PHYSICAL)){
+            int percentPhys = modifierTierMap.get(WeaponModifiers.PERCENT_PHYSICAL).value()[0];
+            int[] physDmg = baseDmg.get(DamageTypes.PHYSICAL);
+            float phys1 = physDmg[0] * (1 + (float) percentPhys/100);
+            float phys2 = physDmg[1] * (1 + (float) percentPhys/100);
+            physDmg[0] = (int)phys1;
+            physDmg[1] = (int)phys2;
+            baseDmg.put(DamageTypes.PHYSICAL, physDmg);
         }
     }
     private void mapAxeBase(int ilvl){
@@ -181,7 +170,7 @@ public class Weapon implements Serializable, RPGElementsContainer {
     public Map<DamageTypes, int[]> getBaseDmg(){
         return baseDmg;
     }
-    public Map<WeaponModifiers, Map<Integer, int[]>> getModifierTierMap() {
+    public Map<WeaponModifiers, TierValuePair> getModifierTierMap() {
         return modifierTierMap;
     }
 }

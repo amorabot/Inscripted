@@ -1,6 +1,6 @@
 package com.amorabot.rpgelements.Crafting.Weapons.Modifiers;
 
-import com.amorabot.rpgelements.Crafting.Interfaces.AffixTableAcessInterface;
+import com.amorabot.rpgelements.Crafting.Interfaces.TableDataAccess;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,89 +9,98 @@ import java.util.Map;
 
 import static com.amorabot.rpgelements.Crafting.CraftingUtils.rangeOf;
 
-public enum AxeMods implements AffixTableAcessInterface { // TODO: re-estruturar usando arquivos .yml / json
+public enum AxeMods implements TableDataAccess {
 
     PREFIXES(new ModTableEntry(WeaponModifiers.STAMINA,
-                    new ItemLevelRange(  4, rangeOf(1,3)),
-                    new ItemLevelRange(  15, rangeOf(4,7)),
-                    new ItemLevelRange(  30, rangeOf(7,10)),
-                    new ItemLevelRange(  60, rangeOf(11, 14)),
-                    new ItemLevelRange(  81, rangeOf(15, 20)),
-                    new ItemLevelRange(  86, rangeOf(21, 30)) ),
+                    new TierData(  4,  1, 3),
+                    new TierData(  15, 4, 7),
+                    new TierData(  30, 7, 10),
+                    new TierData(  60, 11, 14),
+                    new TierData(  81, 15, 20),
+                    new TierData(  86, 21, 30) ),
             new ModTableEntry(WeaponModifiers.ADDED_PHYSICAL,
-                    new ItemLevelRange(  2, rangeOf(2,2, 4,5)),
-                    new ItemLevelRange(  13, rangeOf(6,8,12,15)),
-                    new ItemLevelRange(  21, rangeOf(10,13, 21,25)),
-                    new ItemLevelRange(  29, rangeOf(13, 17, 28,32)),
-                    new ItemLevelRange(  36, rangeOf(16, 22, 35, 40)),
-                    new ItemLevelRange(  46, rangeOf(20, 28, 43, 51)) ),
+                    new TierData(  2,  2, 2,     4,5),
+                    new TierData(  13, 6, 8,     12,15),
+                    new TierData(  21, 10, 13,   21,25),
+                    new TierData(  29, 13, 17,   28,32),
+                    new TierData(  36, 16, 22,   35, 40),
+                    new TierData(  46, 20, 28,   43, 51) ),
             new ModTableEntry(WeaponModifiers.ADDED_FIRE,
-                    new ItemLevelRange(  1, rangeOf(2,2, 4,5)),
-                    new ItemLevelRange(  11, rangeOf(6,8,12,15)),
-                    new ItemLevelRange(  18, rangeOf(10,13, 21,25)),
-                    new ItemLevelRange(  26, rangeOf(13, 17, 28,32)),
-                    new ItemLevelRange(  33, rangeOf(16, 22, 35, 40)),
-                    new ItemLevelRange(  42, rangeOf(20, 28, 43, 51)) ),
+                    new TierData(  1,  2, 2,     4,5),
+                    new TierData(  11, 6, 8,     12,15),
+                    new TierData(  18, 10, 13,   21,25),
+                    new TierData(  26, 13, 17,   28,32),
+                    new TierData(  33, 16, 22,   35, 40),
+                    new TierData(  42, 20, 28,   43, 51) ),
             new ModTableEntry(WeaponModifiers.ADDED_ABYSSAL,
-                    new ItemLevelRange(  83, rangeOf(98,149, 183,280)) ),
+                    new TierData(  83, 98, 149,  183,280) ),
             new ModTableEntry(WeaponModifiers.PERCENT_ELEMENTAL,
-                    new ItemLevelRange(  4, rangeOf(19,34)),
-                    new ItemLevelRange(  15, rangeOf(36,51)),
-                    new ItemLevelRange(  30, rangeOf(53,61)),
-                    new ItemLevelRange(  60, rangeOf(63, 71)),
-                    new ItemLevelRange(  81, rangeOf(73, 85)),
-                    new ItemLevelRange(  86, rangeOf(87, 100)) ),
+                    new TierData(  4,  19, 34),
+                    new TierData(  15, 36, 51),
+                    new TierData(  30, 53, 61),
+                    new TierData(  60, 63, 71),
+                    new TierData(  81, 73, 85),
+                    new TierData(  86, 87, 100) ),
             new ModTableEntry(WeaponModifiers.PERCENT_PHYSICAL,
-                    new ItemLevelRange(  4, rangeOf(19,34)),
-                    new ItemLevelRange(  15, rangeOf(36,51)),
-                    new ItemLevelRange(  30, rangeOf(53,61)),
-                    new ItemLevelRange(  60, rangeOf(63, 71)),
-                    new ItemLevelRange(  81, rangeOf(73, 85)),
-                    new ItemLevelRange(  86, rangeOf(87, 100)) ) ),
+                    new TierData(  4,  19, 34),
+                    new TierData(  15, 36, 51),
+                    new TierData(  30, 53, 61),
+                    new TierData(  60, 63, 71),
+                    new TierData(  81, 73, 85),
+                    new TierData(  86, 87, 100) ) ),
 
     SUFFIXES(new ModTableEntry(WeaponModifiers.STRENGTH,
-                    new ItemLevelRange(  1, rangeOf(8,12)),
-                    new ItemLevelRange(  11, rangeOf(13,17)),
-                    new ItemLevelRange(  22, rangeOf(18,22)),
-                    new ItemLevelRange(  33, rangeOf(23, 27)),
-                    new ItemLevelRange(  44, rangeOf(28, 32)),
-                    new ItemLevelRange(  55, rangeOf(33, 37)) ),
+                    new TierData(  1, 8,12),
+                    new TierData(  11, 13,17),
+                    new TierData(  22, 18,22),
+                    new TierData(  33, 23, 27),
+                    new TierData(  44, 28, 32),
+                    new TierData(  55, 33, 37) ),
             new ModTableEntry(WeaponModifiers.DEXTERITY,
-                    new ItemLevelRange(  1, rangeOf(8,12)),
-                    new ItemLevelRange(  11, rangeOf(13,17)),
-                    new ItemLevelRange(  22, rangeOf(18,22)),
-                    new ItemLevelRange(  33, rangeOf(23, 27)),
-                    new ItemLevelRange(  44, rangeOf(28, 32)),
-                    new ItemLevelRange(  55, rangeOf(33, 37)) ),
+                    new TierData(  1, 8,12),
+                    new TierData(  11, 13,17),
+                    new TierData(  22, 18,22),
+                    new TierData(  33, 23, 27),
+                    new TierData(  44, 28, 32),
+                    new TierData(  55, 33, 37) ),
             new ModTableEntry(WeaponModifiers.ACCURACY,
-                    new ItemLevelRange(  1, rangeOf(80,130)),
-                    new ItemLevelRange(  20, rangeOf(131,215)),
-                    new ItemLevelRange(  40, rangeOf(216,325)),
-                    new ItemLevelRange(  60, rangeOf(326, 455)),
-                    new ItemLevelRange(  75, rangeOf(456, 624)) ),
+                    new TierData(  1, 80,130),
+                    new TierData(  20, 131,215),
+                    new TierData(  40, 216,325),
+                    new TierData(  60, 326, 455),
+                    new TierData(  75, 456, 624) ),
             new ModTableEntry(WeaponModifiers.ATTACK_SPEED,
-                    new ItemLevelRange(  1, rangeOf(5, 7)),
-                    new ItemLevelRange(  11, rangeOf(8, 10)),
-                    new ItemLevelRange(  22, rangeOf(11, 13)),
-                    new ItemLevelRange(  30, rangeOf(14, 16)),
-                    new ItemLevelRange(  37, rangeOf(17, 19)),
-                    new ItemLevelRange(  45, rangeOf(20, 22)),
-                    new ItemLevelRange(  60, rangeOf(23, 25)) ) );
+                    new TierData(  1, 5, 7),
+                    new TierData(  11, 8, 10),
+                    new TierData(  22, 11, 13),
+                    new TierData(  30, 14, 16),
+                    new TierData(  37, 17, 19),
+                    new TierData(  45, 20, 22),
+                    new TierData(  60, 23, 25) ) );
 
-    private final Map<WeaponModifiers, Map<Integer, int[]>> affixes = new HashMap<>();
+    private final Map<WeaponModifiers, TierData[]> modifierTierMapping = new HashMap<>();
     private final List<WeaponModifiers> modifierList = new ArrayList<>();
 
     AxeMods(ModTableEntry... affixes){
         for (ModTableEntry affix : affixes){
-            this.affixes.put(affix.getMod(), affix.getMappedRanges());
-
             this.modifierList.add(affix.getMod());
+
+            this.modifierTierMapping.put(affix.getMod(), affix.getTiers());
         }
     }
 
     @Override
-    public Map<Integer, int[]> getModTable(WeaponModifiers mod){
-        return affixes.get(mod);
+    public TierData[] getModTiers(WeaponModifiers mod){
+        return modifierTierMapping.get(mod);
+    }
+    @Override
+    public List<Integer> getSortedTierIlvls(WeaponModifiers mod) {
+        TierData[] modTiers = getModTiers(mod);
+        List<Integer> aux = new ArrayList<>();
+        for (TierData modTier : modTiers) {
+            aux.add(modTier.ilvl());
+        }
+        return aux;
     }
     @Override
     public List<WeaponModifiers> getAllModNames(){

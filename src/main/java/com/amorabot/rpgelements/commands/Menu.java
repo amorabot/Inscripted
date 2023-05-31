@@ -17,7 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Deprecated
 public class Menu implements Listener,CommandExecutor {
     private String invName = "Sword inventory";
 

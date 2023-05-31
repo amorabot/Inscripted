@@ -1,5 +1,7 @@
 package com.amorabot.rpgelements.components.CraftingComponents.Builders;
 
+import com.amorabot.rpgelements.Crafting.RangeTypes;
+import com.amorabot.rpgelements.Crafting.Weapons.Modifiers.TierValuePair;
 import com.amorabot.rpgelements.Crafting.Weapons.Modifiers.WeaponModifiers;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemFlag;
@@ -126,10 +128,6 @@ public class WeaponBuilder implements CraftableItem { //Em caso de novos protoco
     }
     @Override
     public void serializeContainers(PersistentDataContainer itemContainer){
-//        //Item information container
-//        itemContainer.set(new NamespacedKey(plugin, "data"), new ItemInformationDataType(), itemData);
-//        //Weapon information container
-//        itemContainer.set(new NamespacedKey(plugin, "stats"), new WeaponStatsDataType(), weaponData);
         //Item information container
         RPGElementsContainerDataType<BaseItem> itemDataContainer = new RPGElementsContainerDataType<>(BaseItem.class);
         itemContainer.set(new NamespacedKey(plugin, "data"), itemDataContainer, itemData);
@@ -146,22 +144,19 @@ public class WeaponBuilder implements CraftableItem { //Em caso de novos protoco
     public void render(List<String> lore, List<Enum<?>> affixList){
         for (Enum<?> mod : affixList){
             WeaponModifiers weaponMod = (WeaponModifiers) mod;
-            Map<Integer, int[]> modValues = weaponData.getModifierTierMap().get(weaponMod);
-            Set<Integer> modValueKeys = modValues.keySet();
+            TierValuePair modValues = weaponData.getModifierTierMap().get(weaponMod);
 
-            for (Integer key : modValueKeys){
-                int[] values = modValues.get(key);
+            int[] values = modValues.value();
 
-                String modDisplayName = " " + weaponMod.getDisplayName();
-                String modifiedString;
-                if (weaponMod.hasSingleRange()){
-                    modifiedString = modDisplayName.replace("#", ("&b" + values[0] + "&7"));
-                } else {
-                    modifiedString = modDisplayName.replace("#", ("&b" + values[0]));
-                    modifiedString = modifiedString.replace("@", ("&b" + values[1] + "&7"));
-                }
-                lore.add(color("&7" + modifiedString));
+            String modDisplayName = " " + weaponMod.getDisplayName();
+            String modifiedString;
+            if (weaponMod.getRangeType() == RangeTypes.SINGLE_RANGE){
+                modifiedString = modDisplayName.replace("#", ("&b" + values[0] + "&7"));
+            } else {
+                modifiedString = modDisplayName.replace("#", ("&b" + values[0]));
+                modifiedString = modifiedString.replace("@", ("&b" + values[1] + "&7"));
             }
+            lore.add(color("&7" + modifiedString));
         }
     }
 }
