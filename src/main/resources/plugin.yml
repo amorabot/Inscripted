@@ -1,5 +1,5 @@
 name: RPGElements
-version: '${0.2}'
+version: '0.2'
 main: com.amorabot.rpgelements.RPGElements
 api-version: 1.19
 permissions:
@@ -53,3 +53,6 @@ commands:
   getnbt:
     description: gets a specified NBT data tag.
     usage: /getnbt
+  recolor:
+    description: recolors a item's display name.
+    usage: /recolor

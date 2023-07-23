@@ -28,22 +28,19 @@ import static com.amorabot.rpgelements.utils.Utils.color;
 
 public class WeaponBuilder implements CraftableItem { //Em caso de novos protocoloss de tratamento de weapons, um novo service é criado
 
-    private RPGElements plugin;
-    String tag;
-    BaseItem itemData; //NÃO IMPLEMENTADO, POIS É REPONSABILIDADE DO WEAPON SERVICE MANEJAR AS INFOS DE ITEM
+    private final RPGElements plugin;
+    String tag;// TODO: reavaliar implementacao das tags
+    BaseItem itemData;
     Weapon weaponData;
-
     public <T extends Enum<ItemTypes>> WeaponBuilder
             (RPGElements plugin, T itemType, WeaponTypes itemCategory, boolean id, int ilvl, ItemRarities rarity, String implicit, String coloredTag) {
-
-//        super(coloredTag);
 
         this.plugin = plugin;
 
         this.tag = rarity.toString();
-        this.itemData = new BaseItem(itemType, itemCategory, id, ilvl, rarity, implicit); //Creating the base item's data
+        this.itemData = new BaseItem(itemType, itemCategory, id, ilvl, rarity, implicit); //Creating the base item's data //CRIAR NA DECLARACAO DESSA CLASSE VIA CONSTRUTOR.
 
-        List<WeaponModifiers> weaponPrefixes = new ArrayList<>(); //Casting the Prefixes and Suffixes so that their methods are available
+        List<WeaponModifiers> weaponPrefixes = new ArrayList<>(); //Casting the Prefixes and Suffixes to Weapon so that their methods are available
         for (Enum<?> prefix : itemData.getPrefixes()){
             weaponPrefixes.add((WeaponModifiers) prefix);
         }
@@ -93,30 +90,30 @@ public class WeaponBuilder implements CraftableItem { //Em caso de novos protoco
         }
 
         if (itemData.getRarity() != ItemRarities.COMMON){
-            lore.add(color("&8   _______________________"));
+            lore.add(color("&8 _______________________ "));
         }
 
         renderAffixes(lore);
 
         lore.add("");
-        String displayName = "";
+//        String displayName = "";
         switch (itemData.getRarity()){
             case COMMON:
-                displayName = "&f&l" + weaponData.getName();
-                lore.add(color("&f&l"+tag+ "    &6&l[&7" + itemData.getIlvl() + "&6&l]"));
+//                displayName =  //4
+                lore.add(color("&f&l"+tag+ " &6&l[&7" + itemData.getIlvl() + "&6&l]"));
                 break;
             case MAGIC:
-                displayName = "&9&l" + weaponData.getName();
-                lore.add(color("&9&l"+tag+ "    &6&l[&7" + itemData.getIlvl() + "&6&l]"));
+//                displayName = "&" + weaponData.getName(); //9
+                lore.add(color("&9&l"+tag+ " &6&l[&7" + itemData.getIlvl() + "&6&l]"));
                 break;
             case RARE:
-                displayName = "&e&l" + weaponData.getName();
+//                displayName = "&e" + weaponData.getName(); //E
 //                lore.add(color("&e&l"+tag+ "    &6&l[&7" + itemInfo.getIlvl() + "&6&l]")); // #4c2f91 /#494fc9 /#800617/#30022f
 //                &#4c2f91&l*   //   &#5c023c&l*
                 lore.add(ColorUtils.translateColorCodes("&e&l" + tag + " &6&l[&7" + itemData.getIlvl() + "&6&l]"));
                 break;
         }
-        itemMeta.setDisplayName(color(displayName));
+        itemMeta.setDisplayName(ColorUtils.translateColorCodes("&" + weaponData.getNameColor((WeaponTypes) itemData.getCategory()) + weaponData.getName()));
 
         itemMeta.setLore(lore);
 
@@ -140,7 +137,7 @@ public class WeaponBuilder implements CraftableItem { //Em caso de novos protoco
         render(lore, itemData.getPrefixes());
         render(lore, itemData.getSuffixes());
     }
-    @Override
+//    @Override
     public void render(List<String> lore, List<Enum<?>> affixList){
         for (Enum<?> mod : affixList){
             WeaponModifiers weaponMod = (WeaponModifiers) mod;
@@ -151,12 +148,12 @@ public class WeaponBuilder implements CraftableItem { //Em caso de novos protoco
             String modDisplayName = " " + weaponMod.getDisplayName();
             String modifiedString;
             if (weaponMod.getRangeType() == RangeTypes.SINGLE_RANGE){
-                modifiedString = modDisplayName.replace("#", ("&b" + values[0] + "&7"));
+                modifiedString = modDisplayName.replace("#", ("&#95dbdb" + values[0] + "&7"));
             } else {
-                modifiedString = modDisplayName.replace("#", ("&b" + values[0]));
-                modifiedString = modifiedString.replace("@", ("&b" + values[1] + "&7"));
+                modifiedString = modDisplayName.replace("#", ("&#95dbdb" + values[0]));
+                modifiedString = modifiedString.replace("@", ("&#95dbdb" + values[1] + "&7"));
             }
-            lore.add(color("&7" + modifiedString));
+            lore.add(ColorUtils.translateColorCodes("&7" + modifiedString));
         }
     }
 }

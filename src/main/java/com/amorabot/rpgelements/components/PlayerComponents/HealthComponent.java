@@ -5,7 +5,7 @@ public class HealthComponent {
     private float currentHealth;
     private float maxHealth;
     private int baseHealth;
-    private int startingHealth;
+    private final int startingHealth;
 
     private int increasedHealth;
 
@@ -13,7 +13,7 @@ public class HealthComponent {
     private float currentWard;
     private float maxWard;
     private int baseWard;
-    private int startingWard;
+    private final int startingWard;
 
     private int increasedWard;
 
@@ -31,7 +31,6 @@ public class HealthComponent {
         this.baseHealth = startingHealth;
         this.baseWard = startingWard;
     }
-
 
     //------------LIFE METHODS-------------
 

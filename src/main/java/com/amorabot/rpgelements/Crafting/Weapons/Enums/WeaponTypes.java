@@ -6,7 +6,7 @@ import com.amorabot.rpgelements.Crafting.Weapons.Modifiers.SwordMods;
 
 public enum WeaponTypes implements SelectableAffixTable {
 
-    AXE{
+    AXE("#b01330"){
         @Override
         public Enum<?> getPrefixTable() {
             return AxeMods.PREFIXES;
@@ -16,8 +16,9 @@ public enum WeaponTypes implements SelectableAffixTable {
         public Enum<?> getSuffixTable() {
             return AxeMods.SUFFIXES;
         }
+        //"#e8885f"
     },
-    SHORTSWORD {
+    SHORTSWORD("#e2e831") {
         @Override
         public Enum<?> getPrefixTable() {
             return SwordMods.PREFIXES;
@@ -27,10 +28,18 @@ public enum WeaponTypes implements SelectableAffixTable {
         public Enum<?> getSuffixTable() {
             return SwordMods.SUFFIXES;
         }
-    }
+        //"#99cce0"
+    };
 //    BOW,
 //    SCYTHE,
 //    WAND,
 //    STAFF
 
+    private final String color;
+    WeaponTypes(String defaultColor){
+        this.color = defaultColor;
+    }
+    public String getDefaulNameColor(){
+        return color;
+    }
 }

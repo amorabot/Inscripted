@@ -2,6 +2,7 @@ package com.amorabot.rpgelements;
 
 import com.amorabot.rpgelements.commands.*;
 import com.amorabot.rpgelements.components.CustomMob;
+import com.amorabot.rpgelements.components.PlayerComponents.Profile;
 import com.amorabot.rpgelements.handlers.*;
 import com.amorabot.rpgelements.managers.JSONProfileManager;
 import com.amorabot.rpgelements.utils.DelayedTask;
@@ -69,11 +70,12 @@ public final class RPGElements extends JavaPlugin {
         getCommand("getnbt").setExecutor(new GetNBT(this));
         getCommand("generateweapon").setExecutor(new GenerateWeapon(this));
         getCommand("identify").setExecutor(new Identify(this));
+        getCommand("recolor").setExecutor(new Recolor(this));
         getCommand("skills").setExecutor(skillsUI);
         getCommand("skills").setTabCompleter(skillsUI);
-        getCommand("fly").setExecutor(new Fly());
-        getCommand("combatmenu").setExecutor(new Menu(this));
-        getCommand("buildertoolkit").setExecutor(new BuilderToolkit());
+//        getCommand("fly").setExecutor(new Fly());
+//        getCommand("combatmenu").setExecutor(new Menu(this));
+//        getCommand("buildertoolkit").setExecutor(new BuilderToolkit());
         getCommand("trainingdummy").setExecutor(new ArmorStand(this));
         getCommand("resetattributes").setExecutor(new ResetAttributes(this));
 
@@ -116,9 +118,11 @@ public final class RPGElements extends JavaPlugin {
             @Override
             public void run() {
                 for (Player currentPlayer : Bukkit.getOnlinePlayers()){
-                    int health = JSONProfileManager.getProfile(currentPlayer.getUniqueId().toString()).getHealth().getBaseHealth();
-                    int ward = JSONProfileManager.getProfile(currentPlayer.getUniqueId().toString()).getHealth().getBaseWard();
-                    msgPlayerAB(currentPlayer, "&c HP[" + health +"]" + "&7//" + "&bWard[" + ward+ "]");
+                    Profile playerProfile = JSONProfileManager.getProfile(currentPlayer.getUniqueId().toString());
+                    int health = playerProfile.getHealth().getBaseHealth();
+                    int ward = playerProfile.getHealth().getBaseWard();
+                    float dps = playerProfile.getDamage().getDPS();
+                    msgPlayerAB(currentPlayer, "&c HP[" + health +"]" + "&7//" + "&bWard[" + ward+ "]" + "///// " + dps);
                 }
             }
         }.runTaskTimer(this, 0L, 10L);

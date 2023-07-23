@@ -6,6 +6,7 @@ import com.amorabot.rpgelements.Crafting.Interfaces.SelectableAffixTable;
 import com.amorabot.rpgelements.Crafting.ItemRarities;
 import com.amorabot.rpgelements.Crafting.ItemTypes;
 import com.amorabot.rpgelements.Crafting.Weapons.Modifiers.AxeMods;
+import com.amorabot.rpgelements.Crafting.Weapons.Modifiers.SwordMods;
 import com.amorabot.rpgelements.Crafting.Weapons.Modifiers.WeaponModifiers;
 import com.amorabot.rpgelements.Crafting.Weapons.Enums.WeaponTypes;
 import com.amorabot.rpgelements.CustomDataTypes.RPGElementsContainer;
@@ -25,8 +26,8 @@ public class BaseItem implements Serializable, RPGElementsContainer {
     private String implicit;
     private final Enum<?> itemType; //WEAPON, ARMOR
     private final Enum<?> category; //AXE, SWORD -//- HELMET, CHESTPLATE
-    private List<Enum<?>> selectedPrefixes = new ArrayList<>();
-    private List<Enum<?>> selectedSuffixes = new ArrayList<>();
+    private final List<Enum<?>> selectedPrefixes = new ArrayList<>();
+    private final List<Enum<?>> selectedSuffixes = new ArrayList<>();
 
     public <T extends Enum<ItemTypes>, C extends Enum<C> & SelectableAffixTable> BaseItem(T itemType, C itemCategory, boolean id, int ilvl, ItemRarities rarity, String implicit){
         this.itemType = itemType;
@@ -42,18 +43,25 @@ public class BaseItem implements Serializable, RPGElementsContainer {
 
         if (itemType == ItemTypes.WEAPON){
             WeaponTypes weaponCategory = (WeaponTypes) itemCategory;
+            List<WeaponModifiers> allPrefixes;
+            List<WeaponModifiers> allSuffixes;
             switch (weaponCategory){
                 case AXE:
                     AxeMods axePrefixTable = (AxeMods) prefixTable;
-                    List<WeaponModifiers> allPrefixes = axePrefixTable.getAllModNames();
+                    allPrefixes = axePrefixTable.getAllModNames();
 
                     AxeMods axeSuffixTable = (AxeMods) suffixTable;
-                    List<WeaponModifiers> allSuffixes = axeSuffixTable.getAllModNames();
+                    allSuffixes = axeSuffixTable.getAllModNames();
 
                     generateMods(allPrefixes, allSuffixes);
                     break;
                 case SHORTSWORD:
-                    //TODO: geração para shortsword
+                    SwordMods swordPrefixTable = (SwordMods) prefixTable;
+                    allPrefixes = swordPrefixTable.getAllModNames();
+
+                    SwordMods swordSuffixTable = (SwordMods) suffixTable;
+                    allSuffixes = swordSuffixTable.getAllModNames();
+                    generateMods(allPrefixes, allSuffixes);
                     break;
             }
         }
@@ -123,19 +131,29 @@ public class BaseItem implements Serializable, RPGElementsContainer {
         if (category instanceof WeaponTypes){
             WeaponModifiers weaponMod = (WeaponModifiers)  affix;
             WeaponTypes weaponCategory = (WeaponTypes) category;
+            List<Integer> tierIlvlData;
+            int minimumIlvl;
             switch (weaponCategory){
                 case AXE:
-                    AxeMods modTable;
+                    AxeMods axeTable;
                     if (weaponMod.getAffixType() == Affix.PREFIX){
-                        modTable = (AxeMods) weaponCategory.getPrefixTable();
+                        axeTable = (AxeMods) weaponCategory.getPrefixTable();
                     } else {
-                        modTable = (AxeMods) weaponCategory.getSuffixTable();
+                        axeTable = (AxeMods) weaponCategory.getSuffixTable();
                     }
-                    List<Integer> tierIlvlData = modTable.getSortedTierIlvls(weaponMod);
-                    int minimumIlvl = tierIlvlData.get(0);
+                    tierIlvlData = axeTable.getSortedTierIlvls(weaponMod);
+                    minimumIlvl = tierIlvlData.get(0);
                     return (ilvl >= minimumIlvl);
                 case SHORTSWORD:
-                    break;
+                    SwordMods swordTable;
+                    if (weaponMod.getAffixType() == Affix.PREFIX){
+                        swordTable = (SwordMods) weaponCategory.getPrefixTable();
+                    } else {
+                        swordTable = (SwordMods) weaponCategory.getSuffixTable();
+                    }
+                    tierIlvlData = swordTable.getSortedTierIlvls(weaponMod);
+                    minimumIlvl = tierIlvlData.get(0);
+                    return (ilvl >= minimumIlvl);
             }
         } else {
             return false;

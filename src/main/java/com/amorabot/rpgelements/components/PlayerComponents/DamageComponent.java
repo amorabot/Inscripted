@@ -1,6 +1,9 @@
 package com.amorabot.rpgelements.components.PlayerComponents;
 
-import org.bukkit.inventory.ItemStack;
+import com.amorabot.rpgelements.Crafting.Weapons.Enums.DamageTypes;
+import com.amorabot.rpgelements.components.CraftingComponents.Items.Weapon;
+
+import java.util.Map;
 
 public class DamageComponent {
     private float DPS;
@@ -15,12 +18,35 @@ public class DamageComponent {
         this.DPS = 1;
     }
 
-    public void setDamage(ItemStack weapon){
+    public void setDamage(Weapon weaponStats){
         //TODO: implementar :D
         //considerar weapon como podendo ser um itemStack vazio, nesse caso setar p/ 0
         //usar o container de weapon pra identificar todos os danos e os valores
         //e serializar os valores no local correto
+        if (weaponStats == null){
+            this.physicalDmg = new int[]{0,0};
+            this.fireDmg = new int[]{0,0};
+            this.coldDmg = new int[]{0,0};
+            this.lightningDmg = new int[]{0,0};
+            this.abyssalDmg = new int[]{0,0};
+            setDps();
+            return;
+        }
 
+        Map<DamageTypes, int[]> damageTypesMap = weaponStats.getBaseDmg();
+        this.physicalDmg = damageTypesMap.get(DamageTypes.PHYSICAL);
+        if (damageTypesMap.containsKey(DamageTypes.FIRE)){
+            this.fireDmg = damageTypesMap.get(DamageTypes.FIRE);
+        } else { this.fireDmg = new int[]{0,0}; }
+        if (damageTypesMap.containsKey(DamageTypes.COLD)){
+            this.coldDmg= damageTypesMap.get(DamageTypes.COLD);
+        } else { this.coldDmg = new int[]{0,0}; }
+        if (damageTypesMap.containsKey(DamageTypes.LIGHTNING)){
+            this.lightningDmg = damageTypesMap.get(DamageTypes.LIGHTNING);
+        } else { this.lightningDmg = new int[]{0,0}; }
+        if (damageTypesMap.containsKey(DamageTypes.ABYSSAL)){
+            this.abyssalDmg = damageTypesMap.get(DamageTypes.ABYSSAL);
+        } else { this.abyssalDmg = new int[]{0,0}; }
         setDps();
     }
     private void setDps(){
@@ -31,6 +57,9 @@ public class DamageComponent {
         int abyssDps = (abyssalDmg[0] + abyssalDmg[1] / 2);
 
         DPS = physDps + fireDps + coldDps + lightDps + abyssDps;
+    }
+    public float getDPS(){
+        return DPS;
     }
 
     public int[] getPhysicalDmg() {

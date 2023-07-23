@@ -22,6 +22,7 @@ public class Weapon implements Serializable, RPGElementsContainer {
     private static final long serialversionUID = 100069L;
 
     private String name;
+//    private String nameColor;
     private Material material;
     private Map<DamageTypes, int[]> baseDmg = new HashMap<>();
     private Map<WeaponModifiers, TierValuePair> modifierTierMap = new HashMap<>();
@@ -32,18 +33,26 @@ public class Weapon implements Serializable, RPGElementsContainer {
                 generateTiers(AxeMods.PREFIXES, prefixes, AxeMods.SUFFIXES, suffixes, ilvl);
                 getName(type);
                 defineItemBase(type, ilvl);
+//                this.nameColor = "#e8885f"; //#d6431e
                 break;
             case SHORTSWORD:
                 break;
         }
     }
-    public <E extends Enum<E> & TableDataAccess> void generateTiers(E prefixTable, List<WeaponModifiers> prefixes, E suffixTable, List<WeaponModifiers> suffixes, int ilvl){
+
+    public Weapon(String name, Material material, Map<DamageTypes, int[]> baseDmg, Map<WeaponModifiers, TierValuePair> mappedModifiers){
+        this.name = name;
+        this.material = material;
+        this.baseDmg = baseDmg;
+        this.modifierTierMap = mappedModifiers;
+    }
+    private <E extends Enum<E> & TableDataAccess> void generateTiers(E prefixTable, List<WeaponModifiers> prefixes, E suffixTable, List<WeaponModifiers> suffixes, int ilvl){
 
         generateAffixTiers(prefixTable, prefixes, ilvl);
         generateAffixTiers(suffixTable, suffixes, ilvl);
 
     }
-    public <E extends Enum<E> & TableDataAccess> void generateAffixTiers(E modTable, List<WeaponModifiers> affixes, int ilvl){
+    private <E extends Enum<E> & TableDataAccess> void generateAffixTiers(E modTable, List<WeaponModifiers> affixes, int ilvl){
 
         for (WeaponModifiers affix : affixes){
             TierData[] tierData = modTable.getModTiers(affix);
@@ -59,24 +68,15 @@ public class Weapon implements Serializable, RPGElementsContainer {
             log(affix.toString());
             log(""+chosenTier);
             modifierTierMap.put(affix, new TierValuePair(chosenTier, chosenValues));
-//            switch (rangeType){
-//                case SINGLE_VALUE:
-//
-//                    break;
-//                case SINGLE_RANGE:
-//                    break;
-//                case DOUBLE_RANGE:
-//                    break;
-//            }
         }
     }
 
-    public int getMaximumTier(List<Integer> sortedIlvlKeySet, int ilvl){
-        if (sortedIlvlKeySet.get(0) > ilvl){ //Se o ilvl mais baixo para o mod for maior que ilvl do item
+    private int getMaximumTier(List<Integer> sortedIlvlList, int ilvl){
+        if (sortedIlvlList.get(0) > ilvl){ //Se o ilvl mais baixo para o mod for maior que ilvl do item
             log("Invalid affix at current item level.");
             return -1;
         }
-        List<Integer> aux = new ArrayList<>(sortedIlvlKeySet);
+        List<Integer> aux = new ArrayList<>(sortedIlvlList); //aux pode ser alterado
 
         if (!(aux.contains(ilvl))){ //Se a lista não tiver o item level desejado, adicione
             aux.add(ilvl);
@@ -106,7 +106,7 @@ public class Weapon implements Serializable, RPGElementsContainer {
         }
     }
     // -------------AXE-----------------------
-    public void mapAxeDmg(int ilvl){
+    private void mapAxeDmg(int ilvl){
         if (ilvl > 0 && ilvl <= 11){
             baseDmg.put(DamageTypes.PHYSICAL, new int[]{6,11});
         } else if (ilvl <= 30){
@@ -122,7 +122,21 @@ public class Weapon implements Serializable, RPGElementsContainer {
         }
         mapBonusDamages();
     }
-    public void mapBonusDamages(){
+    private void mapAxeBase(int ilvl){
+        if (ilvl <= 10){
+            this.material = Material.WOODEN_AXE;
+        } else if (ilvl <= 25) {
+            this.material = Material.STONE_AXE;
+        } else if (ilvl <= 45) {
+            this.material = Material.IRON_AXE;
+        } else if (ilvl <= 75) {
+            this.material = Material.DIAMOND_AXE;
+        } else {
+            this.material = Material.GOLDEN_AXE;
+        }
+    }
+    // ---------------------------------------
+    private void mapBonusDamages(){
         Set<WeaponModifiers> mods = modifierTierMap.keySet();
         if (mods.contains(WeaponModifiers.ADDED_PHYSICAL)){
             int[] physDmg = baseDmg.get(DamageTypes.PHYSICAL);
@@ -147,25 +161,15 @@ public class Weapon implements Serializable, RPGElementsContainer {
             baseDmg.put(DamageTypes.PHYSICAL, physDmg);
         }
     }
-    private void mapAxeBase(int ilvl){
-        if (ilvl <= 10){
-            this.material = Material.WOODEN_AXE;
-        } else if (ilvl <= 25) {
-            this.material = Material.STONE_AXE;
-        } else if (ilvl <= 45) {
-            this.material = Material.IRON_AXE;
-        } else if (ilvl <= 75) {
-            this.material = Material.DIAMOND_AXE;
-        } else {
-            this.material = Material.GOLDEN_AXE;
-        }
-    }
-    // ---------------------------------------
     public Material getItemMaterial(){
         return this.material;
     }
     public String getName(){
         return name;
+    }
+    public String getNameColor(WeaponTypes type){
+//        return nameColor;
+        return type.getDefaulNameColor();
     }
     public Map<DamageTypes, int[]> getBaseDmg(){
         return baseDmg;

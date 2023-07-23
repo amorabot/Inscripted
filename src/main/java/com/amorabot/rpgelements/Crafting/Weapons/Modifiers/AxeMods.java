@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.amorabot.rpgelements.Crafting.CraftingUtils.rangeOf;
-
 public enum AxeMods implements TableDataAccess {
 
     PREFIXES(new ModTableEntry(WeaponModifiers.STAMINA,
