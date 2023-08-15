@@ -1,6 +1,6 @@
 package com.amorabot.rpgelements.components.PlayerComponents;
 
-import com.amorabot.rpgelements.Crafting.Weapons.Modifiers.WeaponModifiers;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.WeaponModifiers;
 
 import java.util.HashMap;
 import java.util.Map;

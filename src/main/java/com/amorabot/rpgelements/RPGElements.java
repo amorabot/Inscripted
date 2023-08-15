@@ -53,17 +53,6 @@ public final class RPGElements extends JavaPlugin {
             }
         }
 
-//        saveDefaultConfig();
-//        getConfig() lê o arquivo config.yml disponível no momento (em resources)
-//        getList() procura, no arquivo, a key com o nome do path indicado. retorna uma List<> com os itens
-//
-//        Como um dos usos para o config file, podemos ler o conteúdo e usá-lo no código de forma rápida:
-//
-//        ConfigUtil config = new ConfigUtil(this, "test.yml");
-//        config.getConfig().set("hello", "world");//existem os gets e os sets para escrever ou recuperar info. do arquivo.
-//        //ao setar, definimos a primeira string como key e a segunda como value
-//        config.save();
-
         SkillsUI skillsUI = new SkillsUI(this);
 
         getCommand("updatenbt").setExecutor(new UpdateNBT(this));
@@ -73,14 +62,11 @@ public final class RPGElements extends JavaPlugin {
         getCommand("recolor").setExecutor(new Recolor(this));
         getCommand("skills").setExecutor(skillsUI);
         getCommand("skills").setTabCompleter(skillsUI);
-//        getCommand("fly").setExecutor(new Fly());
-//        getCommand("combatmenu").setExecutor(new Menu(this));
-//        getCommand("buildertoolkit").setExecutor(new BuilderToolkit());
-        getCommand("trainingdummy").setExecutor(new ArmorStand(this));
         getCommand("resetattributes").setExecutor(new ResetAttributes(this));
+        getCommand("editmods").setExecutor(new EditMods(this));
 
         //---------   LISTENERS   ------------
-        new TorchHandler(this);
+//        new TorchHandler(this);
         new JoinQuitHandler(this);
         new WeaponEquipHandler(this);
         new DelayedTask(this);

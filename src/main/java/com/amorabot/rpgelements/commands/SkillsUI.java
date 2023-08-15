@@ -18,7 +18,6 @@ public class SkillsUI implements TabExecutor { //Tab executor é um 2 em 1. Comb
     //tab completion nos dá a funcionalidade de completar args com o tab.
 
     private com.amorabot.rpgelements.RPGElements RPGElements;
-//    private ProfileManager profileManager;
     private com.amorabot.rpgelements.managers.UIManager UIManager;
     private ItemStack pointsIndicator;
     private ItemStack intelligenceIndicator;
@@ -27,7 +26,6 @@ public class SkillsUI implements TabExecutor { //Tab executor é um 2 em 1. Comb
 
     public SkillsUI(RPGElements plugin){
         RPGElements = plugin;
-//        profileManager = plugin.getProfileManager();
 
         pointsIndicator = new ItemStack(Material.EXPERIENCE_BOTTLE, 1);
         ItemMeta pointsMeta = pointsIndicator.getItemMeta();
@@ -110,9 +108,6 @@ public class SkillsUI implements TabExecutor { //Tab executor é um 2 em 1. Comb
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-
-
-
         return null;
     }
 
@@ -121,7 +116,6 @@ public class SkillsUI implements TabExecutor { //Tab executor é um 2 em 1. Comb
             //se tentarmos colocar 0 items, resetamos para 1, que é o mínimo
             amount = 1;
         }
-
         item.setAmount(amount);
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.setLore(lore);

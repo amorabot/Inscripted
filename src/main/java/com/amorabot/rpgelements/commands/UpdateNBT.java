@@ -36,7 +36,7 @@ public class UpdateNBT implements CommandExecutor {
         ItemMeta meta = item.getItemMeta();
         PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
 
-
+        //new containers implementation goes here
 
         return true;
     }

@@ -1,7 +1,7 @@
 package com.amorabot.rpgelements.components.PlayerComponents;
 
-import com.amorabot.rpgelements.Crafting.Weapons.Enums.DamageTypes;
-import com.amorabot.rpgelements.components.CraftingComponents.Items.Weapon;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DamageTypes;
+import com.amorabot.rpgelements.components.Items.Weapon.Weapon;
 
 import java.util.Map;
 
@@ -33,7 +33,7 @@ public class DamageComponent {
             return;
         }
 
-        Map<DamageTypes, int[]> damageTypesMap = weaponStats.getBaseDmg();
+        Map<DamageTypes, int[]> damageTypesMap = weaponStats.getBaseDamage();
         this.physicalDmg = damageTypesMap.get(DamageTypes.PHYSICAL);
         if (damageTypesMap.containsKey(DamageTypes.FIRE)){
             this.fireDmg = damageTypesMap.get(DamageTypes.FIRE);

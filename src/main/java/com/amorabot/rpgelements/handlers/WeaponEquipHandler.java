@@ -1,18 +1,9 @@
 package com.amorabot.rpgelements.handlers;
 
-import com.amorabot.rpgelements.Crafting.ItemTypes;
-import com.amorabot.rpgelements.CustomDataTypes.RPGElementsContainerDataType;
 import com.amorabot.rpgelements.RPGElements;
-import com.amorabot.rpgelements.components.CraftingComponents.Items.BaseItem;
-import com.amorabot.rpgelements.components.CraftingComponents.Items.Weapon;
-import com.amorabot.rpgelements.components.PlayerComponents.DamageComponent;
-import com.amorabot.rpgelements.components.PlayerComponents.Profile;
-import com.amorabot.rpgelements.managers.JSONProfileManager;
 import com.amorabot.rpgelements.utils.DelayedTask;
 import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,8 +13,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class WeaponEquipHandler implements Listener {
@@ -166,36 +155,37 @@ public class WeaponEquipHandler implements Listener {
     }
 
     private boolean isEquipable(ItemStack heldItem){
-        if (heldItem == null || !heldItem.hasItemMeta()){ //If its not custom or is null
-            return false;
-        }
-        ItemMeta heldItemMeta = heldItem.getItemMeta();
-        PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
-
-        if (dataContainer.has(new NamespacedKey(plugin, "data"), new RPGElementsContainerDataType<>(BaseItem.class))){
-            BaseItem itemData = dataContainer.get(new NamespacedKey(plugin, "data"), new RPGElementsContainerDataType<>(BaseItem.class));
-            return itemData.getItemType() == ItemTypes.WEAPON;
-        } else {
-            return false;
-        }
+//        if (heldItem == null || !heldItem.hasItemMeta()){ //If its not custom or is null
+//            return false;
+//        }
+//        ItemMeta heldItemMeta = heldItem.getItemMeta();
+//        PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
+//
+//        if (dataContainer.has(new NamespacedKey(plugin, "data"), new RPGElementsContainerDataType<>(BaseItem.class))){
+//            BaseItem itemData = dataContainer.get(new NamespacedKey(plugin, "data"), new RPGElementsContainerDataType<>(BaseItem.class));
+//            return itemData.getItemType() == ItemTypes.WEAPON;
+//        } else {
+//            return false;
+//        }
+        return false;
     }
     private void equip(ItemStack heldItem, Player player){
-        ItemMeta heldItemMeta = heldItem.getItemMeta();
-        PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
-
-        Weapon weaponStats = dataContainer.get(new NamespacedKey(plugin, "stats"), new RPGElementsContainerDataType<>(Weapon.class));
-        if (weaponStats == null){
-            Utils.error("de-serialization error: weapon equip method");
-            return;
-        }
-        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId().toString());
-        DamageComponent damageComponent = playerProfile.getDamage();
-        damageComponent.setDamage(weaponStats);
-        Utils.msgPlayer(player, "Equipped: " + weaponStats.getName() + " ("+damageComponent.getDPS()+")");
+//        ItemMeta heldItemMeta = heldItem.getItemMeta();
+//        PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
+//
+//        Weapooon weaponStats = dataContainer.get(new NamespacedKey(plugin, "stats"), new RPGElementsContainerDataType<>(Weapooon.class));
+//        if (weaponStats == null){
+//            Utils.error("de-serialization error: weapon equip method");
+//            return;
+//        }
+//        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId().toString());
+//        DamageComponent damageComponent = playerProfile.getDamage();
+//        damageComponent.setDamage(weaponStats);
+//        Utils.msgPlayer(player, "Equipped: " + weaponStats.getName() + " ("+damageComponent.getDPS()+")");
     }
     private void unequipWeaponSlot(Player player){
-        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId().toString()); // Get profile
-        playerProfile.getStats().getWeaponSlotData().clear();
-        playerProfile.getDamage().setDamage(null);
+//        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId().toString()); // Get profile
+//        playerProfile.getStats().getWeaponSlotData().clear();
+//        playerProfile.getDamage().setDamage(null);
     }
 }
