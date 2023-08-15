@@ -6,9 +6,7 @@ public class DefenceComponent {
     private int lightningResistance;
 
 
-    private float finalEvasion;
-    private int baseEvasion;
-    private int increasedEvasion;
+    private int evasion; //%stat now
 
 
     private float finalArmor;
@@ -20,7 +18,7 @@ public class DefenceComponent {
         this.coldResistance = 15;
         this.lightningResistance = 15;
 
-        this.baseEvasion = 0;
+        this.evasion = 0;
         this.baseArmor = 0;
     }
 
@@ -37,16 +35,8 @@ public class DefenceComponent {
         this.lightningResistance = newLightningResistance;
     }
     //------------EVASION METHODS-------------
-    public void setBaseEvasion(int newBaseEvasion){
-        //TODO: tratamento de valores negativos (punitivo x neutro)
-        this.baseEvasion = newBaseEvasion;
-    }
-    public void setIncreasedEvasion(int incEvasion){
-        this.increasedEvasion = incEvasion;
-        setFinalEvasion(incEvasion);
-    }
-    private void setFinalEvasion(int incEvasion) {
-        this.finalEvasion = baseEvasion * (1 + incEvasion);
+    public void setEvasion(int newEvasion){
+        this.evasion = newEvasion;
     }
     //------------ARMOR METHODS-------------
     public void setBaseArmor(int newBaseArmor){

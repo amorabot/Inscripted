@@ -34,154 +34,154 @@ public class GUIHandler implements Listener {
 //        profileManager = plugin.getProfileManager();
     }
 
-    @EventHandler
-    public void onMenuClick(InventoryClickEvent event){
-
-        if (!(event.getWhoClicked() instanceof Player)){
-            return;
-        }
-        if (event.getClickedInventory() == null){
-            return;
-        }
-        if (event.getCurrentItem() == null){
-            return;
-        }
-
-        Player player = (Player) event.getWhoClicked();
-//        Inventory playerInventory = player.getInventory();
-        UIManager = new UIManager(plugin, player);
-
-//        if (event.getClickedInventory().equals(inventory)){
+//    @EventHandler
+//    public void onMenuClick(InventoryClickEvent event){
+//
+//        if (!(event.getWhoClicked() instanceof Player)){
 //            return;
 //        }
-
-//        event.setCancelled(true);
-
-        if (checkLabel(event, UIManager.getASMain())){ // ---------Armor Stand Main GUI---------
-            event.setCancelled(true);
-            // 1. Initial Armor Stand builder Interface Behaviour
-            Material item = event.getCurrentItem().getType(); //retorna o material do item clicado
-
-            switch (item){
-                case ARMOR_STAND:
-                    UIManager.closeInterface();
-                    UIManager.openASCustomizationInterface();
-                    break;
-                case BARRIER:
-                    UIManager.closeInterface();
-                    break;
-                default:
-                    break;
-            }
-
-        }else if(checkLabel(event, UIManager.getASCustomize())){ // ---------Armor Stand Customization UI---------
-            event.setCancelled(true);
-            // 2. Customize Interface Behaviour
-            Material item = event.getCurrentItem().getType();
-
-            //Create a armor stand that corresponds to a specific player. Any changes to the player's armor stand
-            //can be made accessing the playersArmorStands variable
-            if (!(playersArmorStands.containsKey(player.getUniqueId()))){
-                ArmorStand stand = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
-                stand.setVisible(false);
-                playersArmorStands.put(player.getUniqueId(), stand);
-            }
-
-            switch (item){
-                case ARMOR_STAND:
-                    Utils.msgPlayer(player, "testing hasArms");
-                    UIManager.closeInterface();
-                    UIManager.openConfirmMenu(item);
-                    break;
-                case NETHER_STAR:
-                    Utils.msgPlayer(player, "testing hasGlow");
-                    UIManager.closeInterface();
-                    UIManager.openConfirmMenu(item);
-                    break;
-                case LEATHER_CHESTPLATE:
-                    Utils.msgPlayer(player, "testing hasArmor");
-                    UIManager.closeInterface();
-                    UIManager.openConfirmMenu(item);
-                    break;
-                case SMOOTH_STONE_SLAB:
-                    Utils.msgPlayer(player, "testing hasBase");
-                    UIManager.closeInterface();
-                    UIManager.openConfirmMenu(item);
-                    break;
-                case GREEN_WOOL:
-                    if (playersArmorStands.containsKey(player.getUniqueId())){
-                    playersArmorStands.get(player.getUniqueId()).setVisible(true);
-                    Utils.msgPlayer(player, "armor stand created");
-                    playersArmorStands.remove(player.getUniqueId()); //Once created, is unavailable for customization
-                    }
-                    UIManager.closeInterface();
-                    UIManager.openMainASInterface();
-                    break;
-                case RED_WOOL:
-                    if(playersArmorStands.containsKey(player.getUniqueId())){
-                        playersArmorStands.get(player.getUniqueId()).setVisible(true);
-                        playersArmorStands.get(player.getUniqueId()).remove(); //First we remove the entity itself
-                        playersArmorStands.remove(player.getUniqueId()); //Then the key in the hashmap
-                        Utils.msgPlayer(player, "cancelling dummy creation");
-                    }
-                    UIManager.closeInterface();
-                    UIManager.openMainASInterface();
-                    break;
-            }
-
-        }else if (checkLabel(event, UIManager.getConfirmLabel())){// ---------Confirmation GUI---------
-            event.setCancelled(true);
-            // 3.1 Confirmation GUI Behaviour
-            Material clickedItem = event.getCurrentItem().getType();
-            Material selectedChangeIndicator = event.getView().getItem(4).getType();
-
-
-            switch (clickedItem){
-                case GREEN_WOOL:
-                    //Confirms the selected option and returns to the Customize GUI
-                    switch (selectedChangeIndicator){
-                        case ARMOR_STAND:
-                            // We want to confirm the toggling of the armor stand's arms
-                            if (!playersArmorStands.get(player.getUniqueId()).hasArms()){ //If no arms, give arms
-                                playersArmorStands.get(player.getUniqueId()).setArms(true);
-                            } else {
-                                playersArmorStands.get(player.getUniqueId()).setArms(false); //Else, remove arms
-                            }
-                            break;
-                        case NETHER_STAR:
-                            // If we click confirm and the option is Glow, lets toggle it
-                            if (!playersArmorStands.get(player.getUniqueId()).isGlowing()){ //If no glow, make it glow
-                                playersArmorStands.get(player.getUniqueId()).setGlowing(true);
-                            } else {
-                                playersArmorStands.get(player.getUniqueId()).setGlowing(false); //Else, remove glow
-                            }
-                            break;
-                        case LEATHER_CHESTPLATE:
-                            break;
-                        case SMOOTH_STONE_SLAB:
-                            // We want to toggle the armor's stand base
-                            if (!playersArmorStands.get(player.getUniqueId()).hasBasePlate()){
-                                playersArmorStands.get(player.getUniqueId()).setBasePlate(true);
-                            }else {
-                                playersArmorStands.get(player.getUniqueId()).setBasePlate(false);
-                            }
-                            break;
-                    }
-                    Utils.msgPlayer(player, "Action confirmed, returning to the builder...");
-                    UIManager.closeInterface();
-                    UIManager.openASCustomizationInterface();
-                    break;
-                case RED_WOOL:
-                    //Cancels any changes, goes back to the Customize GUI
-                    UIManager.closeInterface();
-                    UIManager.openASCustomizationInterface();
-                    break;
-                default:
-                    break;
-            }
-
-        }else if(checkLabel(event, UIManager.getSkillsLabel())){//  ---------Skill allocation UI---------
-            //TODO: re-implementar skill allocation
+//        if (event.getClickedInventory() == null){
+//            return;
+//        }
+//        if (event.getCurrentItem() == null){
+//            return;
+//        }
+//
+//        Player player = (Player) event.getWhoClicked();
+////        Inventory playerInventory = player.getInventory();
+//        UIManager = new UIManager(plugin, player);
+//
+////        if (event.getClickedInventory().equals(inventory)){
+////            return;
+////        }
+//
+////        event.setCancelled(true);
+//
+//        if (checkLabel(event, UIManager.getASMain())){ // ---------Armor Stand Main GUI---------
+//            event.setCancelled(true);
+//            // 1. Initial Armor Stand builder Interface Behaviour
+//            Material item = event.getCurrentItem().getType(); //retorna o material do item clicado
+//
+//            switch (item){
+//                case ARMOR_STAND:
+//                    UIManager.closeInterface();
+//                    UIManager.openASCustomizationInterface();
+//                    break;
+//                case BARRIER:
+//                    UIManager.closeInterface();
+//                    break;
+//                default:
+//                    break;
+//            }
+//
+//        }else if(checkLabel(event, UIManager.getASCustomize())){ // ---------Armor Stand Customization UI---------
+//            event.setCancelled(true);
+//            // 2. Customize Interface Behaviour
+//            Material item = event.getCurrentItem().getType();
+//
+//            //Create a armor stand that corresponds to a specific player. Any changes to the player's armor stand
+//            //can be made accessing the playersArmorStands variable
+//            if (!(playersArmorStands.containsKey(player.getUniqueId()))){
+//                ArmorStand stand = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
+//                stand.setVisible(false);
+//                playersArmorStands.put(player.getUniqueId(), stand);
+//            }
+//
+//            switch (item){
+//                case ARMOR_STAND:
+//                    Utils.msgPlayer(player, "testing hasArms");
+//                    UIManager.closeInterface();
+//                    UIManager.openConfirmMenu(item);
+//                    break;
+//                case NETHER_STAR:
+//                    Utils.msgPlayer(player, "testing hasGlow");
+//                    UIManager.closeInterface();
+//                    UIManager.openConfirmMenu(item);
+//                    break;
+//                case LEATHER_CHESTPLATE:
+//                    Utils.msgPlayer(player, "testing hasArmor");
+//                    UIManager.closeInterface();
+//                    UIManager.openConfirmMenu(item);
+//                    break;
+//                case SMOOTH_STONE_SLAB:
+//                    Utils.msgPlayer(player, "testing hasBase");
+//                    UIManager.closeInterface();
+//                    UIManager.openConfirmMenu(item);
+//                    break;
+//                case GREEN_WOOL:
+//                    if (playersArmorStands.containsKey(player.getUniqueId())){
+//                    playersArmorStands.get(player.getUniqueId()).setVisible(true);
+//                    Utils.msgPlayer(player, "armor stand created");
+//                    playersArmorStands.remove(player.getUniqueId()); //Once created, is unavailable for customization
+//                    }
+//                    UIManager.closeInterface();
+//                    UIManager.openMainASInterface();
+//                    break;
+//                case RED_WOOL:
+//                    if(playersArmorStands.containsKey(player.getUniqueId())){
+//                        playersArmorStands.get(player.getUniqueId()).setVisible(true);
+//                        playersArmorStands.get(player.getUniqueId()).remove(); //First we remove the entity itself
+//                        playersArmorStands.remove(player.getUniqueId()); //Then the key in the hashmap
+//                        Utils.msgPlayer(player, "cancelling dummy creation");
+//                    }
+//                    UIManager.closeInterface();
+//                    UIManager.openMainASInterface();
+//                    break;
+//            }
+//
+//        }else if (checkLabel(event, UIManager.getConfirmLabel())){// ---------Confirmation GUI---------
+//            event.setCancelled(true);
+//            // 3.1 Confirmation GUI Behaviour
+//            Material clickedItem = event.getCurrentItem().getType();
+//            Material selectedChangeIndicator = event.getView().getItem(4).getType();
+//
+//
+//            switch (clickedItem){
+//                case GREEN_WOOL:
+//                    //Confirms the selected option and returns to the Customize GUI
+//                    switch (selectedChangeIndicator){
+//                        case ARMOR_STAND:
+//                            // We want to confirm the toggling of the armor stand's arms
+//                            if (!playersArmorStands.get(player.getUniqueId()).hasArms()){ //If no arms, give arms
+//                                playersArmorStands.get(player.getUniqueId()).setArms(true);
+//                            } else {
+//                                playersArmorStands.get(player.getUniqueId()).setArms(false); //Else, remove arms
+//                            }
+//                            break;
+//                        case NETHER_STAR:
+//                            // If we click confirm and the option is Glow, lets toggle it
+//                            if (!playersArmorStands.get(player.getUniqueId()).isGlowing()){ //If no glow, make it glow
+//                                playersArmorStands.get(player.getUniqueId()).setGlowing(true);
+//                            } else {
+//                                playersArmorStands.get(player.getUniqueId()).setGlowing(false); //Else, remove glow
+//                            }
+//                            break;
+//                        case LEATHER_CHESTPLATE:
+//                            break;
+//                        case SMOOTH_STONE_SLAB:
+//                            // We want to toggle the armor's stand base
+//                            if (!playersArmorStands.get(player.getUniqueId()).hasBasePlate()){
+//                                playersArmorStands.get(player.getUniqueId()).setBasePlate(true);
+//                            }else {
+//                                playersArmorStands.get(player.getUniqueId()).setBasePlate(false);
+//                            }
+//                            break;
+//                    }
+//                    Utils.msgPlayer(player, "Action confirmed, returning to the builder...");
+//                    UIManager.closeInterface();
+//                    UIManager.openASCustomizationInterface();
+//                    break;
+//                case RED_WOOL:
+//                    //Cancels any changes, goes back to the Customize GUI
+//                    UIManager.closeInterface();
+//                    UIManager.openASCustomizationInterface();
+//                    break;
+//                default:
+//                    break;
+//            }
+//
+//        }else if(checkLabel(event, UIManager.getSkillsLabel())){//  ---------Skill allocation UI---------
+//            //TODO: re-implementar skill allocation
 //            event.setCancelled(true);
 //
 ////            ItemStack clickedItem = event.getCurrentItem(); //também é possível usar os materiais no switch
@@ -285,32 +285,32 @@ public class GUIHandler implements Listener {
 //            //2- Aplicar mudança de speed baseado na Agility  (valor base é 0.2 (float) )
 //            player.setWalkSpeed((float) (0.2 + ((attributes.getAgility()) / 10)*0.2));
 //            //3- TODO Aplicar mudanças da Intelligence
-
-        }
-
-        else {
-
-        }
-
-    }
-
-    public boolean checkLabel(Event event, String label){
-        if (!(event instanceof InventoryClickEvent)){
-            return false;
-        }
-        InventoryClickEvent clickEvent = (InventoryClickEvent) event;
-        return clickEvent.getView().getTitle().equalsIgnoreCase(Utils.color(label));
-    }
-    private ItemStack editItem(ItemStack item, int amount, List<String> lore){
-        if (amount == 0){
-            //se tentarmos colocar 0 items, resetamos para 1, que é o mínimo
-            amount = 1;
-        }
-
-        item.setAmount(amount);
-        ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setLore(lore);
-        item.setItemMeta(itemMeta);
-        return item;
-    }
+//
+//        }
+//
+//        else {
+//
+//        }
+//
+//    }
+//
+//    public boolean checkLabel(Event event, String label){
+//        if (!(event instanceof InventoryClickEvent)){
+//            return false;
+//        }
+//        InventoryClickEvent clickEvent = (InventoryClickEvent) event;
+//        return clickEvent.getView().getTitle().equalsIgnoreCase(Utils.color(label));
+//    }
+//    private ItemStack editItem(ItemStack item, int amount, List<String> lore){
+//        if (amount == 0){
+//            //se tentarmos colocar 0 items, resetamos para 1, que é o mínimo
+//            amount = 1;
+//        }
+//
+//        item.setAmount(amount);
+//        ItemMeta itemMeta = item.getItemMeta();
+//        itemMeta.setLore(lore);
+//        item.setItemMeta(itemMeta);
+//        return item;
+//    }
 }

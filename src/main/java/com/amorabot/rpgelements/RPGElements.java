@@ -2,6 +2,7 @@ package com.amorabot.rpgelements;
 
 import com.amorabot.rpgelements.commands.*;
 import com.amorabot.rpgelements.components.CustomMob;
+import com.amorabot.rpgelements.components.PlayerComponents.Profile;
 import com.amorabot.rpgelements.handlers.*;
 import com.amorabot.rpgelements.managers.JSONProfileManager;
 import com.amorabot.rpgelements.utils.DelayedTask;
@@ -52,33 +53,20 @@ public final class RPGElements extends JavaPlugin {
             }
         }
 
-//        saveDefaultConfig();
-//        getConfig() lê o arquivo config.yml disponível no momento (em resources)
-//        getList() procura, no arquivo, a key com o nome do path indicado. retorna uma List<> com os itens
-//
-//        Como um dos usos para o config file, podemos ler o conteúdo e usá-lo no código de forma rápida:
-//
-//        ConfigUtil config = new ConfigUtil(this, "test.yml");
-//        config.getConfig().set("hello", "world");//existem os gets e os sets para escrever ou recuperar info. do arquivo.
-//        //ao setar, definimos a primeira string como key e a segunda como value
-//        config.save();
-
         SkillsUI skillsUI = new SkillsUI(this);
 
         getCommand("updatenbt").setExecutor(new UpdateNBT(this));
         getCommand("getnbt").setExecutor(new GetNBT(this));
         getCommand("generateweapon").setExecutor(new GenerateWeapon(this));
         getCommand("identify").setExecutor(new Identify(this));
+        getCommand("recolor").setExecutor(new Recolor(this));
         getCommand("skills").setExecutor(skillsUI);
         getCommand("skills").setTabCompleter(skillsUI);
-        getCommand("fly").setExecutor(new Fly());
-        getCommand("combatmenu").setExecutor(new Menu(this));
-        getCommand("buildertoolkit").setExecutor(new BuilderToolkit());
-        getCommand("trainingdummy").setExecutor(new ArmorStand(this));
         getCommand("resetattributes").setExecutor(new ResetAttributes(this));
+        getCommand("editmods").setExecutor(new EditMods(this));
 
         //---------   LISTENERS   ------------
-        new TorchHandler(this);
+//        new TorchHandler(this);
         new JoinQuitHandler(this);
         new WeaponEquipHandler(this);
         new DelayedTask(this);
@@ -116,9 +104,11 @@ public final class RPGElements extends JavaPlugin {
             @Override
             public void run() {
                 for (Player currentPlayer : Bukkit.getOnlinePlayers()){
-                    int health = JSONProfileManager.getProfile(currentPlayer.getUniqueId().toString()).getHealth().getBaseHealth();
-                    int ward = JSONProfileManager.getProfile(currentPlayer.getUniqueId().toString()).getHealth().getBaseWard();
-                    msgPlayerAB(currentPlayer, "&c HP[" + health +"]" + "&7//" + "&bWard[" + ward+ "]");
+                    Profile playerProfile = JSONProfileManager.getProfile(currentPlayer.getUniqueId().toString());
+                    int health = playerProfile.getHealth().getBaseHealth();
+                    int ward = playerProfile.getHealth().getBaseWard();
+                    float dps = playerProfile.getDamage().getDPS();
+                    msgPlayerAB(currentPlayer, "&c HP[" + health +"]" + "&7//" + "&bWard[" + ward+ "]" + "///// " + dps);
                 }
             }
         }.runTaskTimer(this, 0L, 10L);

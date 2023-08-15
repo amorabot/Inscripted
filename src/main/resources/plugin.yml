@@ -1,5 +1,5 @@
 name: RPGElements
-version: '${0.2}'
+version: '0.2'
 main: com.amorabot.rpgelements.RPGElements
 api-version: 1.19
 permissions:
@@ -10,32 +10,11 @@ permissions:
     pluginstudies.builder:
       description: Gives the player the building privileges.
 commands:
-  fly:
-    description: Toggles flying for the command sender.
-    usage: /fly
-    aliases: [f, flying, togglefly]
-    permission: fly
-    permission-message: You do not have permission to use this command
-  combatmenu:
-    description: Opens a basic menu with combat-related content
-    usage: /combatmenu
-    aliases: [combat,menu,training]
-    permission: menu
-    permission-message: You do not have the strength to use this command
-  buildertoolkit:
-    description: Basic tools for a skillful builder
-    usage: /buildertookit
-    aliases: [btk, buildertk]
-    permission: builder
   skills:
     description: Opens a GUI for managing your skills points
     usage: /skills
     aliases: [skillpoints,stats]
     permission: menu
-  trainingdummy:
-    description: Opens a armor stand GUI
-    usage: /trainingdummy
-    aliases: [tdui, td]
   updatenbt:
     description: Updates a item's item level NBT data.
     usage: /updatenbt
@@ -53,3 +32,9 @@ commands:
   getnbt:
     description: gets a specified NBT data tag.
     usage: /getnbt
+  recolor:
+    description: recolors a item's display name.
+    usage: /recolor
+  editmods:
+    description: modifiers JSON edit interface
+    usage: /editmods

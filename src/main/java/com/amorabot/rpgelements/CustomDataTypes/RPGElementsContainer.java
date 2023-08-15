@@ -1,4 +1,6 @@
 package com.amorabot.rpgelements.CustomDataTypes;
 
-public interface RPGElementsContainer {
+import java.io.Serializable;
+
+public interface RPGElementsContainer extends Serializable {
 }
