@@ -1,17 +1,18 @@
 package com.amorabot.rpgelements.components.PlayerComponents;
 
-public class DefenceComponent {
+import com.amorabot.rpgelements.components.Items.Interfaces.PlayerComponent;
+
+public class DefenceComponent implements PlayerComponent {
     private int fireResistance;
     private int coldResistance;
     private int lightningResistance;
 
-
     private int evasion; //%stat now
-
 
     private float finalArmor;
     private int baseArmor;
     private int increasedArmor;
+    //Set<ItemModifier> specialModList; // (effects calculations in a specific way)
 
     public DefenceComponent(){
         this.fireResistance = 15;
@@ -48,5 +49,10 @@ public class DefenceComponent {
     }
     private void setFinalArmor(int incArmor){
         this.finalArmor = baseArmor * (1 + incArmor);
+    }
+
+    @Override
+    public void update(Profile profileData) {
+
     }
 }

@@ -3,12 +3,11 @@ package com.amorabot.rpgelements.commands;
 import com.amorabot.rpgelements.RPGElements;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.RangeTypes;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.WeaponModifiers;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.WeaponTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
 import com.amorabot.rpgelements.components.Items.Weapon.BasicWeaponGenerator;
-import com.amorabot.rpgelements.components.Items.Weapon.BasicWeaponRenderer;
 import com.amorabot.rpgelements.components.Items.Weapon.Weapon;
+import com.amorabot.rpgelements.components.Items.Weapon.WeaponModifiers;
+import com.amorabot.rpgelements.components.Items.Weapon.WeaponTypes;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -35,9 +34,9 @@ public class GenerateWeapon implements CommandExecutor {
         String weaponType = args[2];
 
         Weapon randomWeapon = BasicWeaponGenerator
-                .createGenericWeapon(ilvlArg, ItemRarities.valueOf(rarityArg), WeaponTypes.valueOf(weaponType), new BasicWeaponRenderer());
+                .createGenericWeapon(ilvlArg, ItemRarities.valueOf(rarityArg), WeaponTypes.valueOf(weaponType));
         assert randomWeapon != null;
-        player.getInventory().addItem(randomWeapon.getItemForm(plugin, randomWeapon.getRenderer()));
+        player.getInventory().addItem(randomWeapon.getItemForm(plugin));
         if (args[3].equals("debug")){
 
             List<Modifier<WeaponModifiers>> mods = randomWeapon.getModifiers();

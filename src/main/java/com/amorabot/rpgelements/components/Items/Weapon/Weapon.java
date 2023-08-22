@@ -1,14 +1,12 @@
 package com.amorabot.rpgelements.components.Items.Weapon;
 
 import com.amorabot.rpgelements.components.Items.Abstract.Item;
-import com.amorabot.rpgelements.components.Items.Abstract.Renderer;
+import com.amorabot.rpgelements.components.Items.Abstract.ItemRenderer;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.RendererTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
 import com.amorabot.rpgelements.utils.CraftingUtils;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DamageTypes;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.WeaponNames;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.WeaponTypes;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.WeaponModifiers;
 import com.amorabot.rpgelements.components.Items.DataStructures.GenericItemContainerDataType;
 import com.amorabot.rpgelements.RPGElements;
 import com.amorabot.rpgelements.utils.Utils;
@@ -60,6 +58,13 @@ public class Weapon extends Item {
     public List<Modifier<WeaponModifiers>> getModifiers(){
         return this.modifiers;
     }
+    public Set<WeaponModifiers> getModifierSet(){
+        Set<WeaponModifiers> aux = new HashSet<>();
+        for (Modifier<WeaponModifiers> mod : this.modifiers){
+            aux.add(mod.getModifier());
+        }
+        return aux;
+    }
     //-------------------------------------------------------------------------
     public void updateBaseDamage(){
         for (Modifier<WeaponModifiers> mod : modifiers){
@@ -91,9 +96,12 @@ public class Weapon extends Item {
     public Map<DamageTypes, int[]> getBaseDamage(){
         return this.baseDmg;
     }
+    public String getName(){
+        return this.name;
+    }
     //-------------------------------------------------------------------------
     @Override
-    public void render(ItemStack item, Renderer itemRenderer) {
+    public void render(ItemStack item, ItemRenderer itemRenderer) {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
         List<String> lore = new ArrayList<>();
@@ -110,8 +118,25 @@ public class Weapon extends Item {
         item.setItemMeta(itemMeta);
     }
     @Override
-    public ItemStack getItemForm(RPGElements plugin, Renderer itemRenderer) {
+    public ItemRenderer getRenderer(){
+        switch (this.renderer){
+            case BASIC -> {
+                return new BasicWeaponRenderer();
+            }
+            case CORRUPTED -> {
+                Utils.log("No corruptedWeaponRenderer");
+                return null;
+            }
+            default -> {
+                Utils.log("No renderer defined/No ItemRenderer class implemented for this renderer constant");
+                return null;
+            }
+        }
+    }
+    @Override
+    public ItemStack getItemForm(RPGElements plugin) {
         ItemStack weaponItem = new ItemStack(this.material);
+        ItemRenderer itemRenderer = getRenderer();
         render(weaponItem, itemRenderer);
         String displayName = "";
         switch (getRarity()){
@@ -129,9 +154,11 @@ public class Weapon extends Item {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-        if (!dataContainer.has(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class))){
-            dataContainer.set(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class), this);
-            Utils.log("Successful datacontainerSerialization");
-        }
+//        if (!dataContainer.has(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class))){
+//            dataContainer.set(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class), this);
+//            Utils.log("Successful datacontainerSerialization");
+//        }
+        dataContainer.set(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class), this);
+        item.setItemMeta(itemMeta);
     }
 }

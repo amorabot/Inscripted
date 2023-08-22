@@ -28,7 +28,7 @@ public class JSONProfileManager {
     // CRUD Operations ->  Create - Read - Update - Delete
 
     public static Profile createProfile(String uuid){
-        Attributes attributes = new Attributes(10, 0,0,0);
+        Attributes attributes = new Attributes(10, 0,0);
         Stats stats = new Stats();
         UUID id = UUID.fromString(uuid);
         Profile createdProfile = new Profile(new HealthComponent(), new DefenceComponent(), new DamageComponent(), attributes, stats);
@@ -130,7 +130,6 @@ public class JSONProfileManager {
                 JsonObject JSONProfileMap = gson.fromJson(reader, JsonObject.class);
                 JsonElement JSONProfile = JSONProfileMap.get(uuid);
                 String stringifiedProfile = JSONProfile.toString();
-//                log(stringifiedProfile); //debuggin
                 Profile playerProfile = gson.fromJson(stringifiedProfile, Profile.class);
                 profiles.put(UUID.fromString(uuid), playerProfile);
             } catch (FileNotFoundException e) {

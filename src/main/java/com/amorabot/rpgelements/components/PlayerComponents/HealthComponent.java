@@ -1,6 +1,8 @@
 package com.amorabot.rpgelements.components.PlayerComponents;
 
-public class HealthComponent {
+import com.amorabot.rpgelements.components.Items.Interfaces.PlayerComponent;
+
+public class HealthComponent implements PlayerComponent {
 
     private float currentHealth;
     private float maxHealth;
@@ -8,7 +10,6 @@ public class HealthComponent {
     private final int startingHealth;
 
     private int increasedHealth;
-
 
     private float currentWard;
     private float maxWard;
@@ -40,24 +41,26 @@ public class HealthComponent {
     public float getMaxHealth() {
         return maxHealth;
     }
-
     public int getBaseHealth() {
         return this.baseHealth;
-    }
+    } //Value without % modifiers
 
-    public void setBaseHealth(int newBaseHealth){
-        if (this.startingHealth + newBaseHealth <= 0){ //If the base life modifiers gets your life to negative, your life is 1
+    public void setBaseHealth(int addedHealth){
+        if (this.startingHealth + addedHealth <= 0){ //If the base life modifiers gets your life to negative, your life is 1
             this.baseHealth = 1;
             return;
         }
-        this.baseHealth = this.startingHealth + newBaseHealth;
+        this.baseHealth = this.startingHealth + addedHealth;
+    }
+    public int getIncreasedHealth() {
+        return increasedHealth;
     }
     public void setIncreasedHealth(int increasedHealth){
         this.increasedHealth = increasedHealth;
-        setMaxHealth(increasedHealth);
+        setMaxHealth();
     }
-    private void setMaxHealth(int incHealth){
-        this.maxHealth = baseHealth * (1 + incHealth);
+    public void setMaxHealth(){
+        this.maxHealth = baseHealth * (1 + getIncreasedHealth());
     }
 
 
@@ -76,11 +79,33 @@ public class HealthComponent {
     public void setBaseWard(int newBaseWard){
         this.baseWard = this.startingWard + newBaseWard;
     }
+    public int getIncreasedWard() {
+        return increasedWard;
+    }
     public void setIncreasedWard(int increasedWard){
         this.increasedWard = increasedWard;
-        setMaxWard(increasedWard);
+        setMaxWard();
     }
-    private void setMaxWard(int incWard){
-        this.maxWard = baseWard * (1 + incWard);
+    private void setMaxWard(){
+        this.maxWard = baseWard * (1 + getIncreasedWard());
+    }
+
+    @Override
+    public void update(Profile profileData) {
+        int flatHealthSum = 0;
+        int percentHealth = 0;
+        int flatWardSum = 0;
+        int percentWard = 0;
+        //Getting health stats from all items...
+        //CASO PRECISE CHECAR A ARMA, USAR if == NULL
+        //Getting health stats from attributes
+        Attributes attributes = profileData.getAttributes();
+        flatHealthSum += attributes.getStrength()/3;
+        flatWardSum += attributes.getIntelligence()/5;
+
+        setBaseHealth(flatHealthSum);
+        setIncreasedHealth(percentHealth);
+        setBaseWard(flatWardSum);
+        setIncreasedWard(percentWard);
     }
 }

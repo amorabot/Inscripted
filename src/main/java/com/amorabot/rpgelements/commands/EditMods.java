@@ -2,7 +2,7 @@ package com.amorabot.rpgelements.commands;
 
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.WeaponModifiers;
+import com.amorabot.rpgelements.components.Items.Weapon.WeaponModifiers;
 import com.amorabot.rpgelements.RPGElements;
 import com.amorabot.rpgelements.components.Items.Files.ModifiersEditor;
 import com.amorabot.rpgelements.utils.Utils;

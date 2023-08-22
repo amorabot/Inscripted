@@ -105,10 +105,10 @@ public final class RPGElements extends JavaPlugin {
             public void run() {
                 for (Player currentPlayer : Bukkit.getOnlinePlayers()){
                     Profile playerProfile = JSONProfileManager.getProfile(currentPlayer.getUniqueId().toString());
-                    int health = playerProfile.getHealth().getBaseHealth();
-                    int ward = playerProfile.getHealth().getBaseWard();
-                    float dps = playerProfile.getDamage().getDPS();
-                    msgPlayerAB(currentPlayer, "&c HP[" + health +"]" + "&7//" + "&bWard[" + ward+ "]" + "///// " + dps);
+                    float health = playerProfile.getHealthComponent().getMaxHealth();
+                    int ward = playerProfile.getHealthComponent().getBaseWard();
+                    float dps = playerProfile.getDamageComponent().getDPS();
+                    msgPlayerAB(currentPlayer, "&c HP[" + health +"]" + "&7 // " + "&bWard[" + ward+ "]" + "     &7" + dps);
                 }
             }
         }.runTaskTimer(this, 0L, 10L);

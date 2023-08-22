@@ -1,84 +1,104 @@
 package com.amorabot.rpgelements.components.PlayerComponents;
 
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DamageTypes;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.TargetStats;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ValueTypes;
+import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
+import com.amorabot.rpgelements.components.Items.Interfaces.PlayerComponent;
 import com.amorabot.rpgelements.components.Items.Weapon.Weapon;
+import com.amorabot.rpgelements.components.Items.Weapon.WeaponModifiers;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-public class DamageComponent {
+public class DamageComponent implements PlayerComponent {
     private float DPS;
-
-    private int[] physicalDmg = new int[2];
-    private int[] fireDmg = new int[2];
-    private int[] coldDmg = new int[2];
-    private int[] lightningDmg = new int[2];
-    private int[] abyssalDmg = new int[2];
+    private Map<DamageTypes, int[]> damage;
+    private int stamina;
+    private float accuracy;
+//    private float critChance;
+    private float bleedChance;
 
     public DamageComponent(){
         this.DPS = 1;
     }
 
-    public void setDamage(Weapon weaponStats){
-        //TODO: implementar :D
-        //considerar weapon como podendo ser um itemStack vazio, nesse caso setar p/ 0
-        //usar o container de weapon pra identificar todos os danos e os valores
-        //e serializar os valores no local correto
-        if (weaponStats == null){
-            this.physicalDmg = new int[]{0,0};
-            this.fireDmg = new int[]{0,0};
-            this.coldDmg = new int[]{0,0};
-            this.lightningDmg = new int[]{0,0};
-            this.abyssalDmg = new int[]{0,0};
-            setDps();
-            return;
+    private void setDps(){
+        Set<DamageTypes> damageTypes = damage.keySet();
+        int lowerDamage = 0;
+        int upperDamage = 0;
+        for (DamageTypes dmgType : damageTypes){
+            if (damage.containsKey(dmgType)){
+                int[] dmg = damage.get(dmgType);
+                lowerDamage += dmg[0];
+                upperDamage += dmg[1];
+            }
         }
 
-        Map<DamageTypes, int[]> damageTypesMap = weaponStats.getBaseDamage();
-        this.physicalDmg = damageTypesMap.get(DamageTypes.PHYSICAL);
-        if (damageTypesMap.containsKey(DamageTypes.FIRE)){
-            this.fireDmg = damageTypesMap.get(DamageTypes.FIRE);
-        } else { this.fireDmg = new int[]{0,0}; }
-        if (damageTypesMap.containsKey(DamageTypes.COLD)){
-            this.coldDmg= damageTypesMap.get(DamageTypes.COLD);
-        } else { this.coldDmg = new int[]{0,0}; }
-        if (damageTypesMap.containsKey(DamageTypes.LIGHTNING)){
-            this.lightningDmg = damageTypesMap.get(DamageTypes.LIGHTNING);
-        } else { this.lightningDmg = new int[]{0,0}; }
-        if (damageTypesMap.containsKey(DamageTypes.ABYSSAL)){
-            this.abyssalDmg = damageTypesMap.get(DamageTypes.ABYSSAL);
-        } else { this.abyssalDmg = new int[]{0,0}; }
-        setDps();
-    }
-    private void setDps(){
-        int physDps = (physicalDmg[0] + physicalDmg[1]) / 2;
-        int fireDps = (fireDmg[0] + fireDmg[1]) / 2;
-        int coldDps = (coldDmg[0] + coldDmg[1]) / 2;
-        int lightDps = (lightningDmg[0] + lightningDmg[1] / 2);
-        int abyssDps = (abyssalDmg[0] + abyssalDmg[1] / 2);
-
-        DPS = physDps + fireDps + coldDps + lightDps + abyssDps;
+        DPS = (float) (lowerDamage + upperDamage)/2;
     }
     public float getDPS(){
         return DPS;
     }
 
-    public int[] getPhysicalDmg() {
-        return physicalDmg;
-    }
+    @Override
+    public void update(Profile profileData) {
+        Weapon weaponData = profileData.getStats().getWeaponSlot();
+        Map<DamageTypes, int[]> damageMap = new HashMap<>();
+        int staminaSum = 0;
+        int accuracySum = 0;
+        int percentAccuracy = 0;
+//        int percentCrit = 0;
+        int bleedSum = 0;
 
-    public int[] getFireDmg() {
-        return fireDmg;
-    }
+//        int[] addedFire = new int[2];
+//        int percentFire = 0;
 
-    public int[] getColdDmg() {
-        return coldDmg;
-    }
+        if (weaponData != null){ //Quando a arma for null e solicitarmos um update, significa que ela foi desequipada, portanto basta re-compilar os status da armadura sozinha
+            damageMap = weaponData.getBaseDamage();
 
-    public int[] getLightningDmg() {
-        return lightningDmg;
-    }
+            //Getting weapon stats
+            for (Modifier<WeaponModifiers> mod : weaponData.getModifiers()){
+                TargetStats targetStat = mod.getModifier().getTargetStat();
+                ValueTypes valueType = mod.getModifier().getValueType();
+                int[] modValue = mod.getValue();
+                switch (targetStat){
+                    case STAMINA -> {
+                        if (valueType == ValueTypes.FLAT) {
+                            staminaSum += modValue[0];
+                        }
+                        //In case of more diverse stamina stats, add here within a switch()
+                        continue;
+                    }
+                    case ACCURACY -> {
+                        switch (valueType){
+                            case FLAT -> accuracySum += modValue[0];
+                            case PERCENT_ADDED -> percentAccuracy += modValue[0];
+                        }
+                        continue;
+                    }
+                    case BLEED -> {
+                        //There's only %bleed
+                        bleedSum += modValue[0];
+                        continue;
+                    }
+                }
+                if (damageMap.containsKey(DamageTypes.FIRE)){
+//                if (mod.getModifier().getTargetStat() == TargetStats.FIRE_DAMAGE){
+//                    //Apply the stat to fire damage
+//                    //In case of weapon stats, only check for %fire and % more fire
+//                }
+                }
+            }
+        }
 
-    public int[] getAbyssalDmg() {
-        return abyssalDmg;
+        //Getting armor/trinket stats...
+
+        this.damage = damageMap;
+        this.stamina = staminaSum;
+        this.accuracy = accuracySum * (1 + (float)(percentAccuracy/100) );
+        this.bleedChance = bleedSum;
+        setDps();
     }
 }

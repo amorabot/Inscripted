@@ -29,10 +29,10 @@ public class JoinQuitHandler implements Listener {
         if (JSONProfileManager.isNewPlayer(player.getUniqueId())){ //If new player:
             JSONProfileManager.createProfile(player.getUniqueId().toString()); //Creates and instantiates the profile.
             Utils.log("O perfil para o player " + player.getDisplayName() + " foi criado. (JSON)");
-        } else {
-            JSONProfileManager.loadProfileFromJSON(player.getUniqueId().toString()); //Loads specific profile into memory
-            Utils.log("Bem vindo de volta " + player.getDisplayName() + "! (JSON)");
+            return;
         }
+        JSONProfileManager.loadProfileFromJSON(player.getUniqueId().toString()); //Loads specific profile into memory
+        Utils.log("Bem vindo de volta " + player.getDisplayName() + "! (JSON)");
     }
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event){

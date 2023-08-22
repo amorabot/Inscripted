@@ -1,21 +1,19 @@
 package com.amorabot.rpgelements.components.Items.Weapon;
 
-//import BasicWeaponRenderer;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.RendererTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
 import com.amorabot.rpgelements.utils.CraftingUtils;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.WeaponTypes;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.WeaponModifiers;
 
 import java.util.Map;
 
 public class BasicWeaponGenerator {
 
-    public static Weapon createGenericWeapon(int itemLevel, ItemRarities rarity, WeaponTypes type, BasicWeaponRenderer renderer){
+    public static Weapon createGenericWeapon(int itemLevel, ItemRarities rarity, WeaponTypes type){
 
         //Initial item setup
         Weapon blankWeapon = new Weapon(itemLevel, type, rarity); //Generic blank weapon constructor
-        blankWeapon.setRenderer(renderer);
+        blankWeapon.setRenderer(RendererTypes.BASIC);
         //Generating the modifiers to fill the item
         int maxMods = rarity.getMaxMods();
         int numberOfMods = 0;

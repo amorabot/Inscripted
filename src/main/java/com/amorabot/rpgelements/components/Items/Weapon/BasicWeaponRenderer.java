@@ -1,14 +1,12 @@
 package com.amorabot.rpgelements.components.Items.Weapon;
 
 import com.amorabot.rpgelements.components.Items.Abstract.Item;
-import com.amorabot.rpgelements.components.Items.Abstract.Renderer;
+import com.amorabot.rpgelements.components.Items.Abstract.ItemRenderer;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemBaseImplicits;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.RangeTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DamageTypes;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.WeaponTypes;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.WeaponModifiers;
 import com.amorabot.rpgelements.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
 import com.amorabot.rpgelements.utils.ColorUtils;
@@ -20,7 +18,7 @@ import java.util.List;
 
 import static com.amorabot.rpgelements.utils.Utils.color;
 
-public class BasicWeaponRenderer extends Renderer {
+public class BasicWeaponRenderer extends ItemRenderer {
 
     @Override
     public void setDisplayName(String name, ItemStack item) {
@@ -45,13 +43,14 @@ public class BasicWeaponRenderer extends Renderer {
                 String colorString = "";
                 switch (dmgType){
                     case FIRE -> colorString = "&4";
-                    case ABYSSAL -> colorString = "&d";
+                    case ABYSSAL -> colorString = "&#7734AA";
                 }
                 int[] extraDmgRange = weaponData.getBaseDamage().get(dmgType);
                 newDamageString = (colorString + extraDmgRange[0] + " - " + extraDmgRange[1]).indent(7);
             }
             if (!newDamageString.equals("")){
-                itemLore.add(color(newDamageString));
+//                itemLore.add(color(newDamageString));
+                itemLore.add(ColorUtils.translateColorCodes(newDamageString));
             }
         }
 
