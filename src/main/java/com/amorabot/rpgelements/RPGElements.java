@@ -2,6 +2,7 @@ package com.amorabot.rpgelements;
 
 import com.amorabot.rpgelements.commands.*;
 import com.amorabot.rpgelements.components.CustomMob;
+import com.amorabot.rpgelements.components.Items.Files.ModifiersJSON;
 import com.amorabot.rpgelements.components.PlayerComponents.Profile;
 import com.amorabot.rpgelements.handlers.*;
 import com.amorabot.rpgelements.managers.JSONProfileManager;
@@ -52,6 +53,7 @@ public final class RPGElements extends JavaPlugin {
                 throw new RuntimeException(e);
             }
         }
+//        ModifiersJSON.setup(this);
 
         SkillsUI skillsUI = new SkillsUI(this);
 
@@ -66,7 +68,6 @@ public final class RPGElements extends JavaPlugin {
         getCommand("editmods").setExecutor(new EditMods(this));
 
         //---------   LISTENERS   ------------
-//        new TorchHandler(this);
         new JoinQuitHandler(this);
         new WeaponEquipHandler(this);
         new DelayedTask(this);

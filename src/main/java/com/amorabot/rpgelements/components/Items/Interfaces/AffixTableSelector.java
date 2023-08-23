@@ -9,9 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 public interface AffixTableSelector {
-//    Enum<?> getPrefixTable();
-//    Enum<?> getSuffixTable();
-
     default Map<String, Map<Integer, int[]>> getAffixTable(Map<String, Map<String, Map<String, Map<String, Map<Integer, int[]>>>>> modifiersJSON, ItemTypes type, Affix affixType) {
         if (modifiersJSON == null){
             Utils.log("De-Serialization error:" + type);

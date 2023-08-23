@@ -10,8 +10,9 @@ public enum WeaponNames {//TODO UNIFICAR COM WEAPONTYPES
     AXE("Training Hatchet", "War-axe", "Cleaver", "Battleaxe"),
     SWORD("Training Sword", "Elegant sword", "Foil", "Carved sword"),
     BOW("Basic bow"),
-    SCYTHE("Basic Scythe"),
-    WAND("Basic wand");
+    DAGGER("Basic dagger"),
+    WAND("Basic wand"),
+    SCEPTRE("Basic sceptre");
 
     private final List<String> namesList;
     WeaponNames(String... names){
