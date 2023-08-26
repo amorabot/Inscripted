@@ -2,7 +2,6 @@ package com.amorabot.rpgelements;
 
 import com.amorabot.rpgelements.commands.*;
 import com.amorabot.rpgelements.components.CustomMob;
-import com.amorabot.rpgelements.components.Items.Files.ModifiersJSON;
 import com.amorabot.rpgelements.components.PlayerComponents.Profile;
 import com.amorabot.rpgelements.handlers.*;
 import com.amorabot.rpgelements.managers.JSONProfileManager;
@@ -107,7 +106,7 @@ public final class RPGElements extends JavaPlugin {
                 for (Player currentPlayer : Bukkit.getOnlinePlayers()){
                     Profile playerProfile = JSONProfileManager.getProfile(currentPlayer.getUniqueId().toString());
                     float health = playerProfile.getHealthComponent().getMaxHealth();
-                    int ward = playerProfile.getHealthComponent().getBaseWard();
+                    int ward = playerProfile.getHealthComponent().getExtraWard();
                     float dps = playerProfile.getDamageComponent().getDPS();
                     msgPlayerAB(currentPlayer, "&c HP[" + health +"]" + "&7 // " + "&bWard[" + ward+ "]" + "     &7" + dps);
                 }

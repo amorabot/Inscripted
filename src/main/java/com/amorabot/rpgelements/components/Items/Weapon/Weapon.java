@@ -82,6 +82,12 @@ public class Weapon extends Item {
             if (weaponModifier == (WeaponModifiers.ADDED_ABYSSAL)){
                 baseDmg.put(DamageTypes.ABYSSAL, mod.getValue());
             }
+            if (weaponModifier == (WeaponModifiers.ADDED_LIGHTNING)){
+                baseDmg.put(DamageTypes.LIGHTNING, mod.getValue());
+            }
+            if (weaponModifier == (WeaponModifiers.ADDED_COLD)){
+                baseDmg.put(DamageTypes.COLD, mod.getValue());
+            }
             if (weaponModifier == (WeaponModifiers.PERCENT_PHYSICAL)){
                 int percentPhys = mod.getValue()[0];
                 int[] physDmg = baseDmg.get(DamageTypes.PHYSICAL);

@@ -16,7 +16,8 @@ public class Attributes {
         this.dexterity = dexterity;
         this.strength = strength;
     }
-    public void update(Stats playerStats){
+    public void update(Profile playerProfile){
+        Stats playerStats = playerProfile.getStats();
         int strSum = 0;
         int dexSum = 0;
         int intSum = 0;

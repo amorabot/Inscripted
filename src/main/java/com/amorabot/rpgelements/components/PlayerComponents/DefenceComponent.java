@@ -7,7 +7,7 @@ public class DefenceComponent implements PlayerComponent {
     private int coldResistance;
     private int lightningResistance;
 
-    private int evasion; //%stat now
+    private int dodge; //%stat now
 
     private float finalArmor;
     private int baseArmor;
@@ -19,7 +19,7 @@ public class DefenceComponent implements PlayerComponent {
         this.coldResistance = 15;
         this.lightningResistance = 15;
 
-        this.evasion = 0;
+        this.dodge = 0;
         this.baseArmor = 0;
     }
 
@@ -35,9 +35,9 @@ public class DefenceComponent implements PlayerComponent {
     public void setLightningResistance(int newLightningResistance) {
         this.lightningResistance = newLightningResistance;
     }
-    //------------EVASION METHODS-------------
-    public void setEvasion(int newEvasion){
-        this.evasion = newEvasion;
+    //------------DODGE METHODS-------------
+    public void setDodge(int newEvasion){
+        this.dodge = newEvasion;
     }
     //------------ARMOR METHODS-------------
     public void setBaseArmor(int newBaseArmor){
@@ -45,7 +45,6 @@ public class DefenceComponent implements PlayerComponent {
     }
     public void setIncreasedArmor(int incArmor){
         this.increasedArmor = incArmor;
-
     }
     private void setFinalArmor(int incArmor){
         this.finalArmor = baseArmor * (1 + incArmor);

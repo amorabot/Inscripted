@@ -42,14 +42,15 @@ public class BasicWeaponRenderer extends ItemRenderer {
             if (weaponData.getBaseDamage().containsKey(dmgType)){
                 String colorString = "";
                 switch (dmgType){
-                    case FIRE -> colorString = "&4";
-                    case ABYSSAL -> colorString = "&#7734AA";
+                    case FIRE -> colorString = DamageTypes.FIRE.getColor();
+                    case LIGHTNING -> colorString = DamageTypes.LIGHTNING.getColor();
+                    case COLD -> colorString = DamageTypes.COLD.getColor();
+                    case ABYSSAL -> colorString = DamageTypes.ABYSSAL.getColor(); //"&#7734AA"
                 }
                 int[] extraDmgRange = weaponData.getBaseDamage().get(dmgType);
                 newDamageString = (colorString + extraDmgRange[0] + " - " + extraDmgRange[1]).indent(7);
             }
             if (!newDamageString.equals("")){
-//                itemLore.add(color(newDamageString));
                 itemLore.add(ColorUtils.translateColorCodes(newDamageString));
             }
         }

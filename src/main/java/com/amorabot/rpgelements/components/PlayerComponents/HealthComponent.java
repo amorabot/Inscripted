@@ -6,14 +6,14 @@ public class HealthComponent implements PlayerComponent {
 
     private float currentHealth;
     private float maxHealth;
-    private int baseHealth;
+    private int extraHealth;
     private final int startingHealth;
 
     private int increasedHealth;
 
     private float currentWard;
     private float maxWard;
-    private int baseWard;
+    private int extraWard;
     private final int startingWard;
 
     private int increasedWard;
@@ -22,15 +22,10 @@ public class HealthComponent implements PlayerComponent {
         this.startingHealth = 40;
         this.startingWard = 0;
 
-        this.baseHealth = 40;
-        this.baseWard = 0;
-    }
-    public HealthComponent(int startingHealth, int startingWard){
-        this.startingHealth = startingHealth;
-        this.startingWard = startingWard;
-
-        this.baseHealth = startingHealth;
-        this.baseWard = startingWard;
+        this.extraHealth = 0;
+        this.extraWard = 0;
+        setMaxHealth();
+        setMaxWard();
     }
 
     //------------LIFE METHODS-------------
@@ -41,16 +36,16 @@ public class HealthComponent implements PlayerComponent {
     public float getMaxHealth() {
         return maxHealth;
     }
-    public int getBaseHealth() {
-        return this.baseHealth;
+    public int getExtraHealth() {
+        return this.extraHealth;
     } //Value without % modifiers
 
-    public void setBaseHealth(int addedHealth){
-        if (this.startingHealth + addedHealth <= 0){ //If the base life modifiers gets your life to negative, your life is 1
-            this.baseHealth = 1;
+    public void setExtraHealth(int extraHealth){
+        if (this.startingHealth + extraHealth <= 0){ //If the base life modifiers gets your life to negative, your life is 1
+            this.extraHealth = 1;
             return;
         }
-        this.baseHealth = this.startingHealth + addedHealth;
+        this.extraHealth = this.startingHealth + extraHealth;
     }
     public int getIncreasedHealth() {
         return increasedHealth;
@@ -60,7 +55,7 @@ public class HealthComponent implements PlayerComponent {
         setMaxHealth();
     }
     public void setMaxHealth(){
-        this.maxHealth = baseHealth * (1 + getIncreasedHealth());
+        this.maxHealth = extraHealth * (1 + getIncreasedHealth());
     }
 
 
@@ -72,12 +67,12 @@ public class HealthComponent implements PlayerComponent {
     public float getMaxWard(){
         return this.maxWard;
     }
-    public int getBaseWard() {
-        return baseWard;
+    public int getExtraWard() {
+        return extraWard;
     }
 
-    public void setBaseWard(int newBaseWard){
-        this.baseWard = this.startingWard + newBaseWard;
+    public void setExtraWard(int extraWard){
+        this.extraWard = this.startingWard + extraWard;
     }
     public int getIncreasedWard() {
         return increasedWard;
@@ -87,7 +82,7 @@ public class HealthComponent implements PlayerComponent {
         setMaxWard();
     }
     private void setMaxWard(){
-        this.maxWard = baseWard * (1 + getIncreasedWard());
+        this.maxWard = extraWard * (1 + getIncreasedWard());
     }
 
     @Override
@@ -103,9 +98,9 @@ public class HealthComponent implements PlayerComponent {
         flatHealthSum += attributes.getStrength()/3;
         flatWardSum += attributes.getIntelligence()/5;
 
-        setBaseHealth(flatHealthSum);
+        setExtraHealth(flatHealthSum);
         setIncreasedHealth(percentHealth);
-        setBaseWard(flatWardSum);
+        setExtraWard(flatWardSum);
         setIncreasedWard(percentWard);
     }
 }

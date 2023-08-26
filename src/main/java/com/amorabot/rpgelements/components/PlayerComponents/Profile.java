@@ -8,6 +8,7 @@ public class Profile {
     private DefenceComponent defences;
     private DamageComponent damage;
     private Attributes attributes;
+    private Miscellaneous miscellaneous;
     private Stats stats;
     public Profile(Attributes attributes, Stats stats){
         this.attributes = attributes;
@@ -18,6 +19,7 @@ public class Profile {
         this.defences = def;
         this.damage = dmg;
         this.attributes = att;
+        this.miscellaneous = new Miscellaneous();
         this.stats = stats;
     }
     public Attributes getAttributes(){
@@ -25,6 +27,13 @@ public class Profile {
     }
     public void setAttributes(Attributes attributes){
         this.attributes = attributes;
+    }
+
+    public Miscellaneous getMiscellaneous() {
+        return miscellaneous;
+    }
+    public void setMiscellaneous(Miscellaneous miscellaneous) {
+        this.miscellaneous = miscellaneous;
     }
 
     public Stats getStats() {
@@ -44,10 +53,11 @@ public class Profile {
         return this.damage;
     }
     private void updateProfile(){
-        getAttributes().update(this.stats);
+        getAttributes().update(this);
         getDamageComponent().update(this);
         getHealthComponent().update(this);
-//        getDefenceComponent().update(this.stats);
+        getDefenceComponent().update(this);
+        getMiscellaneous().update(this);
     }
     public void updateMainHand(Weapon weapon){
         getStats().setWeaponSlot(weapon);

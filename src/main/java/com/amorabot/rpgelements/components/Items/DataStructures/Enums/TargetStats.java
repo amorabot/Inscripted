@@ -5,6 +5,7 @@ public enum TargetStats {
     DEXTERITY,
     INTELLIGENCE,
     STAMINA,
+    STAMINA_REGEN,
     HEALTH,
     WARD,
     EVASION,
@@ -21,7 +22,11 @@ public enum TargetStats {
     ACCURACY,
     BLEED,
     CRITICAL,
+    BASE_CRITICAL,
+    CRITICAL_DAMAGE,
     LIFE_ON_HIT,
-    LIFESTEAL
+    LIFESTEAL,
+    SHRED,
+    MAELSTROM,
     
 }
