@@ -34,7 +34,7 @@ public class GenerateWeapon implements CommandExecutor {
         String weaponType = args[2];
 
         Weapon randomWeapon = BasicWeaponGenerator
-                .createGenericWeapon(ilvlArg, ItemRarities.valueOf(rarityArg), WeaponTypes.valueOf(weaponType));
+                .createGenericWeapon(ilvlArg, ItemRarities.valueOf(rarityArg), WeaponTypes.valueOf(weaponType), false);
         assert randomWeapon != null;
         player.getInventory().addItem(randomWeapon.getItemForm(plugin));
         if (args[3].equals("debug")){

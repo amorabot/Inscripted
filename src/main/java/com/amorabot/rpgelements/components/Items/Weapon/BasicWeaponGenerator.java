@@ -9,11 +9,11 @@ import java.util.Map;
 
 public class BasicWeaponGenerator {
 
-    public static Weapon createGenericWeapon(int itemLevel, ItemRarities rarity, WeaponTypes type){
+    public static Weapon createGenericWeapon(int itemLevel, ItemRarities rarity, WeaponTypes type, boolean identified){
 
         //Initial item setup
-        Weapon blankWeapon = new Weapon(itemLevel, type, rarity); //Generic blank weapon constructor
-        blankWeapon.setRenderer(RendererTypes.BASIC);
+        Weapon blankWeapon = new Weapon(itemLevel, type, rarity, identified); //Generic blank weapon constructor
+//        blankWeapon.setRenderer(RendererTypes.BASIC);
         //Generating the modifiers to fill the item
         int maxMods = rarity.getMaxMods();
         int numberOfMods = 0;

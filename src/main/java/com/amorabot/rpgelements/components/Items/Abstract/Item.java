@@ -12,11 +12,10 @@ public abstract class Item implements RPGElementsContainer {
     private boolean identified;
     private final int ilvl;
     private ItemRarities rarity;
-//    private Renderer renderer;
     protected RendererTypes renderer;
 
-    public Item(int ilvl, ItemRarities rarity){
-        this.identified = true;
+    public Item(int ilvl, ItemRarities rarity, boolean identified){
+        this.identified = identified;
         this.ilvl = ilvl;
         this.rarity = rarity;
     }
@@ -31,7 +30,11 @@ public abstract class Item implements RPGElementsContainer {
     public boolean isIdentified() {
         return identified;
     }
-    public void identify() {
+    public void identify() { //Get clicked item -> get inner data -> identify -> update initial itemStack
+        if (isIdentified()){
+            return;
+        }
+        setRenderer(RendererTypes.BASIC);
         this.identified = true;
     }
     //-------------------------------------------------------------------------
@@ -50,10 +53,4 @@ public abstract class Item implements RPGElementsContainer {
     public void setRenderer(RendererTypes rendererType){
         this.renderer = rendererType;
     }
-//    public Renderer getRenderer() {
-//        return renderer;
-//    }
-//    public void setRenderer(Renderer renderer) {
-//        this.renderer = renderer;
-//    }
 }

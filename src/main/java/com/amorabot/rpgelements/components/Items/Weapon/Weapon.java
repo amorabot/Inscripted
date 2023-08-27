@@ -4,6 +4,7 @@ import com.amorabot.rpgelements.components.Items.Abstract.Item;
 import com.amorabot.rpgelements.components.Items.Abstract.ItemRenderer;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.RendererTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
+import com.amorabot.rpgelements.components.Items.UnidentifiedRenderer;
 import com.amorabot.rpgelements.utils.CraftingUtils;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DamageTypes;
@@ -31,14 +32,21 @@ public class Weapon extends Item {
     private Map<DamageTypes, int[]> baseDmg = new HashMap<>();
     private List<Modifier<WeaponModifiers>> modifiers = new ArrayList<>();
 
-    public Weapon(int ilvl, WeaponTypes type, ItemRarities rarity){
-        super(ilvl, rarity);
+    public Weapon(int ilvl, WeaponTypes type, ItemRarities rarity, boolean identified){
+        super(ilvl, rarity, identified);
+        if (isIdentified()){
+            setRenderer(RendererTypes.BASIC);
+        } else if (getRarity() == ItemRarities.COMMON){
+            identify();
+        } else {
+            setRenderer(RendererTypes.UNIDENTIFIED);
+        }
         this.type = type;
         this.name = WeaponNames.valueOf(type.toString()).getRandomName();
         mapBase(type, ilvl);
     }
-    public Weapon(int ilvl, ItemRarities rarity){ //Random generic weapon constructor
-        super(ilvl, rarity);
+    public Weapon(int ilvl, ItemRarities rarity, boolean identified){ //Random generic weapon constructor
+        super(ilvl, rarity, identified);
         //Do the rest...
         WeaponTypes[] weapons = WeaponTypes.values();
         int weaponIndex = CraftingUtils.getRandomNumber(0, weapons.length-1);
@@ -122,10 +130,26 @@ public class Weapon extends Item {
         itemMeta.setLore(lore);
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(itemMeta);
+
+        String displayName = "";
+        switch (getRarity()){
+            case COMMON -> displayName = "&f";
+            case MAGIC -> displayName = "&9";
+            case RARE -> displayName = "&e";
+        }
+        if (isIdentified()){
+            displayName += getName();
+        } else {
+            displayName += "Unidentified " + this.type.toString().toLowerCase();
+        }
+        itemRenderer.setDisplayName(displayName, item);
     }
     @Override
     public ItemRenderer getRenderer(){
         switch (this.renderer){
+            case UNIDENTIFIED -> {
+                return new UnidentifiedRenderer();
+            }
             case BASIC -> {
                 return new BasicWeaponRenderer();
             }
@@ -144,14 +168,7 @@ public class Weapon extends Item {
         ItemStack weaponItem = new ItemStack(this.material);
         ItemRenderer itemRenderer = getRenderer();
         render(weaponItem, itemRenderer);
-        String displayName = "";
-        switch (getRarity()){
-            case COMMON -> displayName = "&f";
-            case MAGIC -> displayName = "&9";
-            case RARE -> displayName = "&e";
-        }
-        displayName += this.name;
-        itemRenderer.setDisplayName(displayName, weaponItem);
+
         serializeContainers(plugin, this, weaponItem);
         return weaponItem;
     }
@@ -160,10 +177,6 @@ public class Weapon extends Item {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-//        if (!dataContainer.has(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class))){
-//            dataContainer.set(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class), this);
-//            Utils.log("Successful datacontainerSerialization");
-//        }
         dataContainer.set(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class), this);
         item.setItemMeta(itemMeta);
     }

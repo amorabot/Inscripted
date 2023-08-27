@@ -1,7 +1,10 @@
 package com.amorabot.rpgelements.commands;
 
 import com.amorabot.rpgelements.RPGElements;
+import com.amorabot.rpgelements.components.Items.DataStructures.GenericItemContainerDataType;
+import com.amorabot.rpgelements.components.Items.Weapon.Weapon;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,15 +40,13 @@ public class Identify implements CommandExecutor {
         ItemMeta heldItemMeta = heldItem.getItemMeta();
         PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
 
-
+        if (dataContainer.has(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class))){
+            Weapon weapon = dataContainer.get(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class));
+            assert weapon != null;
+            weapon.identify();
+            weapon.render(heldItem, weapon.getRenderer());
+        }
 
         return true;
-    }
-
-
-
-
-    private void renderStats(PersistentDataContainer dataContainer, List<String> lore){
-
     }
 }
