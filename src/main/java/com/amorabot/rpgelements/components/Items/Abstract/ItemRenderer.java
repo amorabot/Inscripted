@@ -1,6 +1,5 @@
 package com.amorabot.rpgelements.components.Items.Abstract;
 
-import com.amorabot.rpgelements.components.Items.Abstract.Item;
 import com.amorabot.rpgelements.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.inventory.ItemStack;
@@ -8,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import java.io.Serializable;
 import java.util.List;
 
-public abstract class Renderer implements Serializable {
+public abstract class ItemRenderer implements Serializable {
 
     public abstract void setDisplayName(String name, ItemStack item);
     public abstract void renderMainStat(Item itemData, List<String> itemLore);

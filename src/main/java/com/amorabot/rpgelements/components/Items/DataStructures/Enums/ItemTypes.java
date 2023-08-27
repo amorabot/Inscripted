@@ -1,5 +1,7 @@
 package com.amorabot.rpgelements.components.Items.DataStructures.Enums;
 
+import com.amorabot.rpgelements.components.Items.Weapon.WeaponTypes;
+
 import java.util.Arrays;
 import java.util.List;
 

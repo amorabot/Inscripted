@@ -1,9 +1,15 @@
 package com.amorabot.rpgelements.handlers;
 
 import com.amorabot.rpgelements.RPGElements;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemTypes;
+import com.amorabot.rpgelements.components.Items.DataStructures.GenericItemContainerDataType;
+import com.amorabot.rpgelements.components.Items.Weapon.Weapon;
+import com.amorabot.rpgelements.components.PlayerComponents.Profile;
+import com.amorabot.rpgelements.managers.JSONProfileManager;
 import com.amorabot.rpgelements.utils.DelayedTask;
 import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,6 +19,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class WeaponEquipHandler implements Listener {
@@ -28,16 +36,11 @@ public class WeaponEquipHandler implements Listener {
 
         Inventory inventory = player.getInventory();
         ItemStack heldItem = inventory.getItem(event.getNewSlot());
-        ItemStack previousItem = inventory.getItem(event.getPreviousSlot());
-
-        //Let's check fist if we are changing FROM a weapon, so we can deduce what stats to change
+//        ItemStack previousItem = inventory.getItem(event.getPreviousSlot());
         if (isEquipable(heldItem)){
-            unequipWeaponSlot(player);
             equip(heldItem,player); // Equip new weapon
         } else { // If it's not equipable, do:
-            if (isEquipable(previousItem)){
-                unequipWeaponSlot(player);
-            }
+            unequipWeaponSlot(player);
         }
     }
     @EventHandler
@@ -61,7 +64,7 @@ public class WeaponEquipHandler implements Listener {
             //-----------------------------------------------------------------------------------------------------------------------
             if (click == ClickType.DOUBLE_CLICK && (isEquipable(event.getCurrentItem()) || isEquipable(player.getItemOnCursor()))) {
                 //Checking for double clicks into main hand
-                if (!(event.getSlot() == player.getInventory().getHeldItemSlot())) {
+                if (event.getSlot() != player.getInventory().getHeldItemSlot()) {
                     return;
                 }
                 event.setCancelled(true);
@@ -155,37 +158,31 @@ public class WeaponEquipHandler implements Listener {
     }
 
     private boolean isEquipable(ItemStack heldItem){
-//        if (heldItem == null || !heldItem.hasItemMeta()){ //If its not custom or is null
-//            return false;
-//        }
-//        ItemMeta heldItemMeta = heldItem.getItemMeta();
-//        PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
-//
-//        if (dataContainer.has(new NamespacedKey(plugin, "data"), new RPGElementsContainerDataType<>(BaseItem.class))){
-//            BaseItem itemData = dataContainer.get(new NamespacedKey(plugin, "data"), new RPGElementsContainerDataType<>(BaseItem.class));
-//            return itemData.getItemType() == ItemTypes.WEAPON;
-//        } else {
-//            return false;
-//        }
-        return false;
+        if (heldItem == null || !heldItem.hasItemMeta()){ //If its not custom or is null
+            return false;
+        }
+        ItemMeta heldItemMeta = heldItem.getItemMeta();
+        PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
+
+        return dataContainer.has(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class));
     }
     private void equip(ItemStack heldItem, Player player){
-//        ItemMeta heldItemMeta = heldItem.getItemMeta();
-//        PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
-//
-//        Weapooon weaponStats = dataContainer.get(new NamespacedKey(plugin, "stats"), new RPGElementsContainerDataType<>(Weapooon.class));
-//        if (weaponStats == null){
-//            Utils.error("de-serialization error: weapon equip method");
-//            return;
-//        }
-//        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId().toString());
-//        DamageComponent damageComponent = playerProfile.getDamage();
-//        damageComponent.setDamage(weaponStats);
-//        Utils.msgPlayer(player, "Equipped: " + weaponStats.getName() + " ("+damageComponent.getDPS()+")");
+        ItemMeta heldItemMeta = heldItem.getItemMeta();
+        PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
+
+        Weapon weapon = dataContainer.get(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class));
+        if (weapon == null){
+            Utils.error("de-serialization error: weapon equip method");
+            return;
+        }
+        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId().toString());
+        playerProfile.updateMainHand(weapon);
+        JSONProfileManager.setProfile(player.getUniqueId().toString(),playerProfile);
+        Utils.msgPlayer(player, "Equipped: " + weapon.getName() + " ("+playerProfile.getDamageComponent().getDPS()+")");
     }
     private void unequipWeaponSlot(Player player){
-//        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId().toString()); // Get profile
-//        playerProfile.getStats().getWeaponSlotData().clear();
-//        playerProfile.getDamage().setDamage(null);
+        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId().toString()); // Get profile
+        playerProfile.updateMainHand(null);
+        JSONProfileManager.setProfile(player.getUniqueId().toString(),playerProfile);
     }
 }

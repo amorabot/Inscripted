@@ -1,5 +1,7 @@
-package com.amorabot.rpgelements.components.Items.DataStructures.Enums;
+package com.amorabot.rpgelements.components.Items.Weapon;
 
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Affix;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.rpgelements.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.rpgelements.components.Items.Files.ModifiersJSON;
 import com.amorabot.rpgelements.utils.Utils;
@@ -40,16 +42,9 @@ public enum WeaponTypes implements AffixTableSelector {
                 return Material.GOLDEN_AXE;
             }
         }
-//        @Override
-//        public Enum<?> getPrefixTable() {
-//            return AxeMods.PREFIXES;
-//        }
-//        @Override
-//        public Enum<?> getSuffixTable() {
-//            return AxeMods.SUFFIXES;
-//        }
     },
-    SHORTSWORD("#e2e831") {
+    SWORD("#F9B147") {
+        //"#e2e831" -greenish yellow
         @Override
         public int[] mapDamage(int ilvl) {
             if (ilvl > 0 && ilvl <= 11){
@@ -80,20 +75,109 @@ public enum WeaponTypes implements AffixTableSelector {
                 return Material.GOLDEN_SWORD;
             }
         }
-//        @Override
-//        public Enum<?> getPrefixTable() {
-//            return SwordMods.PREFIXES;
-//        }
-//        @Override
-//        public Enum<?> getSuffixTable() {
-//            return SwordMods.SUFFIXES;
-//        }
-        //"#99cce0"
+    },
+    BOW("#71C45A") {
+        @Override
+        public int[] mapDamage(int ilvl) {
+            if (ilvl > 0 && ilvl <= 11){
+                return new int[]{6,11};
+            } else if (ilvl <= 30){
+                return new int[]{11,21};
+            } else if (ilvl <= 45){
+                return new int[]{27,50};
+            } else if (ilvl <= 60){
+                return new int[]{35,65};
+            } else if (ilvl <= 80){
+                return new int[]{38,114};
+            } else {
+                return new int[]{60,150};
+            }
+        }
+
+        @Override
+        public Material mapWeaponBase(int ilvl) {
+            return Material.BOW;
+        }
+    },
+    DAGGER("#18A383") {
+        @Override
+        public int[] mapDamage(int ilvl) {
+            if (ilvl > 0 && ilvl <= 11){
+                return new int[]{6,11};
+            } else if (ilvl <= 30){
+                return new int[]{11,21};
+            } else if (ilvl <= 45){
+                return new int[]{27,50};
+            } else if (ilvl <= 60){
+                return new int[]{35,65};
+            } else if (ilvl <= 80){
+                return new int[]{38,114};
+            } else {
+                return new int[]{60,150};
+            }
+        }
+
+        @Override
+        public Material mapWeaponBase(int ilvl) {
+            return Material.SHEARS;
+        }
+    },
+    WAND("#496FE3") {
+        @Override
+        public int[] mapDamage(int ilvl) {
+            if (ilvl > 0 && ilvl <= 11){
+                return new int[]{6,11};
+            } else if (ilvl <= 30){
+                return new int[]{11,21};
+            } else if (ilvl <= 45){
+                return new int[]{27,50};
+            } else if (ilvl <= 60){
+                return new int[]{35,65};
+            } else if (ilvl <= 80){
+                return new int[]{38,114};
+            } else {
+                return new int[]{60,150};
+            }
+        }
+
+        @Override
+        public Material mapWeaponBase(int ilvl) {
+            return Material.STICK;
+        }
+    },
+    SCEPTRE("#A735D4") {
+        @Override
+        public int[] mapDamage(int ilvl) {
+            if (ilvl > 0 && ilvl <= 11){
+                return new int[]{6,11};
+            } else if (ilvl <= 30){
+                return new int[]{11,21};
+            } else if (ilvl <= 45){
+                return new int[]{27,50};
+            } else if (ilvl <= 60){
+                return new int[]{35,65};
+            } else if (ilvl <= 80){
+                return new int[]{38,114};
+            } else {
+                return new int[]{60,150};
+            }
+        }
+
+        @Override
+        public Material mapWeaponBase(int ilvl) {
+            if (ilvl <= 10){
+                return Material.WOODEN_SHOVEL;
+            } else if (ilvl <= 25) {
+                return Material.STONE_SHOVEL;
+            } else if (ilvl <= 45) {
+                return Material.IRON_SHOVEL;
+            } else if (ilvl <= 75) {
+                return Material.DIAMOND_SHOVEL;
+            } else {
+                return Material.GOLDEN_SHOVEL;
+            }
+        }
     };
-//    BOW,
-//    SCYTHE,
-//    WAND,
-//    STAFF
 
     private final String color;
     private Map<String, Map<Integer, int[]>> basicPrefixes;

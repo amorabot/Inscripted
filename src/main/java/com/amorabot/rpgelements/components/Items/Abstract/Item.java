@@ -4,6 +4,7 @@ import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRariti
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.rpgelements.CustomDataTypes.RPGElementsContainer;
 import com.amorabot.rpgelements.RPGElements;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.RendererTypes;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class Item implements RPGElementsContainer {
@@ -11,7 +12,8 @@ public abstract class Item implements RPGElementsContainer {
     private boolean identified;
     private final int ilvl;
     private ItemRarities rarity;
-    private Renderer renderer;
+//    private Renderer renderer;
+    protected RendererTypes renderer;
 
     public Item(int ilvl, ItemRarities rarity){
         this.identified = true;
@@ -22,9 +24,8 @@ public abstract class Item implements RPGElementsContainer {
     public ItemTypes getItemType(){
         return ItemTypes.valueOf(this.getClass().getName().toUpperCase());
     }
-//    public abstract <subType extends Enum<subType> & AffixTableSelector> subType getItemSubType();
-    public abstract void render(ItemStack item, Renderer itemRenderer);
-    public abstract ItemStack getItemForm(RPGElements plugin, Renderer itemRenderer);
+    public abstract void render(ItemStack item, ItemRenderer itemRenderer);
+    public abstract ItemStack getItemForm(RPGElements plugin);
     protected abstract void serializeContainers(RPGElements plugin, Item itemData, ItemStack item);
     //-------------------------------------------------------------------------
     public boolean isIdentified() {
@@ -45,10 +46,14 @@ public abstract class Item implements RPGElementsContainer {
         this.rarity = rarity;
     }
     //-------------------------------------------------------------------------
-    public Renderer getRenderer() {
-        return renderer;
+    public abstract ItemRenderer getRenderer();
+    public void setRenderer(RendererTypes rendererType){
+        this.renderer = rendererType;
     }
-    public void setRenderer(Renderer renderer) {
-        this.renderer = renderer;
-    }
+//    public Renderer getRenderer() {
+//        return renderer;
+//    }
+//    public void setRenderer(Renderer renderer) {
+//        this.renderer = renderer;
+//    }
 }

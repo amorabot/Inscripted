@@ -1,17 +1,18 @@
-package com.amorabot.rpgelements.components.Items.DataStructures.Enums;
+package com.amorabot.rpgelements.components.Items.Weapon;
 
 import com.amorabot.rpgelements.utils.CraftingUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
-public enum WeaponNames {
+public enum WeaponNames {//TODO UNIFICAR COM WEAPONTYPES
 
     AXE("Training Hatchet", "War-axe", "Cleaver", "Battleaxe"),
-    SHORTSWORD("Training Sword", "Elegant sword", "Foil", "Carved sword"),
+    SWORD("Training Sword", "Elegant sword", "Foil", "Carved sword"),
     BOW("Basic bow"),
-    SCYTHE("Basic Scythe"),
-    WAND("Basic wand");
+    DAGGER("Basic dagger"),
+    WAND("Basic wand"),
+    SCEPTRE("Basic sceptre");
 
     private final List<String> namesList;
     WeaponNames(String... names){

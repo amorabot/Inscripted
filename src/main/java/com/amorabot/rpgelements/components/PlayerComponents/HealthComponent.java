@@ -1,18 +1,19 @@
 package com.amorabot.rpgelements.components.PlayerComponents;
 
-public class HealthComponent {
+import com.amorabot.rpgelements.components.Items.Interfaces.PlayerComponent;
+
+public class HealthComponent implements PlayerComponent {
 
     private float currentHealth;
     private float maxHealth;
-    private int baseHealth;
+    private int extraHealth;
     private final int startingHealth;
 
     private int increasedHealth;
 
-
     private float currentWard;
     private float maxWard;
-    private int baseWard;
+    private int extraWard;
     private final int startingWard;
 
     private int increasedWard;
@@ -21,15 +22,10 @@ public class HealthComponent {
         this.startingHealth = 40;
         this.startingWard = 0;
 
-        this.baseHealth = 40;
-        this.baseWard = 0;
-    }
-    public HealthComponent(int startingHealth, int startingWard){
-        this.startingHealth = startingHealth;
-        this.startingWard = startingWard;
-
-        this.baseHealth = startingHealth;
-        this.baseWard = startingWard;
+        this.extraHealth = 0;
+        this.extraWard = 0;
+        setMaxHealth();
+        setMaxWard();
     }
 
     //------------LIFE METHODS-------------
@@ -40,24 +36,26 @@ public class HealthComponent {
     public float getMaxHealth() {
         return maxHealth;
     }
+    public int getExtraHealth() {
+        return this.extraHealth;
+    } //Value without % modifiers
 
-    public int getBaseHealth() {
-        return this.baseHealth;
-    }
-
-    public void setBaseHealth(int newBaseHealth){
-        if (this.startingHealth + newBaseHealth <= 0){ //If the base life modifiers gets your life to negative, your life is 1
-            this.baseHealth = 1;
+    public void setExtraHealth(int extraHealth){
+        if (this.startingHealth + extraHealth <= 0){ //If the base life modifiers gets your life to negative, your life is 1
+            this.extraHealth = 1;
             return;
         }
-        this.baseHealth = this.startingHealth + newBaseHealth;
+        this.extraHealth = this.startingHealth + extraHealth;
+    }
+    public int getIncreasedHealth() {
+        return increasedHealth;
     }
     public void setIncreasedHealth(int increasedHealth){
         this.increasedHealth = increasedHealth;
-        setMaxHealth(increasedHealth);
+        setMaxHealth();
     }
-    private void setMaxHealth(int incHealth){
-        this.maxHealth = baseHealth * (1 + incHealth);
+    public void setMaxHealth(){
+        this.maxHealth = extraHealth * (1 + getIncreasedHealth());
     }
 
 
@@ -69,18 +67,40 @@ public class HealthComponent {
     public float getMaxWard(){
         return this.maxWard;
     }
-    public int getBaseWard() {
-        return baseWard;
+    public int getExtraWard() {
+        return extraWard;
     }
 
-    public void setBaseWard(int newBaseWard){
-        this.baseWard = this.startingWard + newBaseWard;
+    public void setExtraWard(int extraWard){
+        this.extraWard = this.startingWard + extraWard;
+    }
+    public int getIncreasedWard() {
+        return increasedWard;
     }
     public void setIncreasedWard(int increasedWard){
         this.increasedWard = increasedWard;
-        setMaxWard(increasedWard);
+        setMaxWard();
     }
-    private void setMaxWard(int incWard){
-        this.maxWard = baseWard * (1 + incWard);
+    private void setMaxWard(){
+        this.maxWard = extraWard * (1 + getIncreasedWard());
+    }
+
+    @Override
+    public void update(Profile profileData) {
+        int flatHealthSum = 0;
+        int percentHealth = 0;
+        int flatWardSum = 0;
+        int percentWard = 0;
+        //Getting health stats from all items...
+        //CASO PRECISE CHECAR A ARMA, USAR if == NULL
+        //Getting health stats from attributes
+        Attributes attributes = profileData.getAttributes();
+        flatHealthSum += attributes.getStrength()/3;
+        flatWardSum += attributes.getIntelligence()/5;
+
+        setExtraHealth(flatHealthSum);
+        setIncreasedHealth(percentHealth);
+        setExtraWard(flatWardSum);
+        setIncreasedWard(percentWard);
     }
 }

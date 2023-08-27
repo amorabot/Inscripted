@@ -1,15 +1,19 @@
 package com.amorabot.rpgelements.components.PlayerComponents;
 
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.WeaponModifiers;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.amorabot.rpgelements.components.Items.Weapon.Weapon;
 
 public class Stats {
-//    Map<ArmorModifier, int[]> armorStats = new HashMap<>();
-    Map<WeaponModifiers, int[]> weaponSlot = new HashMap<>();
+    private Weapon weaponSlot;
 
-    public Map<WeaponModifiers, int[]> getWeaponSlotData(){
+    public Stats(){
+        //Construtor vazio
+        this.weaponSlot = null;
+    }
+
+    public Weapon getWeaponSlot(){
         return weaponSlot;
+    }
+    public void setWeaponSlot(Weapon weapon) {
+        this.weaponSlot = weapon;
     }
 }

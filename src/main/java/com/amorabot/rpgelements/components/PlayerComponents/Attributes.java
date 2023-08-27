@@ -1,31 +1,55 @@
 package com.amorabot.rpgelements.components.PlayerComponents;
 
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.TargetStats;
+import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
+import com.amorabot.rpgelements.components.Items.Weapon.WeaponModifiers;
+
+import java.util.List;
+
 public class Attributes {
-    private int points;
     private int intelligence;
-    private int agility;
+    private int dexterity;
     private int strength;
 
-    public Attributes(int points, int intelligence, int agility, int strength) {
-        this.points = points;
+    public Attributes(int intelligence, int dexterity, int strength) {
         this.intelligence = intelligence;
-        this.agility = agility;
+        this.dexterity = dexterity;
         this.strength = strength;
     }
-
-    public int getPoints() {
-        return points;
+    public void update(Profile playerProfile){
+        Stats playerStats = playerProfile.getStats();
+        int strSum = 0;
+        int dexSum = 0;
+        int intSum = 0;
+        //Getting stats from weapon
+        if (playerStats.getWeaponSlot() != null){
+            List<Modifier<WeaponModifiers>> weaponModifiers = playerStats.getWeaponSlot().getModifiers();
+            for (Modifier<WeaponModifiers> weaponMod : weaponModifiers){
+                TargetStats targetStat = weaponMod.getModifier().getTargetStat();
+                if (targetStat == TargetStats.STRENGTH){
+                    strSum += weaponMod.getValue()[0];
+                }
+                if (targetStat == TargetStats.DEXTERITY){
+                    dexSum += weaponMod.getValue()[0];
+                }
+                if (targetStat == TargetStats.INTELLIGENCE){
+                    intSum += weaponMod.getValue()[0];
+                }
+            }
+        }
+        //Getting stats from other slots...
+        //...
+        setStrength(strSum);
+        setDexterity(dexSum);
+        setIntelligence(intSum);
     }
 
-    public void setPoints(int points) {
-        this.points = points;
-    }
     public int getIntelligence() {
         return intelligence;
     }
 
-    public int getAgility() {
-        return agility;
+    public int getDexterity() {
+        return dexterity;
     }
 
     public int getStrength() {
@@ -36,8 +60,8 @@ public class Attributes {
         this.intelligence = intelligence;
     }
 
-    public void setAgility(int agility) {
-        this.agility = agility;
+    public void setDexterity(int dexterity) {
+        this.dexterity = dexterity;
     }
 
     public void setStrength(int strength) {
