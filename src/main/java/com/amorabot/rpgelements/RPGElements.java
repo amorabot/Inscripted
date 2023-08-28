@@ -108,7 +108,7 @@ public final class RPGElements extends JavaPlugin {
                     float health = playerProfile.getHealthComponent().getMaxHealth();
                     int ward = playerProfile.getHealthComponent().getExtraWard();
                     float dps = playerProfile.getDamageComponent().getDPS();
-                    msgPlayerAB(currentPlayer, "&c HP[" + health +"]" + "&7 // " + "&bWard[" + ward+ "]" + "     &7" + dps);
+                    msgPlayerAB(currentPlayer, "&l&4[&c " + health +"❤ &4]" + "     " + "&l&b[ " + ward+ "✤ ]" + "     &7" + dps);
                 }
             }
         }.runTaskTimer(this, 0L, 10L);

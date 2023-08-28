@@ -8,6 +8,7 @@ import com.amorabot.rpgelements.components.Items.Weapon.BasicWeaponGenerator;
 import com.amorabot.rpgelements.components.Items.Weapon.Weapon;
 import com.amorabot.rpgelements.components.Items.Weapon.WeaponModifiers;
 import com.amorabot.rpgelements.components.Items.Weapon.WeaponTypes;
+import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,29 +38,34 @@ public class GenerateWeapon implements CommandExecutor {
                 .createGenericWeapon(ilvlArg, ItemRarities.valueOf(rarityArg), WeaponTypes.valueOf(weaponType), false);
         assert randomWeapon != null;
         player.getInventory().addItem(randomWeapon.getItemForm(plugin));
-        if (args[3].equals("debug")){
+        try {
+            if (args[3].equals("-d")){
 
-            List<Modifier<WeaponModifiers>> mods = randomWeapon.getModifiers();
-            for (Modifier<WeaponModifiers> mod : mods){
-                player.sendMessage("-----------------");
-                player.sendMessage(mod.getModifier().toString());
-                player.sendMessage("Tier: " + mod.getTier());
-                RangeTypes rangeType = mod.getModifier().getRangeType();
-                switch (rangeType){
-                    case SINGLE_VALUE -> {
-                        //
-                    }
-                    case SINGLE_RANGE -> {
-                        player.sendMessage("Chosen value: " + mod.getValue()[0]);
-                    }
-                    case DOUBLE_RANGE -> {
-                        int[] values = mod.getValue();
-                        player.sendMessage("Chosen value: " + values[0] + " / " + values[1]);
+                List<Modifier<WeaponModifiers>> mods = randomWeapon.getModifiers();
+                for (Modifier<WeaponModifiers> mod : mods){
+                    player.sendMessage("-----------------");
+                    player.sendMessage(mod.getModifier().toString());
+                    player.sendMessage("Tier: " + mod.getTier());
+                    RangeTypes rangeType = mod.getModifier().getRangeType();
+                    switch (rangeType){
+                        case SINGLE_VALUE -> {
+                            //
+                        }
+                        case SINGLE_RANGE -> {
+                            player.sendMessage("Chosen value: " + mod.getValue()[0]);
+                        }
+                        case DOUBLE_RANGE -> {
+                            int[] values = mod.getValue();
+                            player.sendMessage("Chosen value: " + values[0] + " / " + values[1]);
+                        }
                     }
                 }
+                player.sendMessage("-----------------");
+                return true;
             }
-            player.sendMessage("-----------------");
-            return true;
+        } catch (IndexOutOfBoundsException exception){
+            Utils.log("weapon generated without debug mode enabled");
+//            exception.printStackTrace();
         }
 
         return true;
