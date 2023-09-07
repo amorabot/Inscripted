@@ -2,11 +2,13 @@ package com.amorabot.rpgelements;
 
 import com.amorabot.rpgelements.commands.*;
 import com.amorabot.rpgelements.components.CustomMob;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.rpgelements.components.PlayerComponents.Profile;
 import com.amorabot.rpgelements.handlers.*;
 import com.amorabot.rpgelements.managers.JSONProfileManager;
 import com.amorabot.rpgelements.utils.DelayedTask;
 import com.amorabot.rpgelements.utils.Utils;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -27,7 +29,7 @@ import static com.amorabot.rpgelements.utils.Utils.msgPlayerAB;
 
 public final class RPGElements extends JavaPlugin {
     private static Logger logger;
-
+    private static RPGElements rpgElementsPlugin;
     private BukkitTask task; //vai receber o bukkit runnable que vai operar a logica do spawn
     private World world;
     private Map<Entity, CustomMob> entities = new HashMap<>(); //TODO: limpar o hashmap no shutdown
@@ -35,11 +37,10 @@ public final class RPGElements extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-//        Bukkit.getLogger().info("Hello, World!");
         logger = getLogger(); //pega o logger desse plugin, que dá acesso ao console do servidor
+        rpgElementsPlugin = this;
         log("O novo hello world!");
 
-        new JSONProfileManager(this);
         if (!new File(this.getDataFolder().getAbsolutePath() + "/profiles.json").exists()){
             try {
                 String uuid = UUID.randomUUID().toString();
@@ -52,17 +53,21 @@ public final class RPGElements extends JavaPlugin {
                 throw new RuntimeException(e);
             }
         }
+        JSONProfileManager.loadOnlinePlayersOnReload(Bukkit.getOnlinePlayers());
 //        ModifiersJSON.setup(this);
+
+        //Todo: color interpolation for Uniques and corrupted items
 
         SkillsUI skillsUI = new SkillsUI(this);
 
         getCommand("updatenbt").setExecutor(new UpdateNBT(this));
         getCommand("getnbt").setExecutor(new GetNBT(this));
         getCommand("generateweapon").setExecutor(new GenerateWeapon(this));
+        getCommand("generatearmor").setExecutor(new GenerateArmor(this));
         getCommand("identify").setExecutor(new Identify(this));
         getCommand("recolor").setExecutor(new Recolor(this));
-        getCommand("skills").setExecutor(skillsUI);
-        getCommand("skills").setTabCompleter(skillsUI);
+//        getCommand("skills").setExecutor(skillsUI);
+//        getCommand("skills").setTabCompleter(skillsUI);
         getCommand("resetattributes").setExecutor(new ResetAttributes(this));
         getCommand("editmods").setExecutor(new EditMods(this));
 
@@ -70,7 +75,6 @@ public final class RPGElements extends JavaPlugin {
         new JoinQuitHandler(this);
         new WeaponEquipHandler(this);
         new DelayedTask(this);
-//        new SkillsUIHandler(this);
         new GUIHandler(this);
         MobDropHandler dropHandler = new MobDropHandler(this);
 
@@ -104,11 +108,16 @@ public final class RPGElements extends JavaPlugin {
             @Override
             public void run() {
                 for (Player currentPlayer : Bukkit.getOnlinePlayers()){
-                    Profile playerProfile = JSONProfileManager.getProfile(currentPlayer.getUniqueId().toString());
+                    Profile playerProfile = JSONProfileManager.getProfile(currentPlayer.getUniqueId());
                     float health = playerProfile.getHealthComponent().getMaxHealth();
                     int ward = playerProfile.getHealthComponent().getExtraWard();
                     float dps = playerProfile.getDamageComponent().getDPS();
-                    msgPlayerAB(currentPlayer, "&c HP[" + health +"]" + "&7 // " + "&bWard[" + ward+ "]" + "     &7" + dps);
+                    String healthStatHex = DefenceTypes.HEALTH.getStatColor();
+                    String healthTextHex = DefenceTypes.HEALTH.getTextColor();
+                    String wardStatHex = DefenceTypes.WARD.getStatColor();
+                    String wardTextHex = DefenceTypes.WARD.getTextColor();
+                    msgPlayerAB(currentPlayer, "&l"+ healthStatHex +"["+ healthTextHex + " " + health +"❤ "+ healthStatHex +"]"
+                            + "     " + "&l"+ wardStatHex +"["+ wardTextHex +" " + ward+ "✤ "+ wardStatHex +"]" + "     &7" + dps);
                 }
             }
         }.runTaskTimer(this, 0L, 10L);
@@ -247,5 +256,8 @@ public final class RPGElements extends JavaPlugin {
     }
     public World getWorld(){
         return world;
+    }
+    public static RPGElements getPlugin(){
+        return rpgElementsPlugin;
     }
 }

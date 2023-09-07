@@ -2,15 +2,16 @@ package com.amorabot.rpgelements.components.Items.Weapon;
 
 import com.amorabot.rpgelements.components.Items.Abstract.Item;
 import com.amorabot.rpgelements.components.Items.Abstract.ItemRenderer;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Implicit;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.RendererTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
+import com.amorabot.rpgelements.components.Items.UnidentifiedRenderer;
 import com.amorabot.rpgelements.utils.CraftingUtils;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.GenericItemContainerDataType;
 import com.amorabot.rpgelements.RPGElements;
 import com.amorabot.rpgelements.utils.Utils;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -21,34 +22,71 @@ import java.util.*;
 
 //!!!!!!!!!!!!!Kill counter -> upgrade after N kills?!!!!!!!!!!!!!!! glow + enchant (veiled)
 //Similar ao sistema de potions, kills validas maiores que o ilvl do item, acumulam num contador interno
+
+//TODO: Set centralized serializers and de-serializers for all functional items in the plugin (weapons, armors, pouches, runes, ...) and for basic nbt tags for containers
+//TODO: Use multiple event priorities to order eventlisteners listening to the same event
 public class Weapon extends Item {
-
-    private final String name;
-    private Material material;
     private final WeaponTypes type;
-    private boolean corrupted;
-
+    private final Implicit implicit;
     private Map<DamageTypes, int[]> baseDmg = new HashMap<>();
     private List<Modifier<WeaponModifiers>> modifiers = new ArrayList<>();
 
-    public Weapon(int ilvl, WeaponTypes type, ItemRarities rarity){
-        super(ilvl, rarity);
+    public Weapon(int ilvl, WeaponTypes type, ItemRarities rarity, boolean identified){
+        super(ilvl, rarity, identified);
+        mapTier();
+        if (isIdentified()){
+            setRenderer(RendererTypes.BASIC);
+        } else if (getRarity() == ItemRarities.COMMON){
+            identify();
+        } else {
+            setRenderer(RendererTypes.UNIDENTIFIED);
+        }
         this.type = type;
-        this.name = WeaponNames.valueOf(type.toString()).getRandomName();
-        mapBase(type, ilvl);
+        Implicit itemImplicit;
+        String implicitType;
+        if (isCorrupted()){
+            implicitType = "_CORRUPTED";
+        } else {
+            implicitType = "_STANDARD";
+        }
+        try {
+            itemImplicit = Implicit.valueOf(type.toString()+implicitType);
+        } catch (IllegalArgumentException exception){
+            exception.printStackTrace();
+            itemImplicit = Implicit.AXE_STANDARD;
+        }
+        this.implicit = itemImplicit;
+//        this.name = WeaponNames.valueOf(type.toString()).getRandomName();
+        this.name = type.getRandomName(getTier());
+        mapBase();
     }
-    public Weapon(int ilvl, ItemRarities rarity){ //Random generic weapon constructor
-        super(ilvl, rarity);
+    public Weapon(int ilvl, ItemRarities rarity, boolean identified){ //Random generic weapon constructor
+        super(ilvl, rarity, identified);
         //Do the rest...
         WeaponTypes[] weapons = WeaponTypes.values();
         int weaponIndex = CraftingUtils.getRandomNumber(0, weapons.length-1);
         this.type = weapons[weaponIndex];
-        this.name = WeaponNames.valueOf(type.toString()).getRandomName();
-        mapBase(this.type, ilvl);
+        Implicit itemImplicit;
+        String implicitType;
+        if (isCorrupted()){
+            implicitType = "_CORRUPTED";
+        } else {
+            implicitType = "_STANDARD";
+        }
+        try {
+            itemImplicit = Implicit.valueOf(type.toString()+implicitType);
+        } catch (IllegalArgumentException exception){
+            exception.printStackTrace();
+            itemImplicit = Implicit.AXE_STANDARD;
+        }
+        this.implicit = itemImplicit;
+//        this.name = WeaponNames.valueOf(type.toString()).getRandomName();
+        this.name = type.getRandomName(getTier());
+        mapBase();
     }
-    private void mapBase(WeaponTypes type, int ilvl){
-        baseDmg.put(DamageTypes.PHYSICAL, type.mapDamage(ilvl));
-        material = type.mapWeaponBase(ilvl);
+    private void mapBase(){ //Todo: turn into a Item abstract method
+        baseDmg.put(DamageTypes.PHYSICAL, type.mapDamage(getIlvl()));
+        vanillaMaterial = type.mapWeaponBase(getTier());
     }
     //-------------------------------------------------------------------------
     public void addModifier(Modifier<WeaponModifiers> mod){
@@ -65,6 +103,11 @@ public class Weapon extends Item {
         }
         return aux;
     }
+
+    public Implicit getImplicit() {
+        return implicit;
+    }
+
     //-------------------------------------------------------------------------
     public void updateBaseDamage(){
         for (Modifier<WeaponModifiers> mod : modifiers){
@@ -102,30 +145,47 @@ public class Weapon extends Item {
     public Map<DamageTypes, int[]> getBaseDamage(){
         return this.baseDmg;
     }
-    public String getName(){
-        return this.name;
+    public WeaponTypes getType() {
+        return type;
     }
     //-------------------------------------------------------------------------
     @Override
-    public void render(ItemStack item, ItemRenderer itemRenderer) {
+    public void imprint(ItemStack item) {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
         List<String> lore = new ArrayList<>();
+        ItemRenderer currentRenderer = getRenderer();
 
-        itemRenderer.renderMainStat(this, lore);
-        itemRenderer.renderMods(this, lore);
-        itemRenderer.renderDescription(this, lore, type);
-        itemRenderer.renderTag(this, lore);
+        currentRenderer.renderMainStat(this, lore);
+        currentRenderer.renderMods(this, lore);
+        currentRenderer.renderDescription(this, lore, type);
+        currentRenderer.renderTag(this, lore);
 
-        itemRenderer.placeDivs(lore);
+        currentRenderer.placeDivs(lore);
 
         itemMeta.setLore(lore);
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(itemMeta);
+
+        String displayName = "";
+        switch (getRarity()){
+            case COMMON -> displayName = "&f";
+            case MAGIC -> displayName = "&9";
+            case RARE -> displayName = "&e";
+        }
+        if (isIdentified()){
+            displayName += getName();
+        } else {
+            displayName += "Unidentified " + this.type.toString().toLowerCase();
+        }
+        currentRenderer.setDisplayName(displayName, item);
     }
     @Override
     public ItemRenderer getRenderer(){
         switch (this.renderer){
+            case UNIDENTIFIED -> {
+                return new UnidentifiedRenderer();
+            }
             case BASIC -> {
                 return new BasicWeaponRenderer();
             }
@@ -141,17 +201,10 @@ public class Weapon extends Item {
     }
     @Override
     public ItemStack getItemForm(RPGElements plugin) {
-        ItemStack weaponItem = new ItemStack(this.material);
-        ItemRenderer itemRenderer = getRenderer();
-        render(weaponItem, itemRenderer);
-        String displayName = "";
-        switch (getRarity()){
-            case COMMON -> displayName = "&f";
-            case MAGIC -> displayName = "&9";
-            case RARE -> displayName = "&e";
-        }
-        displayName += this.name;
-        itemRenderer.setDisplayName(displayName, weaponItem);
+        ItemStack weaponItem = new ItemStack(this.vanillaMaterial);
+//        ItemRenderer itemRenderer = getRenderer();
+        imprint(weaponItem);
+
         serializeContainers(plugin, this, weaponItem);
         return weaponItem;
     }
@@ -160,11 +213,19 @@ public class Weapon extends Item {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-//        if (!dataContainer.has(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class))){
-//            dataContainer.set(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class), this);
-//            Utils.log("Successful datacontainerSerialization");
-//        }
         dataContainer.set(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class), this);
         item.setItemMeta(itemMeta);
+    }
+
+    @Override
+    public int getStarRating() { //Voltar pra acesso protected, so pra uso interno
+        float percentileSum = 0;
+        for (Modifier<WeaponModifiers> mod : modifiers){
+            percentileSum += mod.getBasePercentile();
+        }
+        if (modifiers.size() > 0){
+            return (int) (percentileSum/modifiers.size());
+        }
+        return 0;
     }
 }

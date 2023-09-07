@@ -38,3 +38,7 @@ commands:
   editmods:
     description: modifiers JSON edit interface
     usage: /editmods
+  generatearmor:
+    description: generates a custom armor.
+    usage: /generatearmor
+    aliases: [ armor, gena ]

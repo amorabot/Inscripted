@@ -6,6 +6,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.io.*;
 
+@Deprecated
 public class RPGElementsContainerDataType <T extends RPGElementsContainer> implements PersistentDataType<byte[], T> {
     /*
         A classe ItemInformation deve implementar Serializable para o processo funcionar.

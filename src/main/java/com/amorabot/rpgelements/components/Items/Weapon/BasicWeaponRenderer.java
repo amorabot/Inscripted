@@ -3,7 +3,6 @@ package com.amorabot.rpgelements.components.Items.Weapon;
 import com.amorabot.rpgelements.components.Items.Abstract.Item;
 import com.amorabot.rpgelements.components.Items.Abstract.ItemRenderer;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Affix;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemBaseImplicits;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.RangeTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DamageTypes;
@@ -18,7 +17,7 @@ import java.util.List;
 
 import static com.amorabot.rpgelements.utils.Utils.color;
 
-public class BasicWeaponRenderer extends ItemRenderer {
+public class BasicWeaponRenderer implements ItemRenderer {
 
     @Override
     public void setDisplayName(String name, ItemStack item) {
@@ -40,13 +39,7 @@ public class BasicWeaponRenderer extends ItemRenderer {
             if (dmgType == DamageTypes.PHYSICAL){continue;}
             String newDamageString = "";
             if (weaponData.getBaseDamage().containsKey(dmgType)){
-                String colorString = "";
-                switch (dmgType){
-                    case FIRE -> colorString = DamageTypes.FIRE.getColor();
-                    case LIGHTNING -> colorString = DamageTypes.LIGHTNING.getColor();
-                    case COLD -> colorString = DamageTypes.COLD.getColor();
-                    case ABYSSAL -> colorString = DamageTypes.ABYSSAL.getColor(); //"&#7734AA"
-                }
+                String colorString = dmgType.getColor();
                 int[] extraDmgRange = weaponData.getBaseDamage().get(dmgType);
                 newDamageString = (colorString + extraDmgRange[0] + " - " + extraDmgRange[1]).indent(7);
             }
@@ -63,7 +56,8 @@ public class BasicWeaponRenderer extends ItemRenderer {
     @Override
     public void renderMods(Item itemData, List<String> itemLore) {
         Weapon weaponData = (Weapon) itemData;
-        String valuesColor = "&#95dbdb";
+        String valuesColor = "&#95dbdb"; //pale baby blue
+//        String valuesColor = "&#63bf41";//"&#41bf76"; //"&#63a889"; //"&#5bc998"; //pale blue-ish green
 
         List<Modifier<WeaponModifiers>> mods = weaponData.getModifiers();
         List<Modifier<WeaponModifiers>> prefixes = new ArrayList<>();
@@ -118,7 +112,7 @@ public class BasicWeaponRenderer extends ItemRenderer {
 
         itemLore.add("");
         itemLore.add(color("&7 Item Level: " + "&f&l" + weaponData.getIlvl()));
-        String passiveString = " &7Passive: &" + subType.getDefaulNameColor() + "&l" +ItemBaseImplicits.valueOf(subType.toString()).getBasicImplicit();
+        String passiveString = " &7Passive: " + weaponData.getImplicit().getDisplayName();
         itemLore.add(ColorUtils.translateColorCodes(passiveString));
         itemLore.add("");
     }
@@ -127,11 +121,27 @@ public class BasicWeaponRenderer extends ItemRenderer {
     public void renderTag(Item itemData, List<String> itemLore) {
         Weapon weaponData = (Weapon) itemData;
         ItemRarities rarity = weaponData.getRarity();
+        String tag = "";
         switch (rarity){
-            case COMMON -> itemLore.add(color("&f&l"+rarity));
-            case MAGIC -> itemLore.add(color("&9&l"+rarity));
-            case RARE -> itemLore.add(color("&e&l"+rarity));
+            case COMMON -> {
+                tag += ("&f&l"+rarity);
+                itemLore.add(color(tag));
+                return;
+            }
+            case MAGIC -> tag += ("&9&l"+rarity);
+            case RARE -> tag += ("&e&l"+rarity);
         }
+        int starRating = weaponData.getStarRating();
+        if (starRating >= 0 && starRating<=50){
+            tag += "&8 " + "★";
+        } else if (starRating<=70){
+            tag += "&7 " + "★";
+        } else if (starRating<=90) {
+            tag += "&f " + "★";
+        } else {
+            tag += "&6 " + "★";
+        }
+        itemLore.add(color(tag));
     }
 
 }

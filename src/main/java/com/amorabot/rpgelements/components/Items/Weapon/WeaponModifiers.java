@@ -98,11 +98,6 @@ public enum WeaponModifiers implements ItemModifier {
         this.hybrid = hybrid;
         this.weight = weight;
     }
-
-    public List<ModTags> getModTags(){
-        return modTags;
-    }
-
     @Override
     public Affix getAffixType() {
         return this.affix;
@@ -111,14 +106,31 @@ public enum WeaponModifiers implements ItemModifier {
     public String getDisplayName() {
         return this.displayName;
     }
-
+    @Override
+    public int getNumberOfTiers() {
+        return this.tiers;
+    }
+    @Override
+    public TargetStats getTargetStat() {
+        return this.targetStat;
+    }
+    @Override
+    public ValueTypes getValueType() {
+        return this.valueType;
+    }
+    @Override
+    public RangeTypes getRangeType() {
+        return this.rangeType;
+    }
     @Override
     public int getModifierWeight() {
         return this.weight;
     }
+    public List<ModTags> getModTags(){
+        return modTags;
+    }
 
-    @Override
-    public List<? extends Enum<?>> getPrefixes() {
+    public List<WeaponModifiers> getPrefixes() {
         List<WeaponModifiers> aux = new ArrayList<>();
         for (WeaponModifiers mod : WeaponModifiers.values()){
             if (mod.affix == Affix.PREFIX){
@@ -127,9 +139,7 @@ public enum WeaponModifiers implements ItemModifier {
         }
         return aux;
     }
-
-    @Override
-    public List<? extends Enum<?>> getSuffixes() {
+    public List<WeaponModifiers> getSuffixes() {
         List<WeaponModifiers> aux = new ArrayList<>();
         for (WeaponModifiers mod : WeaponModifiers.values()){
             if (mod.affix == Affix.SUFFIX){
@@ -138,9 +148,7 @@ public enum WeaponModifiers implements ItemModifier {
         }
         return aux;
     }
-
-    @Override
-    public List<? extends Enum<?>> getUniques() {
+    public List<WeaponModifiers> getUniques() {
         List<WeaponModifiers> aux = new ArrayList<>();
         for (WeaponModifiers mod : WeaponModifiers.values()){
             if (mod.affix == Affix.UNIQUE){
@@ -148,25 +156,5 @@ public enum WeaponModifiers implements ItemModifier {
             }
         }
         return aux;
-    }
-
-    @Override
-    public int getNumberOfTiers() {
-        return this.tiers;
-    }
-
-    @Override
-    public TargetStats getTargetStat() {
-        return this.targetStat;
-    }
-
-    @Override
-    public ValueTypes getValueType() {
-        return this.valueType;
-    }
-
-    @Override
-    public RangeTypes getRangeType() {
-        return this.rangeType;
     }
 }

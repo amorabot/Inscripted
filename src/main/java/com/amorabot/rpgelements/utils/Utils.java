@@ -50,7 +50,8 @@ public class Utils {
         }
     }
     public static void msgPlayerAB(Player player, String msg){
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color(msg)));
+//        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color(msg)));
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ColorUtils.translateColorCodes(msg)));
     }
 
     public static ItemStack createItem(Material type, int amount, boolean enchanted, boolean unbreakable, boolean hideUnbreakable

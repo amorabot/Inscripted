@@ -5,8 +5,26 @@ import com.amorabot.rpgelements.components.Items.Weapon.WeaponTypes;
 import java.util.Arrays;
 import java.util.List;
 
-public enum ItemTypes {
-    ARMOR {
+public enum ItemTypes { //Represent equipable item  slots
+    HELMET {
+    @Override
+    public List<Enum<?>> getSubtypes() {
+        return null;
+    }
+},
+    CHESTPLATE {
+        @Override
+        public List<Enum<?>> getSubtypes() {
+            return null;
+        }
+    },
+    LEGGINGS {
+        @Override
+        public List<Enum<?>> getSubtypes() {
+            return null;
+        }
+    },
+    BOOTS {
         @Override
         public List<Enum<?>> getSubtypes() {
             return null;
