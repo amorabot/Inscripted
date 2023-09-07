@@ -31,14 +31,14 @@ public class JoinQuitHandler implements Listener {
             Utils.log("O perfil para o player " + player.getDisplayName() + " foi criado. (JSON)");
             return;
         }
-        JSONProfileManager.loadProfileFromJSON(player.getUniqueId().toString()); //Loads specific profile into memory
+        JSONProfileManager.loadProfileFromJSON(player.getUniqueId()); //Loads specific profile into memory
         Utils.log("Bem vindo de volta " + player.getDisplayName() + "! (JSON)");
     }
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event){
         Player player = event.getPlayer();
-        Utils.log(player.getDisplayName() + " has quit. Saving profile...");
+        Utils.log(player.getDisplayName() + " has quit. Saving profile and removing from cache.");
         UUID playerUUID = player.getUniqueId();
-        JSONProfileManager.saveProfileToJSON(playerUUID, JSONProfileManager.getProfile(playerUUID.toString()));
+        JSONProfileManager.saveProfileOnQuitToJSON(playerUUID, JSONProfileManager.getProfile(playerUUID));
     }
 }

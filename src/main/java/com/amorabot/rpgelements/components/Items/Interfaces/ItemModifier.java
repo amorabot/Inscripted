@@ -9,14 +9,15 @@ import java.util.List;
 
 public interface ItemModifier {
     Affix getAffixType();
+    String getDisplayName();
     int getNumberOfTiers();
     TargetStats getTargetStat();
     ValueTypes getValueType();
     RangeTypes getRangeType();
-    String getDisplayName();
     int getModifierWeight();
 
-    List<? extends Enum<?>> getPrefixes();
-    List<? extends Enum<?>> getSuffixes();
-    List<? extends Enum<?>> getUniques();
+    //Modtags
+//    List<? extends Enum<?>> getPrefixes();
+//    List<? extends Enum<?>> getSuffixes();
+//    List<? extends Enum<?>> getUniques();
 }

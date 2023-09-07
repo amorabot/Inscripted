@@ -13,7 +13,7 @@ import java.util.List;
 
 import static com.amorabot.rpgelements.utils.Utils.color;
 
-public class UnidentifiedRenderer extends ItemRenderer {
+public class UnidentifiedRenderer implements ItemRenderer {
     @Override
     public void setDisplayName(String name, ItemStack item) {
         ItemMeta itemMeta = item.getItemMeta();

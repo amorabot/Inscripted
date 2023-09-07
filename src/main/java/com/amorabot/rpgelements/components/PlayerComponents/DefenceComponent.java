@@ -7,7 +7,7 @@ public class DefenceComponent implements PlayerComponent {
     private int coldResistance;
     private int lightningResistance;
 
-    private int dodge; //%stat now
+    private int dodge;
 
     private float finalArmor;
     private int baseArmor;

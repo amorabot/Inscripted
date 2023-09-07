@@ -1,15 +1,13 @@
 package com.amorabot.rpgelements.handlers;
 
 import com.amorabot.rpgelements.RPGElements;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.rpgelements.components.Items.DataStructures.GenericItemContainerDataType;
+import com.amorabot.rpgelements.components.FunctionalItems.FunctionalItemHandler;
 import com.amorabot.rpgelements.components.Items.Weapon.Weapon;
 import com.amorabot.rpgelements.components.PlayerComponents.Profile;
 import com.amorabot.rpgelements.managers.JSONProfileManager;
 import com.amorabot.rpgelements.utils.DelayedTask;
 import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,10 +35,12 @@ public class WeaponEquipHandler implements Listener {
         Inventory inventory = player.getInventory();
         ItemStack heldItem = inventory.getItem(event.getNewSlot());
 //        ItemStack previousItem = inventory.getItem(event.getPreviousSlot());
-        if (isEquipable(heldItem)){
-            equip(heldItem,player); // Equip new weapon
-        } else { // If it's not equipable, do:
+        if (isNotFunctional(heldItem)){
             unequipWeaponSlot(player);
+            return;
+        }
+        if (isEquipableWeapon(heldItem)){
+            equipWeapon(heldItem,player); // Equip new weapon
         }
     }
     @EventHandler
@@ -62,7 +62,7 @@ public class WeaponEquipHandler implements Listener {
         if (event.getClickedInventory().equals(playerInventory)) {
             ClickType click = event.getClick();
             //-----------------------------------------------------------------------------------------------------------------------
-            if (click == ClickType.DOUBLE_CLICK && (isEquipable(event.getCurrentItem()) || isEquipable(player.getItemOnCursor()))) {
+            if (click == ClickType.DOUBLE_CLICK && (isEquipableWeapon(event.getCurrentItem()) || isEquipableWeapon(player.getItemOnCursor()))) {
                 //Checking for double clicks into main hand
                 if (event.getSlot() != player.getInventory().getHeldItemSlot()) {
                     return;
@@ -70,119 +70,106 @@ public class WeaponEquipHandler implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            if (event.isShiftClick()){ //------------------------------ CHECKING FOR SHIFT-CLICKS ------------------------------
-                //IGNORING WHEN HOLDING GENERIC ITEMS
-                if (!player.getInventory().getItemInMainHand().getType().isAir() && !isEquipable(player.getInventory().getItemInMainHand())){
-                    return;
-                }
-                if (isEquipable(event.getCurrentItem())){
-                    if (event.getSlot() == player.getInventory().getHeldItemSlot()) { //Cancelling shift-clicks at main hand
+            if (event.isShiftClick()){ //------------------------------ CHECKING FOR SHIFT-CLICKS ------------------------------ //TODO: consider adding weapon shift-swap mechanic?
+                ItemStack currentMainHandItem = player.getInventory().getItemInMainHand();
+                ItemStack shiftClickedItem = event.getCurrentItem();
+                //The clicked item is equipable and held
+                if (isEquipableWeapon(currentMainHandItem)){
+                    if (event.getSlot() == player.getInventory().getHeldItemSlot()) {
                         event.setCancelled(true);
                         return;
                     }
-                    if (player.getInventory().getItemInMainHand().getType().isAir()){
-                        new DelayedTask(new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                if (isEquipable(player.getInventory().getItemInMainHand())) {
-                                    equip(player.getInventory().getItemInMainHand(), player);
-//                                    Utils.log("shift equip");
-                                }
-                            }
-                        }, 5L);
-                    }
-                } else {
+                }
+                //If the player is holding something or the clicked item is not equipable, ignore. It should not result in a equip anyway
+                if (!(currentMainHandItem.getType().isAir() && isEquipableWeapon(shiftClickedItem))){
                     return;
                 }
-            }
-            //-----------------------------------------------------------------------------------------------------------------------
-            if (attemptedAction == InventoryAction.SWAP_WITH_CURSOR){ //TODO: orb and currency usage
-                if (event.getSlot() != player.getInventory().getHeldItemSlot()){ //se a tentativa não for no slot da mão, ignore
-                    return;
-                }
-                Utils.log("testando swap");
-                //The swap is attempted at the main hand slot and its a equipable item. Let's apply the changes.
-                ItemStack clickedItem = event.getCurrentItem();
-                ItemStack itemOnCursor = player.getItemOnCursor();
-                if (clickedItem.getType().isAir()){ //If the player isnt holding anything and the cursor is equipable, equip;
-                    if (!isEquipable(itemOnCursor)){
-                        return;
-                    }
-                    equip(itemOnCursor, player);
-                    return;
-                }
-                if (isEquipable(clickedItem) && isEquipable(itemOnCursor)){
-                    unequipWeaponSlot(player);
-                    equip(itemOnCursor, player);
-                    return;
-                }
-                if (!isEquipable(clickedItem) && isEquipable(itemOnCursor)){
-                    equip(itemOnCursor, player);
-                    return;
-                }
-                if (isEquipable(clickedItem) && !isEquipable(itemOnCursor)){
-                    unequipWeaponSlot(player);
-                    return;
-                }
-            }
-            if ((event.getSlot() == player.getInventory().getHeldItemSlot()) && isEquipable(player.getInventory().getItemInMainHand())){
-                unequipWeaponSlot(player);
-                return;
-            }
-            if ((event.getSlot() == player.getInventory().getHeldItemSlot()) && isEquipable(player.getItemOnCursor())){
-                unequipWeaponSlot(player);
-                equip(player.getItemOnCursor(), player);
-                return;
-            }
-        } else {
-            if (event.isShiftClick()){ //------------------------------ CHECKING FOR SHIFT-CLICKS ------------------------------
-                if (!player.getInventory().getItemInMainHand().getType().isAir()){
-                    return;
-                }
-                if (isEquipable(event.getCurrentItem())){
+                if (currentMainHandItem.getType().isAir()){
                     new DelayedTask(new BukkitRunnable() {
                         @Override
                         public void run() {
-                            if (isEquipable(player.getInventory().getItemInMainHand())) {
-                                equip(player.getInventory().getItemInMainHand(), player);
+                            ItemStack newlyCheckedMainHandItem = player.getInventory().getItemInMainHand();
+                            if (isEquipableWeapon(newlyCheckedMainHandItem)) {
+                                equipWeapon(newlyCheckedMainHandItem, player);
                             }
                         }
                     }, 5L);
                 }
-
+                return;
+            }
+            //-----------------------------------------------------------------------------------------------------------------------
+            if (attemptedAction == InventoryAction.SWAP_WITH_CURSOR){
+                if (event.getSlot() != player.getInventory().getHeldItemSlot()){ //se a tentativa não for no slot da mão, ignore
+                    return;
+                }
+//                ItemStack clickedItem = event.getCurrentItem();
+                ItemStack itemOnCursor = player.getItemOnCursor();
+                if (isEquipableWeapon(itemOnCursor)){
+                    equipWeapon(itemOnCursor, player);
+                    return;
+                }else {
+                    unequipWeaponSlot(player);
+                }
+            }
+            if ((event.getSlot() == player.getInventory().getHeldItemSlot())
+                    && isEquipableWeapon(player.getInventory().getItemInMainHand())
+                    && player.getItemOnCursor().getType().isAir()){
+                unequipWeaponSlot(player);
+                return;
+            }
+            if ((event.getSlot() == player.getInventory().getHeldItemSlot()) && isEquipableWeapon(player.getItemOnCursor())){
+                equipWeapon(player.getItemOnCursor(), player);
+                return;
+            }
+        } else {
+            if (event.isShiftClick()){ //------------------------------ CHECKING FOR SHIFT-CLICKS OUTSIDE INVENTORY ------------------------------
+                if (!player.getInventory().getItemInMainHand().getType().isAir()){
+                    return;
+                }
+                if (isEquipableWeapon(event.getCurrentItem())){
+                    new DelayedTask(new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (isEquipableWeapon(player.getInventory().getItemInMainHand())) {
+                                equipWeapon(player.getInventory().getItemInMainHand(), player);
+                            }
+                        }
+                    }, 5L);
+                    return;
+                }
+                return; //If the player is holding something and its not equipable, just return
             }
         }
         if (attemptedAction == InventoryAction.HOTBAR_SWAP){
-            event.setCancelled(true);
+            event.setCancelled(true); //No hotbar swapping
         }
     }
 
-    private boolean isEquipable(ItemStack heldItem){
-        if (heldItem == null || !heldItem.hasItemMeta()){ //If its not custom or is null
-            return false;
-        }
+    private boolean isEquipableWeapon(ItemStack heldItem){
+        if (isNotFunctional(heldItem)){return false;}
         ItemMeta heldItemMeta = heldItem.getItemMeta();
         PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
-
-        return dataContainer.has(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class));
+        return FunctionalItemHandler.isEquipableWeapon(dataContainer);
     }
-    private void equip(ItemStack heldItem, Player player){
+    private void equipWeapon(ItemStack heldItem, Player player){
         ItemMeta heldItemMeta = heldItem.getItemMeta();
         PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
 
-        Weapon weapon = dataContainer.get(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class));
-        if (weapon == null){
-            Utils.error("de-serialization error: weapon equip method");
-            return;
-        }
-        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId().toString());
+        Weapon weapon = FunctionalItemHandler.deserializeWeapon(dataContainer);
+        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
         playerProfile.updateMainHand(weapon);
         JSONProfileManager.setProfile(player.getUniqueId().toString(),playerProfile);
         Utils.msgPlayer(player, "Equipped: " + weapon.getName() + " ("+playerProfile.getDamageComponent().getDPS()+")");
     }
     private void unequipWeaponSlot(Player player){
-        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId().toString()); // Get profile
+        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId()); // Get profile from cache
+        if (!playerProfile.hasWeaponEquipped()){
+            return;
+        }
         playerProfile.updateMainHand(null);
         JSONProfileManager.setProfile(player.getUniqueId().toString(),playerProfile);
+    }
+    private boolean isNotFunctional(ItemStack item){
+        return (item == null || !item.hasItemMeta() || item.getType().isAir());
     }
 }

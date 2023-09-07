@@ -42,9 +42,9 @@ public class ModifiersJSON {
             Map<String, Map<String, Map<String, Map<Integer, int[]>>>> itemCategory = new HashMap<>();//----------------
 
             switch (type){
-                case ARMOR -> {
-                    continue;
-                }
+//                case ARMOR -> {
+//                    continue;
+//                }
                 case WEAPON -> {
 
                     Map<String, Map<String, Map<Integer, int[]>>> affixSection = new HashMap<>();//-------------

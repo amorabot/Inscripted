@@ -61,8 +61,12 @@ public class Profile {
     }
     public void updateMainHand(Weapon weapon){
         getStats().setWeaponSlot(weapon);
-        Utils.log("Arma setada com sucesso");
+//        Utils.log("Arma setada com sucesso");
         updateProfile();
     }
     public void updateArmorSlot(){}
+
+    public boolean hasWeaponEquipped(){
+        return this.stats.getWeaponSlot() != null;
+    }
 }

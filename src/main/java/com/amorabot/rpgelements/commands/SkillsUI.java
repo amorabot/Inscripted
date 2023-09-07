@@ -80,28 +80,6 @@ public class SkillsUI implements TabExecutor { //Tab executor é um 2 em 1. Comb
 
         UIManager.openSkillsUI(pointsIndicator, intelligenceIndicator, agilityIndicator, strengthIndicator);
 /*
-        Skills skills = profileManager.getPlayerProfile(player.getUniqueId()).getSkills();
-
-
-        Inventory skillsGUI = Bukkit.createInventory(null, 9*5, color("&e&lBasic skills"));
-        skillsGUI.setItem(4, editItem(pointsIndicator, skills.getPoints(),
-                Arrays.asList(
-                        color("&fYou have " + skills.getPoints() + " points left"),
-                        color("&7"),
-                        color("Allocate points to enhance your abilities") )));
-        skillsGUI.setItem(19, editItem(intelligenceIndicator, skills.getIntelligence(), Arrays.asList(
-                color("&7You have " + "&9" + skills.getIntelligence() + " &7points allocated"),
-                color("&7"),
-                color("&7Click here to allocate points"))));
-        skillsGUI.setItem(20, editItem(agilityIndicator, skills.getAgility(), Arrays.asList(
-                color("&7You have " + "&a" + skills.getAgility() + " &7points allocated"),
-                color("&7"),
-                color("&7Click here to allocate points"))));
-        skillsGUI.setItem(21, editItem(strengthIndicator, skills.getStrength(), Arrays.asList(
-                color("&7You have " + "&c" + skills.getStrength() + " &7points allocated"),
-                color("&7"),
-                color("&7Click here to allocate points"))));
-        player.openInventory(skillsGUI);
 */
         return true;
     }

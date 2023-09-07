@@ -57,9 +57,9 @@ public class EditMods implements CommandExecutor {
                         case WEAPON -> modEditor = new ModifiersEditor<>(this.plugin, WeaponModifiers.class);
                         //                            subTypeEnum = WeaponTypes.valueOf(uppercaseSubtype);
                         //                            WeaponTypes weaponType = (WeaponTypes) subTypeEnum;
-                        case ARMOR -> {
-                            //
-                        }
+//                        case ARMOR -> {
+//                            //
+//                        }
                         default -> {
                             //a
                         }
