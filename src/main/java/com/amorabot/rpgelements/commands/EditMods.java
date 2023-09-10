@@ -126,14 +126,21 @@ public class EditMods implements CommandExecutor { //Todo: encapsular as ações
                     }
                     default -> {
                         ArmorTypes armorSubType;
+                        ArmorModifiers modEntry;
+                        String modText = args[4].toUpperCase();
                         try {
                             armorSubType = ArmorTypes.valueOf(itemSubtype);
+                            modEntry = ArmorModifiers.valueOf(modText);
                         }catch (IllegalArgumentException exception){
                             player.sendMessage(Utils.color("&cWrong arguments"));
                             return false;
                         }
                         modEditor = new ModifiersEditor<>(ArmorModifiers.class);
-                        modEditor.addModifier(mappedType, armorSubType.toString(), mappedAffixType, args[4].toUpperCase());
+                        if (modEntry.getAffixType() != mappedAffixType){
+                            player.sendMessage(Utils.color("&cTrying to add: " + mappedAffixType + " / Given: " + modEntry.getAffixType()));
+                            return false;
+                        }
+                        modEditor.addModifier(mappedType, armorSubType.toString(), mappedAffixType, modText);
                         return true;
                     }
                 }

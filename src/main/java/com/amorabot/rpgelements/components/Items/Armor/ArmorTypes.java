@@ -1,5 +1,6 @@
 package com.amorabot.rpgelements.components.Items.Armor;
 
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Tiers;
@@ -571,17 +572,6 @@ public enum ArmorTypes implements AffixTableSelector {
         return 1;
     }
     private Material mapHelmetMaterial(Tiers tier){
-//        if (ilvl <= 10){
-//            return Material.LEATHER_HELMET;
-//        } else if (ilvl <= 25) {
-//            return Material.CHAINMAIL_HELMET;
-//        } else if (ilvl <= 45) {
-//            return Material.IRON_HELMET;
-//        } else if (ilvl <= 75) {
-//            return Material.DIAMOND_HELMET;
-//        } else {
-//            return Material.GOLDEN_HELMET;
-//        }
         switch (tier){
             case T1 -> {
                 return Material.LEATHER_HELMET;
@@ -604,17 +594,6 @@ public enum ArmorTypes implements AffixTableSelector {
         }
     }
     private Material mapChestplateMaterial(Tiers tier){
-//        if (ilvl <= 10){
-//            return Material.LEATHER_CHESTPLATE;
-//        } else if (ilvl <= 25) {
-//            return Material.CHAINMAIL_CHESTPLATE;
-//        } else if (ilvl <= 45) {
-//            return Material.IRON_CHESTPLATE;
-//        } else if (ilvl <= 75) {
-//            return Material.DIAMOND_CHESTPLATE;
-//        } else {
-//            return Material.GOLDEN_CHESTPLATE;
-//        }
         switch (tier){
             case T1 -> {
                 return Material.LEATHER_CHESTPLATE;
@@ -637,17 +616,6 @@ public enum ArmorTypes implements AffixTableSelector {
         }
     }
     private Material mapLeggingsMaterial(Tiers tier){
-//        if (ilvl <= 10){
-//            return Material.LEATHER_LEGGINGS;
-//        } else if (ilvl <= 25) {
-//            return Material.CHAINMAIL_LEGGINGS;
-//        } else if (ilvl <= 45) {
-//            return Material.IRON_LEGGINGS;
-//        } else if (ilvl <= 75) {
-//            return Material.DIAMOND_LEGGINGS;
-//        } else {
-//            return Material.GOLDEN_LEGGINGS;
-//        }
         switch (tier){
             case T1 -> {
                 return Material.LEATHER_LEGGINGS;
@@ -670,17 +638,6 @@ public enum ArmorTypes implements AffixTableSelector {
         }
     }
     private Material mapBootsMaterial(Tiers tier){
-//        if (ilvl <= 10){
-//            return Material.LEATHER_BOOTS;
-//        } else if (ilvl <= 25) {
-//            return Material.CHAINMAIL_BOOTS;
-//        } else if (ilvl <= 45) {
-//            return Material.IRON_BOOTS;
-//        } else if (ilvl <= 75) {
-//            return Material.DIAMOND_BOOTS;
-//        } else {
-//            return Material.GOLDEN_BOOTS;
-//        }
         switch (tier){
             case T1 -> {
                 return Material.LEATHER_BOOTS;
@@ -708,8 +665,8 @@ public enum ArmorTypes implements AffixTableSelector {
     private void loadBasicAffixes(){
         Map<String, Map<String, Map<String, Map<String, Map<Integer, int[]>>>>> modifiersJSON = ModifiersJSON.getBasicModifiers();
         //The "Entire set" of a armor specialization is loaded at once and accessed later via getPiece() methods.
-//        this.basicHelmetPrefixes = getAffixTable(modifiersJSON, ItemTypes.HELMET, Affix.PREFIX);
-//        this.basicHelmetSuffixes = getAffixTable(modifiersJSON, ItemTypes.HELMET, Affix.SUFFIX);
+        this.basicHelmetPrefixes = getAffixTable(modifiersJSON, ItemTypes.HELMET, Affix.PREFIX);
+        this.basicHelmetSuffixes = getAffixTable(modifiersJSON, ItemTypes.HELMET, Affix.SUFFIX);
 //
 //        this.basicChestlatePrefixes = getAffixTable(modifiersJSON, ItemTypes.CHESTPLATE, Affix.PREFIX);
 //        this.basicChesplateSuffixes = getAffixTable(modifiersJSON, ItemTypes.CHESTPLATE, Affix.SUFFIX);
@@ -728,24 +685,24 @@ public enum ArmorTypes implements AffixTableSelector {
         return this.basicHelmetSuffixes;
     }
 
-    public Map<String, Map<Integer, int[]>> getBasicChestlatePrefixes() {
-        return basicChestlatePrefixes;
-    }
-    public Map<String, Map<Integer, int[]>> getBasicChesplateSuffixes() {
-        return basicChesplateSuffixes;
-    }
-
-    public Map<String, Map<Integer, int[]>> getBasicLeggingsPrefixes() {
-        return basicLeggingsPrefixes;
-    }
-    public Map<String, Map<Integer, int[]>> getBasicLeggingsSuffixes() {
-        return basicLeggingsSuffixes;
-    }
-
-    public Map<String, Map<Integer, int[]>> getBasicBootsPrefixes() {
-        return basicBootsPrefixes;
-    }
-    public Map<String, Map<Integer, int[]>> getBasicBootsSuffixes() {
-        return basicBootsSuffixes;
-    }
+//    public Map<String, Map<Integer, int[]>> getBasicChestlatePrefixes() {
+//        return basicChestlatePrefixes;
+//    }
+//    public Map<String, Map<Integer, int[]>> getBasicChesplateSuffixes() {
+//        return basicChesplateSuffixes;
+//    }
+//
+//    public Map<String, Map<Integer, int[]>> getBasicLeggingsPrefixes() {
+//        return basicLeggingsPrefixes;
+//    }
+//    public Map<String, Map<Integer, int[]>> getBasicLeggingsSuffixes() {
+//        return basicLeggingsSuffixes;
+//    }
+//
+//    public Map<String, Map<Integer, int[]>> getBasicBootsPrefixes() {
+//        return basicBootsPrefixes;
+//    }
+//    public Map<String, Map<Integer, int[]>> getBasicBootsSuffixes() {
+//        return basicBootsSuffixes;
+//    }
 }

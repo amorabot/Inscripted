@@ -70,6 +70,4 @@ public class BasicWeaponGenerator { //Modularize the generation steps for re-use
         }
         return null;
     }
-
-
 }

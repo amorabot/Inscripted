@@ -2,14 +2,14 @@ package com.amorabot.rpgelements.components.Items.Armor;
 
 import com.amorabot.rpgelements.components.Items.Abstract.Item;
 import com.amorabot.rpgelements.components.Items.Abstract.ItemRenderer;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DefenceTypes;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Implicit;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.*;
+import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
 import com.amorabot.rpgelements.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.rpgelements.utils.ColorUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +67,55 @@ public class BasicArmorRenderer implements ItemRenderer {
 
     @Override
     public void renderMods(Item itemData, List<String> itemLore) {
+        Armor armorData = (Armor) itemData;
+        String valuesColor = "&#95dbdb";
 
+        List<Modifier<ArmorModifiers>> mods = armorData.getModifiers();
+        List<Modifier<ArmorModifiers>> prefixes = new ArrayList<>();
+        List<Modifier<ArmorModifiers>> suffixes = new ArrayList<>(); //Alternativa: Implementar equals()[atributo a atributo] ou um comparador
+        for (Modifier<ArmorModifiers> mod : mods){
+            if (mod.getModifier().getAffixType() == Affix.PREFIX){
+                prefixes.add(mod);
+            } else {
+                suffixes.add(mod);
+            }
+        }
+
+        for (Modifier<ArmorModifiers> mod : prefixes){
+            String modifierDisplayName = "&7" + mod.getModifier().getDisplayName();
+            RangeTypes rangeType = mod.getModifier().getRangeType();
+            switch (rangeType){
+                case SINGLE_VALUE -> {}
+                case SINGLE_RANGE -> modifierDisplayName = (modifierDisplayName
+                        .replace("@value1@", valuesColor+mod.getValue()[0]+"&7")).indent(1);
+                case DOUBLE_RANGE -> {
+                    int[] values = mod.getValue();
+                    modifierDisplayName = (modifierDisplayName
+                            .replace("@value1@", valuesColor+values[0]+"&7")
+                            .replace("@value2@", valuesColor+values[1]+"&7")).indent(1);
+                }
+            }
+            itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
+        }
+        for (Modifier<ArmorModifiers> mod : suffixes){
+            String modifierDisplayName = "&7" + mod.getModifier().getDisplayName();
+            RangeTypes rangeType = mod.getModifier().getRangeType();
+            switch (rangeType){
+                case SINGLE_VALUE -> {}
+                case SINGLE_RANGE -> modifierDisplayName = (modifierDisplayName
+                        .replace("@value1@", valuesColor+mod.getValue()[0]+"&7")).indent(1);
+                case DOUBLE_RANGE -> {
+                    int[] values = mod.getValue();
+                    modifierDisplayName = (modifierDisplayName
+                            .replace("@value1@", valuesColor+values[0]+"&7")
+                            .replace("@value2@", valuesColor+values[1]+"&7")).indent(1);
+                }
+            }
+            itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
+        }
+        if (armorData.getRarity() != ItemRarities.COMMON){
+            itemLore.add(color("-div-"));
+        }
     }
 
     @Override
@@ -93,12 +141,28 @@ public class BasicArmorRenderer implements ItemRenderer {
 
     @Override
     public void renderTag(Item itemData, List<String> itemLore) {
-//        Weapon weaponData = (Weapon) itemData;
+        Armor armorData = (Armor) itemData;
         ItemRarities rarity = itemData.getRarity();
+        String tag = "";
         switch (rarity){
-            case COMMON -> itemLore.add(color("&f&l"+rarity));
-            case MAGIC -> itemLore.add(color("&9&l"+rarity));
-            case RARE -> itemLore.add(color("&e&l"+rarity));
+            case COMMON -> {
+                tag += ("&f&l"+rarity);
+                itemLore.add(color(tag));
+                return;
+            }
+            case MAGIC -> tag += ("&9&l"+rarity);
+            case RARE -> tag += ("&e&l"+rarity);
         }
+        int starRating = armorData.getStarRating();
+        if (starRating >= 0 && starRating<=50){
+            tag += "&8 " + "★";
+        } else if (starRating<=70){
+            tag += "&7 " + "★";
+        } else if (starRating<=90) {
+            tag += "&f " + "★";
+        } else {
+            tag += "&6 " + "★";
+        }
+        itemLore.add(color(tag));
     }
 }

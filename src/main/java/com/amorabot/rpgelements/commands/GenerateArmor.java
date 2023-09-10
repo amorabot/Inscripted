@@ -2,9 +2,13 @@ package com.amorabot.rpgelements.commands;
 
 import com.amorabot.rpgelements.RPGElements;
 import com.amorabot.rpgelements.components.Items.Armor.Armor;
+import com.amorabot.rpgelements.components.Items.Armor.ArmorModifiers;
+import com.amorabot.rpgelements.components.Items.Armor.ArmorTypes;
+import com.amorabot.rpgelements.components.Items.Armor.BasicArmorGenerator;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemTypes;
+import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
 import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -32,11 +36,14 @@ public class GenerateArmor implements CommandExecutor {
         int ilvlArg = Integer.parseInt(args[0]);
         String rarityArg = args[1];
         String armorTypeArg = args[2];
+        String armorSubTypeArg = args[3];
         ItemRarities rarity;
         ItemTypes armorType;
+        ArmorTypes armorSubtype;
         try { //Argument Validation
             rarity = ItemRarities.valueOf(rarityArg.toUpperCase());
             armorType = ItemTypes.valueOf(armorTypeArg.toUpperCase());
+            armorSubtype = ArmorTypes.valueOf(armorSubTypeArg.toUpperCase());
         } catch (IllegalArgumentException exception){
             player.sendMessage(Utils.color("&cCorrect syntax -> /armor itemLevel rarity armorType [-d]"));
             return false;
@@ -47,19 +54,12 @@ public class GenerateArmor implements CommandExecutor {
             return false;
         }
 
-        Armor randomArmor = new Armor(armorType, ilvlArg, rarity, true, false);
+        Armor randomArmor = BasicArmorGenerator.createGenericArmor(armorType, armorSubtype, ilvlArg, rarity, true, false);
         try {
-            if (args[3].equals("-d")){
-                player.sendMessage(randomArmor.getName());
-                Map<DefenceTypes, Integer> def = randomArmor.getDefencesMap();
-                if (def.containsKey(DefenceTypes.ARMOR)){
-                    player.sendMessage("Armor: " + def.get(DefenceTypes.ARMOR));
-                }
-                if (def.containsKey(DefenceTypes.DODGE)){
-                    player.sendMessage("Dodge: " + def.get(DefenceTypes.DODGE));
-                }
-                if (def.containsKey(DefenceTypes.WARD)){
-                    player.sendMessage("Ward: " + def.get(DefenceTypes.WARD));
+            if (args[4].equals("-d")){
+                assert randomArmor != null;
+                for (Modifier<ArmorModifiers> mod : randomArmor.getModifiers()){
+                    player.sendMessage(mod.getModifier().getDisplayName());
                 }
             }
             Utils.log("Running armor generation in debug mode");
