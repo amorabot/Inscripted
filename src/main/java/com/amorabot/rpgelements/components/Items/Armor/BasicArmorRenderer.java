@@ -3,6 +3,7 @@ package com.amorabot.rpgelements.components.Items.Armor;
 import com.amorabot.rpgelements.components.Items.Abstract.Item;
 import com.amorabot.rpgelements.components.Items.Abstract.ItemRenderer;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DefenceTypes;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Implicit;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.rpgelements.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.rpgelements.utils.ColorUtils;
@@ -27,7 +28,7 @@ public class BasicArmorRenderer implements ItemRenderer {
     public void renderMainStat(Item itemData, List<String> itemLore) {
         Armor armorData = (Armor) itemData;
         Map<DefenceTypes, Integer> defencesMap = armorData.getDefencesMap();
-        int hp = defencesMap.get(DefenceTypes.HEALTH);
+        int hp = armorData.getBaseHealth();
         int ward = 0;
         if (defencesMap.containsKey(DefenceTypes.WARD)){
             ward = defencesMap.get(DefenceTypes.WARD);
@@ -41,65 +42,27 @@ public class BasicArmorRenderer implements ItemRenderer {
         if (defencesMap.containsKey(DefenceTypes.DODGE)){
             dodge = defencesMap.get(DefenceTypes.DODGE);
         }
-
-//        String healthLine = " ";
-        if (hp > 0){
-            String valueHex = DefenceTypes.HEALTH.getStatColor();
-            String textHex = DefenceTypes.HEALTH.getTextColor();
-            String hpString = valueHex + hp + "❤ " + textHex + "Health";
-//            healthLine = healthLine + hpString;
-            itemLore.add(ColorUtils.translateColorCodes(hpString.indent(1)));
-        }
+        String healthLine = " &7Health: "+DefenceTypes.HEALTH.getTextColor()+ hp + DefenceTypes.HEALTH.getSpecialChar();
+        itemLore.add(ColorUtils.translateColorCodes(healthLine));
         if (ward > 0){
-            String valueHex = DefenceTypes.WARD.getStatColor();
-            String textHex = DefenceTypes.WARD.getTextColor();
-            String wardString = valueHex + ward + "✤ " + textHex + "Ward";
-            itemLore.add(ColorUtils.translateColorCodes(wardString.indent(1)));
-//            if (!healthLine.equals(" ")) {
-//                healthLine = healthLine + "*s*" + wardString;
-//            } else {
-//                healthLine = healthLine + wardString;
-//            }
+            String wardLine = " &7Ward:   " + DefenceTypes.WARD.getTextColor()+ ward + DefenceTypes.WARD.getSpecialChar();
+            itemLore.add(ColorUtils.translateColorCodes(wardLine));
         }
-        //If none of the values were added, the string remains blank and should not be added
-//        if (!healthLine.equals(" ")){
-//            if (healthLine.contains("*s*")){
-//                healthLine = healthLine.replace("*s*", "   ");
-//            }
-//            itemLore.add(ColorUtils.translateColorCodes(healthLine));
-//        }
         itemLore.add("");
 
-        String defenceLine = " ";
         if (armor > 0){
-            String valueHex = DefenceTypes.ARMOR.getStatColor();
-            String textHex = DefenceTypes.ARMOR.getTextColor();
-            String armorString = valueHex + armor + "\uD83D\uDEE1 " + textHex + "Armor";
-            defenceLine = defenceLine + armorString;
+            String armorLine = " &7Armor:  " + DefenceTypes.ARMOR.getTextColor()+ armor + DefenceTypes.ARMOR.getSpecialChar();
+            itemLore.add(ColorUtils.translateColorCodes(armorLine));
         }
         if (dodge > 0){
-            String valueHex = DefenceTypes.DODGE.getStatColor();
-            String textHex = DefenceTypes.DODGE.getTextColor();
-            String dodgeString = valueHex + dodge + "\uD83C\uDF00 " + textHex + "Dodge";
-            if (!defenceLine.equals(" ")) {
-                defenceLine = defenceLine + "*s*" + dodgeString;
-            } else {
-                defenceLine = defenceLine + dodgeString;
-            }
+            String dodgeLine = " &7Dodge:  " + DefenceTypes.DODGE.getTextColor()+ dodge + DefenceTypes.DODGE.getSpecialChar();
+            itemLore.add(ColorUtils.translateColorCodes(dodgeLine));
         }
-        //If none of the values were added, the string remains blank and should not be added
-        if (!defenceLine.equals(" ")){
-            if (defenceLine.contains("*s*")){
-                defenceLine = defenceLine.replace("*s*", "   ");
-            }
-            itemLore.add(ColorUtils.translateColorCodes(defenceLine));
+        if ((armor != 0 || dodge != 0)){
+            itemLore.add("");
         }
-
 
         itemLore.add(color("-div-"));
-//        if (itemData.getRarity() != ItemRarities.COMMON){
-//            itemLore.add(color("-div-"));
-//        }
     }
 
     @Override
@@ -109,7 +72,23 @@ public class BasicArmorRenderer implements ItemRenderer {
 
     @Override
     public <subType extends Enum<subType> & AffixTableSelector> void renderDescription(Item itemData, List<String> itemLore, subType itemSubtype) {
-
+        Armor armorData = (Armor) itemData;
+        itemLore.add("");
+        itemLore.add(color("&7 Item Level: " + "&f&l" + armorData.getIlvl()));
+        Implicit armorImplicit = armorData.getImplicit();
+        String implicitString = armorImplicit.getDisplayName();
+        if (!armorImplicit.isHybrid()){
+            String passiveString = " &7Passive: " + implicitString;
+            itemLore.add(ColorUtils.translateColorCodes(passiveString));
+            itemLore.add("");
+            return;
+        }
+        String[] implicitSegments = implicitString.split("-brk-");
+        String passiveString1 = " &7Passive: " + implicitSegments[0];
+        itemLore.add(ColorUtils.translateColorCodes(passiveString1));
+        String passiveString2 = implicitSegments[1];
+        itemLore.add(ColorUtils.translateColorCodes(passiveString2.indent(12)));
+        itemLore.add("");
     }
 
     @Override

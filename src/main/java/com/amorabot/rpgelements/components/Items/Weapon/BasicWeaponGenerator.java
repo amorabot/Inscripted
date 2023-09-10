@@ -8,10 +8,10 @@ import java.util.Map;
 
 public class BasicWeaponGenerator { //Modularize the generation steps for re-use
 
-    public static Weapon createGenericWeapon(int itemLevel, ItemRarities rarity, WeaponTypes type, boolean identified){
+    public static Weapon createGenericWeapon(int itemLevel, ItemRarities rarity, WeaponTypes type, boolean identified, boolean corrupted){
 
         //Initial item setup
-        Weapon blankWeapon = new Weapon(itemLevel, type, rarity, identified); //Generic blank weapon constructor
+        Weapon blankWeapon = new Weapon(itemLevel, type, rarity, identified, corrupted); //Generic blank weapon constructor
         //Generating the modifiers to fill the item
         int maxMods = rarity.getMaxMods();
         int numberOfMods = 0;

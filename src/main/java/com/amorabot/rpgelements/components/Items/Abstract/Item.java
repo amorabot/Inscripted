@@ -1,5 +1,6 @@
 package com.amorabot.rpgelements.components.Items.Abstract;
 
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Implicit;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.rpgelements.CustomDataTypes.RPGElementsContainer;
 import com.amorabot.rpgelements.RPGElements;
@@ -14,16 +15,19 @@ public abstract class Item implements RPGElementsContainer {
     private final int ilvl;
     private ItemRarities rarity;
     private Tiers tier;
+    private Implicit implicit;
     protected RendererTypes renderer;
 
     protected String name;
     protected Material vanillaMaterial;
     protected boolean corrupted;
 
-    public Item(int ilvl, ItemRarities rarity, boolean identified){
+    public Item(int ilvl, ItemRarities rarity, boolean identified, boolean corrupted){
         this.identified = identified;
         this.ilvl = ilvl;
         this.rarity = rarity;
+        this.corrupted = corrupted;
+        setInitialRenderer();
     }
     //-------------------------------------------------------------------------
     public abstract void imprint(ItemStack item);
@@ -50,6 +54,7 @@ public abstract class Item implements RPGElementsContainer {
     public void setRarity(ItemRarities rarity) {
         this.rarity = rarity;
     }
+    //add SetName
     public String getName(){
         return this.name;
     }
@@ -58,6 +63,12 @@ public abstract class Item implements RPGElementsContainer {
     }
     public void corrupt(){
         this.corrupted = true;
+    }
+    public Implicit getImplicit() {
+        return implicit;
+    }
+    protected void setImplicit(Implicit implicit) {
+        this.implicit = implicit;
     }
     public abstract ItemRenderer getRenderer();
     public void setRenderer(RendererTypes rendererType){
@@ -69,6 +80,16 @@ public abstract class Item implements RPGElementsContainer {
     protected void setTier(Tiers tier) {
         this.tier = tier;
     }
+    private void setInitialRenderer(){
+        if (isIdentified()){
+            setRenderer(RendererTypes.BASIC);
+        } else if (getRarity() == ItemRarities.COMMON){
+            identify();
+        } else {
+            setRenderer(RendererTypes.UNIDENTIFIED);
+        }
+    }
+    protected abstract void mapBase();
     protected void mapTier(){
         if (ilvl<=Tiers.T1.getMaxLevel()){
             setTier(Tiers.T1);

@@ -13,37 +13,37 @@ public enum ArmorModifiers implements ItemModifier {
     HEALTH_PERCENT(Affix.PREFIX, "+@value1@% Inc. Health", 6,
             TargetStats.HEALTH, ValueTypes.PERCENT_ADDED, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.HEALTH), false, 1), //-----------HEALTH
-    ARMOR(Affix.PREFIX, "+@value1@ Armor", 6,//-----------
+    ARMOR(Affix.PREFIX, "+@value1@ Armor", 10,//-----------
             TargetStats.ARMOR, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.PHYSICAL, ModTags.DEFENSE), false, 1),
     ARMOR_PERCENT(Affix.PREFIX, "+@value1@% Inc. Armor", 6,
             TargetStats.ARMOR, ValueTypes.PERCENT_ADDED, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.PHYSICAL, ModTags.DEFENSE), false, 1), //-----------ARMOR
-    DODGE(Affix.PREFIX, "+@value1@% Dodge", 6,//-----------
+    DODGE(Affix.PREFIX, "+@value1@% Dodge", 10,//-----------
             TargetStats.DODGE, ValueTypes.FLAT_PERCENT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY, ModTags.DEFENSE), false, 1),//-----------DODGE
-    WARD(Affix.PREFIX, "+@value1@ Ward", 6,//-----------
+    WARD(Affix.PREFIX, "+@value1@ Ward", 12,//-----------
             TargetStats.WARD, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.HEALTH, ModTags.DEFENSE), false, 1),
     WARD_PERCENT(Affix.PREFIX, "+@value1@% Inc. Ward", 6,
             TargetStats.WARD, ValueTypes.PERCENT_ADDED, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.HEALTH, ModTags.DEFENSE), false, 1),//-----------WARD
-    ARMOR_HEALTH(Affix.PREFIX, "+@value1@ Armor /  +@value2@ Health", 6, //-----------
+    ARMOR_HEALTH(Affix.PREFIX, "+@value1@ Armor / +@value2@ Health", 6, //-----------
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.HEALTH,ModTags.PHYSICAL, ModTags.DEFENSE), true, 1),
-    WARD_HEALTH(Affix.PREFIX, "+@value1@ Ward /  +@value2@ Health", 6,
+    WARD_HEALTH(Affix.PREFIX, "+@value1@ Ward / +@value2@ Health", 6,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.HEALTH, ModTags.DEFENSE), true, 1),
-    DODGE_HEALTH(Affix.PREFIX, "+@value1@% Dodge /  +@value2@ Health", 6,
+    DODGE_HEALTH(Affix.PREFIX, "+@value1@% Dodge / +@value2@ Health", 6,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY, ModTags.HEALTH, ModTags.DEFENSE), true, 1),
-    ARMOR_WARD(Affix.PREFIX, "+@value1@ Armor /  +@value2@ Ward", 6,
+    ARMOR_WARD(Affix.PREFIX, "+@value1@ Armor / +@value2@ Ward", 6,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.HEALTH,ModTags.PHYSICAL, ModTags.DEFENSE), true, 1),
-    ARMOR_DODGE(Affix.PREFIX, "+@value1@ Armor /  +@value2@% Dodge", 6,
+    ARMOR_DODGE(Affix.PREFIX, "+@value1@ Armor / +@value2@% Dodge", 6,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY, ModTags.PHYSICAL, ModTags.DEFENSE), true, 1),
-    DODGE_WARD(Affix.PREFIX, "+@value1@% Dodge /  +@value2@ Ward", 6,
+    DODGE_WARD(Affix.PREFIX, "+@value1@% Dodge / +@value2@ Ward", 6,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), true, 1), //-----------HYBRID MODS
     WALK_SPEED(Affix.PREFIX, "+@value1@% Walk speed", 6,
@@ -111,30 +111,30 @@ public enum ArmorModifiers implements ItemModifier {
 
     @Override
     public Affix getAffixType() {
-        return null;
+        return affix;
     }
     @Override
     public String getDisplayName() {
-        return null;
+        return displayName;
     }
     @Override
     public TargetStats getTargetStat() {
-        return null;
+        return targetStat;
     }
     @Override
     public ValueTypes getValueType() {
-        return null;
+        return valueType;
     }
     @Override
     public RangeTypes getRangeType() {
-        return null;
+        return rangeType;
     }
     @Override
     public int getNumberOfTiers() {
-        return 0;
+        return tiers;
     }
     @Override
     public int getModifierWeight() {
-        return 0;
+        return weight;
     }
 }

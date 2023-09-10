@@ -2,13 +2,10 @@ package com.amorabot.rpgelements.components.Items.Weapon;
 
 import com.amorabot.rpgelements.components.Items.Abstract.Item;
 import com.amorabot.rpgelements.components.Items.Abstract.ItemRenderer;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Implicit;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.RendererTypes;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.*;
 import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
 import com.amorabot.rpgelements.components.Items.UnidentifiedRenderer;
 import com.amorabot.rpgelements.utils.CraftingUtils;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.GenericItemContainerDataType;
 import com.amorabot.rpgelements.RPGElements;
 import com.amorabot.rpgelements.utils.Utils;
@@ -27,64 +24,58 @@ import java.util.*;
 //TODO: Use multiple event priorities to order eventlisteners listening to the same event
 public class Weapon extends Item {
     private final WeaponTypes type;
-    private final Implicit implicit;
     private Map<DamageTypes, int[]> baseDmg = new HashMap<>();
     private List<Modifier<WeaponModifiers>> modifiers = new ArrayList<>();
 
-    public Weapon(int ilvl, WeaponTypes type, ItemRarities rarity, boolean identified){
-        super(ilvl, rarity, identified);
+    public Weapon(int ilvl, WeaponTypes type, ItemRarities rarity, boolean identified, boolean corrupted){
+        super(ilvl, rarity, identified, corrupted);
         mapTier();
-        if (isIdentified()){
-            setRenderer(RendererTypes.BASIC);
-        } else if (getRarity() == ItemRarities.COMMON){
-            identify();
-        } else {
-            setRenderer(RendererTypes.UNIDENTIFIED);
-        }
-        this.type = type;
+        this.type = type; //Todo: encapsular a definicao do implicito
         Implicit itemImplicit;
-        String implicitType;
-        if (isCorrupted()){
-            implicitType = "_CORRUPTED";
-        } else {
-            implicitType = "_STANDARD";
-        }
         try {
-            itemImplicit = Implicit.valueOf(type.toString()+implicitType);
+            if (isCorrupted()){
+                //Decide wether the implicit is corrupted too
+                //...
+                itemImplicit = Implicit.valueOf(type.toString()+"_"+ImplicitType.CORRUPTED);
+                //Or alternate corrupted...
+            } else {
+                itemImplicit = Implicit.valueOf(type.toString()+"_"+ImplicitType.STANDARD);
+            }
         } catch (IllegalArgumentException exception){
             exception.printStackTrace();
             itemImplicit = Implicit.AXE_STANDARD;
         }
-        this.implicit = itemImplicit;
-//        this.name = WeaponNames.valueOf(type.toString()).getRandomName();
+        setImplicit(itemImplicit);
         this.name = type.getRandomName(getTier());
         mapBase();
     }
-    public Weapon(int ilvl, ItemRarities rarity, boolean identified){ //Random generic weapon constructor
-        super(ilvl, rarity, identified);
+    public Weapon(int ilvl, ItemRarities rarity, boolean identified, boolean corrupted){ //Random generic weapon constructor
+        super(ilvl, rarity, identified, corrupted);
+        mapTier();
         //Do the rest...
         WeaponTypes[] weapons = WeaponTypes.values();
         int weaponIndex = CraftingUtils.getRandomNumber(0, weapons.length-1);
         this.type = weapons[weaponIndex];
         Implicit itemImplicit;
-        String implicitType;
-        if (isCorrupted()){
-            implicitType = "_CORRUPTED";
-        } else {
-            implicitType = "_STANDARD";
-        }
         try {
-            itemImplicit = Implicit.valueOf(type.toString()+implicitType);
+            if (isCorrupted()){
+                //Decide wether the implicit is corrupted too
+                //...
+                itemImplicit = Implicit.valueOf(type+"_"+ImplicitType.CORRUPTED);
+                //Or alternate corrupted...
+            } else {
+                itemImplicit = Implicit.valueOf(type+"_"+ImplicitType.STANDARD);
+            }
         } catch (IllegalArgumentException exception){
             exception.printStackTrace();
             itemImplicit = Implicit.AXE_STANDARD;
         }
-        this.implicit = itemImplicit;
-//        this.name = WeaponNames.valueOf(type.toString()).getRandomName();
+        setImplicit(itemImplicit);
         this.name = type.getRandomName(getTier());
         mapBase();
     }
-    private void mapBase(){ //Todo: turn into a Item abstract method
+    @Override
+    protected void mapBase(){
         baseDmg.put(DamageTypes.PHYSICAL, type.mapDamage(getIlvl()));
         vanillaMaterial = type.mapWeaponBase(getTier());
     }
@@ -102,10 +93,6 @@ public class Weapon extends Item {
             aux.add(mod.getModifier());
         }
         return aux;
-    }
-
-    public Implicit getImplicit() {
-        return implicit;
     }
 
     //-------------------------------------------------------------------------

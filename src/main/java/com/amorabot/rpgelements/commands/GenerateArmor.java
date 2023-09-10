@@ -47,11 +47,10 @@ public class GenerateArmor implements CommandExecutor {
             return false;
         }
 
-        Armor randomArmor = new Armor(armorType, ilvlArg, rarity, true);
+        Armor randomArmor = new Armor(armorType, ilvlArg, rarity, true, false);
         try {
             if (args[3].equals("-d")){
                 player.sendMessage(randomArmor.getName());
-                player.sendMessage(randomArmor.getType().toString());
                 Map<DefenceTypes, Integer> def = randomArmor.getDefencesMap();
                 if (def.containsKey(DefenceTypes.ARMOR)){
                     player.sendMessage("Armor: " + def.get(DefenceTypes.ARMOR));

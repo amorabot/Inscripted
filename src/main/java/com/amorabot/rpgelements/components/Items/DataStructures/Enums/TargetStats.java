@@ -2,8 +2,11 @@ package com.amorabot.rpgelements.components.Items.DataStructures.Enums;
 
 public enum TargetStats {
     STRENGTH,
+    STRENGTH_DEXTERITY,
     DEXTERITY,
+    DEXTERITY_INTELLIGENCE,
     INTELLIGENCE,
+    INTELLIGENCE_STRENGTH,
     STAMINA,
     STAMINA_REGEN,
     HEALTH,
