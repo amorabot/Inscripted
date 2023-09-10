@@ -46,7 +46,7 @@ public class GenerateWeapon implements CommandExecutor {
             return false;
         }
 
-        Weapon randomWeapon = BasicWeaponGenerator.createGenericWeapon(ilvlArg, rarity, weaponType, false);
+        Weapon randomWeapon = BasicWeaponGenerator.createGenericWeapon(ilvlArg, rarity, weaponType, false, false);
         assert randomWeapon != null;
         player.getInventory().addItem(randomWeapon.getItemForm(plugin));
         try {

@@ -13,78 +13,78 @@ public enum ArmorModifiers implements ItemModifier {
     HEALTH_PERCENT(Affix.PREFIX, "+@value1@% Inc. Health", 6,
             TargetStats.HEALTH, ValueTypes.PERCENT_ADDED, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.HEALTH), false, 1), //-----------HEALTH
-    ARMOR(Affix.PREFIX, "+@value1@ Armor", 6,//-----------
+    ARMOR(Affix.PREFIX, "+@value1@ Armor", 10,//-----------
             TargetStats.ARMOR, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.PHYSICAL, ModTags.DEFENSE), false, 1),
     ARMOR_PERCENT(Affix.PREFIX, "+@value1@% Inc. Armor", 6,
             TargetStats.ARMOR, ValueTypes.PERCENT_ADDED, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.PHYSICAL, ModTags.DEFENSE), false, 1), //-----------ARMOR
-    DODGE(Affix.PREFIX, "+@value1@% Dodge", 6,//-----------
+    DODGE(Affix.PREFIX, "+@value1@% Dodge", 4,//-----------
             TargetStats.DODGE, ValueTypes.FLAT_PERCENT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY, ModTags.DEFENSE), false, 1),//-----------DODGE
-    WARD(Affix.PREFIX, "+@value1@ Ward", 6,//-----------
+    WARD(Affix.PREFIX, "+@value1@ Ward", 12,//-----------
             TargetStats.WARD, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.HEALTH, ModTags.DEFENSE), false, 1),
     WARD_PERCENT(Affix.PREFIX, "+@value1@% Inc. Ward", 6,
             TargetStats.WARD, ValueTypes.PERCENT_ADDED, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.HEALTH, ModTags.DEFENSE), false, 1),//-----------WARD
-    ARMOR_HEALTH(Affix.PREFIX, "+@value1@ Armor /  +@value2@ Health", 6, //-----------
+    ARMOR_HEALTH(Affix.PREFIX, "+@value1@ Armor / +@value2@ Health", 6, //-----------
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.HEALTH,ModTags.PHYSICAL, ModTags.DEFENSE), true, 1),
-    WARD_HEALTH(Affix.PREFIX, "+@value1@ Ward /  +@value2@ Health", 6,
+    WARD_HEALTH(Affix.PREFIX, "+@value1@ Ward / +@value2@ Health", 6,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.HEALTH, ModTags.DEFENSE), true, 1),
-    DODGE_HEALTH(Affix.PREFIX, "+@value1@% Dodge /  +@value2@ Health", 6,
+    DODGE_HEALTH(Affix.PREFIX, "+@value1@% Dodge / +@value2@ Health", 6,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY, ModTags.HEALTH, ModTags.DEFENSE), true, 1),
-    ARMOR_WARD(Affix.PREFIX, "+@value1@ Armor /  +@value2@ Ward", 6,
+    ARMOR_WARD(Affix.PREFIX, "+@value1@ Armor / +@value2@ Ward", 6,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.HEALTH,ModTags.PHYSICAL, ModTags.DEFENSE), true, 1),
-    ARMOR_DODGE(Affix.PREFIX, "+@value1@ Armor /  +@value2@% Dodge", 6,
+    ARMOR_DODGE(Affix.PREFIX, "+@value1@ Armor / +@value2@% Dodge", 6,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY, ModTags.PHYSICAL, ModTags.DEFENSE), true, 1),
-    DODGE_WARD(Affix.PREFIX, "+@value1@% Dodge /  +@value2@ Ward", 6,
+    DODGE_WARD(Affix.PREFIX, "+@value1@% Dodge / +@value2@ Ward", 6,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), true, 1), //-----------HYBRID MODS
-    WALK_SPEED(Affix.PREFIX, "+@value1@% Walk speed", 6,
+    WALK_SPEED(Affix.PREFIX, "+@value1@% Walk speed", 4,
             TargetStats.WALK_SPEED, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), false, 1),
     STAMINA(Affix.PREFIX, "+@value1@ Stamina", 6,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), false, 1),
-    STRENGTH_PERCENT(Affix.PREFIX, "+@value1@% STR", 6,
+    STRENGTH_PERCENT(Affix.PREFIX, "+@value1@% STR", 3,
             TargetStats.STRENGTH, ValueTypes.PERCENT_MULTI, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), false, 1),
-    DEXTERITY_PERCENT(Affix.PREFIX, "+@value1@% DEX", 6,
+    DEXTERITY_PERCENT(Affix.PREFIX, "+@value1@% DEX", 3,
             TargetStats.DEXTERITY, ValueTypes.PERCENT_MULTI, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), false, 1),
-    INTELLIGENCE_PERCENT(Affix.PREFIX, "+@value1@% INT", 6,
+    INTELLIGENCE_PERCENT(Affix.PREFIX, "+@value1@% INT", 3,
             TargetStats.INTELLIGENCE, ValueTypes.PERCENT_MULTI, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), false, 1),
 
 
-    STRENGTH(Affix.SUFFIX, "+@value1@ STR", 6,
+    STRENGTH(Affix.SUFFIX, "+@value1@ STR", 8,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), false, 1),
-    DEXTERITY(Affix.SUFFIX, "+@value1@ DEX", 6,
+    DEXTERITY(Affix.SUFFIX, "+@value1@ DEX", 8,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), false, 1),
-    INTELLIGENCE(Affix.SUFFIX, "+@value1@ INT", 6,
+    INTELLIGENCE(Affix.SUFFIX, "+@value1@ INT", 8,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), false, 1),
-    HEALTH_REGEN(Affix.SUFFIX, "+@value1@ Health Regen", 6,
+    HEALTH_REGEN(Affix.SUFFIX, "+@value1@ Health Regen", 8,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), false, 1),
-    FIRE_RESISTANCE(Affix.SUFFIX, "+@value1@% Fire Resistance", 6,
+    FIRE_RESISTANCE(Affix.SUFFIX, "+@value1@% Fire Resistance", 8,
             TargetStats.FIRE_RESISTANCE, ValueTypes.FLAT_PERCENT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), false, 1),
-    LIGHTNING_RESISTANCE(Affix.SUFFIX, "+@value1@% Lightning Resistance", 6,
+    LIGHTNING_RESISTANCE(Affix.SUFFIX, "+@value1@% Lightning Resistance", 8,
             TargetStats.LIGHTNING_RESISTANCE, ValueTypes.FLAT_PERCENT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), false, 1),
-    COLD_RESISTANCE(Affix.SUFFIX, "+@value1@% Cold Resistance", 6,
+    COLD_RESISTANCE(Affix.SUFFIX, "+@value1@% Cold Resistance", 8,
             TargetStats.COLD_RESISTANCE, ValueTypes.FLAT_PERCENT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), false, 1),
-    ABYSSAL_RESISTANCE(Affix.SUFFIX, "+@value1@% Abyssal Resistance", 6,
+    ABYSSAL_RESISTANCE(Affix.SUFFIX, "+@value1@% Abyssal Resistance", 8,
             TargetStats.ABYSSAL_RESISTANCE, ValueTypes.FLAT_PERCENT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), false, 1);
 
@@ -111,30 +111,30 @@ public enum ArmorModifiers implements ItemModifier {
 
     @Override
     public Affix getAffixType() {
-        return null;
+        return affix;
     }
     @Override
     public String getDisplayName() {
-        return null;
+        return displayName;
     }
     @Override
     public TargetStats getTargetStat() {
-        return null;
+        return targetStat;
     }
     @Override
     public ValueTypes getValueType() {
-        return null;
+        return valueType;
     }
     @Override
     public RangeTypes getRangeType() {
-        return null;
+        return rangeType;
     }
     @Override
     public int getNumberOfTiers() {
-        return 0;
+        return tiers;
     }
     @Override
     public int getModifierWeight() {
-        return 0;
+        return weight;
     }
 }

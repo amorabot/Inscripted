@@ -1,9 +1,12 @@
 package com.amorabot.rpgelements.components.Items.Armor;
 
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemTypes;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.rpgelements.components.Items.Files.ModifiersJSON;
 import com.amorabot.rpgelements.components.Items.Interfaces.AffixTableSelector;
+import com.amorabot.rpgelements.utils.CraftingUtils;
 import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.Material;
 
@@ -13,8 +16,9 @@ public enum ArmorTypes implements AffixTableSelector {
 
     HEAVY_PLATING(){
         @Override
-        public void mapBaseStats(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
+        public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
+            //Base item defences definition
             switch (armorBase){
                 case HELMET -> {
                     int maximumHelmetArmor = 400;
@@ -35,10 +39,55 @@ public enum ArmorTypes implements AffixTableSelector {
                 default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
             }
         }
+        @Override
+        public int mapBaseHealth(Tiers tier, ItemTypes armorBase) {
+            switch (armorBase){
+                case HELMET -> {
+                    //Helmet base health definition
+                    return defineTierBaseHealth(tier
+                            , 50,  10
+                            , 150, 30
+                            , 400, 100
+                            , 900, 120
+                            , 1500,200);
+                }
+                case CHESTPLATE -> {
+                    //Chestplate base health definition
+                    return defineTierBaseHealth(tier
+                            , 80,  15
+                            , 190, 40
+                            , 450, 150
+                            , 1100,220
+                            , 1800,260);
+                }
+                case LEGGINGS -> {
+                    //Leggings base health definition
+                    return defineTierBaseHealth(tier
+                            , 70,  15
+                            , 200, 40
+                            , 500, 120
+                            , 1000, 140
+                            , 1700,240);
+                }
+                case BOOTS -> {
+                    //Boots base health definition
+                    return defineTierBaseHealth(tier
+                            , 60,  10
+                            , 150, 30
+                            , 400, 100
+                            , 900, 120
+                            , 1600,200);
+                }
+                default -> {
+                    Utils.log("No such armor base: " + armorBase);
+                    return 0;
+                }
+            }
+        }
     },
     CARVED_PLATING() {
         @Override
-        public void mapBaseStats(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
+        public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
             switch (armorBase){
                 case HELMET -> {
@@ -68,10 +117,55 @@ public enum ArmorTypes implements AffixTableSelector {
                 default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
             }
         }
+        @Override
+        public int mapBaseHealth(Tiers tier, ItemTypes armorBase) {
+            switch (armorBase){
+                case HELMET -> {
+                    //Helmet base health definition
+                    return defineTierBaseHealth(tier
+                            , 50,  10
+                            , 150, 30
+                            , 400, 100
+                            , 900, 120
+                            , 1500,200);
+                }
+                case CHESTPLATE -> {
+                    //Chestplate base health definition
+                    return defineTierBaseHealth(tier
+                            , 80,  15
+                            , 190, 40
+                            , 450, 150
+                            , 1100,220
+                            , 1800,260);
+                }
+                case LEGGINGS -> {
+                    //Leggings base health definition
+                    return defineTierBaseHealth(tier
+                            , 70,  15
+                            , 200, 40
+                            , 500, 120
+                            , 1000, 140
+                            , 1700,240);
+                }
+                case BOOTS -> {
+                    //Boots base health definition
+                    return defineTierBaseHealth(tier
+                            , 60,  10
+                            , 150, 30
+                            , 400, 100
+                            , 900, 120
+                            , 1600,200);
+                }
+                default -> {
+                    Utils.log("No such armor base: " + armorBase);
+                    return 0;
+                }
+            }
+        }
     },
     LIGHT_CLOTH() {
         @Override
-        public void mapBaseStats(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
+        public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
             switch (armorBase){
                 case HELMET -> {
@@ -93,10 +187,55 @@ public enum ArmorTypes implements AffixTableSelector {
                 default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
             }
         }
+        @Override
+        public int mapBaseHealth(Tiers tier, ItemTypes armorBase) {
+            switch (armorBase){
+                case HELMET -> {
+                    //Helmet base health definition
+                    return defineTierBaseHealth(tier
+                            , 50,  10
+                            , 150, 30
+                            , 400, 100
+                            , 900, 120
+                            , 1500,200);
+                }
+                case CHESTPLATE -> {
+                    //Chestplate base health definition
+                    return defineTierBaseHealth(tier
+                            , 80,  15
+                            , 190, 40
+                            , 450, 150
+                            , 1100,220
+                            , 1800,260);
+                }
+                case LEGGINGS -> {
+                    //Leggings base health definition
+                    return defineTierBaseHealth(tier
+                            , 70,  15
+                            , 200, 40
+                            , 500, 120
+                            , 1000, 140
+                            , 1700,240);
+                }
+                case BOOTS -> {
+                    //Boots base health definition
+                    return defineTierBaseHealth(tier
+                            , 60,  10
+                            , 150, 30
+                            , 400, 100
+                            , 900, 120
+                            , 1600,200);
+                }
+                default -> {
+                    Utils.log("No such armor base: " + armorBase);
+                    return 0;
+                }
+            }
+        }
     },
     RUNIC_LEATHER() {
         @Override
-        public void mapBaseStats(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
+        public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
             switch (armorBase){
                 case HELMET -> {
@@ -126,10 +265,55 @@ public enum ArmorTypes implements AffixTableSelector {
                 default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
             }
         }
+        @Override
+        public int mapBaseHealth(Tiers tier, ItemTypes armorBase) {
+            switch (armorBase){
+                case HELMET -> {
+                    //Helmet base health definition
+                    return defineTierBaseHealth(tier
+                            , 50,  10
+                            , 150, 30
+                            , 400, 100
+                            , 900, 120
+                            , 1500,200);
+                }
+                case CHESTPLATE -> {
+                    //Chestplate base health definition
+                    return defineTierBaseHealth(tier
+                            , 80,  15
+                            , 190, 40
+                            , 450, 150
+                            , 1100,220
+                            , 1800,260);
+                }
+                case LEGGINGS -> {
+                    //Leggings base health definition
+                    return defineTierBaseHealth(tier
+                            , 70,  15
+                            , 200, 40
+                            , 500, 120
+                            , 1000, 140
+                            , 1700,240);
+                }
+                case BOOTS -> {
+                    //Boots base health definition
+                    return defineTierBaseHealth(tier
+                            , 60,  10
+                            , 150, 30
+                            , 400, 100
+                            , 900, 120
+                            , 1600,200);
+                }
+                default -> {
+                    Utils.log("No such armor base: " + armorBase);
+                    return 0;
+                }
+            }
+        }
     },
     ENCHANTED_SILK() {
         @Override
-        public void mapBaseStats(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
+        public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
             switch (armorBase){
                 case HELMET -> {
@@ -151,10 +335,55 @@ public enum ArmorTypes implements AffixTableSelector {
                 default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
             }
         }
+        @Override
+        public int mapBaseHealth(Tiers tier, ItemTypes armorBase) {
+            switch (armorBase){
+                case HELMET -> {
+                    //Helmet base health definition
+                    return defineTierBaseHealth(tier
+                            , 50,  10
+                            , 150, 30
+                            , 400, 100
+                            , 900, 120
+                            , 1500,200);
+                }
+                case CHESTPLATE -> {
+                    //Chestplate base health definition
+                    return defineTierBaseHealth(tier
+                            , 80,  15
+                            , 190, 40
+                            , 450, 150
+                            , 1100,220
+                            , 1800,260);
+                }
+                case LEGGINGS -> {
+                    //Leggings base health definition
+                    return defineTierBaseHealth(tier
+                            , 70,  15
+                            , 200, 40
+                            , 500, 120
+                            , 1000, 140
+                            , 1700,240);
+                }
+                case BOOTS -> {
+                    //Boots base health definition
+                    return defineTierBaseHealth(tier
+                            , 60,  10
+                            , 150, 30
+                            , 400, 100
+                            , 900, 120
+                            , 1600,200);
+                }
+                default -> {
+                    Utils.log("No such armor base: " + armorBase);
+                    return 0;
+                }
+            }
+        }
     },
     RUNIC_STEEL() {
         @Override
-        public void mapBaseStats(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
+        public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
             switch (armorBase){
                 case HELMET -> {
@@ -184,6 +413,51 @@ public enum ArmorTypes implements AffixTableSelector {
                 default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
             }
         }
+        @Override
+        public int mapBaseHealth(Tiers tier, ItemTypes armorBase) {
+            switch (armorBase){
+                case HELMET -> {
+                    //Helmet base health definition
+                    return defineTierBaseHealth(tier
+                            , 50,  10
+                            , 150, 30
+                            , 400, 100
+                            , 900, 120
+                            , 1500,200);
+                }
+                case CHESTPLATE -> {
+                    //Chestplate base health definition
+                    return defineTierBaseHealth(tier
+                            , 80,  15
+                            , 190, 40
+                            , 450, 150
+                            , 1100,220
+                            , 1800,260);
+                }
+                case LEGGINGS -> {
+                    //Leggings base health definition
+                    return defineTierBaseHealth(tier
+                            , 70,  15
+                            , 200, 40
+                            , 500, 120
+                            , 1000, 140
+                            , 1700,240);
+                }
+                case BOOTS -> {
+                    //Boots base health definition
+                    return defineTierBaseHealth(tier
+                            , 60,  10
+                            , 150, 30
+                            , 400, 100
+                            , 900, 120
+                            , 1600,200);
+                }
+                default -> {
+                    Utils.log("No such armor base: " + armorBase);
+                    return 0;
+                }
+            }
+        }
     };
 
     private Map<String, Map<Integer, int[]>> basicHelmetPrefixes;
@@ -201,14 +475,18 @@ public enum ArmorTypes implements AffixTableSelector {
     ArmorTypes(){
         loadAllAffixes();
     }
-    public abstract void mapBaseStats(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences);
+    protected abstract void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences);
+    /*
+    * @return mapped base health value, based on tier and armor piece. Every armor material defines a different health map
+    * */
+    public abstract int mapBaseHealth(Tiers tier, ItemTypes armorBase);
     private Integer linearScaleStat(int givenItemLevel, float maxItemLevel, int maximumBaseStat){
         float itemLevelPercentile = givenItemLevel / maxItemLevel; // normalization
         return (int) (maximumBaseStat * itemLevelPercentile);
     }
 //    DecimalFormat decimalFormat = new DecimalFormat("#.##");
 //    float twoDigitsF = Float.valueOf(decimalFormat.format(f));
-    public void putArmor(int givenItemLevel, float maxItemLevel, int maximumBaseStat, Map<DefenceTypes, Integer> defences){
+    protected void putArmor(int givenItemLevel, float maxItemLevel, int maximumBaseStat, Map<DefenceTypes, Integer> defences){
         if (givenItemLevel > 0 && givenItemLevel <= maxItemLevel){
             int armorValue = linearScaleStat(givenItemLevel, maxItemLevel, maximumBaseStat);
             if (armorValue == 0){ return; }
@@ -219,7 +497,7 @@ public enum ArmorTypes implements AffixTableSelector {
             defences.put(DefenceTypes.ARMOR, 0);
         }
     }
-    public void putWard(int givenItemLevel, float maxItemLevel, int maximumBaseStat, Map<DefenceTypes, Integer> defences){
+    protected void putWard(int givenItemLevel, float maxItemLevel, int maximumBaseStat, Map<DefenceTypes, Integer> defences){
         if (givenItemLevel > 0 && givenItemLevel <= maxItemLevel){
             int wardValue = linearScaleStat(givenItemLevel, maxItemLevel, maximumBaseStat);
             if (wardValue == 0){ return; }
@@ -230,7 +508,7 @@ public enum ArmorTypes implements AffixTableSelector {
             defences.put(DefenceTypes.WARD, 0);
         }
     }
-    public void putDodge(int givenItemLevel, float maxItemLevel, int maximumBaseStat, Map<DefenceTypes, Integer> defences){ //Will return -1 if invalid maxIlvl is given
+    protected void putDodge(int givenItemLevel, float maxItemLevel, int maximumBaseStat, Map<DefenceTypes, Integer> defences){ //Will return -1 if invalid maxIlvl is given
         //Dodge will cap below the max item level given
         int softCap = 20;
         if (maxItemLevel <= softCap){
@@ -247,19 +525,19 @@ public enum ArmorTypes implements AffixTableSelector {
             defences.put(DefenceTypes.DODGE, 0);
         }
     }
-    public Material mapArmorBase(int ilvl, ItemTypes armorBase){
+    protected Material mapArmorBase(Tiers tier, ItemTypes armorBase){
         switch (armorBase){
             case HELMET -> {
-                return mapHelmetMaterial(ilvl);
+                return mapHelmetMaterial(tier);
             }
             case CHESTPLATE -> {
-                return mapChestplateMaterial(ilvl);
+                return mapChestplateMaterial(tier);
             }
             case LEGGINGS -> {
-                return mapLeggingsMaterial(ilvl);
+                return mapLeggingsMaterial(tier);
             }
             case BOOTS -> {
-                return mapBootsMaterial(ilvl);
+                return mapBootsMaterial(tier);
             }
             default -> {
                 Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
@@ -267,56 +545,118 @@ public enum ArmorTypes implements AffixTableSelector {
             }
         }
     }
-    private Material mapHelmetMaterial(int ilvl){
-        if (ilvl <= 10){
-            return Material.LEATHER_HELMET;
-        } else if (ilvl <= 25) {
-            return Material.CHAINMAIL_HELMET;
-        } else if (ilvl <= 45) {
-            return Material.IRON_HELMET;
-        } else if (ilvl <= 75) {
-            return Material.DIAMOND_HELMET;
-        } else {
-            return Material.GOLDEN_HELMET;
+    protected int defineTierBaseHealth(Tiers tier,
+                                       int T1MaxHealth, int T1Variance,
+                                       int T2MaxHealth, int T2Variance,
+                                       int T3MaxHealth, int T3Variance,
+                                       int T4MaxHealth, int T4Variance,
+                                       int T5MaxHealth, int T5Variance){
+        switch (tier){
+            case T1 -> {
+                return T1MaxHealth + CraftingUtils.getRandomNumber(0, T1Variance);
+            }
+            case T2 -> {
+                return T2MaxHealth + CraftingUtils.getRandomNumber(0, T2Variance);
+            }
+            case T3 -> {
+                return T3MaxHealth + CraftingUtils.getRandomNumber(0, T3Variance);
+            }
+            case T4 -> {
+                return T4MaxHealth + CraftingUtils.getRandomNumber(0, T4Variance);
+            }
+            case T5 -> {
+                return T5MaxHealth + CraftingUtils.getRandomNumber(0, T5Variance);
+            }
+        }
+        //If none returns, set to 1
+        return 1;
+    }
+    private Material mapHelmetMaterial(Tiers tier){
+        switch (tier){
+            case T1 -> {
+                return Material.LEATHER_HELMET;
+            }
+            case T2 -> {
+                return Material.CHAINMAIL_HELMET;
+            }
+            case T3 -> {
+                return Material.IRON_HELMET;
+            }
+            case T4 -> {
+                return Material.DIAMOND_HELMET;
+            }
+            case T5 -> {
+                return Material.GOLDEN_HELMET;
+            }
+            default -> {
+                return Material.NETHERITE_HELMET;
+            }
         }
     }
-    private Material mapChestplateMaterial(int ilvl){
-        if (ilvl <= 10){
-            return Material.LEATHER_CHESTPLATE;
-        } else if (ilvl <= 25) {
-            return Material.CHAINMAIL_CHESTPLATE;
-        } else if (ilvl <= 45) {
-            return Material.IRON_CHESTPLATE;
-        } else if (ilvl <= 75) {
-            return Material.DIAMOND_CHESTPLATE;
-        } else {
-            return Material.GOLDEN_CHESTPLATE;
+    private Material mapChestplateMaterial(Tiers tier){
+        switch (tier){
+            case T1 -> {
+                return Material.LEATHER_CHESTPLATE;
+            }
+            case T2 -> {
+                return Material.CHAINMAIL_CHESTPLATE;
+            }
+            case T3 -> {
+                return Material.IRON_CHESTPLATE;
+            }
+            case T4 -> {
+                return Material.DIAMOND_CHESTPLATE;
+            }
+            case T5 -> {
+                return Material.GOLDEN_CHESTPLATE;
+            }
+            default -> {
+                return Material.NETHERITE_CHESTPLATE;
+            }
         }
     }
-    private Material mapLeggingsMaterial(int ilvl){
-        if (ilvl <= 10){
-            return Material.LEATHER_LEGGINGS;
-        } else if (ilvl <= 25) {
-            return Material.CHAINMAIL_LEGGINGS;
-        } else if (ilvl <= 45) {
-            return Material.IRON_LEGGINGS;
-        } else if (ilvl <= 75) {
-            return Material.DIAMOND_LEGGINGS;
-        } else {
-            return Material.GOLDEN_LEGGINGS;
+    private Material mapLeggingsMaterial(Tiers tier){
+        switch (tier){
+            case T1 -> {
+                return Material.LEATHER_LEGGINGS;
+            }
+            case T2 -> {
+                return Material.CHAINMAIL_LEGGINGS;
+            }
+            case T3 -> {
+                return Material.IRON_LEGGINGS;
+            }
+            case T4 -> {
+                return Material.DIAMOND_LEGGINGS;
+            }
+            case T5 -> {
+                return Material.GOLDEN_LEGGINGS;
+            }
+            default -> {
+                return Material.NETHERITE_LEGGINGS;
+            }
         }
     }
-    private Material mapBootsMaterial(int ilvl){
-        if (ilvl <= 10){
-            return Material.LEATHER_BOOTS;
-        } else if (ilvl <= 25) {
-            return Material.CHAINMAIL_BOOTS;
-        } else if (ilvl <= 45) {
-            return Material.IRON_BOOTS;
-        } else if (ilvl <= 75) {
-            return Material.DIAMOND_BOOTS;
-        } else {
-            return Material.GOLDEN_BOOTS;
+    private Material mapBootsMaterial(Tiers tier){
+        switch (tier){
+            case T1 -> {
+                return Material.LEATHER_BOOTS;
+            }
+            case T2 -> {
+                return Material.CHAINMAIL_BOOTS;
+            }
+            case T3 -> {
+                return Material.IRON_BOOTS;
+            }
+            case T4 -> {
+                return Material.DIAMOND_BOOTS;
+            }
+            case T5 -> {
+                return Material.GOLDEN_BOOTS;
+            }
+            default -> {
+                return Material.NETHERITE_BOOTS;
+            }
         }
     }
     private void loadAllAffixes(){
@@ -325,8 +665,8 @@ public enum ArmorTypes implements AffixTableSelector {
     private void loadBasicAffixes(){
         Map<String, Map<String, Map<String, Map<String, Map<Integer, int[]>>>>> modifiersJSON = ModifiersJSON.getBasicModifiers();
         //The "Entire set" of a armor specialization is loaded at once and accessed later via getPiece() methods.
-//        this.basicHelmetPrefixes = getAffixTable(modifiersJSON, ItemTypes.HELMET, Affix.PREFIX);
-//        this.basicHelmetSuffixes = getAffixTable(modifiersJSON, ItemTypes.HELMET, Affix.SUFFIX);
+        this.basicHelmetPrefixes = getAffixTable(modifiersJSON, ItemTypes.HELMET, Affix.PREFIX);
+        this.basicHelmetSuffixes = getAffixTable(modifiersJSON, ItemTypes.HELMET, Affix.SUFFIX);
 //
 //        this.basicChestlatePrefixes = getAffixTable(modifiersJSON, ItemTypes.CHESTPLATE, Affix.PREFIX);
 //        this.basicChesplateSuffixes = getAffixTable(modifiersJSON, ItemTypes.CHESTPLATE, Affix.SUFFIX);
@@ -345,24 +685,24 @@ public enum ArmorTypes implements AffixTableSelector {
         return this.basicHelmetSuffixes;
     }
 
-    public Map<String, Map<Integer, int[]>> getBasicChestlatePrefixes() {
-        return basicChestlatePrefixes;
-    }
-    public Map<String, Map<Integer, int[]>> getBasicChesplateSuffixes() {
-        return basicChesplateSuffixes;
-    }
-
-    public Map<String, Map<Integer, int[]>> getBasicLeggingsPrefixes() {
-        return basicLeggingsPrefixes;
-    }
-    public Map<String, Map<Integer, int[]>> getBasicLeggingsSuffixes() {
-        return basicLeggingsSuffixes;
-    }
-
-    public Map<String, Map<Integer, int[]>> getBasicBootsPrefixes() {
-        return basicBootsPrefixes;
-    }
-    public Map<String, Map<Integer, int[]>> getBasicBootsSuffixes() {
-        return basicBootsSuffixes;
-    }
+//    public Map<String, Map<Integer, int[]>> getBasicChestlatePrefixes() {
+//        return basicChestlatePrefixes;
+//    }
+//    public Map<String, Map<Integer, int[]>> getBasicChesplateSuffixes() {
+//        return basicChesplateSuffixes;
+//    }
+//
+//    public Map<String, Map<Integer, int[]>> getBasicLeggingsPrefixes() {
+//        return basicLeggingsPrefixes;
+//    }
+//    public Map<String, Map<Integer, int[]>> getBasicLeggingsSuffixes() {
+//        return basicLeggingsSuffixes;
+//    }
+//
+//    public Map<String, Map<Integer, int[]>> getBasicBootsPrefixes() {
+//        return basicBootsPrefixes;
+//    }
+//    public Map<String, Map<Integer, int[]>> getBasicBootsSuffixes() {
+//        return basicBootsSuffixes;
+//    }
 }

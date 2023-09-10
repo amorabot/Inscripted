@@ -1,18 +1,19 @@
 package com.amorabot.rpgelements.components.Items.Armor;
 
 import com.amorabot.rpgelements.RPGElements;
+import com.amorabot.rpgelements.components.FunctionalItems.FunctionalItemHandler;
 import com.amorabot.rpgelements.components.Items.Abstract.Item;
 import com.amorabot.rpgelements.components.Items.Abstract.ItemRenderer;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DefenceTypes;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.RendererTypes;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.*;
+import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
+import com.amorabot.rpgelements.components.Items.Interfaces.ItemModifier;
 import com.amorabot.rpgelements.components.Items.UnidentifiedRenderer;
 import com.amorabot.rpgelements.utils.CraftingUtils;
 import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,59 +22,92 @@ import java.util.Map;
 
 public class Armor extends Item {
 
-    private final ItemTypes armorSlot;
+    private final ItemTypes armorPiece;
     private final ArmorTypes type; //Trim materials and patterns are inferred
 //    private final ArmorTrim trim;
+    private final int baseHealth;
     private Map<DefenceTypes, Integer> defencesMap = new HashMap<>();
+    private List<Modifier<ArmorModifiers>> modifiers = new ArrayList<>();
 
-    //Validation for armorSlot arg. is done prior to instantiation
-    public Armor(ItemTypes armorSlot, int ilvl, ArmorTypes type, ItemRarities rarity, boolean identified){
-        super(ilvl, rarity, identified);
-        this.armorSlot = armorSlot;
+    public Armor(ItemTypes armorSlot, int ilvl, ArmorTypes type, ItemRarities rarity, boolean identified, boolean corrupted){
+        super(ilvl, rarity, identified, corrupted);
+        mapTier();
+        this.armorPiece = armorSlot;
         this.type = type;
-        this.name = "TestName";
-        if (isIdentified()){
-            setRenderer(RendererTypes.BASIC);
-        } else if (getRarity() == ItemRarities.COMMON){
-            identify();
-        } else {
-            setRenderer(RendererTypes.UNIDENTIFIED);
+        this.name = type.toString();
+        Implicit itemImplicit;
+        try {
+            if (isCorrupted()){
+                //Decide wether the implicit is corrupted too
+                //...
+                itemImplicit = Implicit.valueOf(type+"_"+ImplicitType.CORRUPTED);
+                //Or alternate corrupted...
+            } else {
+                itemImplicit = Implicit.valueOf(type+"_"+ImplicitType.STANDARD);
+            }
+        } catch (IllegalArgumentException exception){
+            exception.printStackTrace();
+            itemImplicit = Implicit.AXE_STANDARD;
         }
-        mapBase(armorSlot,type, ilvl);
-        defencesMap.put(DefenceTypes.HEALTH, 40); //FOR TESTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        setImplicit(itemImplicit);
+        mapBase();
+        this.baseHealth = getType().mapBaseHealth(getTier(), armorPiece);
     }
-    public Armor(ItemTypes armorSlot, int ilvl, ItemRarities rarity, boolean identified) { //Random generation constructor
-        super(ilvl, rarity, identified);
+    public Armor(ItemTypes armorPiece, int ilvl, ItemRarities rarity, boolean identified, boolean corrupted) { //Random generation constructor
+        super(ilvl, rarity, identified, corrupted);
+        mapTier();
         ArmorTypes[] armorTypes = ArmorTypes.values();
         int typeIndex = CraftingUtils.getRandomNumber(0, armorTypes.length-1);
         ArmorTypes selectedType = armorTypes[typeIndex];
-        this.armorSlot = armorSlot;
+        this.armorPiece = armorPiece;
         this.type = selectedType;
-        this.name = "TestName";
-        if (isIdentified()){
-            setRenderer(RendererTypes.BASIC);
-        } else if (getRarity() == ItemRarities.COMMON){
-            identify();
-        } else {
-            setRenderer(RendererTypes.UNIDENTIFIED);
+        this.name = type.toString();
+        Implicit itemImplicit;
+        try {
+            if (isCorrupted()){
+                //Decide wether the implicit is corrupted too
+                //...
+                itemImplicit = Implicit.valueOf(type+"_"+ImplicitType.CORRUPTED);
+                //Or alternate corrupted...
+            } else {
+                itemImplicit = Implicit.valueOf(type+"_"+ImplicitType.STANDARD);
+            }
+        } catch (IllegalArgumentException exception){
+            exception.printStackTrace();
+            itemImplicit = Implicit.AXE_STANDARD;
         }
-        mapBase(armorSlot,selectedType, ilvl);
-        defencesMap.put(DefenceTypes.HEALTH, 40); //FOR TESTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        setImplicit(itemImplicit);
+        mapBase();
+        this.baseHealth = getType().mapBaseHealth(getTier(), armorPiece);
     }
 
-    private void mapBase(ItemTypes armorSlot, ArmorTypes type, int ilvl){
-        this.vanillaMaterial = type.mapArmorBase(ilvl, armorSlot);
-        type.mapBaseStats(ilvl, armorSlot, defencesMap);
+    @Override
+    protected void mapBase(){
+        this.vanillaMaterial = getType().mapArmorBase(getTier(), getArmorPiece());
+        getType().mapBaseDefences(getIlvl(), getArmorPiece(), getDefencesMap());
     }
+
+    @Override
+    public <ModifierType extends Enum<ModifierType> & ItemModifier> void addModifier(Modifier<ModifierType> mod) {
+        if (mod.getModifier() instanceof ArmorModifiers){
+            this.modifiers.add(mod.castTo(ArmorModifiers.class));
+        }
+    }
+    public List<Modifier<ArmorModifiers>> getModifiers(){
+        return this.modifiers;
+    }
+
     public ArmorTypes getType() {
         return type;
     }
-    public ItemTypes getArmorSlot() {
-        return armorSlot;
+    public ItemTypes getArmorPiece() {
+        return armorPiece;
     }
-
     public Map<DefenceTypes, Integer> getDefencesMap() {
         return defencesMap;
+    }
+    public int getBaseHealth() {
+        return baseHealth;
     }
 
     @Override
@@ -84,8 +118,8 @@ public class Armor extends Item {
 
         ItemRenderer itemRenderer = getRenderer();
         itemRenderer.renderMainStat(this, lore);
-        //...
-        //...
+        itemRenderer.renderMods(this, lore);
+        itemRenderer.renderDescription(this, lore, type);
         itemRenderer.renderTag(this, lore);
 
         itemRenderer.placeDivs(lore);
@@ -103,7 +137,7 @@ public class Armor extends Item {
         if (isIdentified()){
             displayName += getName();
         } else {
-            displayName += "Unidentified " + this.type.toString().toLowerCase() + getArmorSlot().toString().toLowerCase();
+            displayName += "Unidentified " + this.type.toString().toLowerCase() + getArmorPiece().toString().toLowerCase();
         }
         itemRenderer.setDisplayName(displayName, item);
     }
@@ -113,20 +147,30 @@ public class Armor extends Item {
         ItemStack armorItem = new ItemStack(this.vanillaMaterial);
         imprint(armorItem);
 
-//        serializeContainers(plugin, this, armorItem);
+        serializeContainers(plugin, this, armorItem);
         return armorItem;
     }
 
     @Override
     protected void serializeContainers(RPGElements plugin, Item itemData, ItemStack item) {
-
+        ItemMeta itemMeta = item.getItemMeta();
+        assert itemMeta != null;
+        PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
+        FunctionalItemHandler.serializeArmor(this, dataContainer);
+        item.setItemMeta(itemMeta);
     }
 
     @Override
-    protected int getStarRating() {
+    public int getStarRating() { //Voltar pra acesso protected, so pra uso interno
+        float percentileSum = 0;
+        for (Modifier<ArmorModifiers> mod : modifiers){
+            percentileSum += mod.getBasePercentile();
+        }
+        if (modifiers.size() > 0){
+            return (int) (percentileSum/modifiers.size());
+        }
         return 0;
     }
-
     @Override
     public ItemRenderer getRenderer() {
         switch (this.renderer){

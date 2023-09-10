@@ -130,4 +130,13 @@ public class Modifier <Mod extends Enum<Mod> & ItemModifier> implements Serializ
     public void imbue(){
         this.imbued = true;
     }
+    public <ModClass extends Enum<ModClass> & ItemModifier> Modifier<ModClass> castTo(Class<ModClass> modifierClass){
+        //Modifiers may come from a variety of sources, and must be casted to reflect this.
+        Modifier<ModClass> castedMod = new Modifier<>();
+        castedMod.setModifier(modifierClass.cast(this.modifier));
+        castedMod.setTier(this.tier);
+        castedMod.setValue(this.value);
+        castedMod.setBasePercentile(this.basePercentile);
+        return castedMod;
+    }
 }

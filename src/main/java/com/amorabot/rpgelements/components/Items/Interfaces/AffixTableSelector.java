@@ -12,6 +12,7 @@ public interface AffixTableSelector {
     default Map<String, Map<Integer, int[]>> getAffixTable(Map<String, Map<String, Map<String, Map<String, Map<Integer, int[]>>>>> modifiersJSON, ItemTypes type, Affix affixType) {
         if (modifiersJSON == null){
             Utils.log("De-Serialization error:" + type);
+            return null;
         }
         /*type      subtype   affix  -> map<Mods, map<tier, value> >
           WEAPON -> SWORD -> PREFIX -> STRENGTH...
@@ -23,6 +24,10 @@ public interface AffixTableSelector {
           ARMOR  CHESTPLATE    HEAVY_PLATE     PREFIX  ...
           WEAPON   DAGGER        CLAW          SUFFIX
         */
+//        for (String modname : modifiersJSON.get(type.toString()).get(this.toString()).get(affixType.toString()).keySet()){
+//            Utils.log(modname);
+//        }
+//        Utils.log("-------------");
         return modifiersJSON.get(type.toString()).get(this.toString()).get(affixType.toString());
     }
     default <T extends Enum<T> & ItemModifier> Map<T, Map<Integer, int[]>> castTo(Class<T> castClass, Map<String, Map<Integer, int[]>> affixMap){

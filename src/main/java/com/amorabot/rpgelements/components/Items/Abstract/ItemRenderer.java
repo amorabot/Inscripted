@@ -18,8 +18,10 @@ public abstract interface ItemRenderer extends Serializable {
         int longestLineLength = 0;
         for (String line : itemLore){
             String decoloredLine = Utils.decolor(line);
-            if (decoloredLine.length() > longestLineLength){
-                longestLineLength = decoloredLine.length();
+            String strippedLine = decoloredLine.strip();
+            int lineLength = strippedLine.length();
+            if (lineLength > longestLineLength){
+                longestLineLength = lineLength;
             }
         }
         int divLength = (longestLineLength-1)/2;

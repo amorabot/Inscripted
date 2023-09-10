@@ -7,16 +7,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.io.*;
 
-public class GenericItemContainerDataType<T extends Item> implements PersistentDataType<byte[], T> {
-    private final Class<T> type;
-
-    public GenericItemContainerDataType(Class<T> type) {
-        this.type = type;
-    }
-
-    public Class<T> getType() {
-        return this.type;
-    }
+public record GenericItemContainerDataType<T extends Item>(Class<T> type) implements PersistentDataType<byte[], T> {
 
     @Override
     public Class<byte[]> getPrimitiveType() {
@@ -25,7 +16,7 @@ public class GenericItemContainerDataType<T extends Item> implements PersistentD
 
     @Override
     public Class<T> getComplexType() {
-        return getType();
+        return type();
     }
 
     @Override
@@ -41,7 +32,7 @@ public class GenericItemContainerDataType<T extends Item> implements PersistentD
 
             byteOut.close();
 
-        } catch (IOException exception){
+        } catch (IOException exception) {
             exception.printStackTrace();
         }
 
@@ -59,7 +50,7 @@ public class GenericItemContainerDataType<T extends Item> implements PersistentD
 
             return (type.cast(in.readObject()));
 
-        } catch (IOException | ClassNotFoundException exception){
+        } catch (IOException | ClassNotFoundException exception) {
             exception.printStackTrace();
         }
 
