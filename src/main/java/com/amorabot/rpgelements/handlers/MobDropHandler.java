@@ -27,7 +27,7 @@ public class MobDropHandler implements Listener {
     public MobDropHandler(RPGElements p){
         plugin = p;
         Bukkit.getPluginManager().registerEvents(this, plugin);
-        customEntities = plugin.getCustomEntities();
+//        customEntities = plugin.getCustomEntities();
     }
 
     @EventHandler

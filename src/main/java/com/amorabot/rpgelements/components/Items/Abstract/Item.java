@@ -1,11 +1,8 @@
 package com.amorabot.rpgelements.components.Items.Abstract;
 
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Implicit;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.*;
 import com.amorabot.rpgelements.CustomDataTypes.RPGElementsContainer;
 import com.amorabot.rpgelements.RPGElements;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.RendererTypes;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
 import com.amorabot.rpgelements.components.Items.Interfaces.ItemModifier;
 import com.amorabot.rpgelements.components.Items.UnidentifiedRenderer;
@@ -75,6 +72,22 @@ public abstract class Item implements RPGElementsContainer {
     }
     protected void setImplicit(Implicit implicit) {
         this.implicit = implicit;
+    }
+    protected Implicit defineImplicit(String subTypeString){
+        Implicit itemImplicit;
+        try {
+            if (isCorrupted()){
+                //...
+                itemImplicit = Implicit.valueOf(subTypeString+"_"+ ImplicitType.CORRUPTED);
+                //Or alternate corrupted...
+            } else {
+                itemImplicit = Implicit.valueOf(subTypeString+"_"+ImplicitType.STANDARD);
+            }
+        } catch (IllegalArgumentException exception){
+            exception.printStackTrace();
+            itemImplicit = Implicit.AXE_STANDARD;
+        }
+        return itemImplicit;
     }
     public abstract ItemRenderer getRenderer();
     public void setRenderer(RendererTypes rendererType){
