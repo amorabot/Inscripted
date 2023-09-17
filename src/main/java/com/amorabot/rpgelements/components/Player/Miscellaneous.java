@@ -1,8 +1,8 @@
-package com.amorabot.rpgelements.components.PlayerComponents;
+package com.amorabot.rpgelements.components.Player;
 
-import com.amorabot.rpgelements.components.Items.Interfaces.PlayerComponent;
+import com.amorabot.rpgelements.components.Items.Interfaces.EntityComponent;
 
-public class Miscellaneous implements PlayerComponent {
+public class Miscellaneous implements EntityComponent {
 
     //Unique modifier list
 

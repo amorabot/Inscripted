@@ -1,8 +1,9 @@
-package com.amorabot.rpgelements.components.PlayerComponents;
+package com.amorabot.rpgelements.components;
 
-import com.amorabot.rpgelements.components.Items.Interfaces.PlayerComponent;
+import com.amorabot.rpgelements.components.Items.Interfaces.EntityComponent;
+import com.amorabot.rpgelements.components.Player.Profile;
 
-public class DefenceComponent implements PlayerComponent {
+public class DefenceComponent implements EntityComponent {
     private int fireResistance;
     private int coldResistance;
     private int lightningResistance;

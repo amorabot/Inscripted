@@ -1,4 +1,4 @@
-package com.amorabot.rpgelements.components.PlayerComponents;
+package com.amorabot.rpgelements.components.Player;
 
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.TargetStats;
 import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;

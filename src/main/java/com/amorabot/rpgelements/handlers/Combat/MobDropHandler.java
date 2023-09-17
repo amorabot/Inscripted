@@ -1,7 +1,7 @@
-package com.amorabot.rpgelements.handlers;
+package com.amorabot.rpgelements.handlers.Combat;
 
 import com.amorabot.rpgelements.RPGElements;
-import com.amorabot.rpgelements.components.CustomMob;
+import com.amorabot.rpgelements.components.Mobs.CustomMob;
 import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

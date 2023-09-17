@@ -1,8 +1,10 @@
-package com.amorabot.rpgelements.components.PlayerComponents;
+package com.amorabot.rpgelements.components;
 
-import com.amorabot.rpgelements.components.Items.Interfaces.PlayerComponent;
+import com.amorabot.rpgelements.components.Items.Interfaces.EntityComponent;
+import com.amorabot.rpgelements.components.Player.Attributes;
+import com.amorabot.rpgelements.components.Player.Profile;
 
-public class HealthComponent implements PlayerComponent {
+public class HealthComponent implements EntityComponent {
 
     private float currentHealth;
     private float maxHealth;

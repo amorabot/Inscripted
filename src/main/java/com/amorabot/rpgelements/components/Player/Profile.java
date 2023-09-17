@@ -1,7 +1,9 @@
-package com.amorabot.rpgelements.components.PlayerComponents;
+package com.amorabot.rpgelements.components.Player;
 
+import com.amorabot.rpgelements.components.DamageComponent;
+import com.amorabot.rpgelements.components.DefenceComponent;
+import com.amorabot.rpgelements.components.HealthComponent;
 import com.amorabot.rpgelements.components.Items.Weapon.Weapon;
-import com.amorabot.rpgelements.utils.Utils;
 
 public class Profile {
     private HealthComponent health;

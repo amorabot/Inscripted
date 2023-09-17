@@ -33,7 +33,6 @@ public class BasicArmorRenderer implements ItemRenderer {
         if (defencesMap.containsKey(DefenceTypes.WARD)){
             ward = defencesMap.get(DefenceTypes.WARD);
         }
-
         int armor = 0;
         if (defencesMap.containsKey(DefenceTypes.ARMOR)){
             armor = defencesMap.get(DefenceTypes.ARMOR);
@@ -42,21 +41,28 @@ public class BasicArmorRenderer implements ItemRenderer {
         if (defencesMap.containsKey(DefenceTypes.DODGE)){
             dodge = defencesMap.get(DefenceTypes.DODGE);
         }
-        String healthLine = " &7Health: "+DefenceTypes.HEALTH.getTextColor()+ hp + DefenceTypes.HEALTH.getSpecialChar();
-        itemLore.add(ColorUtils.translateColorCodes(healthLine));
+
+        int indentation = 1;
+//        String healthLine = " &7Health: "+DefenceTypes.HEALTH.getTextColor()+ hp + DefenceTypes.HEALTH.getSpecialChar();
+//        itemLore.add(ColorUtils.translateColorCodes(healthLine));
+        String healthLine = DefenceTypes.HEALTH.getTextColor()+ DefenceTypes.HEALTH.getSpecialChar() + " +" + hp + " Health" ;
+        itemLore.add(ColorUtils.translateColorCodes(healthLine.indent(indentation)));
         if (ward > 0){
-            String wardLine = " &7Ward:   " + DefenceTypes.WARD.getTextColor()+ ward + DefenceTypes.WARD.getSpecialChar();
-            itemLore.add(ColorUtils.translateColorCodes(wardLine));
+//            String wardLine = " &7Ward:   " + DefenceTypes.WARD.getTextColor()+ ward + DefenceTypes.WARD.getSpecialChar();
+            String wardLine = DefenceTypes.WARD.getTextColor()+ DefenceTypes.WARD.getSpecialChar() + " +" + ward + " Ward" ;
+            itemLore.add(ColorUtils.translateColorCodes(wardLine.indent(indentation)));
         }
         itemLore.add("");
 
         if (armor > 0){
-            String armorLine = " &7Armor:  " + DefenceTypes.ARMOR.getTextColor()+ armor + DefenceTypes.ARMOR.getSpecialChar();
-            itemLore.add(ColorUtils.translateColorCodes(armorLine));
+//            String armorLine = " &7Armor:  " + DefenceTypes.ARMOR.getTextColor()+ armor + DefenceTypes.ARMOR.getSpecialChar();
+            String armorLine = DefenceTypes.ARMOR.getTextColor()+ DefenceTypes.ARMOR.getSpecialChar() + " +" + armor + " Armor" ;
+            itemLore.add(ColorUtils.translateColorCodes(armorLine.indent(indentation)));
         }
         if (dodge > 0){
-            String dodgeLine = " &7Dodge:  " + DefenceTypes.DODGE.getTextColor()+ dodge + DefenceTypes.DODGE.getSpecialChar();
-            itemLore.add(ColorUtils.translateColorCodes(dodgeLine));
+//            String dodgeLine = " &7Dodge:  " + DefenceTypes.DODGE.getTextColor()+ dodge + DefenceTypes.DODGE.getSpecialChar();
+            String dodgeLine = DefenceTypes.DODGE.getTextColor()+ DefenceTypes.DODGE.getSpecialChar() + " +" + dodge + "%" + " Dodge" ;
+            itemLore.add(ColorUtils.translateColorCodes(dodgeLine.indent(indentation)));
         }
         if ((armor != 0 || dodge != 0)){
             itemLore.add("");

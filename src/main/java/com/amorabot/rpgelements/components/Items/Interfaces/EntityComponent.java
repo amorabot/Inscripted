@@ -1,7 +1,7 @@
 package com.amorabot.rpgelements.components.Items.Interfaces;
 
-import com.amorabot.rpgelements.components.PlayerComponents.*;
+import com.amorabot.rpgelements.components.Player.*;
 
-public interface PlayerComponent {
+public interface EntityComponent {
     void update(Profile profileData);
 }

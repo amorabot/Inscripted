@@ -1,23 +1,18 @@
 package com.amorabot.rpgelements;
 
 import com.amorabot.rpgelements.commands.*;
-import com.amorabot.rpgelements.components.CustomMob;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DefenceTypes;
-import com.amorabot.rpgelements.components.PlayerComponents.Profile;
+import com.amorabot.rpgelements.components.Player.Profile;
 import com.amorabot.rpgelements.handlers.*;
+import com.amorabot.rpgelements.handlers.GUI.GUIHandler;
+import com.amorabot.rpgelements.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.rpgelements.managers.JSONProfileManager;
 import com.amorabot.rpgelements.utils.DelayedTask;
-import com.amorabot.rpgelements.utils.Utils;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,7 +68,7 @@ public final class RPGElements extends JavaPlugin {
 
         //---------   LISTENERS   ------------
         new JoinQuitHandler(this);
-        new WeaponEquipHandler(this);
+        new PlayerEquipmentHandler(this);
         new DelayedTask(this);
         new GUIHandler(this);
 

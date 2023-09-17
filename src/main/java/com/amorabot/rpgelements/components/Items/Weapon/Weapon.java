@@ -1,6 +1,6 @@
 package com.amorabot.rpgelements.components.Items.Weapon;
 
-import com.amorabot.rpgelements.components.FunctionalItems.FunctionalItemHandler;
+import com.amorabot.rpgelements.events.FunctionalItemAccessInterface;
 import com.amorabot.rpgelements.components.Items.Abstract.Item;
 import com.amorabot.rpgelements.components.Items.Abstract.ItemRenderer;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.*;
@@ -8,10 +8,8 @@ import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
 import com.amorabot.rpgelements.components.Items.Interfaces.ItemModifier;
 import com.amorabot.rpgelements.components.Items.UnidentifiedRenderer;
 import com.amorabot.rpgelements.utils.CraftingUtils;
-import com.amorabot.rpgelements.components.Items.DataStructures.GenericItemContainerDataType;
 import com.amorabot.rpgelements.RPGElements;
 import com.amorabot.rpgelements.utils.Utils;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -151,7 +149,7 @@ public class Weapon extends Item {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-        FunctionalItemHandler.serializeWeapon(this, dataContainer);
+        FunctionalItemAccessInterface.serializeWeapon(this, dataContainer);
 //        dataContainer.set(new NamespacedKey(plugin, "item-data"), new GenericItemContainerDataType<>(Weapon.class), this);
         item.setItemMeta(itemMeta);
     }

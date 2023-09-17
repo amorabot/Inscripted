@@ -1,7 +1,7 @@
 package com.amorabot.rpgelements.components.Items.Armor;
 
 import com.amorabot.rpgelements.RPGElements;
-import com.amorabot.rpgelements.components.FunctionalItems.FunctionalItemHandler;
+import com.amorabot.rpgelements.events.FunctionalItemAccessInterface;
 import com.amorabot.rpgelements.components.Items.Abstract.Item;
 import com.amorabot.rpgelements.components.Items.Abstract.ItemRenderer;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.*;
@@ -129,7 +129,7 @@ public class Armor extends Item {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-        FunctionalItemHandler.serializeArmor(this, dataContainer);
+        FunctionalItemAccessInterface.serializeArmor(this, dataContainer);
         item.setItemMeta(itemMeta);
     }
 

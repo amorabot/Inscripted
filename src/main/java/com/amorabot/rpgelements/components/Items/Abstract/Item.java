@@ -1,14 +1,10 @@
 package com.amorabot.rpgelements.components.Items.Abstract;
 
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.*;
-import com.amorabot.rpgelements.CustomDataTypes.RPGElementsContainer;
+import com.amorabot.rpgelements.components.Items.Interfaces.RPGElementsContainer;
 import com.amorabot.rpgelements.RPGElements;
 import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
 import com.amorabot.rpgelements.components.Items.Interfaces.ItemModifier;
-import com.amorabot.rpgelements.components.Items.UnidentifiedRenderer;
-import com.amorabot.rpgelements.components.Items.Weapon.BasicWeaponRenderer;
-import com.amorabot.rpgelements.components.Items.Weapon.WeaponModifiers;
-import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
