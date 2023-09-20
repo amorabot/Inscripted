@@ -1,13 +1,14 @@
 package com.amorabot.rpgelements.managers;
 
 import com.amorabot.rpgelements.RPGElements;
-import com.amorabot.rpgelements.components.PlayerComponents.*;
+import com.amorabot.rpgelements.components.DamageComponent;
+import com.amorabot.rpgelements.components.DefenceComponent;
+import com.amorabot.rpgelements.components.HealthComponent;
+import com.amorabot.rpgelements.components.Player.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.*;

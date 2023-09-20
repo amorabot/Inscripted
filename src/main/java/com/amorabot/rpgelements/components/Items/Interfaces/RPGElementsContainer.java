@@ -1,4 +1,4 @@
-package com.amorabot.rpgelements.CustomDataTypes;
+package com.amorabot.rpgelements.components.Items.Interfaces;
 
 import java.io.Serializable;
 

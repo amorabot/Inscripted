@@ -1,4 +1,4 @@
-package com.amorabot.rpgelements.handlers;
+package com.amorabot.rpgelements.handlers.GUI;
 
 import com.amorabot.rpgelements.RPGElements;
 import com.amorabot.rpgelements.managers.UIManager;

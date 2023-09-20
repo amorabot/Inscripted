@@ -1,7 +1,7 @@
 package com.amorabot.rpgelements.components.Items.Armor;
 
 import com.amorabot.rpgelements.RPGElements;
-import com.amorabot.rpgelements.components.FunctionalItems.FunctionalItemHandler;
+import com.amorabot.rpgelements.events.FunctionalItemAccessInterface;
 import com.amorabot.rpgelements.components.Items.Abstract.Item;
 import com.amorabot.rpgelements.components.Items.Abstract.ItemRenderer;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.*;
@@ -28,6 +28,7 @@ public class Armor extends Item {
     private final int baseHealth;
     private Map<DefenceTypes, Integer> defencesMap = new HashMap<>();
     private List<Modifier<ArmorModifiers>> modifiers = new ArrayList<>();
+    //Define level limitations for armors
 
     public Armor(ItemTypes armorSlot, int ilvl, ArmorTypes type, ItemRarities rarity, boolean identified, boolean corrupted){
         super(ilvl, rarity, identified, corrupted);
@@ -35,21 +36,7 @@ public class Armor extends Item {
         this.armorPiece = armorSlot;
         this.type = type;
         this.name = type.toString();
-        Implicit itemImplicit;
-        try {
-            if (isCorrupted()){
-                //Decide wether the implicit is corrupted too
-                //...
-                itemImplicit = Implicit.valueOf(type+"_"+ImplicitType.CORRUPTED);
-                //Or alternate corrupted...
-            } else {
-                itemImplicit = Implicit.valueOf(type+"_"+ImplicitType.STANDARD);
-            }
-        } catch (IllegalArgumentException exception){
-            exception.printStackTrace();
-            itemImplicit = Implicit.AXE_STANDARD;
-        }
-        setImplicit(itemImplicit);
+        setImplicit(defineImplicit(getType().toString()));
         mapBase();
         this.baseHealth = getType().mapBaseHealth(getTier(), armorPiece);
     }
@@ -62,21 +49,7 @@ public class Armor extends Item {
         this.armorPiece = armorPiece;
         this.type = selectedType;
         this.name = type.toString();
-        Implicit itemImplicit;
-        try {
-            if (isCorrupted()){
-                //Decide wether the implicit is corrupted too
-                //...
-                itemImplicit = Implicit.valueOf(type+"_"+ImplicitType.CORRUPTED);
-                //Or alternate corrupted...
-            } else {
-                itemImplicit = Implicit.valueOf(type+"_"+ImplicitType.STANDARD);
-            }
-        } catch (IllegalArgumentException exception){
-            exception.printStackTrace();
-            itemImplicit = Implicit.AXE_STANDARD;
-        }
-        setImplicit(itemImplicit);
+        setImplicit(defineImplicit(getType().toString()));
         mapBase();
         this.baseHealth = getType().mapBaseHealth(getTier(), armorPiece);
     }
@@ -156,7 +129,7 @@ public class Armor extends Item {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-        FunctionalItemHandler.serializeArmor(this, dataContainer);
+        FunctionalItemAccessInterface.serializeArmor(this, dataContainer);
         item.setItemMeta(itemMeta);
     }
 

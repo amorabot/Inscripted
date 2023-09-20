@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 public class GenerateWeapon implements CommandExecutor {
+    //Todo: implement tabExecutor and commandmanagers to merge Generate armor    (Generate command with both functionalities)
 
     private final RPGElements plugin;
     public GenerateWeapon(RPGElements plugin){

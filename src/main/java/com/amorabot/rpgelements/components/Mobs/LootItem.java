@@ -1,4 +1,4 @@
-package com.amorabot.rpgelements.components;
+package com.amorabot.rpgelements.components.Mobs;
 
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;

@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -52,6 +53,13 @@ public class Utils {
     public static void msgPlayerAB(Player player, String msg){
 //        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(color(msg)));
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ColorUtils.translateColorCodes(msg)));
+    }
+    public static float mapToPercentage(int flatDodge){
+        return Float.valueOf(getPercentString(flatDodge));
+    }
+    public static String getPercentString(int flatDodge){
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        return decimalFormat.format(flatDodge/100.0f);
     }
 
     public static ItemStack createItem(Material type, int amount, boolean enchanted, boolean unbreakable, boolean hideUnbreakable

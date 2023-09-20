@@ -54,7 +54,7 @@ public class GenerateArmor implements CommandExecutor {
             return false;
         }
 
-        Armor randomArmor = BasicArmorGenerator.createGenericArmor(armorType, armorSubtype, ilvlArg, rarity, true, false);
+        Armor randomArmor = BasicArmorGenerator.createGenericArmor(armorType, armorSubtype, ilvlArg, rarity, false, false);
         try {
             if (args[4].equals("-d")){
                 assert randomArmor != null;

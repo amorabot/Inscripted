@@ -1,20 +1,20 @@
-package com.amorabot.rpgelements.components.PlayerComponents;
+package com.amorabot.rpgelements.components;
 
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Implicit;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.TargetStats;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
-import com.amorabot.rpgelements.components.Items.Interfaces.PlayerComponent;
+import com.amorabot.rpgelements.components.Items.Interfaces.EntityComponent;
 import com.amorabot.rpgelements.components.Items.Weapon.Weapon;
 import com.amorabot.rpgelements.components.Items.Weapon.WeaponModifiers;
+import com.amorabot.rpgelements.components.Player.Profile;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class DamageComponent implements PlayerComponent {
+public class DamageComponent implements EntityComponent {
     private float DPS;
     private Map<DamageTypes, int[]> damage;
     private int stamina;
