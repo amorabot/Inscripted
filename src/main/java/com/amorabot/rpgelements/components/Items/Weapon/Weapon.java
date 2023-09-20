@@ -65,7 +65,7 @@ public class Weapon extends Item {
     }
 
     //-------------------------------------------------------------------------
-    public void updateBaseDamage(){
+    public void updateBaseDamageFromModifiers(){ //Once a weapon is created, the damage map needs to be updated to contain any possible new damages
         for (Modifier<WeaponModifiers> mod : modifiers){
             WeaponModifiers weaponModifier = mod.getModifier();
 

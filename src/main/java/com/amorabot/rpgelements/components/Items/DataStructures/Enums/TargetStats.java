@@ -10,6 +10,7 @@ public enum TargetStats {
     STAMINA,
     STAMINA_REGEN,
     HEALTH,
+    HEALTH_REGEN,
     WARD,
     DODGE,
     ARMOR,

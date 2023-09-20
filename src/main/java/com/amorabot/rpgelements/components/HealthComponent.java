@@ -1,15 +1,15 @@
 package com.amorabot.rpgelements.components;
 
 import com.amorabot.rpgelements.components.Items.Interfaces.EntityComponent;
-import com.amorabot.rpgelements.components.Player.Attributes;
 import com.amorabot.rpgelements.components.Player.Profile;
 
 public class HealthComponent implements EntityComponent {
 
     private float currentHealth;
-    private float maxHealth;
-    private int extraHealth;
+    private float maxHealth; //addedHealth+startinghealth * 1 + incHealth
+    private int addedHealth;
     private final int startingHealth;
+    private int healthRegen;
 
     private int increasedHealth;
 
@@ -24,9 +24,9 @@ public class HealthComponent implements EntityComponent {
         this.startingHealth = 40;
         this.startingWard = 0;
 
-        this.extraHealth = 0;
+        this.addedHealth = 0;
         this.extraWard = 0;
-        setMaxHealth();
+        setMaxHealth(this.startingHealth+this.addedHealth, 0);
         setMaxWard();
     }
 
@@ -38,29 +38,35 @@ public class HealthComponent implements EntityComponent {
     public float getMaxHealth() {
         return maxHealth;
     }
-    public int getExtraHealth() {
-        return this.extraHealth;
+    public int getAddedHealth() {
+        return this.addedHealth;
     } //Value without % modifiers
 
-    public void setExtraHealth(int extraHealth){
-        if (this.startingHealth + extraHealth <= 0){ //If the base life modifiers gets your life to negative, your life is 1
-            this.extraHealth = 1;
+    public void setAddedHealth(int addedHealth){
+        if (this.startingHealth + addedHealth <= 0){ //If the base life modifiers gets your life to negative, your life is 1
+            this.addedHealth = 0;
             return;
         }
-        this.extraHealth = this.startingHealth + extraHealth;
+        this.addedHealth = addedHealth;
     }
     public int getIncreasedHealth() {
         return increasedHealth;
     }
     public void setIncreasedHealth(int increasedHealth){
         this.increasedHealth = increasedHealth;
-        setMaxHealth();
     }
-    public void setMaxHealth(){
-        this.maxHealth = extraHealth * (1 + getIncreasedHealth());
+    public void setMaxHealth(int addedHealth, int percentHealth){
+        setAddedHealth(addedHealth);
+        setIncreasedHealth(percentHealth);
+        this.maxHealth = (getAddedHealth()+this.startingHealth) * (1 + getIncreasedHealth()/100f);
     }
 
-
+    public void setHealthRegen(int healthRegen) {
+        this.healthRegen = healthRegen;
+    }
+    public int getHealthRegen() {
+        return healthRegen;
+    }
     //------------WARD METHODS-------------
 
     public float getCurrentWard() {
@@ -89,20 +95,12 @@ public class HealthComponent implements EntityComponent {
 
     @Override
     public void update(Profile profileData) {
-        int flatHealthSum = 0;
-        int percentHealth = 0;
-        int flatWardSum = 0;
-        int percentWard = 0;
-        //Getting health stats from all items...
-        //CASO PRECISE CHECAR A ARMA, USAR if == NULL
-        //Getting health stats from attributes
-        Attributes attributes = profileData.getAttributes();
-        flatHealthSum += attributes.getStrength()/3;
-        flatWardSum += attributes.getIntelligence()/5;
+    }
 
-        setExtraHealth(flatHealthSum);
-        setIncreasedHealth(percentHealth);
-        setExtraWard(flatWardSum);
+    public void updateHealthComponent(int flatHealth, int percentHealth, int healthRegen, int flatWard, int percentWard){
+        setMaxHealth(flatHealth, percentHealth);
+        setHealthRegen(healthRegen);
+        setExtraWard(flatWard);
         setIncreasedWard(percentWard);
     }
 }

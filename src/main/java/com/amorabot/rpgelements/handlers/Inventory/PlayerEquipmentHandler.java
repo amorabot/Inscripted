@@ -1,10 +1,11 @@
 package com.amorabot.rpgelements.handlers.Inventory;
 
+import com.amorabot.rpgelements.APIs.EventAPI;
 import com.amorabot.rpgelements.RPGElements;
-import com.amorabot.rpgelements.events.ArmorEquipEvent;
-import com.amorabot.rpgelements.events.FunctionalItemAccessInterface;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.rpgelements.components.Items.Weapon.Weapon;
 import com.amorabot.rpgelements.components.Player.Profile;
+import com.amorabot.rpgelements.events.FunctionalItemAccessInterface;
 import com.amorabot.rpgelements.events.ItemUsage;
 import com.amorabot.rpgelements.managers.JSONProfileManager;
 import com.amorabot.rpgelements.utils.DelayedTask;
@@ -20,7 +21,6 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -28,7 +28,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.amorabot.rpgelements.events.FunctionalItemAccessInterface.*;
 
@@ -137,6 +136,7 @@ public class PlayerEquipmentHandler implements Listener {
 
         InventoryAction attemptedAction = event.getAction();
         Player player = (Player) event.getWhoClicked();
+        PlayerInventory inventory = player.getInventory();
         //InventoryHandler should handle all inventory interactions that are not happening exclusively on the players inventory alone
         //Lets assume it from now on
         if (event.getClickedInventory() != player.getInventory()){
@@ -181,7 +181,7 @@ public class PlayerEquipmentHandler implements Listener {
 
                 //The clicked item doesnt matter, the item that is going to the main hand is not equipable anyway
                 if (isNotFunctional(cursorItem)){
-                    player.sendMessage("unequiping");
+//                    player.sendMessage("unequiping");
                     unequipWeaponSlot(player);
                     return;
                 }
@@ -190,7 +190,7 @@ public class PlayerEquipmentHandler implements Listener {
                     //clickedItem is not functional, cursorItem is
                     PersistentDataContainer dataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
                     if (isEquipableWeapon(dataContainer)){
-                        player.sendMessage("equiping, none->weapon");
+//                        player.sendMessage("equiping, none->weapon");
                         equipWeapon(dataContainer, player);
                         return;
                     }
@@ -202,7 +202,7 @@ public class PlayerEquipmentHandler implements Listener {
                     //If the clicked item (main hand) is functional, lets check if its a weapon
                     PersistentDataContainer dataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
                     if (isEquipableWeapon(dataContainer)){
-                        player.sendMessage("unequiping 2");
+//                        player.sendMessage("unequiping 2");
                         unequipWeaponSlot(player);
                         return;
                     }
@@ -212,6 +212,7 @@ public class PlayerEquipmentHandler implements Listener {
                 //Both are functional (not necessarily weapons, must be checked)
                 if (attemptedAction == InventoryAction.SWAP_WITH_CURSOR){ //Main hand swapping
                     player.sendMessage("swap!");
+                    //TODO: orb usage events
                     PersistentDataContainer clickedDataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
                     PersistentDataContainer cursorDataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
                     if (isEquipableWeapon(clickedDataContainer) && !isEquipableWeapon(cursorDataContainer)){
@@ -239,55 +240,55 @@ public class PlayerEquipmentHandler implements Listener {
                 }
                 PersistentDataContainer clickedDataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
                 if (isEquipableArmor(clickedDataContainer)){
-                    player.sendMessage("chamando armorequipevent");
-                    Bukkit.getServer().getPluginManager().callEvent(new ArmorEquipEvent(
-                            event,
-                            clickedItem,
-                            Objects.requireNonNull(deserializeArmor(clickedDataContainer)).getArmorPiece(),
-                            ItemUsage.ARMOR_SHIFTING_TO_INV));
-                } else {
-                    event.setCancelled(true);
+                    ItemTypes armorPiece = Objects.requireNonNull(deserializeArmor(clickedDataContainer)).getArmorPiece();
+                    //Equipability by a specific player will be tested later (and may cause this event's cancel)
+                    EventAPI.callArmorEquipEvent(event, clickedItem, armorPiece, ItemUsage.ARMOR_SHIFTING_FROM_INV);
                 }
+                //Its not armor-shifting, lets check for weapon-shifting
+                //Lets first check for main-hand clicks to filter unequip attempts with shift
+                if (event.getSlot() == inventory.getHeldItemSlot()){
+                    //It necessarily is a functional item, lets check if its a equipable weapon
+                    PersistentDataContainer mainHandDataContainer = Objects.requireNonNull(inventory.getItemInMainHand().getItemMeta()).getPersistentDataContainer();
+                    if (isEquipableWeapon(mainHandDataContainer)){
+                        player.sendMessage(Utils.color("&cNo main hand shift-clicking"));
+                        event.setCancelled(true);
+                        return;
+                    }
+                    //If not on main hand, ignore
+                    return;
+                }
+                //From now on, the clicks are functional items not on the main hand
+                //Lets check for a late-equip when shifting INTO main hand, not FROM like earlier
+                if (isEquipableWeapon(clickedDataContainer)){
+                    if (inventory.getItemInMainHand().getType().isAir()){
+                        new DelayedTask(new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                ItemStack newlyCheckedMainHandItem = inventory.getItemInMainHand();
+                                if (isNotFunctional(newlyCheckedMainHandItem)){
+                                    return;
+                                }
+                                PersistentDataContainer newMainHandDataContainer = Objects.requireNonNull(newlyCheckedMainHandItem.getItemMeta()).getPersistentDataContainer();
+                                if (isEquipableWeapon(newMainHandDataContainer)) {
+                                    equipWeapon(newMainHandDataContainer, player);
+                                }
+                            }
+                        }, 5L);
+                    }
+                }
+                //Its not a weapon, nor a armor piece, ignore
+                return;
             }
+            case SHIFT_RIGHT -> {
+                event.setCancelled(true);
+                return;
+            }
+
         }
-//        if (event.getClickedInventory().equals(playerInventory)) {
-//            ClickType click = event.getClick();
-//            //-----------------------------------------------------------------------------------------------------------------------
-//            if (click == ClickType.DOUBLE_CLICK && (isEquipableWeapon(event.getCurrentItem()) || isEquipableWeapon(player.getItemOnCursor()))) {
-//                //Checking for double clicks into main hand
-//                if (event.getSlot() != player.getInventory().getHeldItemSlot()) {
-//                    return;
-//                }
-//                event.setCancelled(true);
-//                return;
-//            }
-//            if (event.isShiftClick()){ //------------------------------ CHECKING FOR SHIFT-CLICKS ------------------------------ //TODO: consider adding weapon shift-swap mechanic?
-//                ItemStack currentMainHandItem = player.getInventory().getItemInMainHand();
-//                ItemStack shiftClickedItem = event.getCurrentItem();
-//                //The clicked item is equipable and held
-//                if (isEquipableWeapon(currentMainHandItem)){
-//                    if (event.getSlot() == player.getInventory().getHeldItemSlot()) {
-//                        event.setCancelled(true);
-//                        return;
-//                    }
-//                }
-//                //If the player is holding something or the clicked item is not equipable, ignore. It should not result in a equip anyway
-//                if (!(currentMainHandItem.getType().isAir() && isEquipableWeapon(shiftClickedItem))){
-//                    return;
-//                }
-//                if (currentMainHandItem.getType().isAir()){
-//                    new DelayedTask(new BukkitRunnable() {
-//                        @Override
-//                        public void run() {
-//                            ItemStack newlyCheckedMainHandItem = player.getInventory().getItemInMainHand();
-//                            if (isEquipableWeapon(newlyCheckedMainHandItem)) {
-//                                equipWeapon(newlyCheckedMainHandItem.getItemMeta().getPersistentDataContainer(), player);
-//                            }
-//                        }
-//                    }, 5L);
-//                }
-//                return;
-//            }
+        //TODO: Consider a shift-equip mechanic for weapons?
+        //Check for swaps withing LEFT or RIGHT?
+
+
 //            //-----------------------------------------------------------------------------------------------------------------------
 //            if (attemptedAction == InventoryAction.SWAP_WITH_CURSOR){
 //                if (event.getSlot() != player.getInventory().getHeldItemSlot()){ //se a tentativa não for no slot da mão, ignore
@@ -313,25 +314,6 @@ public class PlayerEquipmentHandler implements Listener {
 //                return;
 //            }
 //        } else {
-//            if (event.isShiftClick()){ //------------------------------ CHECKING FOR SHIFT-CLICKS OUTSIDE INVENTORY ------------------------------
-//                if (!player.getInventory().getItemInMainHand().getType().isAir()){
-//                    return;
-//                }
-//                if (isEquipableWeapon(event.getCurrentItem())){
-//                    new DelayedTask(new BukkitRunnable() {
-//                        @Override
-//                        public void run() {
-//                            ItemStack mainHandItem = player.getInventory().getItemInMainHand();
-//                            if (isEquipableWeapon(mainHandItem)) {
-//                                equipWeapon(mainHandItem.getItemMeta().getPersistentDataContainer(), player);
-//                            }
-//                        }
-//                    }, 5L);
-//                    return;
-//                }
-//                return; //If the player is holding something and its not equipable, just return
-//            }
-//        }
         if (attemptedAction == InventoryAction.HOTBAR_SWAP){
             event.setCancelled(true); //No hotbar swapping
         }
@@ -340,7 +322,6 @@ public class PlayerEquipmentHandler implements Listener {
         Weapon weapon = FunctionalItemAccessInterface.deserializeWeapon(weaponDataContainer);
         Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
         playerProfile.updateMainHand(weapon);
-        JSONProfileManager.setProfile(player.getUniqueId().toString(),playerProfile);
         Utils.msgPlayer(player, "Equipped: " + weapon.getName() + " ("+playerProfile.getDamageComponent().getDPS()+")");
     }
     private void unequipWeaponSlot(Player player){
@@ -349,7 +330,6 @@ public class PlayerEquipmentHandler implements Listener {
             return;
         }
         playerProfile.updateMainHand(null);
-        JSONProfileManager.setProfile(player.getUniqueId().toString(),playerProfile);
     }
     /* Checks wether the item has any custom data at all
     *  */

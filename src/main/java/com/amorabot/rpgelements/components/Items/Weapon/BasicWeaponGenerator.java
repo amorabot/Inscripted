@@ -32,7 +32,7 @@ public class BasicWeaponGenerator { //Modularize the generation steps for re-use
                         blankWeapon.addModifier(Modifier.getRandomModifier(suffixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                     }
                 }
-                blankWeapon.updateBaseDamage();
+                blankWeapon.updateBaseDamageFromModifiers();
                 return blankWeapon;
             }
             case RARE -> {
@@ -61,7 +61,7 @@ public class BasicWeaponGenerator { //Modularize the generation steps for re-use
                         }
                     }
                 }
-                blankWeapon.updateBaseDamage();
+                blankWeapon.updateBaseDamageFromModifiers();
                 return blankWeapon;
             }
             case UNIQUE -> {
