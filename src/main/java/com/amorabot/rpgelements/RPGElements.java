@@ -5,6 +5,7 @@ import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DefenceTyp
 import com.amorabot.rpgelements.components.Player.Profile;
 import com.amorabot.rpgelements.handlers.*;
 import com.amorabot.rpgelements.handlers.GUI.GUIHandler;
+import com.amorabot.rpgelements.handlers.Inventory.ArmorEquipListener;
 import com.amorabot.rpgelements.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.rpgelements.managers.JSONProfileManager;
 import com.amorabot.rpgelements.utils.DelayedTask;
@@ -71,6 +72,8 @@ public final class RPGElements extends JavaPlugin {
         new PlayerEquipmentHandler(this);
         new DelayedTask(this);
         new GUIHandler(this);
+//        new ArmorEquipListener();
+        Bukkit.getServer().getPluginManager().registerEvents(new ArmorEquipListener(), this);
 
         new BukkitRunnable(){
             @Override

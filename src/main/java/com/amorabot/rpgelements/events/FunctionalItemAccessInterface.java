@@ -4,6 +4,7 @@ import com.amorabot.rpgelements.RPGElements;
 import com.amorabot.rpgelements.components.Items.Armor.Armor;
 import com.amorabot.rpgelements.components.Items.DataStructures.GenericItemContainerDataType;
 import com.amorabot.rpgelements.components.Items.Weapon.Weapon;
+import com.amorabot.rpgelements.components.Player.Profile;
 import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -29,17 +30,6 @@ public class FunctionalItemAccessInterface {
 
     //Checks wether this item has a weapon tag and if it's identified
     public static boolean isEquipableWeapon(PersistentDataContainer dataContainer){
-        if (isWeapon(dataContainer)) {
-            return Boolean.TRUE.equals(dataContainer.get(new NamespacedKey(rpgElementsPlugin, weaponKey), new PersistentDataType.BooleanPersistentDataType()));
-        }
-        return false;
-    }
-
-    //Should be switched to dataContainer call
-    @Deprecated
-    public static boolean isEquipableWeapon(ItemStack item){
-        ItemMeta itemMeta = item.getItemMeta();
-        PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
         if (isWeapon(dataContainer)) {
             return Boolean.TRUE.equals(dataContainer.get(new NamespacedKey(rpgElementsPlugin, weaponKey), new PersistentDataType.BooleanPersistentDataType()));
         }
@@ -80,6 +70,10 @@ public class FunctionalItemAccessInterface {
             return Boolean.TRUE.equals(dataContainer.get(new NamespacedKey(rpgElementsPlugin, armorKey), new PersistentDataType.BooleanPersistentDataType()));
         }
         return false;
+    }
+    public static boolean isEquipableArmorByPlayer(Armor armorData, Profile playerProfile){
+        //Todo: implement level requirement for player to equip
+        return true;
     }
     public static void serializeArmor(Armor armorData, PersistentDataContainer dataContainer){
         dataContainer.set(new NamespacedKey(rpgElementsPlugin, armorDataKey), new GenericItemContainerDataType<>(Armor.class), armorData);

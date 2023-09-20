@@ -1,6 +1,7 @@
 package com.amorabot.rpgelements.handlers.Inventory;
 
 import com.amorabot.rpgelements.RPGElements;
+import com.amorabot.rpgelements.events.ArmorEquipEvent;
 import com.amorabot.rpgelements.events.FunctionalItemAccessInterface;
 import com.amorabot.rpgelements.components.Items.Weapon.Weapon;
 import com.amorabot.rpgelements.components.Player.Profile;
@@ -21,6 +22,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -49,8 +51,31 @@ public class PlayerEquipmentHandler implements Listener {
     @EventHandler
     public void onSlotChange(PlayerItemHeldEvent event){
         Player player = event.getPlayer();
+//        player.sendEquipmentChange();
+//        player.sendHealthUpdate();
+//        player.damage();
+//        player.getAbsorptionAmount()
+//        player.eject()
+//        player.getAttackCooldown()
+//        player.getBoundingBox();
+//        player.getExhaustion();
+//        player.getExpToLevel();
+//        player.getLastDeathLocation();
+//        player.getNearbyEntities();
+//        player.hasCooldown()
+//        player.rayTraceBlocks();
+//        player.setAbsorptionAmount();
+//        player.setCooldown();
+//        player.getInventory().getArmorContents()
 
-        Inventory inventory = player.getInventory();
+        PlayerInventory inventory = player.getInventory();
+        //There is just the Inventory interface, wich PlayerInventory extends from.
+//        inventory.getArmorContents();
+//        inventory.firstEmpty();
+//        inventory.first();
+//        inventory.contains();
+//        inventory.iterator();
+
         ItemStack heldItem = inventory.getItem(event.getNewSlot());
 //        ItemStack previousItem = inventory.getItem(event.getPreviousSlot());
         if (isNotFunctional(heldItem)){
@@ -59,6 +84,7 @@ public class PlayerEquipmentHandler implements Listener {
         }
         PersistentDataContainer heldItemDataContainer = heldItem.getItemMeta().getPersistentDataContainer();
         if (isEquipableWeapon(heldItemDataContainer)){
+            player.setCooldown(heldItem.getType(), 20*1);
             equipWeapon(heldItemDataContainer, player);
         } else {
             unequipWeaponSlot(player);
@@ -88,7 +114,12 @@ public class PlayerEquipmentHandler implements Listener {
             }
             case WEAPON_LEFT_CLICK_AIR -> {
                 //This is triggered when dropping a equiped weapon from inv
-                player.sendMessage(Utils.color("&l&4Attack!"));
+                if (player.hasCooldown(usedItem.getType())){
+                    player.sendMessage(Utils.color("&c&lYou cannot attack right now!"));
+                } else {
+                    player.sendMessage(Utils.color("&c&lAttack!"));
+                    player.setCooldown(usedItem.getType(), (int)(20*0.5));
+                }
             }
             case WEAPON_RIGHT_CLICK_AIR -> {
                 player.sendMessage("Weapon special!");
@@ -199,6 +230,24 @@ public class PlayerEquipmentHandler implements Listener {
             case RIGHT -> {
                 player.sendMessage("opening something");
                 event.setCancelled(true);
+            }
+            case SHIFT_LEFT -> {
+                player.sendMessage("shift-clicking!!!");
+                //Decide what to do to functional items (in this case, cursor items should be ignored)
+                if (isNotFunctional(clickedItem)){
+                    return; //Ignore shift-clicks for non functional items
+                }
+                PersistentDataContainer clickedDataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
+                if (isEquipableArmor(clickedDataContainer)){
+                    player.sendMessage("chamando armorequipevent");
+                    Bukkit.getServer().getPluginManager().callEvent(new ArmorEquipEvent(
+                            event,
+                            clickedItem,
+                            Objects.requireNonNull(deserializeArmor(clickedDataContainer)).getArmorPiece(),
+                            ItemUsage.ARMOR_SHIFTING_TO_INV));
+                } else {
+                    event.setCancelled(true);
+                }
             }
         }
 //        if (event.getClickedInventory().equals(playerInventory)) {

@@ -92,25 +92,25 @@ public enum ArmorTypes implements AffixTableSelector {
             switch (armorBase){
                 case HELMET -> {
                     int maximumHelmetArmor = 250;
-                    int maxDodge = 1;
+                    int maxDodge = 100;
                     putArmor(ilvl, maxItemLevel, maximumHelmetArmor, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case CHESTPLATE -> {
                     int maximumChestplateArmor = 600;
-                    int maxDodge = 4;
+                    int maxDodge = 400;
                     putArmor(ilvl, maxItemLevel, maximumChestplateArmor, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case LEGGINGS -> {
                     int maximumLeggingsArmor = 400;
-                    int maxDodge = 3;
+                    int maxDodge = 300;
                     putArmor(ilvl, maxItemLevel, maximumLeggingsArmor, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case BOOTS -> {
                     int maximumBootsArmor = 150;
-                    int maxDodge = 2;
+                    int maxDodge = 200;
                     putArmor(ilvl, maxItemLevel, maximumBootsArmor, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
@@ -169,19 +169,19 @@ public enum ArmorTypes implements AffixTableSelector {
             float maxItemLevel = 120;
             switch (armorBase){
                 case HELMET -> {
-                    int maxDodge = 2;
+                    int maxDodge = 200;
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case CHESTPLATE -> {
-                    int maxDodge = 8;
+                    int maxDodge = 800;
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case LEGGINGS -> {
-                    int maxDodge = 6;
+                    int maxDodge = 600;
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case BOOTS -> {
-                    int maxDodge = 4;
+                    int maxDodge = 400;
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
@@ -240,25 +240,25 @@ public enum ArmorTypes implements AffixTableSelector {
             switch (armorBase){
                 case HELMET -> {
                     int maximumWard = 50;
-                    int maxDodge = 1;
+                    int maxDodge = 100;
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case CHESTPLATE -> {
                     int maximumWard = 120;
-                    int maxDodge = 4;
+                    int maxDodge = 400;
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case LEGGINGS -> {
                     int maximumWard = 90;
-                    int maxDodge = 3;
+                    int maxDodge = 300;
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case BOOTS -> {
                     int maximumWard = 40;
-                    int maxDodge = 2;
+                    int maxDodge = 200;
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
@@ -481,11 +481,9 @@ public enum ArmorTypes implements AffixTableSelector {
     * */
     public abstract int mapBaseHealth(Tiers tier, ItemTypes armorBase);
     private Integer linearScaleStat(int givenItemLevel, float maxItemLevel, int maximumBaseStat){
-        float itemLevelPercentile = givenItemLevel / maxItemLevel; // normalization
+        float itemLevelPercentile = givenItemLevel / maxItemLevel; // ilvl->ilvlRange normalization
         return (int) (maximumBaseStat * itemLevelPercentile);
     }
-//    DecimalFormat decimalFormat = new DecimalFormat("#.##");
-//    float twoDigitsF = Float.valueOf(decimalFormat.format(f));
     protected void putArmor(int givenItemLevel, float maxItemLevel, int maximumBaseStat, Map<DefenceTypes, Integer> defences){
         if (givenItemLevel > 0 && givenItemLevel <= maxItemLevel){
             int armorValue = linearScaleStat(givenItemLevel, maxItemLevel, maximumBaseStat);
@@ -508,20 +506,23 @@ public enum ArmorTypes implements AffixTableSelector {
             defences.put(DefenceTypes.WARD, 0);
         }
     }
-    protected void putDodge(int givenItemLevel, float maxItemLevel, int maximumBaseStat, Map<DefenceTypes, Integer> defences){ //Will return -1 if invalid maxIlvl is given
+    protected void putDodge(int givenItemLevel, float maxItemLevel, int maximumBaseStat, Map<DefenceTypes, Integer> defences){ //Will put -1 if invalid maxIlvl is given
         //Dodge will cap below the max item level given
-        int softCap = 20;
-        if (maxItemLevel <= softCap){
+        //Dodge will be a int value to represent a percentage (100x)  1% = 100, 56% = 5600
+        int softCapOffset = 20;
+        int softLevelCap = (int) (maxItemLevel)-softCapOffset;
+        if (maxItemLevel <= softCapOffset){
             defences.put(DefenceTypes.DODGE, -1);
             return;
         }
-        if (givenItemLevel > 0 && givenItemLevel <= maxItemLevel){
-            int dodgeValue = linearScaleStat(givenItemLevel,maxItemLevel-softCap, maximumBaseStat);
-            if (dodgeValue == 0){ return; } // If its truncated to 0 during int conversion, don't add
-            defences.put(DefenceTypes.DODGE, dodgeValue);
-        } else if (givenItemLevel > maxItemLevel-softCap){
+        //If the givenItemLevel is valid (between 1 and levelCap) map it accordingly
+        if (givenItemLevel > 0 && givenItemLevel <= softLevelCap){
+            int dodgeValue = linearScaleStat(givenItemLevel, softLevelCap, maximumBaseStat);
+            //Dodge wont be a percentage by itself, convert when displaying or doing percentage math
+            defences.put(DefenceTypes.DODGE,dodgeValue);
+        } else if(givenItemLevel>softLevelCap && givenItemLevel<maxItemLevel){ //If ilvl is greater than softCap and lower than maxIlvl allowed, put the maximum value for Dodge
             defences.put(DefenceTypes.DODGE, maximumBaseStat);
-        } else {
+        } else { //If the given Ilvl was higher than the max allowed, put 0
             defences.put(DefenceTypes.DODGE, 0);
         }
     }
