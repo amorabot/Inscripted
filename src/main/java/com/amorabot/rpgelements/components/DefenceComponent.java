@@ -7,6 +7,7 @@ public class DefenceComponent implements EntityComponent {
     private int fireResistance;
     private int coldResistance;
     private int lightningResistance;
+    private int abyssalResistance;
 
     private int dodge;
 
@@ -28,17 +29,35 @@ public class DefenceComponent implements EntityComponent {
     public void setFireResistance(int newFireResistance) {
         this.fireResistance = newFireResistance;
     }
-
     public void setColdResistance(int newColdResistance) {
         this.coldResistance = newColdResistance;
     }
-
     public void setLightningResistance(int newLightningResistance) {
         this.lightningResistance = newLightningResistance;
     }
+    public void setAbyssalResistance(int abyssalResistance) {
+        this.abyssalResistance = abyssalResistance;
+    }
+
+    public int getFireResistance() {
+        return fireResistance;
+    }
+    public int getColdResistance() {
+        return coldResistance;
+    }
+    public int getLightningResistance() {
+        return lightningResistance;
+    }
+    public int getAbyssalResistance() {
+        return abyssalResistance;
+    }
+
     //------------DODGE METHODS-------------
-    public void setDodge(int newEvasion){
-        this.dodge = newEvasion;
+    public void setDodge(int newDodge){
+        this.dodge = newDodge;
+    }
+    public int getDodge() {
+        return dodge;
     }
     //------------ARMOR METHODS-------------
     public void setBaseArmor(int newBaseArmor){
@@ -47,12 +66,33 @@ public class DefenceComponent implements EntityComponent {
     public void setIncreasedArmor(int incArmor){
         this.increasedArmor = incArmor;
     }
-    private void setFinalArmor(int incArmor){
-        this.finalArmor = baseArmor * (1 + incArmor);
+    private void setFinalArmor(int flatArmor, int incArmor){
+        setBaseArmor(flatArmor);
+        setIncreasedArmor(incArmor);
+        this.finalArmor = (float) flatArmor * (1 + incArmor);
+    }
+
+    public float getFinalArmor() {
+        return finalArmor;
+    }
+    public int getBaseArmor() {
+        return baseArmor;
+    }
+
+    public int getIncreasedArmor() {
+        return increasedArmor;
     }
 
     @Override
     public void update(Profile profileData) {
+    }
+    public void update(int fireResistance, int coldResistance, int lightningResistance, int abyssalResistance, int baseArmor, int increasedArmor, int dodge){
+        setFireResistance(fireResistance);
+        setColdResistance(coldResistance);
+        setLightningResistance(lightningResistance);
+        setAbyssalResistance(abyssalResistance);
 
+        setFinalArmor(baseArmor, increasedArmor);
+        setDodge(dodge);
     }
 }

@@ -3,7 +3,19 @@ package com.amorabot.rpgelements.components.Player;
 import com.amorabot.rpgelements.components.DamageComponent;
 import com.amorabot.rpgelements.components.DefenceComponent;
 import com.amorabot.rpgelements.components.HealthComponent;
+import com.amorabot.rpgelements.components.Items.Armor.Armor;
+import com.amorabot.rpgelements.components.Items.Armor.ArmorModifiers;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.*;
+import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
 import com.amorabot.rpgelements.components.Items.Weapon.Weapon;
+import com.amorabot.rpgelements.components.Items.Weapon.WeaponModifiers;
+import com.amorabot.rpgelements.utils.Utils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.amorabot.rpgelements.components.DamageComponent.applyAddedPercentageToDamageMap;
+import static com.amorabot.rpgelements.components.DamageComponent.sumWeaponFlatDamage;
 
 public class Profile {
     private HealthComponent health;
@@ -55,20 +67,336 @@ public class Profile {
         return this.damage;
     }
     private void updateProfile(){
-        getAttributes().update(this);
-        getDamageComponent().update(this);
-        getHealthComponent().update(this);
-        getDefenceComponent().update(this);
-        getMiscellaneous().update(this);
+
+        int strSum = 0;
+        int dexSum = 0;
+        int intSum = 0;
+
+        int strMultiSum = 0;
+        int dexMultiSum = 0;
+        int intMultiSum = 0;
+
+        int flatStaminaSum = 0;
+        int percentStaminaSum = 0;
+
+        int flatHealthSum = 0;
+        int percentHealthSum = 0;
+        int healthRegenSum = 0;
+
+        int flatWardSum = 0;
+        int percentWardSum = 0;
+
+        int flatArmorSum = 0;
+        int percentArmorSum = 0;
+
+        int flatDodgeSum = 0;
+
+        int walkSpeedSum = 0; //MISC
+
+        int coldResSum = 0;
+        int fireResSum = 0;
+        int lightResSum = 0;
+        int abyssResSum = 0;
+
+
+
+        Map<DamageTypes, int[]> damageMap = new HashMap<>();
+        int baseStaminaRegen = 2;
+        int staminaRegenPercentSum = 0;
+
+        int accuracySum = 0;
+        int percentAccuracySum = 0;
+
+        int baseCrit = 1;
+        int percentCritChanceSum = 0;
+        int percentCritDamageSum = 0;
+
+        int bleedSum = 0;
+
+        int shredSum = 0;
+        int maelstromSum = 0;
+
+        int percentElementalDamageSum = 0;
+
+        int lifeOnHitSum = 0;
+
+        int[] addedPhys = new int[2];
+        int percentPhys = 0;
+
+        int[] addedFire = new int[2];
+        int percentFire = 0;
+
+        int[] addedLightning = new int[2];
+        int percentLightning = 0;
+
+        int[] addedCold = new int[2];
+        int percentCold = 0;
+
+        int[] addedAbyssal = new int[2];
+
+
+        //Getting stats from armor
+        for (Armor armorPiece : getStats().getArmorSet()){
+            if (armorPiece == null){
+                continue;
+            }
+            //Adding the armors base health
+            flatHealthSum += armorPiece.getBaseHealth();
+
+            //Mapping baseStats
+            Map<DefenceTypes, Integer> defenceMap = armorPiece.getDefencesMap();
+            for (DefenceTypes def : defenceMap.keySet()){
+                switch (def){
+                    case WARD -> flatWardSum += defenceMap.get(DefenceTypes.WARD);
+                    case ARMOR -> flatArmorSum += defenceMap.get(DefenceTypes.ARMOR);
+                    case DODGE -> flatDodgeSum += defenceMap.get(DefenceTypes.DODGE);
+                }
+            }
+
+            //Mapping implicit
+            Implicit armorImplicit = armorPiece.getImplicit();
+            switch (armorImplicit.getTargetStat()){
+                case DEXTERITY_INTELLIGENCE -> {
+                    //Only available in implicits for now
+                    //Only flat hybrid attributes (in case of attributes, both share the same value
+                    int addedAttribute = armorImplicit.getValue()[0];
+                    dexSum += addedAttribute;
+                    intSum += addedAttribute;
+                }
+                case STRENGTH_DEXTERITY -> {
+                    int addedAttribute = armorImplicit.getValue()[0];
+                    dexSum += addedAttribute;
+                    strSum += addedAttribute;
+                }
+                case INTELLIGENCE_STRENGTH -> {
+                    int addedAttribute = armorImplicit.getValue()[0];
+                    strSum += addedAttribute;
+                    intSum += addedAttribute;
+                }
+            }
+
+            //Mapping modifiers to stats
+            for (Modifier<ArmorModifiers> armorMod : armorPiece.getModifiers()){
+                //TODO: Encapsular o somatório nas variáveis
+                ArmorModifiers mod = armorMod.getModifier();
+                switch (mod.getTargetStat()){
+                    case HEALTH -> {
+                        switch (mod.getValueType()){
+                            case FLAT -> {
+                                flatHealthSum += armorMod.getValue()[0];
+                            }
+                            case PERCENT_ADDED -> {
+                                percentHealthSum += armorMod.getValue()[0];
+                            }
+                            case PERCENT_MULTI -> {
+                                //Not available yet
+                            }
+                        }
+                    }
+                    case HEALTH_REGEN -> {
+                        //Only flat life regen
+                        healthRegenSum += armorMod.getValue()[0];
+                    }
+                    case STAMINA -> {
+                        if (mod.getValueType() == ValueTypes.FLAT){
+                            flatStaminaSum += armorMod.getValue()[0];
+                        } else {
+                            //ValueTypes.PERCENT_ADDED
+                            percentStaminaSum += armorMod.getValue()[0];
+                        }
+                    }
+                    case STRENGTH -> {
+                        if (mod.getValueType() == ValueTypes.FLAT){
+                            strSum += armorMod.getValue()[0];
+                        } else {
+                            //ValueTypes.PERCENT_MULTI
+                            strMultiSum += armorMod.getValue()[0];
+                        }
+                    }
+                    case DEXTERITY -> {
+                        if (mod.getValueType() == ValueTypes.FLAT){
+                            dexSum += armorMod.getValue()[0];
+                        } else {
+                            //ValueTypes.PERCENT_MULTI
+                            dexMultiSum += armorMod.getValue()[0];
+                        }
+                    }
+                    case INTELLIGENCE -> {
+                        if (mod.getValueType() == ValueTypes.FLAT){
+                            intSum += armorMod.getValue()[0];
+                        } else {
+                            //ValueTypes.PERCENT_MULTI
+                            intMultiSum += armorMod.getValue()[0];
+                        }
+                    }
+                    case WARD -> {
+                        if (mod.getValueType() == ValueTypes.FLAT){
+                            flatWardSum += armorMod.getValue()[0];
+                        } else {
+                            //ValueTypes.PERCENT_ADDED
+                            percentWardSum += armorMod.getValue()[0];
+                        }
+                    }
+                    case ARMOR -> {
+                        if (mod.getValueType() == ValueTypes.FLAT){
+                            flatArmorSum+= armorMod.getValue()[0];
+                        } else {
+                            //ValueTypes.PERCENT_ADDED
+                            percentArmorSum += armorMod.getValue()[0];
+                        }
+                    }
+                    case DODGE -> {
+                        //TODO: fix the scale of dodge item mods to the new way (400 = 4%)
+                        flatDodgeSum+= armorMod.getValue()[0];
+                    }
+                    case WALK_SPEED -> {
+                        walkSpeedSum += armorMod.getValue()[0];
+                    }
+                    case COLD_RESISTANCE -> {
+                        coldResSum += armorMod.getValue()[0];
+                    }
+                    case FIRE_RESISTANCE -> {
+                        fireResSum += armorMod.getValue()[0];
+                    }
+                    case LIGHTNING_RESISTANCE -> {
+                        lightResSum += armorMod.getValue()[0];
+                    }
+                    case ABYSSAL_RESISTANCE -> {
+                        abyssResSum += armorMod.getValue()[0];
+                    }
+                }
+            }
+        }
+        //Getting stats from weapon
+        Weapon weaponData = getStats().getWeaponSlot();
+        if (weaponData != null){
+            //Mapping base stats from weapon
+
+            //Applying weapon implicits
+            Implicit weaponImplicit = weaponData.getImplicit();
+            switch (weaponImplicit.getTargetStat()){
+                case SHRED -> shredSum += weaponImplicit.getValue()[0]; //Theres only % Shred
+                case ACCURACY -> {
+                    switch (weaponImplicit.getValueType()){
+                        case FLAT -> accuracySum += weaponImplicit.getValue()[0];
+                        case PERCENT_ADDED -> percentAccuracySum += weaponImplicit.getValue()[0];
+                    }
+                }
+                case DODGE -> flatDodgeSum += weaponImplicit.getValue()[0]*100;
+                case CRITICAL_DAMAGE -> percentCritDamageSum += weaponImplicit.getValue()[0]; //Theres only % Crit DMG
+                case MAELSTROM -> maelstromSum += weaponImplicit.getValue()[0]; //Theres only % Crit DMG
+                case ELEMENTAL_DAMAGE -> percentElementalDamageSum += weaponImplicit.getValue()[0]; //Theres only % Ele DMG
+            }
+            //Getting stats from weapon modifiers
+
+            //Getting weapon stats
+            for (Modifier<WeaponModifiers> mod : weaponData.getModifiers()){
+                TargetStats targetStat = mod.getModifier().getTargetStat();
+                ValueTypes valueType = mod.getModifier().getValueType();
+                int[] modValue = mod.getValue();
+                switch (targetStat){
+                    case STAMINA -> { //Updating Stamina Stats
+                        switch (valueType){
+                            case FLAT -> flatStaminaSum += modValue[0];
+                            case PERCENT_ADDED -> percentStaminaSum += modValue[0];
+                        }
+                    }
+                    case ACCURACY -> { //Updating Accuracy Stats
+                        switch (valueType){
+                            case FLAT -> accuracySum += modValue[0];
+                            case PERCENT_ADDED -> percentAccuracySum += modValue[0];
+                        }
+                    }
+                    case BLEED -> bleedSum += modValue[0]; //There's only %bleed
+                    case CRITICAL -> { //Updating Crit. Stats
+                        if (valueType == ValueTypes.PERCENT_ADDED) {
+                            percentCritChanceSum += modValue[0];
+                        }
+                    }
+                    case SHRED -> shredSum += modValue[0]; //There's only %shred
+                    case MAELSTROM -> maelstromSum += modValue[0];
+                    case ELEMENTAL_DAMAGE -> percentElementalDamageSum += modValue[0]; //There's only %eleDMG
+                    case LIFE_ON_HIT -> lifeOnHitSum += modValue[0];
+                    case STRENGTH -> strSum += modValue[0];
+                    case DEXTERITY -> dexSum += modValue[0];
+                    case INTELLIGENCE -> intSum += modValue[0];
+                    case STAMINA_REGEN -> staminaRegenPercentSum += modValue[0];
+                    //ADD SPECIFIC ELEMENT MODS (fire light cold)
+                    //Add VS MOBS, VS PLAYERS
+                }
+            }
+//            Map<DamageTypes, int[]> damageMap = weaponData.getBaseDamage();
+//            damageMap = weaponData.getBaseDamage();
+            Map<DamageTypes, int[]> originalDamageMap = weaponData.getBaseDamage(); //Will be cloned to be modified
+            for (DamageTypes dmgType : originalDamageMap.keySet()){
+                damageMap.put(dmgType, originalDamageMap.get(dmgType));
+            }
+            //The weapon has been created previously and the damageMap is up-to-date with any flat elemental damages
+            //Once its cloned, the DamageComponent can hold de post-calculation values
+
+            //All additional flat damage (from wherever) is added here (Before percent modifiers)
+            sumWeaponFlatDamage(damageMap, DamageTypes.PHYSICAL, addedPhys);
+            sumWeaponFlatDamage(damageMap, DamageTypes.FIRE, addedFire);
+            sumWeaponFlatDamage(damageMap, DamageTypes.COLD, addedCold);
+            sumWeaponFlatDamage(damageMap, DamageTypes.LIGHTNING, addedLightning);
+            sumWeaponFlatDamage(damageMap, DamageTypes.ABYSSAL, addedAbyssal);
+            //Then the percent modifiers should take effect
+            //...
+            //fire cold and light. are updated individually and then generic elemental is applied to each one
+            percentFire += percentElementalDamageSum;
+            percentLightning += percentElementalDamageSum;
+            percentCold += percentElementalDamageSum;
+
+            applyAddedPercentageToDamageMap(damageMap, DamageTypes.PHYSICAL, percentPhys);
+            applyAddedPercentageToDamageMap(damageMap, DamageTypes.FIRE, percentFire);
+            applyAddedPercentageToDamageMap(damageMap, DamageTypes.LIGHTNING, percentLightning);
+            applyAddedPercentageToDamageMap(damageMap, DamageTypes.COLD, percentCold);
+        }
+
+        //Setting attributes
+        getAttributes().updateStats(strSum, strMultiSum, dexSum, dexMultiSum, intSum, intMultiSum);
+        flatHealthSum += getAttributes().getStrength()/3;
+        flatWardSum += getAttributes().getIntelligence()/5;
+
+        //Setting defences
+        getDefenceComponent().update(fireResSum, coldResSum, lightResSum, abyssResSum, flatArmorSum, percentArmorSum, flatDodgeSum);
+
+        //Setting health
+        getHealthComponent().updateHealthComponent(flatHealthSum, percentHealthSum, healthRegenSum, flatWardSum, percentWardSum);
+
+        //Setting damage
+        getDamageComponent().update(damageMap, flatStaminaSum, percentStaminaSum, baseStaminaRegen, staminaRegenPercentSum, baseCrit, percentCritChanceSum, percentCritDamageSum,
+                accuracySum, percentAccuracySum, bleedSum, shredSum, maelstromSum, percentElementalDamageSum, lifeOnHitSum);
+//        setExtraHealth(flatHealthSum);
+//        setIncreasedHealth(percentHealthSum);
+//        setExtraWard(flatWardSum);
+//        setIncreasedWard(percentWardSum);
+
+//        getAttributes().update(this);
+//        getDamageComponent().update(this);
+//        getHealthComponent().update(this);
+//        getDefenceComponent().update(this);
+//        getMiscellaneous().update(this);
+        //        Attributes attributes = getAttributes();
+//        flatHealthSum += attributes.getStrength()/3;
+//        flatWardSum += attributes.getIntelligence()/5;
     }
     public void updateMainHand(Weapon weapon){
+        if (weapon == null){
+            setDamage(new DamageComponent()); //Clearing the damage component upon unequip (weapon == null)
+        }
         getStats().setWeaponSlot(weapon);
-//        Utils.log("Arma setada com sucesso");
         updateProfile();
     }
-    public void updateArmorSlot(){}
+    public void updateArmorSlot(){
+        updateProfile();
+    }
 
     public boolean hasWeaponEquipped(){
         return this.stats.getWeaponSlot() != null;
+    }
+
+    private void setDamage(DamageComponent damage) {
+        this.damage = damage;
     }
 }

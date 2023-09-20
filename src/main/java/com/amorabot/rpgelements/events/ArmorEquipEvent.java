@@ -2,15 +2,12 @@ package com.amorabot.rpgelements.events;
 
 import com.amorabot.rpgelements.components.Items.Armor.Armor;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemTypes;
-import com.google.common.collect.Lists;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -29,23 +26,17 @@ public class ArmorEquipEvent extends Event {
             ItemTypes.LEGGINGS,
             ItemTypes.BOOTS);
 
-    public ArmorEquipEvent(PlayerInteractEvent event, ItemStack armorItem, ItemTypes armorPiece, ItemUsage armorUsage){
-        this.rootEvent = event;
-        this.armorUsage = armorUsage;
-        this.armorItem = armorItem;
-
-
-        if (!allowedItemTypes.contains(armorPiece)){
-            this.armorSlot = null;
-            return;
+    public ArmorEquipEvent(Event event, ItemStack armorItem, ItemTypes armorPiece, ItemUsage armorUsage){
+        //Validation for event parameter is made within the EventAPI call
+        if (event instanceof PlayerInteractEvent || event instanceof InventoryClickEvent){
+            this.rootEvent = event;
+            this.armorUsage = armorUsage;
+            this.armorItem = armorItem;
+        } else {
+            this.rootEvent = null;
+            this.armorUsage = null;
+            this.armorItem = null;
         }
-        this.armorSlot = armorPiece;
-    }
-    public ArmorEquipEvent(InventoryClickEvent event, ItemStack armorItem, ItemTypes armorPiece,  ItemUsage armorUsage){
-        this.rootEvent = event;
-        this.armorUsage = armorUsage;
-        this.armorItem = armorItem;
-
         if (!allowedItemTypes.contains(armorPiece)){
             this.armorSlot = null;
             return;
@@ -84,5 +75,11 @@ public class ArmorEquipEvent extends Event {
     public Armor getArmorData(){
         return FunctionalItemAccessInterface.deserializeArmor(Objects.requireNonNull(
                 getArmorItem().getItemMeta()).getPersistentDataContainer());
+    }
+    public boolean isValid(){
+        //Nullity check
+        return !(
+                (rootEvent == null) || (armorUsage == null) || (armorItem == null) || (armorSlot == null)
+                );
     }
 }

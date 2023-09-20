@@ -72,8 +72,10 @@ public final class RPGElements extends JavaPlugin {
         new PlayerEquipmentHandler(this);
         new DelayedTask(this);
         new GUIHandler(this);
-//        new ArmorEquipListener();
-        Bukkit.getServer().getPluginManager().registerEvents(new ArmorEquipListener(), this);
+
+        //CUSTOM EVENT LISTENERS
+        new ArmorEquipListener();
+//        Bukkit.getServer().getPluginManager().registerEvents(new ArmorEquipListener(), this);
 
         new BukkitRunnable(){
             @Override
@@ -87,9 +89,10 @@ public final class RPGElements extends JavaPlugin {
                     float dps = playerProfile.getDamageComponent().getDPS();
                     String healthTextHex = DefenceTypes.HEALTH.getTextColor();
                     String wardTextHex = DefenceTypes.WARD.getTextColor();
-                    String healthSegment = healthTextHex + curHealth + "&7/" + healthTextHex + maxHealth + DefenceTypes.HEALTH.getSpecialChar();
-                    String wardSegment = wardTextHex + curWard + "&7/" + wardTextHex + maxWard + DefenceTypes.WARD.getSpecialChar();
-                    msgPlayerAB(currentPlayer, (healthSegment +"   "+ wardSegment) + "     &7" + dps);
+                    String healthSegment = healthTextHex + (int)curHealth + "&7/" + healthTextHex + (int)maxHealth + DefenceTypes.HEALTH.getSpecialChar();
+                    String wardSegment = wardTextHex + (int)curWard + "&7/" + wardTextHex + (int)maxWard + DefenceTypes.WARD.getSpecialChar();
+                    String stamina = String.valueOf(playerProfile.getDamageComponent().getStamina());
+                    msgPlayerAB(currentPlayer, (healthSegment +"   "+ wardSegment) + "     &7" + dps + "     &2&l"+ stamina);
                 }
             }
         }.runTaskTimer(this, 0L, 10L);

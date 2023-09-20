@@ -9,7 +9,6 @@ import com.amorabot.rpgelements.events.ItemUsage;
 import com.amorabot.rpgelements.managers.JSONProfileManager;
 import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,13 +19,22 @@ import org.bukkit.inventory.PlayerInventory;
 
 public class ArmorEquipListener implements Listener {
 
-//    public ArmorEquipListener(){
-////        RPGElements plugin = RPGElements.getPlugin();
-////        Bukkit.getPluginManager().registerEvents(this, plugin);
-//    }
+    public ArmorEquipListener(){
+        RPGElements plugin = RPGElements.getPlugin();
+        Bukkit.getPluginManager().registerEvents(this, plugin);
+    }
 
     @EventHandler
     public void onArmorEquipAttempt(ArmorEquipEvent event){
+        if (!event.isValid()){
+            event.setCancelled(true);
+            if (event.getRootEvent() != null){
+                event.setCancelled(true);
+            }
+            return;
+            //If the event is not valid for any reason, cancel it and, if the root event is valid cancel it too
+        }
+
         if (event.getRootEvent() instanceof PlayerInteractEvent){
             PlayerInteractEvent rootEvent = (PlayerInteractEvent) event.getRootEvent();
 
@@ -49,6 +57,9 @@ public class ArmorEquipListener implements Listener {
             ItemUsage usage = event.getArmorUsage();
             switch (usage){
                 case ARMOR_SHIFTING_TO_INV -> {
+
+                }
+                case ARMOR_SHIFTING_FROM_INV -> { //From inventory to slot
                     switch (event.getArmorSlot()){
                         case HELMET -> {
                             if (playerArmorSet[3] == null){
@@ -70,7 +81,6 @@ public class ArmorEquipListener implements Listener {
                                     return;
                                 }
                                 //Slot is free and the item is equipable
-                                //
                                 rootEvent.setCancelled(true);
                                 inventory.remove(armorToEquip);
                                 inventory.setHelmet(armorToEquip);
@@ -78,7 +88,8 @@ public class ArmorEquipListener implements Listener {
                                 Armor armorData = event.getArmorData();
                                 playerProfile.getStats().setArmorPiece(armorData, armorData.getArmorPiece());
 
-                                //Compile new stats? via profile
+                                //Call for a stat recompilation
+                                playerProfile.updateArmorSlot();
                             }
                         }
                         case CHESTPLATE -> {
