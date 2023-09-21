@@ -2,6 +2,7 @@ package com.amorabot.rpgelements.events;
 
 import com.amorabot.rpgelements.components.Items.Armor.Armor;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemTypes;
+import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -27,18 +28,18 @@ public class ArmorEquipEvent extends Event {
             ItemTypes.BOOTS);
 
     public ArmorEquipEvent(Event event, ItemStack armorItem, ItemTypes armorPiece, ItemUsage armorUsage){
-        //Validation for event parameter is made within the EventAPI call
         if (event instanceof PlayerInteractEvent || event instanceof InventoryClickEvent){
             this.rootEvent = event;
-            this.armorUsage = armorUsage;
             this.armorItem = armorItem;
+            this.armorUsage = armorUsage;
         } else {
             this.rootEvent = null;
-            this.armorUsage = null;
             this.armorItem = null;
+            this.armorUsage = null;
         }
         if (!allowedItemTypes.contains(armorPiece)){
             this.armorSlot = null;
+            Utils.log("Invalid armor piece: " + armorPiece);
             return;
         }
         this.armorSlot = armorPiece;

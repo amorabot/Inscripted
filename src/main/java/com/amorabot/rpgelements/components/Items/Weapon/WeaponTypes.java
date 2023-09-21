@@ -108,7 +108,8 @@ public enum WeaponTypes implements AffixTableSelector {
             }
         }
     },
-    BOW("#71C45A",
+    //#89ae59  #71C45A
+    BOW("#89AE59",
             List.of("Training bow", "Oak bow", "Spruce bow", "Twig shortbow"),
             List.of("Reinforced bow", "Whalebone shortbow", "Longbow", "Crude bow"),
             List.of("Compound bow", "Steelwood bow", "Citadel bow", "Ranger shortbow"),

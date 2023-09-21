@@ -2,6 +2,7 @@ package com.amorabot.rpgelements.handlers.Inventory;
 
 import com.amorabot.rpgelements.RPGElements;
 import com.amorabot.rpgelements.components.Items.Armor.Armor;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.rpgelements.components.Player.Profile;
 import com.amorabot.rpgelements.events.ArmorEquipEvent;
 import com.amorabot.rpgelements.events.FunctionalItemAccessInterface;
@@ -9,6 +10,7 @@ import com.amorabot.rpgelements.events.ItemUsage;
 import com.amorabot.rpgelements.managers.JSONProfileManager;
 import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -56,6 +58,17 @@ public class ArmorEquipListener implements Listener {
 
             ItemUsage usage = event.getArmorUsage();
             switch (usage){
+                case ARMOR_UNEQUIP -> {
+                    if (event.isValid()){
+                        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
+                        playerProfile.getStats().setArmorPiece(null, event.getArmorSlot());
+                        player.playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 0.5f, 1.7f);
+
+                        //Call for a stat recompilation
+                        playerProfile.updateArmorSlot();
+                        return;
+                    }
+                }
                 case ARMOR_SHIFTING_TO_INV -> {
 
                 }
@@ -86,7 +99,9 @@ public class ArmorEquipListener implements Listener {
                                 inventory.setHelmet(armorToEquip);
                                 Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
                                 Armor armorData = event.getArmorData();
-                                playerProfile.getStats().setArmorPiece(armorData, armorData.getArmorPiece());
+                                ItemTypes armorSlot = event.getArmorSlot();
+                                playerProfile.getStats().setArmorPiece(armorData, armorSlot);
+                                player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_NETHERITE, 0.5f, 1.3f);
 
                                 //Call for a stat recompilation
                                 playerProfile.updateArmorSlot();
