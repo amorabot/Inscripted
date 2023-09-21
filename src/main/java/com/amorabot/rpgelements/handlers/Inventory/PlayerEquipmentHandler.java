@@ -19,6 +19,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
@@ -28,6 +29,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.amorabot.rpgelements.events.FunctionalItemAccessInterface.*;
 
@@ -78,19 +80,17 @@ public class PlayerEquipmentHandler implements Listener {
         ItemStack heldItem = inventory.getItem(event.getNewSlot());
 //        ItemStack previousItem = inventory.getItem(event.getPreviousSlot());
         if (isNotFunctional(heldItem)){
-            unequipWeaponSlot(player);
+//            unequipWeaponSlot(player);
+            EventAPI.callWeaponEquipEvent(event, null);
             return;
         }
         PersistentDataContainer heldItemDataContainer = heldItem.getItemMeta().getPersistentDataContainer();
         if (isEquipableWeapon(heldItemDataContainer)){
             player.setCooldown(heldItem.getType(), 20*1);
-            equipWeapon(heldItemDataContainer, player);
+            EventAPI.callWeaponEquipEvent(event, heldItem);
         } else {
-            unequipWeaponSlot(player);
+            EventAPI.callWeaponEquipEvent(event, null);
         }
-        return;
-//        InventoryType.SlotType
-
     }
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerInteract(PlayerInteractEvent event){
@@ -134,6 +134,8 @@ public class PlayerEquipmentHandler implements Listener {
         if (event.getClickedInventory() == null){return;}
         if (event.getCurrentItem() == null){return;}
 
+        Set<Integer> armorSlotsSet = Set.of(39,38,37,36);
+
         InventoryAction attemptedAction = event.getAction();
         Player player = (Player) event.getWhoClicked();
         PlayerInventory inventory = player.getInventory();
@@ -147,6 +149,9 @@ public class PlayerEquipmentHandler implements Listener {
         ClickType clickType = event.getClick();
         ItemStack clickedItem = event.getCurrentItem();
         ItemStack cursorItem = event.getCursor();
+
+//        player.sendMessage(""+event.getSlot()); //       #DEBUG
+
         //When, for instance, the player has a item in the cursor and they click a slot, it comes as air/null
         if (isNotFunctional(clickedItem) && isNotFunctional(cursorItem)){ //If they are both non functional, ignore the event
             player.sendMessage("Ignoring: non functional items (clicked item and cursor item");//                    # DEBUG MESSAGE
@@ -181,8 +186,8 @@ public class PlayerEquipmentHandler implements Listener {
 
                 //The clicked item doesnt matter, the item that is going to the main hand is not equipable anyway
                 if (isNotFunctional(cursorItem)){
-//                    player.sendMessage("unequiping");
-                    unequipWeaponSlot(player);
+//                    unequipWeaponSlot(player);
+                    EventAPI.callWeaponEquipEvent(event, null);
                     return;
                 }
                 //Now its time to decide what to do with the functional items (1 of them or both)
@@ -190,8 +195,7 @@ public class PlayerEquipmentHandler implements Listener {
                     //clickedItem is not functional, cursorItem is
                     PersistentDataContainer dataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
                     if (isEquipableWeapon(dataContainer)){
-//                        player.sendMessage("equiping, none->weapon");
-                        equipWeapon(dataContainer, player);
+                        EventAPI.callWeaponEquipEvent(event, cursorItem);
                         return;
                     }
                     //cursorItem is functional but its not a weapon, so ingnore
@@ -202,8 +206,7 @@ public class PlayerEquipmentHandler implements Listener {
                     //If the clicked item (main hand) is functional, lets check if its a weapon
                     PersistentDataContainer dataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
                     if (isEquipableWeapon(dataContainer)){
-//                        player.sendMessage("unequiping 2");
-                        unequipWeaponSlot(player);
+                        EventAPI.callWeaponEquipEvent(event, null);
                         return;
                     }
                     //cursorItem is not functional, and clickedItem is not a weapon, do any shenanigans here
@@ -216,15 +219,15 @@ public class PlayerEquipmentHandler implements Listener {
                     PersistentDataContainer clickedDataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
                     PersistentDataContainer cursorDataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
                     if (isEquipableWeapon(clickedDataContainer) && !isEquipableWeapon(cursorDataContainer)){
-                        unequipWeaponSlot(player);
+                        EventAPI.callWeaponEquipEvent(event, null);
                         return;
                     }
                     if (!isEquipableWeapon(clickedDataContainer) && isEquipableWeapon(cursorDataContainer)){
-                        equipWeapon(cursorDataContainer, player);
+                        EventAPI.callWeaponEquipEvent(event, cursorItem);
                         return;
                     }
                     //Both are weapons
-                    equipWeapon(cursorDataContainer, player);
+                    EventAPI.callWeaponEquipEvent(event, cursorItem);
                     return;
                 }
             }
@@ -232,61 +235,107 @@ public class PlayerEquipmentHandler implements Listener {
                 player.sendMessage("opening something");
                 event.setCancelled(true);
             }
-            case SHIFT_LEFT -> {
-                player.sendMessage("shift-clicking!!!");
-                //Decide what to do to functional items (in this case, cursor items should be ignored)
-                if (isNotFunctional(clickedItem)){
-                    return; //Ignore shift-clicks for non functional items
-                }
-                PersistentDataContainer clickedDataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
-                if (isEquipableArmor(clickedDataContainer)){
-                    ItemTypes armorPiece = Objects.requireNonNull(deserializeArmor(clickedDataContainer)).getArmorPiece();
-                    //Equipability by a specific player will be tested later (and may cause this event's cancel)
-                    EventAPI.callArmorEquipEvent(event, clickedItem, armorPiece, ItemUsage.ARMOR_SHIFTING_FROM_INV);
-                }
-                //Its not armor-shifting, lets check for weapon-shifting
-                //Lets first check for main-hand clicks to filter unequip attempts with shift
-                if (event.getSlot() == inventory.getHeldItemSlot()){
-                    //It necessarily is a functional item, lets check if its a equipable weapon
-                    PersistentDataContainer mainHandDataContainer = Objects.requireNonNull(inventory.getItemInMainHand().getItemMeta()).getPersistentDataContainer();
-                    if (isEquipableWeapon(mainHandDataContainer)){
-                        player.sendMessage(Utils.color("&cNo main hand shift-clicking"));
-                        event.setCancelled(true);
-                        return;
-                    }
-                    //If not on main hand, ignore
+        }
+        //After all this granular click events, lets check for more general clicks (swaps and shift-clicks)
+
+        //------------------------------------------------ SHIFTING TESTS BEGIN ----------------------------------------------------
+        if (event.isShiftClick()){
+//            player.sendMessage("shift-clicking!!!");
+            //Decide what to do to functional items (in this case, cursor items should be ignored)
+            if (isNotFunctional(clickedItem)){
+                return; //Ignore shift-clicks for non functional items
+            }
+            //Checking clicks in armor slots
+            InventoryType.SlotType clickedSlotType = event.getSlotType();
+            if (clickedSlotType == InventoryType.SlotType.ARMOR){
+                //(helmet, chest, leg, boot) 39, 40, 41, 42 (NOVO)
+                int clickedSlot = event.getSlot();
+                ItemStack clickedArmorSlotItem = inventory.getItem(clickedSlot);
+                if (clickedArmorSlotItem == null){
                     return;
                 }
-                //From now on, the clicks are functional items not on the main hand
-                //Lets check for a late-equip when shifting INTO main hand, not FROM like earlier
-                if (isEquipableWeapon(clickedDataContainer)){
-                    if (inventory.getItemInMainHand().getType().isAir()){
-                        new DelayedTask(new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                ItemStack newlyCheckedMainHandItem = inventory.getItemInMainHand();
-                                if (isNotFunctional(newlyCheckedMainHandItem)){
-                                    return;
-                                }
-                                PersistentDataContainer newMainHandDataContainer = Objects.requireNonNull(newlyCheckedMainHandItem.getItemMeta()).getPersistentDataContainer();
-                                if (isEquipableWeapon(newMainHandDataContainer)) {
-                                    equipWeapon(newMainHandDataContainer, player);
-                                }
-                            }
-                        }, 5L);
-                    }
+                PersistentDataContainer clickedArmorDataContainer =
+                        Objects.requireNonNull(clickedArmorSlotItem.getItemMeta()).getPersistentDataContainer();
+                switch (clickedSlot){
+                    case 39:
+                        if (!isEquipableArmor(clickedArmorDataContainer)){
+                            return;
+                        }
+                        //Equipability by a specific player will be tested later (and may cause this event's cancel)
+                        EventAPI.callArmorEquipEvent(event, clickedArmorSlotItem, ItemTypes.HELMET, ItemUsage.ARMOR_UNEQUIP);
+                        return;
+                    case 38:
+                        break;
+                    case 37:
+                        break;
+                    case 36:
+                        break;
                 }
-                //Its not a weapon, nor a armor piece, ignore
-                return;
-            }
-            case SHIFT_RIGHT -> {
-                event.setCancelled(true);
                 return;
             }
 
+
+            //Other shift-clicks
+            PersistentDataContainer clickedDataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
+            if (isEquipableArmor(clickedDataContainer)){
+                ItemTypes armorPiece = Objects.requireNonNull(deserializeArmor(clickedDataContainer)).getArmorPiece();
+                //Equipability by a specific player will be tested later (and may cause this event's cancel)
+                EventAPI.callArmorEquipEvent(event, clickedItem, armorPiece, ItemUsage.ARMOR_SHIFTING_FROM_INV);
+                return;
+            }
+
+//            else {
+//                //Shifts items into first empty slot
+//                event.setCancelled(true);
+//                if (inventory.firstEmpty() != -1){
+//                    inventory.remove(clickedItem);
+//                    inventory.addItem(clickedItem);
+//                }
+//            }
+
+            //Its not armor-shifting, lets check for weapon-shifting
+            //Lets first check for main-hand clicks to filter unequip attempts with shift
+            if (event.getSlot() == inventory.getHeldItemSlot()){
+                //It necessarily is a functional item, lets check if its a equipable weapon
+                PersistentDataContainer mainHandDataContainer = Objects.requireNonNull(inventory.getItemInMainHand().getItemMeta()).getPersistentDataContainer();
+                if (isEquipableWeapon(mainHandDataContainer)){
+                    player.sendMessage(Utils.color("&cNo main hand shift-clicking"));
+                    event.setCancelled(true);
+                    return;
+                }
+                //If not on main hand, ignore
+                return;
+            }
+            //From now on, the clicks are functional items not on the main hand
+            //Lets check for a late-equip when shifting INTO main hand, not FROM like earlier
+            if (isEquipableWeapon(clickedDataContainer)){
+                if (inventory.getItemInMainHand().getType().isAir()){
+                    new DelayedTask(new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            ItemStack newlyCheckedMainHandItem = inventory.getItemInMainHand();
+                            if (isNotFunctional(newlyCheckedMainHandItem)){
+                                return;
+                            }
+                            PersistentDataContainer newMainHandDataContainer = Objects.requireNonNull(newlyCheckedMainHandItem.getItemMeta()).getPersistentDataContainer();
+                            if (isEquipableWeapon(newMainHandDataContainer)) {
+//                                equipWeapon(newMainHandDataContainer, player);
+                                player.sendMessage("late-equip");
+                                EventAPI.callWeaponEquipEvent(event, newlyCheckedMainHandItem);
+                            }
+                        }
+                    }, 5L);
+                }
+            }
+            //Its not a weapon, nor a armor piece, ignore
+            return;
         }
+        //------------------------------------------------ SHIFTING TESTS END ----------------------------------------------------
+
         //TODO: Consider a shift-equip mechanic for weapons?
-        //Check for swaps withing LEFT or RIGHT?
+        //Check for swaps within LEFT or RIGHT?
+
+
 
 
 //            //-----------------------------------------------------------------------------------------------------------------------
