@@ -7,6 +7,7 @@ import com.amorabot.rpgelements.handlers.*;
 import com.amorabot.rpgelements.handlers.GUI.GUIHandler;
 import com.amorabot.rpgelements.handlers.Inventory.ArmorEquipListener;
 import com.amorabot.rpgelements.handlers.Inventory.PlayerEquipmentHandler;
+import com.amorabot.rpgelements.handlers.Inventory.WeaponEquipListener;
 import com.amorabot.rpgelements.managers.JSONProfileManager;
 import com.amorabot.rpgelements.utils.DelayedTask;
 import org.bukkit.Bukkit;
@@ -75,6 +76,7 @@ public final class RPGElements extends JavaPlugin {
 
         //CUSTOM EVENT LISTENERS
         new ArmorEquipListener();
+        new WeaponEquipListener();
 //        Bukkit.getServer().getPluginManager().registerEvents(new ArmorEquipListener(), this);
 
         new BukkitRunnable(){

@@ -74,8 +74,9 @@ public class ArmorEquipEvent extends Event {
         return armorItem;
     }
     public Armor getArmorData(){
-        return FunctionalItemAccessInterface.deserializeArmor(Objects.requireNonNull(
-                getArmorItem().getItemMeta()).getPersistentDataContainer());
+        return FunctionalItemAccessInterface.
+                deserializeArmor(Objects.
+                        requireNonNull(getArmorItem().getItemMeta()).getPersistentDataContainer());
     }
     public boolean isValid(){
         //Nullity check
