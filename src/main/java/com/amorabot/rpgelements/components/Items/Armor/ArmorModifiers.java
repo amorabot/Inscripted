@@ -7,45 +7,48 @@ import java.util.List;
 
 public enum ArmorModifiers implements ItemModifier {
 
-    HEALTH(Affix.PREFIX, "+@value1@ Health", 12,//-----------
+    HEALTH(Affix.PREFIX, "+@value1@ Health", 12,
             TargetStats.HEALTH, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.HEALTH), false, 1),
     HEALTH_PERCENT(Affix.PREFIX, "+@value1@% Inc. Health", 6,
             TargetStats.HEALTH, ValueTypes.PERCENT_ADDED, RangeTypes.SINGLE_RANGE,
-            List.of(ModTags.HEALTH), false, 1), //-----------HEALTH
-    ARMOR(Affix.PREFIX, "+@value1@ Armor", 10,//-----------
+            List.of(ModTags.HEALTH), false, 1),
+    HEALTH_REGEN_PERCENT(Affix.PREFIX, "+@value1@% Health Regen", 6,
+            TargetStats.HEALTH, ValueTypes.PERCENT_ADDED, RangeTypes.SINGLE_RANGE,
+            List.of(ModTags.HEALTH), false, 1),
+    ARMOR(Affix.PREFIX, "+@value1@ Armor", 10,
             TargetStats.ARMOR, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.PHYSICAL, ModTags.DEFENSE), false, 1),
     ARMOR_PERCENT(Affix.PREFIX, "+@value1@% Inc. Armor", 6,
             TargetStats.ARMOR, ValueTypes.PERCENT_ADDED, RangeTypes.SINGLE_RANGE,
-            List.of(ModTags.PHYSICAL, ModTags.DEFENSE), false, 1), //-----------ARMOR
-    DODGE(Affix.PREFIX, "+@value1@% Dodge", 4,//-----------
-            TargetStats.DODGE, ValueTypes.FLAT_PERCENT, RangeTypes.SINGLE_RANGE,
-            List.of(ModTags.UTILITY, ModTags.DEFENSE), false, 1),//-----------DODGE
-    WARD(Affix.PREFIX, "+@value1@ Ward", 12,//-----------
+            List.of(ModTags.PHYSICAL, ModTags.DEFENSE), false, 1),
+    DODGE(Affix.PREFIX, "+@value1@ Dodge", 4,
+            TargetStats.DODGE, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
+            List.of(ModTags.UTILITY, ModTags.DEFENSE), false, 1),
+    WARD(Affix.PREFIX, "+@value1@ Ward", 12,
             TargetStats.WARD, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.HEALTH, ModTags.DEFENSE), false, 1),
     WARD_PERCENT(Affix.PREFIX, "+@value1@% Inc. Ward", 6,
             TargetStats.WARD, ValueTypes.PERCENT_ADDED, RangeTypes.SINGLE_RANGE,
-            List.of(ModTags.HEALTH, ModTags.DEFENSE), false, 1),//-----------WARD
-    ARMOR_HEALTH(Affix.PREFIX, "+@value1@ Armor / +@value2@ Health", 6, //-----------
-            TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
+            List.of(ModTags.HEALTH, ModTags.DEFENSE), false, 1),
+    ARMOR_HEALTH(Affix.PREFIX, "+@value1@ Armor / +@value2@ Health", 4,//-------------------------
+            TargetStats.ARMOR_HEALTH, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
             List.of(ModTags.HEALTH,ModTags.PHYSICAL, ModTags.DEFENSE), true, 1),
-    WARD_HEALTH(Affix.PREFIX, "+@value1@ Ward / +@value2@ Health", 6,
-            TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
+    WARD_HEALTH(Affix.PREFIX, "+@value1@ Ward / +@value2@ Health", 4,
+            TargetStats.WARD_HEALTH, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
             List.of(ModTags.HEALTH, ModTags.DEFENSE), true, 1),
-    DODGE_HEALTH(Affix.PREFIX, "+@value1@% Dodge / +@value2@ Health", 6,
-            TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
+    DODGE_HEALTH(Affix.PREFIX, "+@value1@ Dodge / +@value2@ Health", 4,
+            TargetStats.DODGE_HEALTH, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
             List.of(ModTags.UTILITY, ModTags.HEALTH, ModTags.DEFENSE), true, 1),
-    ARMOR_WARD(Affix.PREFIX, "+@value1@ Armor / +@value2@ Ward", 6,
-            TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
+    ARMOR_WARD(Affix.PREFIX, "+@value1@ Armor / +@value2@ Ward", 4,
+            TargetStats.ARMOR_WARD, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
             List.of(ModTags.HEALTH,ModTags.PHYSICAL, ModTags.DEFENSE), true, 1),
-    ARMOR_DODGE(Affix.PREFIX, "+@value1@ Armor / +@value2@% Dodge", 6,
-            TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
+    ARMOR_DODGE(Affix.PREFIX, "+@value1@ Armor / +@value2@% Dodge", 4,
+            TargetStats.ARMOR_DODGE, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
             List.of(ModTags.UTILITY, ModTags.PHYSICAL, ModTags.DEFENSE), true, 1),
-    DODGE_WARD(Affix.PREFIX, "+@value1@% Dodge / +@value2@ Ward", 6,
-            TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
-            List.of(ModTags.UTILITY), true, 1), //-----------HYBRID MODS
+    DODGE_WARD(Affix.PREFIX, "+@value1@ Dodge / +@value2@ Ward", 4,
+            TargetStats.DODGE_WARD, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
+            List.of(ModTags.UTILITY), true, 1),//-------------------------------------------------
     WALK_SPEED(Affix.PREFIX, "+@value1@% Walk speed", 4,
             TargetStats.WALK_SPEED, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), false, 1),

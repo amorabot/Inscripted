@@ -4,7 +4,6 @@ import com.amorabot.rpgelements.RPGElements;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.rpgelements.components.Items.Weapon.Weapon;
 import com.amorabot.rpgelements.components.Player.Profile;
-import com.amorabot.rpgelements.events.ItemUsage;
 import com.amorabot.rpgelements.events.WeaponEquipEvent;
 import com.amorabot.rpgelements.managers.JSONProfileManager;
 import com.amorabot.rpgelements.utils.Utils;
@@ -109,17 +108,17 @@ public class WeaponEquipListener implements Listener {
 
         Utils.msgPlayer(player,"");
         if (weaponRarity == ItemRarities.COMMON){
-            String equipString = "&f---->> "+ weaponData.getName();
+            String equipString = "&f------->> "+ weaponData.getName();
             Utils.msgPlayer(player, equipString, "&f" + "-".repeat(Utils.decolor(equipString).length()-4));
         } else {
-            String equipString = "";
+            String equipString;
             String closingString = "";
             if (weaponRarity == ItemRarities.MAGIC){
-                equipString = "&9---->> "+ weaponData.getName();
+                equipString = "&9------->> "+ weaponData.getName();
                 closingString = "&9" + "-".repeat(Utils.decolor(equipString).length()-4);
                 Utils.msgPlayer(player, equipString);
             } else if (weaponRarity == ItemRarities.RARE){
-                equipString = "&e---->> "+ weaponData.getName();
+                equipString = "&e------->> "+ weaponData.getName();
                 closingString = "&e" + "-".repeat(Utils.decolor(equipString).length()-4);
                 Utils.msgPlayer(player, equipString);
             }

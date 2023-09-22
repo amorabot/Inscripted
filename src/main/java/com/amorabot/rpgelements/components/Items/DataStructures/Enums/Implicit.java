@@ -12,7 +12,7 @@ public enum Implicit {
     SWORD_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
             null, new int[]{0}, ValueTypes.FLAT_PERCENT, false),
     BOW_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.BOW.getDefaulNameColor()+"@value1@** DODGE",
-            TargetStats.DODGE, new int[]{1}, ValueTypes.FLAT_PERCENT, false),
+            TargetStats.DODGE, new int[]{10}, ValueTypes.FLAT, false),
     BOW_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
             null, new int[]{0}, ValueTypes.FLAT_PERCENT, false),
     DAGGER_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.DAGGER.getDefaulNameColor()+"@value1@** CRIT DMG",

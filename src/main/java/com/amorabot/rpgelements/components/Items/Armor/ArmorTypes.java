@@ -317,19 +317,19 @@ public enum ArmorTypes implements AffixTableSelector {
             float maxItemLevel = 120;
             switch (armorBase){
                 case HELMET -> {
-                    int maxWard = 90;
+                    int maxWard = 360;
                     putWard(ilvl, maxItemLevel, maxWard, defences);
                 }
                 case CHESTPLATE -> {
-                    int maxWard = 200;
+                    int maxWard = 700;
                     putWard(ilvl, maxItemLevel, maxWard, defences);
                 }
                 case LEGGINGS -> {
-                    int maxWard = 150;
+                    int maxWard = 600;
                     putWard(ilvl, maxItemLevel, maxWard, defences);
                 }
                 case BOOTS -> {
-                    int maxWard = 70;
+                    int maxWard = 300;
                     putWard(ilvl, maxItemLevel, maxWard, defences);
                 }
                 default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
@@ -341,11 +341,11 @@ public enum ArmorTypes implements AffixTableSelector {
                 case HELMET -> {
                     //Helmet base health definition
                     return defineTierBaseHealth(tier
-                            , 50,  10
-                            , 150, 30
-                            , 400, 100
-                            , 900, 120
-                            , 1500,200);
+                            , 25,  10
+                            , 75, 15
+                            , 200, 50
+                            , 450, 60
+                            , 750,100);
                 }
                 case CHESTPLATE -> {
                     //Chestplate base health definition
@@ -359,20 +359,20 @@ public enum ArmorTypes implements AffixTableSelector {
                 case LEGGINGS -> {
                     //Leggings base health definition
                     return defineTierBaseHealth(tier
-                            , 70,  15
-                            , 200, 40
-                            , 500, 120
-                            , 1000, 140
-                            , 1700,240);
+                            , 35,  15
+                            , 100, 20
+                            , 250, 60
+                            , 500, 70
+                            , 850,120);
                 }
                 case BOOTS -> {
                     //Boots base health definition
                     return defineTierBaseHealth(tier
-                            , 60,  10
-                            , 150, 30
-                            , 400, 100
-                            , 900, 120
-                            , 1600,200);
+                            , 30,  10
+                            , 75, 15
+                            , 200, 50
+                            , 450, 60
+                            , 800,100);
                 }
                 default -> {
                     Utils.log("No such armor base: " + armorBase);
@@ -520,7 +520,7 @@ public enum ArmorTypes implements AffixTableSelector {
             int dodgeValue = linearScaleStat(givenItemLevel, softLevelCap, maximumBaseStat);
             //Dodge wont be a percentage by itself, convert when displaying or doing percentage math
             defences.put(DefenceTypes.DODGE,dodgeValue);
-        } else if(givenItemLevel>softLevelCap && givenItemLevel<maxItemLevel){ //If ilvl is greater than softCap and lower than maxIlvl allowed, put the maximum value for Dodge
+        } else if(givenItemLevel>softLevelCap && givenItemLevel<=maxItemLevel){ //If ilvl is greater than softCap and lower than maxIlvl allowed, put the maximum value for Dodge
             defences.put(DefenceTypes.DODGE, maximumBaseStat);
         } else { //If the given Ilvl was higher than the max allowed, put 0
             defences.put(DefenceTypes.DODGE, 0);
