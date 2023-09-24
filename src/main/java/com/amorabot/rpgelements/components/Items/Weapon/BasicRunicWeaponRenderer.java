@@ -3,16 +3,15 @@ package com.amorabot.rpgelements.components.Items.Weapon;
 import com.amorabot.rpgelements.components.Items.Abstract.Item;
 import com.amorabot.rpgelements.components.Items.Abstract.ItemRenderer;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Affix;
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.RangeTypes;
-import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DamageTypes;
-import com.amorabot.rpgelements.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
+import com.amorabot.rpgelements.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.rpgelements.utils.ColorUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -20,10 +19,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.amorabot.rpgelements.utils.Utils.color;
 
-public class BasicWeaponRenderer implements ItemRenderer {
+public class BasicRunicWeaponRenderer implements ItemRenderer {
 
     @Override
     public void setDisplayName(String name, ItemStack item) {
@@ -36,42 +36,19 @@ public class BasicWeaponRenderer implements ItemRenderer {
     @Override
     public void renderMainStat(Item itemData, List<String> itemLore) {
         Weapon weaponData = (Weapon) itemData;
+        Map<DamageTypes, int[]> damages = weaponData.getBaseDamage();
+        int indent = 1;
 
-        int[] dmgRange = weaponData.getBaseDamage().get(DamageTypes.PHYSICAL);
-        String baseDamage = "&c DMG: " + dmgRange[0] + " - " + dmgRange[1];
-        itemLore.add(color(baseDamage));
-//        int[] neutralDmg = weaponData.getBaseDamage().get(DamageTypes.PHYSICAL);
-//        TextComponent neutraDmgComponent =
-//                Component.text(" \uD83D\uDDE1 " + neutralDmg[0] + " - " + neutralDmg[1])
-//                        .color(NamedTextColor.GOLD);
-//        itemLore.add(neutraDmgComponent.toString());
-//        String jsonText = GsonComponentSerializer.gson().serialize(neutraDmgComponent);
-//        itemLore.add(ColorUtils.translateColorCodes(LegacyComponentSerializer.legacyAmpersand().serialize(neutraDmgComponent)));
-//        serializeTextComponent(itemLore, neutraDmgComponent);
-
-        for (DamageTypes dmgType : DamageTypes.values()){
-            if (dmgType == DamageTypes.PHYSICAL){continue;}
-            String newDamageString = "";
-            if (weaponData.getBaseDamage().containsKey(dmgType)){
-                String colorString = dmgType.getColor();
-                int[] extraDmgRange = weaponData.getBaseDamage().get(dmgType);
-                newDamageString = (colorString + extraDmgRange[0] + " - " + extraDmgRange[1]).indent(7);
-            }
-            if (!newDamageString.equals("")){
-                itemLore.add(ColorUtils.translateColorCodes(newDamageString));
-            }
-        }
-
-        if (itemData.getRarity() != ItemRarities.COMMON){
-            itemLore.add(color("-div-"));
-        }
+        itemLore.add("");
+        serializeDamageLineComponent(damages, itemLore, indent);
+        itemLore.add("");
+        itemLore.add("@HEADER@");
     }
 
     @Override
     public void renderMods(Item itemData, List<String> itemLore) {
         Weapon weaponData = (Weapon) itemData;
         String valuesColor = "&#95dbdb"; //pale baby blue
-//        String valuesColor = "&#63bf41";//"&#41bf76"; //"&#63a889"; //"&#5bc998"; //pale blue-ish green
 
         List<Modifier<WeaponModifiers>> mods = weaponData.getModifiers();
         List<Modifier<WeaponModifiers>> prefixes = new ArrayList<>();
@@ -92,22 +69,24 @@ public class BasicWeaponRenderer implements ItemRenderer {
             String modifierDisplayName = getDisplayString(mod, valuesColor);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
-        itemLore.add(color("-div-"));
+        if (itemData.getRarity() != ItemRarities.COMMON){
+            itemLore.add(color("@FOOTER@"));
+        }
     }
 
     @NotNull
     private static String getDisplayString(Modifier<WeaponModifiers> mod, String valuesColor) {
-        String modifierDisplayName = "&7" + mod.getModifier().getDisplayName();
+        String modifierDisplayName = "&7" + mod.getModifier().getDisplayName() + "  ";
         RangeTypes rangeType = mod.getModifier().getRangeType();
         switch (rangeType){
             case SINGLE_VALUE -> {}
             case SINGLE_RANGE -> modifierDisplayName = (modifierDisplayName
-                    .replace("@value1@", valuesColor + mod.getValue()[0]+"&7")).indent(1);
+                    .replace("@value1@", valuesColor + mod.getValue()[0]+"&7")).indent(2);
             case DOUBLE_RANGE -> {
                 int[] values = mod.getValue();
                 modifierDisplayName = (modifierDisplayName
                         .replace("@value1@", valuesColor +values[0]+"&7")
-                        .replace("@value2@", valuesColor +values[1]+"&7")).indent(1);
+                        .replace("@value2@", valuesColor +values[1]+"&7")).indent(2);
             }
         }
         return modifierDisplayName;
@@ -116,11 +95,10 @@ public class BasicWeaponRenderer implements ItemRenderer {
     @Override
     public <subType extends Enum<subType> & AffixTableSelector> void renderDescription(Item itemData, List<String> itemLore, subType itemSubtype) {
         Weapon weaponData = (Weapon) itemData;
-        WeaponTypes subType = (WeaponTypes) itemSubtype;
 
         itemLore.add("");
         itemLore.add(color("&7 Item Level: " + "&f&l" + weaponData.getIlvl()));
-        String passiveString = " &7Passive: " + weaponData.getImplicit().getDisplayName();
+        String passiveString = " &7Passive: " + weaponData.getImplicit().getDisplayName() + " ";
         itemLore.add(ColorUtils.translateColorCodes(passiveString));
         itemLore.add("");
     }
@@ -152,8 +130,29 @@ public class BasicWeaponRenderer implements ItemRenderer {
         itemLore.add(color(tag));
     }
 
-    private void serializeTextComponent(List<String> lore, TextComponent textComponent){
+    private void serializeTextComponent(List<String> lore, TextComponent textComponent, int indentation){
         String translatedString = ColorUtils.translateColorCodes(LegacyComponentSerializer.legacyAmpersand().serialize(textComponent));
-        lore.add(translatedString);
+        lore.add(translatedString.indent(indentation));
+    }
+    private TextComponent getDmgPrefixComponent(){
+        return Component.text("DMG: ").color(NamedTextColor.GRAY);
+    }
+
+    private void serializeDamageLineComponent(Map<DamageTypes, int[]> damages, List<String> itemLore, int indent){
+        for (DamageTypes dmgType : DamageTypes.values()){
+
+            if (damages.containsKey(dmgType)){
+                int[] extraDmg = damages.get(dmgType);
+                TextComponent extraDmgComponent =
+                        Component.text(dmgType.getCharacter()+" " + extraDmg[0] + " - " + extraDmg[1])
+                                .color(dmgType.getColorComponent());
+
+                if (dmgType.equals(DamageTypes.PHYSICAL)){
+                    serializeTextComponent(itemLore, getDmgPrefixComponent().append(extraDmgComponent), indent);
+                    continue;
+                }
+                serializeTextComponent(itemLore, extraDmgComponent, indent+6);
+            }
+        }
     }
 }

@@ -3,11 +3,11 @@ package com.amorabot.rpgelements;
 import com.amorabot.rpgelements.commands.*;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.rpgelements.components.Player.Profile;
-import com.amorabot.rpgelements.handlers.*;
 import com.amorabot.rpgelements.handlers.GUI.GUIHandler;
 import com.amorabot.rpgelements.handlers.Inventory.ArmorEquipListener;
 import com.amorabot.rpgelements.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.rpgelements.handlers.Inventory.WeaponEquipListener;
+import com.amorabot.rpgelements.handlers.JoinQuitHandler;
 import com.amorabot.rpgelements.managers.JSONProfileManager;
 import com.amorabot.rpgelements.utils.DelayedTask;
 import org.bukkit.Bukkit;
@@ -18,7 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import static com.amorabot.rpgelements.utils.Utils.log;
@@ -27,9 +27,7 @@ import static com.amorabot.rpgelements.utils.Utils.msgPlayerAB;
 public final class RPGElements extends JavaPlugin {
     private static Logger logger;
     private static RPGElements rpgElementsPlugin;
-//    private BukkitTask task; //vai receber o bukkit runnable que vai operar a logica do spawn
     private World world;
-//    private Map<Entity, CustomMob> entities = new HashMap<>(); //TODO: limpar o hashmap no shutdown
 
     @Override
     public void onEnable() {
@@ -55,7 +53,7 @@ public final class RPGElements extends JavaPlugin {
 
         //Todo: color interpolation for Uniques and corrupted items
 
-        SkillsUI skillsUI = new SkillsUI(this);
+//        SkillsUI skillsUI = new SkillsUI(this);
 
         getCommand("updatenbt").setExecutor(new UpdateNBT(this));
         getCommand("getnbt").setExecutor(new GetNBT(this));
@@ -67,6 +65,7 @@ public final class RPGElements extends JavaPlugin {
 //        getCommand("skills").setTabCompleter(skillsUI);
         getCommand("resetattributes").setExecutor(new ResetAttributes(this));
         getCommand("editmods").setExecutor(new EditMods(this));
+        getCommand("show").setExecutor(new Show());
 
         //---------   LISTENERS   ------------
         new JoinQuitHandler(this);
@@ -77,7 +76,6 @@ public final class RPGElements extends JavaPlugin {
         //CUSTOM EVENT LISTENERS
         new ArmorEquipListener();
         new WeaponEquipListener();
-//        Bukkit.getServer().getPluginManager().registerEvents(new ArmorEquipListener(), this);
 
         new BukkitRunnable(){
             @Override
@@ -102,6 +100,7 @@ public final class RPGElements extends JavaPlugin {
 
     @Override
     public void onDisable() {
+
         // Plugin shutdown logic
         Bukkit.getLogger().info("Shutting Down...");
         try {

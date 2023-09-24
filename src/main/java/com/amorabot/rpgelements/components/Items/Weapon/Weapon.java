@@ -112,12 +112,13 @@ public class Weapon extends Item {
         List<String> lore = new ArrayList<>();
         ItemRenderer currentRenderer = getRenderer();
 
-        currentRenderer.renderMainStat(this, lore);
-        currentRenderer.renderMods(this, lore);
-        currentRenderer.renderDescription(this, lore, type);
-        currentRenderer.renderTag(this, lore);
-
-        currentRenderer.placeDivs(lore);
+        currentRenderer.renderLore(this, lore, type);
+//        currentRenderer.renderMainStat(this, lore);
+//        currentRenderer.renderMods(this, lore);
+//        currentRenderer.renderDescription(this, lore, type);
+//        currentRenderer.renderTag(this, lore);
+//
+//        currentRenderer.placeDivs(lore);
 
         itemMeta.setLore(lore);
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -171,7 +172,8 @@ public class Weapon extends Item {
                 return new UnidentifiedRenderer();
             }
             case BASIC -> {
-                return new BasicWeaponRenderer();
+//                return new BasicWeaponRenderer();
+                return new BasicRunicWeaponRenderer();
             }
             case CORRUPTED -> {
                 Utils.log("No corruptedWeaponRenderer");
