@@ -62,11 +62,11 @@ public class BasicRunicWeaponRenderer implements ItemRenderer {
         }
 
         for (Modifier<WeaponModifiers> mod : prefixes){
-            String modifierDisplayName = getDisplayString(mod, valuesColor);
+            String modifierDisplayName = getDisplayString(mod, valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
         for (Modifier<WeaponModifiers> mod : suffixes){
-            String modifierDisplayName = getDisplayString(mod, valuesColor);
+            String modifierDisplayName = getDisplayString(mod, valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
         if (itemData.getRarity() != ItemRarities.COMMON){
@@ -75,18 +75,18 @@ public class BasicRunicWeaponRenderer implements ItemRenderer {
     }
 
     @NotNull
-    private static String getDisplayString(Modifier<WeaponModifiers> mod, String valuesColor) {
+    private String getDisplayString(Modifier<WeaponModifiers> mod, String valuesColor, int indent) {
         String modifierDisplayName = "&7" + mod.getModifier().getDisplayName() + "  ";
         RangeTypes rangeType = mod.getModifier().getRangeType();
         switch (rangeType){
             case SINGLE_VALUE -> {}
             case SINGLE_RANGE -> modifierDisplayName = (modifierDisplayName
-                    .replace("@value1@", valuesColor + mod.getValue()[0]+"&7")).indent(2);
+                    .replace("@value1@", valuesColor + mod.getValue()[0]+"&7")).indent(indent);
             case DOUBLE_RANGE -> {
                 int[] values = mod.getValue();
                 modifierDisplayName = (modifierDisplayName
                         .replace("@value1@", valuesColor +values[0]+"&7")
-                        .replace("@value2@", valuesColor +values[1]+"&7")).indent(2);
+                        .replace("@value2@", valuesColor +values[1]+"&7")).indent(indent);
             }
         }
         return modifierDisplayName;

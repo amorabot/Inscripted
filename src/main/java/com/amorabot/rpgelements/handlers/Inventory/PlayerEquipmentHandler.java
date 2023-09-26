@@ -264,11 +264,23 @@ public class PlayerEquipmentHandler implements Listener {
                         EventAPI.callArmorEquipEvent(event, clickedArmorSlotItem, ItemTypes.HELMET, ItemUsage.ARMOR_UNEQUIP);
                         return;
                     case 38:
-                        break;
+                        if (!isEquipableArmor(clickedArmorDataContainer)){
+                            return;
+                        }
+                        EventAPI.callArmorEquipEvent(event, clickedArmorSlotItem, ItemTypes.CHESTPLATE, ItemUsage.ARMOR_UNEQUIP);
+                        return;
                     case 37:
-                        break;
+                        if (!isEquipableArmor(clickedArmorDataContainer)){
+                            return;
+                        }
+                        EventAPI.callArmorEquipEvent(event, clickedArmorSlotItem, ItemTypes.LEGGINGS, ItemUsage.ARMOR_UNEQUIP);
+                        return;
                     case 36:
-                        break;
+                        if (!isEquipableArmor(clickedArmorDataContainer)){
+                            return;
+                        }
+                        EventAPI.callArmorEquipEvent(event, clickedArmorSlotItem, ItemTypes.BOOTS, ItemUsage.ARMOR_UNEQUIP);
+                        return;
                 }
                 return;
             }

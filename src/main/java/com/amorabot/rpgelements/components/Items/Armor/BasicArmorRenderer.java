@@ -76,7 +76,7 @@ public class BasicArmorRenderer implements ItemRenderer {
 
         List<Modifier<ArmorModifiers>> mods = armorData.getModifiers();
         List<Modifier<ArmorModifiers>> prefixes = new ArrayList<>();
-        List<Modifier<ArmorModifiers>> suffixes = new ArrayList<>(); //Alternativa: Implementar equals()[atributo a atributo] ou um comparador para ordenacao
+        List<Modifier<ArmorModifiers>> suffixes = new ArrayList<>(); //TODO: ordenacao por ordinal value + affixType no Enum (prefix 1 > prefix 7, suffix 18 > suffix 28)
         //Sorting prefixes and suffixes
         for (Modifier<ArmorModifiers> mod : mods){
             if (mod.getModifier().getAffixType() == Affix.PREFIX){
@@ -86,11 +86,11 @@ public class BasicArmorRenderer implements ItemRenderer {
             }
         }
         for (Modifier<ArmorModifiers> mod : prefixes){
-            String modifierDisplayName = getModifierDisplayName(mod, valuesColor);
+            String modifierDisplayName = getModifierDisplayName(mod, valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
         for (Modifier<ArmorModifiers> mod : suffixes){
-            String modifierDisplayName = getModifierDisplayName(mod, valuesColor);
+            String modifierDisplayName = getModifierDisplayName(mod, valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
         if (armorData.getRarity() != ItemRarities.COMMON){
@@ -98,18 +98,18 @@ public class BasicArmorRenderer implements ItemRenderer {
         }
     }
 
-    private String getModifierDisplayName(Modifier<ArmorModifiers> mod, String valuesColor) {
+    private String getModifierDisplayName(Modifier<ArmorModifiers> mod, String valuesColor, int indent) {
         String modifierDisplayName = "&7" + mod.getModifier().getDisplayName();
         RangeTypes rangeType = mod.getModifier().getRangeType();
         switch (rangeType){
             case SINGLE_VALUE -> {} //Utils.getPercentString(dodge)
             case SINGLE_RANGE -> modifierDisplayName = (modifierDisplayName
-                    .replace("@value1@", valuesColor + mod.getValue()[0]+"&7")).indent(1);
+                    .replace("@value1@", valuesColor + mod.getValue()[0]+"&7")).indent(indent);
             case DOUBLE_RANGE -> {
                 int[] values = mod.getValue();
                 modifierDisplayName = (modifierDisplayName
                         .replace("@value1@", valuesColor +values[0]+"&7")
-                        .replace("@value2@", valuesColor +values[1]+"&7")).indent(1);
+                        .replace("@value2@", valuesColor +values[1]+"&7")).indent(indent);
             }
         }
         return modifierDisplayName;

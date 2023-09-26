@@ -18,7 +18,6 @@ public enum TargetStats {
     ARMOR,
     ARMOR_DODGE,
     ARMOR_WARD,
-    WARD_DODGE,
     DODGE_HEALTH,
     ARMOR_HEALTH,
     FIRE_RESISTANCE,

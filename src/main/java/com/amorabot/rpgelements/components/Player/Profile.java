@@ -265,6 +265,41 @@ public class Profile {
                             flatHealthSum += modValues[1];
                         }
                     }
+                    case ARMOR_DODGE -> {
+                        if (mod.getValueType().equals(ValueTypes.FLAT)){
+                            int[] modValues = armorMod.getValue();
+                            flatArmorSum += modValues[0];
+                            flatDodgeSum += modValues[1];
+                        }
+                    }
+                    case ARMOR_WARD -> {
+                        if (mod.getValueType().equals(ValueTypes.FLAT)){
+                            int[] modValues = armorMod.getValue();
+                            flatArmorSum += modValues[0];
+                            flatWardSum += modValues[1];
+                        }
+                    }
+                    case WARD_HEALTH -> {
+                        if (mod.getValueType().equals(ValueTypes.FLAT)){
+                            int[] modValues = armorMod.getValue();
+                            flatWardSum += modValues[0];
+                            flatHealthSum += modValues[1];
+                        }
+                    }
+                    case DODGE_HEALTH -> {
+                        if (mod.getValueType().equals(ValueTypes.FLAT)){
+                            int[] modValues = armorMod.getValue();
+                            flatDodgeSum += modValues[0];
+                            flatHealthSum += modValues[1];
+                        }
+                    }
+                    case DODGE_WARD -> {
+                        if (mod.getValueType().equals(ValueTypes.FLAT)){
+                            int[] modValues = armorMod.getValue();
+                            flatDodgeSum += modValues[0];
+                            flatWardSum += modValues[1];
+                        }
+                    }
                     //----------------------------------------------------
                     case DODGE -> {
                         flatDodgeSum+= armorMod.getValue()[0];

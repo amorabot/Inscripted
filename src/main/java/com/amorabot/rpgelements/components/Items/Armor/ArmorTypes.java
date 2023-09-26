@@ -716,15 +716,15 @@ public enum ArmorTypes implements AffixTableSelector {
         //The "Entire set" of a armor specialization is loaded at once and accessed later via getPiece() methods.
         this.basicHelmetPrefixes = getAffixTable(modifiersJSON, ItemTypes.HELMET, Affix.PREFIX);
         this.basicHelmetSuffixes = getAffixTable(modifiersJSON, ItemTypes.HELMET, Affix.SUFFIX);
+
+        this.basicChestlatePrefixes = getAffixTable(modifiersJSON, ItemTypes.CHESTPLATE, Affix.PREFIX);
+        this.basicChesplateSuffixes = getAffixTable(modifiersJSON, ItemTypes.CHESTPLATE, Affix.SUFFIX);
 //
-//        this.basicChestlatePrefixes = getAffixTable(modifiersJSON, ItemTypes.CHESTPLATE, Affix.PREFIX);
-//        this.basicChesplateSuffixes = getAffixTable(modifiersJSON, ItemTypes.CHESTPLATE, Affix.SUFFIX);
-//
-//        this.basicLeggingsPrefixes = getAffixTable(modifiersJSON, ItemTypes.LEGGINGS, Affix.PREFIX);
-//        this.basicLeggingsSuffixes = getAffixTable(modifiersJSON, ItemTypes.LEGGINGS, Affix.SUFFIX);
-//
-//        this.basicBootsPrefixes = getAffixTable(modifiersJSON, ItemTypes.BOOTS, Affix.PREFIX);
-//        this.basicBootsSuffixes = getAffixTable(modifiersJSON, ItemTypes.BOOTS, Affix.SUFFIX);
+        this.basicLeggingsPrefixes = getAffixTable(modifiersJSON, ItemTypes.LEGGINGS, Affix.PREFIX);
+        this.basicLeggingsSuffixes = getAffixTable(modifiersJSON, ItemTypes.LEGGINGS, Affix.SUFFIX);
+
+        this.basicBootsPrefixes = getAffixTable(modifiersJSON, ItemTypes.BOOTS, Affix.PREFIX);
+        this.basicBootsSuffixes = getAffixTable(modifiersJSON, ItemTypes.BOOTS, Affix.SUFFIX);
         Utils.log("Modifiers loaded successfully! (" + this + ")");
     }
     public Map<String, Map<Integer, int[]>> getBasicHelmetPrefixes(){
@@ -734,26 +734,26 @@ public enum ArmorTypes implements AffixTableSelector {
         return this.basicHelmetSuffixes;
     }
 
-//    public Map<String, Map<Integer, int[]>> getBasicChestlatePrefixes() {
-//        return basicChestlatePrefixes;
-//    }
-//    public Map<String, Map<Integer, int[]>> getBasicChesplateSuffixes() {
-//        return basicChesplateSuffixes;
-//    }
-//
-//    public Map<String, Map<Integer, int[]>> getBasicLeggingsPrefixes() {
-//        return basicLeggingsPrefixes;
-//    }
-//    public Map<String, Map<Integer, int[]>> getBasicLeggingsSuffixes() {
-//        return basicLeggingsSuffixes;
-//    }
-//
-//    public Map<String, Map<Integer, int[]>> getBasicBootsPrefixes() {
-//        return basicBootsPrefixes;
-//    }
-//    public Map<String, Map<Integer, int[]>> getBasicBootsSuffixes() {
-//        return basicBootsSuffixes;
-//    }
+    public Map<String, Map<Integer, int[]>> getBasicChestlatePrefixes() {
+        return basicChestlatePrefixes;
+    }
+    public Map<String, Map<Integer, int[]>> getBasicChesplateSuffixes() {
+        return basicChesplateSuffixes;
+    }
+
+    public Map<String, Map<Integer, int[]>> getBasicLeggingsPrefixes() {
+        return basicLeggingsPrefixes;
+    }
+    public Map<String, Map<Integer, int[]>> getBasicLeggingsSuffixes() {
+        return basicLeggingsSuffixes;
+    }
+
+    public Map<String, Map<Integer, int[]>> getBasicBootsPrefixes() {
+        return basicBootsPrefixes;
+    }
+    public Map<String, Map<Integer, int[]>> getBasicBootsSuffixes() {
+        return basicBootsSuffixes;
+    }
 
     public String getRandomName(Tiers tier){
         switch (tier){

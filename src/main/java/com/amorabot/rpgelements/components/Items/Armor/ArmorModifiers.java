@@ -31,24 +31,24 @@ public enum ArmorModifiers implements ItemModifier {
     WARD_PERCENT(Affix.PREFIX, "+@value1@% Inc. Ward", 6,
             TargetStats.WARD, ValueTypes.PERCENT_ADDED, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.HEALTH, ModTags.DEFENSE), false, 1),
-    ARMOR_HEALTH(Affix.PREFIX, "+@value1@ Armor / +@value2@ Health", 4,//-------------------------
+    ARMOR_HEALTH(Affix.PREFIX, "+@value1@ Armor / +@value2@ Health", 4,//------------------------- ok okei
             TargetStats.ARMOR_HEALTH, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
             List.of(ModTags.HEALTH,ModTags.PHYSICAL, ModTags.DEFENSE), true, 1),
-    WARD_HEALTH(Affix.PREFIX, "+@value1@ Ward / +@value2@ Health", 4,
+    WARD_HEALTH(Affix.PREFIX, "+@value1@ Ward / +@value2@ Health", 4, //ok okei
             TargetStats.WARD_HEALTH, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
             List.of(ModTags.HEALTH, ModTags.DEFENSE), true, 1),
-    DODGE_HEALTH(Affix.PREFIX, "+@value1@ Dodge / +@value2@ Health", 4,
+    DODGE_HEALTH(Affix.PREFIX, "+@value1@ Dodge / +@value2@ Health", 4, //ok okei
             TargetStats.DODGE_HEALTH, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
             List.of(ModTags.UTILITY, ModTags.HEALTH, ModTags.DEFENSE), true, 1),
-    ARMOR_WARD(Affix.PREFIX, "+@value1@ Armor / +@value2@ Ward", 4,
+    ARMOR_WARD(Affix.PREFIX, "+@value1@ Armor / +@value2@ Ward", 4, //ok okei
             TargetStats.ARMOR_WARD, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
             List.of(ModTags.HEALTH,ModTags.PHYSICAL, ModTags.DEFENSE), true, 1),
-    ARMOR_DODGE(Affix.PREFIX, "+@value1@ Armor / +@value2@% Dodge", 4,
+    ARMOR_DODGE(Affix.PREFIX, "+@value1@ Armor / +@value2@% Dodge", 4, //ok okei
             TargetStats.ARMOR_DODGE, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
             List.of(ModTags.UTILITY, ModTags.PHYSICAL, ModTags.DEFENSE), true, 1),
     DODGE_WARD(Affix.PREFIX, "+@value1@ Dodge / +@value2@ Ward", 4,
             TargetStats.DODGE_WARD, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
-            List.of(ModTags.UTILITY), true, 1),//-------------------------------------------------
+            List.of(ModTags.UTILITY), true, 1),//------------------------------------------------- ok okei
     WALK_SPEED(Affix.PREFIX, "+@value1@% Walk speed", 4,
             TargetStats.WALK_SPEED, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             List.of(ModTags.UTILITY), false, 1),

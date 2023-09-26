@@ -44,31 +44,51 @@ public class Stats {
 //        setArmorPiece(leggings, ItemTypes.LEGGINGS);
 //        setArmorPiece(boots, ItemTypes.BOOTS);
 //    }
-    public void setArmorPiece(Armor armorPiece, ItemTypes expectedType){
-        if (expectedType == ItemTypes.WEAPON){return;}
-        if (matchingSetPiece(armorPiece, expectedType)){
-            switch (expectedType){
-                case HELMET -> armorSet[3] = armorPiece;
-                case CHESTPLATE -> armorSet[2] = armorPiece;
-                case LEGGINGS -> armorSet[1] = armorPiece;
-                case BOOTS -> armorSet[0] = armorPiece;
-            }
-            return;
+    public boolean setArmorPiece(Armor armorPiece, ItemTypes expectedType){
+        if (expectedType == ItemTypes.WEAPON){return false;}
+//        if (expectedType != null){
+//            switch (expectedType){
+//                case HELMET -> armorSet[3] = null;
+//                case CHESTPLATE -> armorSet[2] = null;
+//                case LEGGINGS -> armorSet[1] = null;
+//                case BOOTS -> armorSet[0] = null;
+//            }
+//            Utils.log(expectedType.toString().toLowerCase() +" unequip");
+//            return;
+//        }
+//        if (matchingSetPiece(armorPiece, expectedType)){
+//            switch (expectedType){
+//                case HELMET -> armorSet[3] = armorPiece;
+//                case CHESTPLATE -> armorSet[2] = armorPiece;
+//                case LEGGINGS -> armorSet[1] = armorPiece;
+//                case BOOTS -> armorSet[0] = armorPiece;
+//            }
+//        }
+        if (expectedType == null){
+            return false;
         }
-        if (expectedType != null){
+        if (armorPiece == null){
             switch (expectedType){
                 case HELMET -> armorSet[3] = null;
                 case CHESTPLATE -> armorSet[2] = null;
                 case LEGGINGS -> armorSet[1] = null;
                 case BOOTS -> armorSet[0] = null;
             }
-            Utils.log(expectedType.toString().toLowerCase() +" unequip");
+            return true;
         }
-    }
-    private boolean matchingSetPiece(Armor armorPiece, ItemTypes expectedPiece){
-        if (armorPiece == null || expectedPiece == null){
-            return false;
+        switch (expectedType){
+            case HELMET -> armorSet[3] = armorPiece;
+            case CHESTPLATE -> armorSet[2] = armorPiece;
+            case LEGGINGS -> armorSet[1] = armorPiece;
+            case BOOTS -> armorSet[0] = armorPiece;
         }
-        return armorPiece.getCategory() == expectedPiece;
+        return true;
+
     }
+//    private boolean matchingSetPiece(Armor armorPiece, ItemTypes expectedPiece){
+//        if (expectedPiece == null){
+//            return false;
+//        }
+//        return armorPiece.getCategory() == expectedPiece;
+//    }
 }

@@ -10,9 +10,14 @@ import com.amorabot.rpgelements.components.Items.Interfaces.ItemModifier;
 import com.amorabot.rpgelements.components.Items.UnidentifiedRenderer;
 import com.amorabot.rpgelements.utils.CraftingUtils;
 import com.amorabot.rpgelements.utils.Utils;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.ArrayList;
@@ -25,6 +30,8 @@ public class Armor extends Item {
 //    private final ItemTypes armorPiece;
     private final ArmorTypes type; //Trim materials and patterns are inferred
 //    private final ArmorTrim trim;
+//    private TrimMaterial trimMaterial;
+//    private TrimPattern trimPattern;
     private final int baseHealth;
     private Map<DefenceTypes, Integer> defencesMap = new HashMap<>();
     private List<Modifier<ArmorModifiers>> modifiers = new ArrayList<>();
@@ -34,11 +41,7 @@ public class Armor extends Item {
         super(ilvl, rarity, identified, corrupted, armorSlot);
         mapTier();
         this.type = type;
-//        this.category = armorSlot;
-//        this.name = type.toString();
-//        this.name = getType().getRandomName(getTier()) + " " + getArmorPiece().toString().toLowerCase();
         setName(getType().getRandomName(getTier()) + " " + getCategory().toString().toLowerCase());
-//        setBaseName();
         setImplicit(defineImplicit(getType().toString()));
         mapBase();
         this.baseHealth = getType().mapBaseHealth(getTier(), getCategory());
@@ -49,10 +52,6 @@ public class Armor extends Item {
         ArmorTypes[] armorTypes = ArmorTypes.values();
         int typeIndex = CraftingUtils.getRandomNumber(0, armorTypes.length-1);
         this.type = armorTypes[typeIndex];
-        //        this.armorPiece = armorPiece;
-//        this.name = type.toString();
-//        this.name = getType().getRandomName(getTier()) + " " + getArmorPiece().toString().toLowerCase();
-//        setBaseName();
         setName(getType().getRandomName(getTier()) + " " + getCategory().toString().toLowerCase());
         setImplicit(defineImplicit(getType().toString()));
         mapBase();
@@ -78,16 +77,33 @@ public class Armor extends Item {
     public ArmorTypes getType() {
         return type;
     }
-//    public ItemTypes getArmorPiece() {
-//        return armorPiece;
-//    }
     public Map<DefenceTypes, Integer> getDefencesMap() {
         return defencesMap;
     }
     public int getBaseHealth() {
         return baseHealth;
     }
-
+    private ArmorTrim defineArmorTrim(){
+        TrimPattern pattern;
+        TrimMaterial material;
+        switch (getType()){
+            case HEAVY_PLATING -> material = TrimMaterial.REDSTONE;
+            case CARVED_PLATING -> material = TrimMaterial.GOLD;
+            case LIGHT_CLOTH -> material = TrimMaterial.EMERALD;
+            case RUNIC_LEATHER -> material = TrimMaterial.NETHERITE;
+            case ENCHANTED_SILK -> material = TrimMaterial.LAPIS;
+            case RUNIC_STEEL -> material = TrimMaterial.AMETHYST;
+            default -> material = TrimMaterial.QUARTZ; //Signals error
+        }
+        switch (getCategory()){
+            case HELMET -> pattern = TrimPattern.HOST;
+            case CHESTPLATE -> pattern = TrimPattern.SHAPER;
+            case LEGGINGS -> pattern = TrimPattern.SILENCE;
+            case BOOTS -> pattern = TrimPattern.HOST;
+            default -> pattern = TrimPattern.EYE; //Signals error
+        }
+        return new ArmorTrim(material, pattern);
+    }
     @Override
     public void imprint(ItemStack item) {
         ItemMeta itemMeta = item.getItemMeta();
@@ -120,6 +136,12 @@ public class Armor extends Item {
         ItemStack armorItem = new ItemStack(this.vanillaMaterial);
         imprint(armorItem);
 
+        //Assuming its always a valid item (A set can be created for all possible armortypes and support custom ones)
+        ArmorMeta armorMeta = (ArmorMeta) armorItem.getItemMeta();
+        assert armorMeta != null;
+        armorMeta.setTrim(defineArmorTrim());
+        armorMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
+        armorItem.setItemMeta(armorMeta);
         serializeContainers(plugin, this, armorItem);
         return armorItem;
     }
