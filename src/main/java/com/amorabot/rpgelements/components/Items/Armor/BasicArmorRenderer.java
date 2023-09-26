@@ -53,19 +53,20 @@ public class BasicArmorRenderer implements ItemRenderer {
         itemLore.add("");
 
         if (armor > 0){
-//            String armorLine = DefenceTypes.ARMOR.getTextColor()+ DefenceTypes.ARMOR.getSpecialChar() + " +" + armor + " Armor" ;
             String armorLine = DefenceTypes.ARMOR.getStatColor()+ DefenceTypes.ARMOR.getSpecialChar() + " +" + armor + " Armor" ;
             itemLore.add(ColorUtils.translateColorCodes(armorLine.indent(indentation)));
         }
         if (dodge > 0){
-            String dodgeLine = DefenceTypes.DODGE.getTextColor()+ DefenceTypes.DODGE.getSpecialChar() + " +" + Utils.getPercentString(dodge) + "%" + " Dodge" ;
+            Utils.log("adding dodge line...");
+//            String dodgeLine = DefenceTypes.DODGE.getTextColor()+ DefenceTypes.DODGE.getSpecialChar() + " +" + Utils.getPercentString(dodge) + "%" + " Dodge" ;
+            String dodgeLine = DefenceTypes.DODGE.getTextColor()+ DefenceTypes.DODGE.getSpecialChar() + " +" + dodge + " Dodge" ; //Flat stat display
             itemLore.add(ColorUtils.translateColorCodes(dodgeLine.indent(indentation)));
         }
         if ((armor != 0 || dodge != 0)){
             itemLore.add("");
         }
 
-        itemLore.add(color("-div-"));
+        itemLore.add(color("@HEADER@"));
     }
 
     @Override
@@ -75,7 +76,8 @@ public class BasicArmorRenderer implements ItemRenderer {
 
         List<Modifier<ArmorModifiers>> mods = armorData.getModifiers();
         List<Modifier<ArmorModifiers>> prefixes = new ArrayList<>();
-        List<Modifier<ArmorModifiers>> suffixes = new ArrayList<>(); //Alternativa: Implementar equals()[atributo a atributo] ou um comparador
+        List<Modifier<ArmorModifiers>> suffixes = new ArrayList<>(); //TODO: ordenacao por ordinal value + affixType no Enum (prefix 1 > prefix 7, suffix 18 > suffix 28)
+        //Sorting prefixes and suffixes
         for (Modifier<ArmorModifiers> mod : mods){
             if (mod.getModifier().getAffixType() == Affix.PREFIX){
                 prefixes.add(mod);
@@ -83,42 +85,34 @@ public class BasicArmorRenderer implements ItemRenderer {
                 suffixes.add(mod);
             }
         }
-
         for (Modifier<ArmorModifiers> mod : prefixes){
-            String modifierDisplayName = "&7" + mod.getModifier().getDisplayName();
-            RangeTypes rangeType = mod.getModifier().getRangeType();
-            switch (rangeType){
-                case SINGLE_VALUE -> {}
-                case SINGLE_RANGE -> modifierDisplayName = (modifierDisplayName
-                        .replace("@value1@", valuesColor+mod.getValue()[0]+"&7")).indent(1);
-                case DOUBLE_RANGE -> {
-                    int[] values = mod.getValue();
-                    modifierDisplayName = (modifierDisplayName
-                            .replace("@value1@", valuesColor+values[0]+"&7")
-                            .replace("@value2@", valuesColor+values[1]+"&7")).indent(1);
-                }
-            }
+            String modifierDisplayName = getModifierDisplayName(mod, valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
         for (Modifier<ArmorModifiers> mod : suffixes){
-            String modifierDisplayName = "&7" + mod.getModifier().getDisplayName();
-            RangeTypes rangeType = mod.getModifier().getRangeType();
-            switch (rangeType){
-                case SINGLE_VALUE -> {}
-                case SINGLE_RANGE -> modifierDisplayName = (modifierDisplayName
-                        .replace("@value1@", valuesColor+mod.getValue()[0]+"&7")).indent(1);
-                case DOUBLE_RANGE -> {
-                    int[] values = mod.getValue();
-                    modifierDisplayName = (modifierDisplayName
-                            .replace("@value1@", valuesColor+values[0]+"&7")
-                            .replace("@value2@", valuesColor+values[1]+"&7")).indent(1);
-                }
-            }
+            String modifierDisplayName = getModifierDisplayName(mod, valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
         if (armorData.getRarity() != ItemRarities.COMMON){
-            itemLore.add(color("-div-"));
+            itemLore.add(color("@FOOTER@"));
         }
+    }
+
+    private String getModifierDisplayName(Modifier<ArmorModifiers> mod, String valuesColor, int indent) {
+        String modifierDisplayName = "&7" + mod.getModifier().getDisplayName();
+        RangeTypes rangeType = mod.getModifier().getRangeType();
+        switch (rangeType){
+            case SINGLE_VALUE -> {} //Utils.getPercentString(dodge)
+            case SINGLE_RANGE -> modifierDisplayName = (modifierDisplayName
+                    .replace("@value1@", valuesColor + mod.getValue()[0]+"&7")).indent(indent);
+            case DOUBLE_RANGE -> {
+                int[] values = mod.getValue();
+                modifierDisplayName = (modifierDisplayName
+                        .replace("@value1@", valuesColor +values[0]+"&7")
+                        .replace("@value2@", valuesColor +values[1]+"&7")).indent(indent);
+            }
+        }
+        return modifierDisplayName;
     }
 
     @Override

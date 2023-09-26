@@ -16,24 +16,29 @@ public abstract class Item implements RPGElementsContainer {
     private Tiers tier;
     private Implicit implicit;
     protected RendererTypes renderer;
+    protected final ItemTypes category;
 
     protected String name;
     protected Material vanillaMaterial;
     protected boolean corrupted;
 
-    public Item(int ilvl, ItemRarities rarity, boolean identified, boolean corrupted){
+    public Item(int ilvl, ItemRarities rarity, boolean identified, boolean corrupted, ItemTypes itemCategory){
         this.identified = identified;
         this.ilvl = ilvl;
         this.rarity = rarity;
         this.corrupted = corrupted;
+        this.category = itemCategory;
         setInitialRenderer();
     }
     //-------------------------------------------------------------------------
     public abstract void imprint(ItemStack item);
     public abstract ItemStack getItemForm(RPGElements plugin);
     protected abstract void serializeContainers(RPGElements plugin, Item itemData, ItemStack item);
-    //-------------------------------------------------------------------------
+    public ItemTypes getCategory(){
+        return this.category;
+    }
     protected abstract int getStarRating();
+    //-------------------------------------------------------------------------
     public boolean isIdentified() {
         return identified;
     }
@@ -53,7 +58,9 @@ public abstract class Item implements RPGElementsContainer {
     public void setRarity(ItemRarities rarity) {
         this.rarity = rarity;
     }
-    //add SetName
+    public void setName(String newName){
+        this.name = newName;
+    }
     public String getName(){
         return this.name;
     }
@@ -85,40 +92,40 @@ public abstract class Item implements RPGElementsContainer {
         }
         return itemImplicit;
     }
-    public abstract ItemRenderer getRenderer();
-    public void setRenderer(RendererTypes rendererType){
-        this.renderer = rendererType;
-    }
     public Tiers getTier() {
         return tier;
     }
     protected void setTier(Tiers tier) {
         this.tier = tier;
     }
-    private void setInitialRenderer(){
+    public abstract ItemRenderer getRenderer();
+    public void setRenderer(RendererTypes rendererType){
+        this.renderer = rendererType;
+    }
+    private void setInitialRenderer(){ //Sets upon item creation
         if (isIdentified()){
             setRenderer(RendererTypes.BASIC);
         } else if (getRarity() == ItemRarities.COMMON){
-            identify();
+            identify(); //
         } else {
             setRenderer(RendererTypes.UNIDENTIFIED);
         }
     }
     protected abstract void mapBase();
     protected void mapTier(){
-        if (ilvl<=Tiers.T1.getMaxLevel()){
+        if (getIlvl()<=Tiers.T1.getMaxLevel()){
             setTier(Tiers.T1);
             return;
-        } else if (ilvl<=Tiers.T2.getMaxLevel()){
+        } else if (getIlvl()<=Tiers.T2.getMaxLevel()){
             setTier(Tiers.T2);
             return;
-        } else if (ilvl<=Tiers.T3.getMaxLevel()){
+        } else if (getIlvl()<=Tiers.T3.getMaxLevel()){
             setTier(Tiers.T3);
             return;
-        } else if (ilvl<=Tiers.T4.getMaxLevel()){
+        } else if (getIlvl()<=Tiers.T4.getMaxLevel()){
             setTier(Tiers.T4);
             return;
-        } else if (ilvl<=Tiers.T5.getMaxLevel()) {
+        } else if (getIlvl()<=Tiers.T5.getMaxLevel()) {
             setTier(Tiers.T5);
             return;
         }

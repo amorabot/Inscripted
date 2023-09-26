@@ -82,6 +82,7 @@ public class Profile {
         int flatHealthSum = 0;
         int percentHealthSum = 0;
         int healthRegenSum = 0;
+//        int percenthealthRegenSum = 0;
 
         int flatWardSum = 0;
         int percentWardSum = 0;
@@ -155,21 +156,34 @@ public class Profile {
 
             //Mapping implicit
             Implicit armorImplicit = armorPiece.getImplicit();
+            int[] armorImplicitValue = armorImplicit.getValue();
             switch (armorImplicit.getTargetStat()){
+                case STRENGTH -> {
+                    int addedAttribute = armorImplicitValue[0];
+                    strSum += addedAttribute;
+                }
+                case DEXTERITY -> {
+                    int addedAttribute = armorImplicitValue[0];
+                    dexSum += addedAttribute;
+                }
+                case INTELLIGENCE -> {
+                    int addedAttribute = armorImplicitValue[0];
+                    intSum += addedAttribute;
+                }
                 case DEXTERITY_INTELLIGENCE -> {
                     //Only available in implicits for now
-                    //Only flat hybrid attributes (in case of attributes, both share the same value
-                    int addedAttribute = armorImplicit.getValue()[0];
+                    //Only flat-hybrid attributes (in case of attributes, both share the same value
+                    int addedAttribute = armorImplicitValue[0];
                     dexSum += addedAttribute;
                     intSum += addedAttribute;
                 }
                 case STRENGTH_DEXTERITY -> {
-                    int addedAttribute = armorImplicit.getValue()[0];
+                    int addedAttribute = armorImplicitValue[0];
                     dexSum += addedAttribute;
                     strSum += addedAttribute;
                 }
                 case INTELLIGENCE_STRENGTH -> {
-                    int addedAttribute = armorImplicit.getValue()[0];
+                    int addedAttribute = armorImplicitValue[0];
                     strSum += addedAttribute;
                     intSum += addedAttribute;
                 }
@@ -232,21 +246,62 @@ public class Profile {
                     case WARD -> {
                         if (mod.getValueType() == ValueTypes.FLAT){
                             flatWardSum += armorMod.getValue()[0];
-                        } else {
-                            //ValueTypes.PERCENT_ADDED
+                        } else {//PERCENT_ADDED
                             percentWardSum += armorMod.getValue()[0];
                         }
                     }
                     case ARMOR -> {
                         if (mod.getValueType() == ValueTypes.FLAT){
                             flatArmorSum+= armorMod.getValue()[0];
-                        } else {
-                            //ValueTypes.PERCENT_ADDED
+                        } else {//PERCENT_ADDED
                             percentArmorSum += armorMod.getValue()[0];
                         }
                     }
+                    //Hybrid mod section => double range (2 single ranges)
+                    case ARMOR_HEALTH -> {
+                        if (mod.getValueType().equals(ValueTypes.FLAT)){
+                            int[] modValues = armorMod.getValue();
+                            flatArmorSum += modValues[0];
+                            flatHealthSum += modValues[1];
+                        }
+                    }
+                    case ARMOR_DODGE -> {
+                        if (mod.getValueType().equals(ValueTypes.FLAT)){
+                            int[] modValues = armorMod.getValue();
+                            flatArmorSum += modValues[0];
+                            flatDodgeSum += modValues[1];
+                        }
+                    }
+                    case ARMOR_WARD -> {
+                        if (mod.getValueType().equals(ValueTypes.FLAT)){
+                            int[] modValues = armorMod.getValue();
+                            flatArmorSum += modValues[0];
+                            flatWardSum += modValues[1];
+                        }
+                    }
+                    case WARD_HEALTH -> {
+                        if (mod.getValueType().equals(ValueTypes.FLAT)){
+                            int[] modValues = armorMod.getValue();
+                            flatWardSum += modValues[0];
+                            flatHealthSum += modValues[1];
+                        }
+                    }
+                    case DODGE_HEALTH -> {
+                        if (mod.getValueType().equals(ValueTypes.FLAT)){
+                            int[] modValues = armorMod.getValue();
+                            flatDodgeSum += modValues[0];
+                            flatHealthSum += modValues[1];
+                        }
+                    }
+                    case DODGE_WARD -> {
+                        if (mod.getValueType().equals(ValueTypes.FLAT)){
+                            int[] modValues = armorMod.getValue();
+                            flatDodgeSum += modValues[0];
+                            flatWardSum += modValues[1];
+                        }
+                    }
+                    //----------------------------------------------------
                     case DODGE -> {
-                        //TODO: fix the scale of dodge item mods to the new way (400 = 4%)
                         flatDodgeSum+= armorMod.getValue()[0];
                     }
                     case WALK_SPEED -> {
@@ -282,7 +337,7 @@ public class Profile {
                         case PERCENT_ADDED -> percentAccuracySum += weaponImplicit.getValue()[0];
                     }
                 }
-                case DODGE -> flatDodgeSum += weaponImplicit.getValue()[0]*100;
+                case DODGE -> flatDodgeSum += weaponImplicit.getValue()[0];
                 case CRITICAL_DAMAGE -> percentCritDamageSum += weaponImplicit.getValue()[0]; //Theres only % Crit DMG
                 case MAELSTROM -> maelstromSum += weaponImplicit.getValue()[0]; //Theres only % Crit DMG
                 case ELEMENTAL_DAMAGE -> percentElementalDamageSum += weaponImplicit.getValue()[0]; //Theres only % Ele DMG
@@ -325,8 +380,6 @@ public class Profile {
                     //Add VS MOBS, VS PLAYERS
                 }
             }
-//            Map<DamageTypes, int[]> damageMap = weaponData.getBaseDamage();
-//            damageMap = weaponData.getBaseDamage();
             Map<DamageTypes, int[]> originalDamageMap = weaponData.getBaseDamage(); //Will be cloned to be modified
             for (DamageTypes dmgType : originalDamageMap.keySet()){
                 damageMap.put(dmgType, originalDamageMap.get(dmgType));
@@ -367,20 +420,9 @@ public class Profile {
         //Setting damage
         getDamageComponent().update(damageMap, flatStaminaSum, percentStaminaSum, baseStaminaRegen, staminaRegenPercentSum, baseCrit, percentCritChanceSum, percentCritDamageSum,
                 accuracySum, percentAccuracySum, bleedSum, shredSum, maelstromSum, percentElementalDamageSum, lifeOnHitSum);
-//        setExtraHealth(flatHealthSum);
-//        setIncreasedHealth(percentHealthSum);
-//        setExtraWard(flatWardSum);
-//        setIncreasedWard(percentWardSum);
-
-//        getAttributes().update(this);
-//        getDamageComponent().update(this);
-//        getHealthComponent().update(this);
-//        getDefenceComponent().update(this);
-//        getMiscellaneous().update(this);
-        //        Attributes attributes = getAttributes();
-//        flatHealthSum += attributes.getStrength()/3;
-//        flatWardSum += attributes.getIntelligence()/5;
     }
+
+    //todo: Arrumar triggers de update no profile
     public void updateMainHand(Weapon weapon){
         if (weapon == null){
             setDamage(new DamageComponent()); //Clearing the damage component upon unequip (weapon == null)

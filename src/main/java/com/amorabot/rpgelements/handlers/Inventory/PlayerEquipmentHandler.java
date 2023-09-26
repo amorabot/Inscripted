@@ -150,8 +150,6 @@ public class PlayerEquipmentHandler implements Listener {
         ItemStack clickedItem = event.getCurrentItem();
         ItemStack cursorItem = event.getCursor();
 
-//        player.sendMessage(""+event.getSlot()); //       #DEBUG
-
         //When, for instance, the player has a item in the cursor and they click a slot, it comes as air/null
         if (isNotFunctional(clickedItem) && isNotFunctional(cursorItem)){ //If they are both non functional, ignore the event
             player.sendMessage("Ignoring: non functional items (clicked item and cursor item");//                    # DEBUG MESSAGE
@@ -161,6 +159,7 @@ public class PlayerEquipmentHandler implements Listener {
         //From now on, clickedItem OR cursorItem may be null, test if needed
         switch (clickType){
             case DROP -> { //Q
+                //TODO: CONTROL DROPS ON INVENTORY SLOTS
                 //Decide what to do to functional items (in this case, cursor items should be ignored)
                 if (isNotFunctional(clickedItem)){
                     return; //Ignore drops for non functional items
@@ -265,11 +264,23 @@ public class PlayerEquipmentHandler implements Listener {
                         EventAPI.callArmorEquipEvent(event, clickedArmorSlotItem, ItemTypes.HELMET, ItemUsage.ARMOR_UNEQUIP);
                         return;
                     case 38:
-                        break;
+                        if (!isEquipableArmor(clickedArmorDataContainer)){
+                            return;
+                        }
+                        EventAPI.callArmorEquipEvent(event, clickedArmorSlotItem, ItemTypes.CHESTPLATE, ItemUsage.ARMOR_UNEQUIP);
+                        return;
                     case 37:
-                        break;
+                        if (!isEquipableArmor(clickedArmorDataContainer)){
+                            return;
+                        }
+                        EventAPI.callArmorEquipEvent(event, clickedArmorSlotItem, ItemTypes.LEGGINGS, ItemUsage.ARMOR_UNEQUIP);
+                        return;
                     case 36:
-                        break;
+                        if (!isEquipableArmor(clickedArmorDataContainer)){
+                            return;
+                        }
+                        EventAPI.callArmorEquipEvent(event, clickedArmorSlotItem, ItemTypes.BOOTS, ItemUsage.ARMOR_UNEQUIP);
+                        return;
                 }
                 return;
             }
@@ -278,20 +289,12 @@ public class PlayerEquipmentHandler implements Listener {
             //Other shift-clicks
             PersistentDataContainer clickedDataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
             if (isEquipableArmor(clickedDataContainer)){
-                ItemTypes armorPiece = Objects.requireNonNull(deserializeArmor(clickedDataContainer)).getArmorPiece();
+                //TODO: check for invalid armor with nbt and move it as if there as was something equipped
+                ItemTypes armorPiece = Objects.requireNonNull(deserializeArmor(clickedDataContainer)).getCategory();
                 //Equipability by a specific player will be tested later (and may cause this event's cancel)
                 EventAPI.callArmorEquipEvent(event, clickedItem, armorPiece, ItemUsage.ARMOR_SHIFTING_FROM_INV);
                 return;
             }
-
-//            else {
-//                //Shifts items into first empty slot
-//                event.setCancelled(true);
-//                if (inventory.firstEmpty() != -1){
-//                    inventory.remove(clickedItem);
-//                    inventory.addItem(clickedItem);
-//                }
-//            }
 
             //Its not armor-shifting, lets check for weapon-shifting
             //Lets first check for main-hand clicks to filter unequip attempts with shift
@@ -334,51 +337,9 @@ public class PlayerEquipmentHandler implements Listener {
 
         //TODO: Consider a shift-equip mechanic for weapons?
         //Check for swaps within LEFT or RIGHT?
-
-
-
-
-//            //-----------------------------------------------------------------------------------------------------------------------
-//            if (attemptedAction == InventoryAction.SWAP_WITH_CURSOR){
-//                if (event.getSlot() != player.getInventory().getHeldItemSlot()){ //se a tentativa não for no slot da mão, ignore
-//                    return;
-//                }
-////                ItemStack clickedItem = event.getCurrentItem();
-//                ItemStack itemOnCursor = player.getItemOnCursor();
-//                if (isEquipableWeapon(itemOnCursor)){
-//                    equipWeapon(itemOnCursor.getItemMeta().getPersistentDataContainer(), player);
-//                    return;
-//                }else {
-//                    unequipWeaponSlot(player);
-//                }
-//            }
-//            if ((event.getSlot() == player.getInventory().getHeldItemSlot())
-//                    && isEquipableWeapon(player.getInventory().getItemInMainHand())
-//                    && player.getItemOnCursor().getType().isAir()){
-//                unequipWeaponSlot(player);
-//                return;
-//            }
-//            if ((event.getSlot() == player.getInventory().getHeldItemSlot()) && isEquipableWeapon(player.getItemOnCursor())){
-//                equipWeapon(player.getItemOnCursor().getItemMeta().getPersistentDataContainer(), player);
-//                return;
-//            }
-//        } else {
         if (attemptedAction == InventoryAction.HOTBAR_SWAP){
             event.setCancelled(true); //No hotbar swapping
         }
-    }
-    private void equipWeapon(PersistentDataContainer weaponDataContainer, Player player){
-        Weapon weapon = FunctionalItemAccessInterface.deserializeWeapon(weaponDataContainer);
-        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
-        playerProfile.updateMainHand(weapon);
-        Utils.msgPlayer(player, "Equipped: " + weapon.getName() + " ("+playerProfile.getDamageComponent().getDPS()+")");
-    }
-    private void unequipWeaponSlot(Player player){
-        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId()); // Get profile from cache
-        if (!playerProfile.hasWeaponEquipped()){
-            return;
-        }
-        playerProfile.updateMainHand(null);
     }
     /* Checks wether the item has any custom data at all
     *  */

@@ -26,11 +26,19 @@ public class Recolor implements CommandExecutor {
         Player player = (Player) sender;
         String colorArg = args[0];
 
-        ItemStack item = player.getInventory().getItemInMainHand();
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(ColorUtils.translateColorCodes("&" + colorArg + Utils.decolor(meta.getDisplayName())));
-        item.setItemMeta(meta);
+        if (args.length == 1){
+            ItemStack item = player.getInventory().getItemInMainHand();
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName(ColorUtils.translateColorCodes("&" + colorArg + Utils.decolor(meta.getDisplayName())));
+            item.setItemMeta(meta);
+        }
+
+        if (args.length == 2){
+
+        }
 
         return true;
     }
+
+
 }

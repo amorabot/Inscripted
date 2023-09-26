@@ -29,7 +29,7 @@ public class Weapon extends Item {
     //Define stat require for weapons
 
     public Weapon(int ilvl, WeaponTypes type, ItemRarities rarity, boolean identified, boolean corrupted){
-        super(ilvl, rarity, identified, corrupted);
+        super(ilvl, rarity, identified, corrupted, ItemTypes.WEAPON);
         mapTier();
         this.type = type;
         setImplicit(defineImplicit(getType().toString()));
@@ -37,7 +37,7 @@ public class Weapon extends Item {
         mapBase();
     }
     public Weapon(int ilvl, ItemRarities rarity, boolean identified, boolean corrupted){ //Random generic weapon constructor
-        super(ilvl, rarity, identified, corrupted);
+        super(ilvl, rarity, identified, corrupted, ItemTypes.WEAPON);
         mapTier();
         //Do the rest...
         WeaponTypes[] weapons = WeaponTypes.values();
@@ -112,12 +112,7 @@ public class Weapon extends Item {
         List<String> lore = new ArrayList<>();
         ItemRenderer currentRenderer = getRenderer();
 
-        currentRenderer.renderMainStat(this, lore);
-        currentRenderer.renderMods(this, lore);
-        currentRenderer.renderDescription(this, lore, type);
-        currentRenderer.renderTag(this, lore);
-
-        currentRenderer.placeDivs(lore);
+        currentRenderer.renderAllCustomLore(this, lore, type);
 
         itemMeta.setLore(lore);
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -171,7 +166,8 @@ public class Weapon extends Item {
                 return new UnidentifiedRenderer();
             }
             case BASIC -> {
-                return new BasicWeaponRenderer();
+//                return new BasicWeaponRenderer();
+                return new BasicRunicWeaponRenderer();
             }
             case CORRUPTED -> {
                 Utils.log("No corruptedWeaponRenderer");

@@ -32,34 +32,34 @@ public class MobDropHandler implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event){
-        //Só ligamos para entidades no hashMap de mobs custom
-        Entity rawEntity = event.getEntity();
-        if (!customEntities.containsKey(rawEntity)){
-            return;
-        } //Agora sabemos que a entity que estamos lidando é um customMob
-        CustomMob mob = customEntities.get(rawEntity);
-
-        LivingEntity entity = (LivingEntity) rawEntity;
-        double damage = event.getFinalDamage();
-        double health = entity.getHealth() + entity.getAbsorptionAmount(); //vida total é vida + absorption
-        if (health > damage){ //se o dano não foi suficiente para matar (sobreviveu):
-            health -= damage;
-            entity.setCustomName(Utils.color(mob.getName() + "&r&c [" + (int) health + "/" + (int) mob.getMaxHealth() + "♥]"));
-        }
-        //Damage indicator hologram
-        Location loc = entity.getLocation().clone().add(plugin.getRandomOffset(),1, plugin.getRandomOffset());
-        plugin.getWorld().spawn(loc, ArmorStand.class, armorStand -> {
-            //Aqui dizemos o que deve ser feito com o armorStand que será spawnado antes de ser renderizado propriamente
-            //Por enquanto ele é genérico.
-            armorStand.setMarker(true); //removes hitboxes
-            armorStand.setVisible(false);
-            armorStand.setGravity(false);
-            armorStand.setSmall(true);
-            armorStand.setCustomNameVisible(true);
-            armorStand.setCustomName(Utils.color("&c" + formatter.format(damage)));
-
-            damageIndicators.put(armorStand, 20 + 10); //o Integer é em ticks, 20ticks = 1seg
-        });
+//        //Só ligamos para entidades no hashMap de mobs custom
+//        Entity rawEntity = event.getEntity();
+//        if (!customEntities.containsKey(rawEntity)){
+//            return;
+//        } //Agora sabemos que a entity que estamos lidando é um customMob
+//        CustomMob mob = customEntities.get(rawEntity);
+//
+//        LivingEntity entity = (LivingEntity) rawEntity;
+//        double damage = event.getFinalDamage();
+//        double health = entity.getHealth() + entity.getAbsorptionAmount(); //vida total é vida + absorption
+//        if (health > damage){ //se o dano não foi suficiente para matar (sobreviveu):
+//            health -= damage;
+//            entity.setCustomName(Utils.color(mob.getName() + "&r&c [" + (int) health + "/" + (int) mob.getMaxHealth() + "♥]"));
+//        }
+//        //Damage indicator hologram
+//        Location loc = entity.getLocation().clone().add(plugin.getRandomOffset(),1, plugin.getRandomOffset());
+//        plugin.getWorld().spawn(loc, ArmorStand.class, armorStand -> {
+//            //Aqui dizemos o que deve ser feito com o armorStand que será spawnado antes de ser renderizado propriamente
+//            //Por enquanto ele é genérico.
+//            armorStand.setMarker(true); //removes hitboxes
+//            armorStand.setVisible(false);
+//            armorStand.setGravity(false);
+//            armorStand.setSmall(true);
+//            armorStand.setCustomNameVisible(true);
+//            armorStand.setCustomName(Utils.color("&c" + formatter.format(damage)));
+//
+//            damageIndicators.put(armorStand, 20 + 10); //o Integer é em ticks, 20ticks = 1seg
+//        });
     }
 
     @EventHandler

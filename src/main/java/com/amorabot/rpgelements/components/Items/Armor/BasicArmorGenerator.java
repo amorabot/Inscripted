@@ -17,21 +17,24 @@ public class BasicArmorGenerator {
         //Generating the modifiers to fill the item
         int maxMods = rarity.getMaxMods();
         int numberOfMods = 0;
-        Map<ArmorModifiers, Map<Integer, int[]>> prefixes = new HashMap<>();
-        Map<ArmorModifiers, Map<Integer, int[]>> suffixes = new HashMap<>();
+        Map<ArmorModifiers, Map<Integer, int[]>> prefixes;
+        Map<ArmorModifiers, Map<Integer, int[]>> suffixes;
         switch (armorPiece){
             case HELMET -> {
                 prefixes = type.castTo(ArmorModifiers.class, type.getBasicHelmetPrefixes());
                 suffixes = type.castTo(ArmorModifiers.class, type.getBasicHelmetSuffixes());
             }
             case CHESTPLATE -> {
-                //
+                prefixes = type.castTo(ArmorModifiers.class, type.getBasicChestlatePrefixes());
+                suffixes = type.castTo(ArmorModifiers.class, type.getBasicChesplateSuffixes());
             }
             case LEGGINGS -> {
-                //a
+                prefixes = type.castTo(ArmorModifiers.class, type.getBasicLeggingsPrefixes());
+                suffixes = type.castTo(ArmorModifiers.class, type.getBasicLeggingsSuffixes());
             }
             case BOOTS -> {
-                //ab
+                prefixes = type.castTo(ArmorModifiers.class, type.getBasicBootsPrefixes());
+                suffixes = type.castTo(ArmorModifiers.class, type.getBasicBootsSuffixes());
             }
             default -> {
                 return null;

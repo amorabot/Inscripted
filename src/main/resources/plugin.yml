@@ -10,11 +10,6 @@ permissions:
     pluginstudies.builder:
       description: Gives the player the building privileges.
 commands:
-  skills:
-    description: Opens a GUI for managing your skills points
-    usage: /skills
-    aliases: [skillpoints,stats]
-    permission: menu
   updatenbt:
     description: Updates a item's item level NBT data.
     usage: /updatenbt
@@ -42,3 +37,6 @@ commands:
     description: generates a custom armor.
     usage: /generatearmor
     aliases: [ armor, gena ]
+  show:
+    description: shows the held item in chat
+    usage: /show

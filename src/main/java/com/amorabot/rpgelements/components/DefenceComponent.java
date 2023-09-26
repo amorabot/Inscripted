@@ -69,7 +69,7 @@ public class DefenceComponent implements EntityComponent {
     private void setFinalArmor(int flatArmor, int incArmor){
         setBaseArmor(flatArmor);
         setIncreasedArmor(incArmor);
-        this.finalArmor = (float) flatArmor * (1 + incArmor);
+        this.finalArmor = (float) flatArmor * (1 + incArmor/100f);
     }
 
     public float getFinalArmor() {

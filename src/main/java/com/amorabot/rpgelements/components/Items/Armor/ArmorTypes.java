@@ -10,11 +10,18 @@ import com.amorabot.rpgelements.utils.CraftingUtils;
 import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.Material;
 
+import java.util.List;
 import java.util.Map;
 
 public enum ArmorTypes implements AffixTableSelector {
 
-    HEAVY_PLATING(){
+    HEAVY_PLATING(
+            List.of("Thickwood", "Compound leather"),
+            List.of("Compound chainmail", "Heavy mail"),
+            List.of("Steel War-Vest", "Heavy plate"),
+            List.of("Heavy crystal", "Reinforced opal"),
+            List.of("Juggernault", "Warmonger", "Heavy runic-gold")
+    ){
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
@@ -85,7 +92,13 @@ public enum ArmorTypes implements AffixTableSelector {
             }
         }
     },
-    CARVED_PLATING() {
+    CARVED_PLATING(
+            List.of("Light plating", "Fancy leather"),
+            List.of("Exotic chainmail", "Battle-chainmail"),
+            List.of("War-Plate", "Arena plate"),
+            List.of("Opal-Engraved", "Majestic plate"),
+            List.of("Shiny runic-gold", "Gladiator", "Carved plating")
+    ) {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
@@ -163,7 +176,13 @@ public enum ArmorTypes implements AffixTableSelector {
             }
         }
     },
-    LIGHT_CLOTH() {
+    LIGHT_CLOTH(
+            List.of("Light cloth", "Wild leather"),
+            List.of("Light chainmail", "Leatherbound mail"),
+            List.of("Reinforced light", "Mercenary"),
+            List.of("Opal-engraved cloth", "Ancient strappings"),
+            List.of("Ranger leather", "Exquisite leather", "Runic light cloth")
+    ) {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
@@ -233,7 +252,13 @@ public enum ArmorTypes implements AffixTableSelector {
             }
         }
     },
-    RUNIC_LEATHER() {
+    RUNIC_LEATHER(
+            List.of("Magic leather"),
+            List.of("Infused ringmail"),
+            List.of("Reinforced magic leather"),
+            List.of("Ancient strapped leather", "Crystal-infused cloth"),
+            List.of("Assassin", "Runic-gold leather", "Rogue")
+    ) {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
@@ -311,25 +336,31 @@ public enum ArmorTypes implements AffixTableSelector {
             }
         }
     },
-    ENCHANTED_SILK() {
+    ENCHANTED_SILK(
+            List.of("Silken"),
+            List.of("Arcane ringmail"),
+            List.of("Iron-plated silk"),
+            List.of("Shining ancient silk"),
+            List.of("Mage", "Woven runic silk", "Arcane silk")
+    ) {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
             switch (armorBase){
                 case HELMET -> {
-                    int maxWard = 90;
+                    int maxWard = 360;
                     putWard(ilvl, maxItemLevel, maxWard, defences);
                 }
                 case CHESTPLATE -> {
-                    int maxWard = 200;
+                    int maxWard = 700;
                     putWard(ilvl, maxItemLevel, maxWard, defences);
                 }
                 case LEGGINGS -> {
-                    int maxWard = 150;
+                    int maxWard = 600;
                     putWard(ilvl, maxItemLevel, maxWard, defences);
                 }
                 case BOOTS -> {
-                    int maxWard = 70;
+                    int maxWard = 300;
                     putWard(ilvl, maxItemLevel, maxWard, defences);
                 }
                 default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
@@ -341,11 +372,11 @@ public enum ArmorTypes implements AffixTableSelector {
                 case HELMET -> {
                     //Helmet base health definition
                     return defineTierBaseHealth(tier
-                            , 50,  10
-                            , 150, 30
-                            , 400, 100
-                            , 900, 120
-                            , 1500,200);
+                            , 25,  10
+                            , 75, 15
+                            , 200, 50
+                            , 450, 60
+                            , 750,100);
                 }
                 case CHESTPLATE -> {
                     //Chestplate base health definition
@@ -359,20 +390,20 @@ public enum ArmorTypes implements AffixTableSelector {
                 case LEGGINGS -> {
                     //Leggings base health definition
                     return defineTierBaseHealth(tier
-                            , 70,  15
-                            , 200, 40
-                            , 500, 120
-                            , 1000, 140
-                            , 1700,240);
+                            , 35,  15
+                            , 100, 20
+                            , 250, 60
+                            , 500, 70
+                            , 850,120);
                 }
                 case BOOTS -> {
                     //Boots base health definition
                     return defineTierBaseHealth(tier
-                            , 60,  10
-                            , 150, 30
-                            , 400, 100
-                            , 900, 120
-                            , 1600,200);
+                            , 30,  10
+                            , 75, 15
+                            , 200, 50
+                            , 450, 60
+                            , 800,100);
                 }
                 default -> {
                     Utils.log("No such armor base: " + armorBase);
@@ -381,7 +412,13 @@ public enum ArmorTypes implements AffixTableSelector {
             }
         }
     },
-    RUNIC_STEEL() {
+    RUNIC_STEEL(
+            List.of("Magic battleplate"),
+            List.of("Battlemage ringmail"),
+            List.of("Enhanced magic steel"),
+            List.of("Shining Opal ", "Ancient arcane steel"),
+            List.of("Templar", "Gilded runic steel")
+    ) {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
@@ -472,7 +509,18 @@ public enum ArmorTypes implements AffixTableSelector {
     private Map<String, Map<Integer, int[]>> basicBootsPrefixes;
     private Map<String, Map<Integer, int[]>> basicBootsSuffixes;
 
-    ArmorTypes(){
+    private final List<String> tier1Names;
+    private final List<String> tier2Names;
+    private final List<String> tier3Names;
+    private final List<String> tier4Names;
+    private final List<String> tier5Names;
+
+    ArmorTypes(List<String> t1, List<String> t2, List<String> t3, List<String> t4, List<String> t5){
+        this.tier1Names = t1;
+        this.tier2Names = t2;
+        this.tier3Names = t3;
+        this.tier4Names = t4;
+        this.tier5Names = t5;
         loadAllAffixes();
     }
     protected abstract void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences);
@@ -520,7 +568,7 @@ public enum ArmorTypes implements AffixTableSelector {
             int dodgeValue = linearScaleStat(givenItemLevel, softLevelCap, maximumBaseStat);
             //Dodge wont be a percentage by itself, convert when displaying or doing percentage math
             defences.put(DefenceTypes.DODGE,dodgeValue);
-        } else if(givenItemLevel>softLevelCap && givenItemLevel<maxItemLevel){ //If ilvl is greater than softCap and lower than maxIlvl allowed, put the maximum value for Dodge
+        } else if(givenItemLevel>softLevelCap && givenItemLevel<=maxItemLevel){ //If ilvl is greater than softCap and lower than maxIlvl allowed, put the maximum value for Dodge
             defences.put(DefenceTypes.DODGE, maximumBaseStat);
         } else { //If the given Ilvl was higher than the max allowed, put 0
             defences.put(DefenceTypes.DODGE, 0);
@@ -668,15 +716,15 @@ public enum ArmorTypes implements AffixTableSelector {
         //The "Entire set" of a armor specialization is loaded at once and accessed later via getPiece() methods.
         this.basicHelmetPrefixes = getAffixTable(modifiersJSON, ItemTypes.HELMET, Affix.PREFIX);
         this.basicHelmetSuffixes = getAffixTable(modifiersJSON, ItemTypes.HELMET, Affix.SUFFIX);
+
+        this.basicChestlatePrefixes = getAffixTable(modifiersJSON, ItemTypes.CHESTPLATE, Affix.PREFIX);
+        this.basicChesplateSuffixes = getAffixTable(modifiersJSON, ItemTypes.CHESTPLATE, Affix.SUFFIX);
 //
-//        this.basicChestlatePrefixes = getAffixTable(modifiersJSON, ItemTypes.CHESTPLATE, Affix.PREFIX);
-//        this.basicChesplateSuffixes = getAffixTable(modifiersJSON, ItemTypes.CHESTPLATE, Affix.SUFFIX);
-//
-//        this.basicLeggingsPrefixes = getAffixTable(modifiersJSON, ItemTypes.LEGGINGS, Affix.PREFIX);
-//        this.basicLeggingsSuffixes = getAffixTable(modifiersJSON, ItemTypes.LEGGINGS, Affix.SUFFIX);
-//
-//        this.basicBootsPrefixes = getAffixTable(modifiersJSON, ItemTypes.BOOTS, Affix.PREFIX);
-//        this.basicBootsSuffixes = getAffixTable(modifiersJSON, ItemTypes.BOOTS, Affix.SUFFIX);
+        this.basicLeggingsPrefixes = getAffixTable(modifiersJSON, ItemTypes.LEGGINGS, Affix.PREFIX);
+        this.basicLeggingsSuffixes = getAffixTable(modifiersJSON, ItemTypes.LEGGINGS, Affix.SUFFIX);
+
+        this.basicBootsPrefixes = getAffixTable(modifiersJSON, ItemTypes.BOOTS, Affix.PREFIX);
+        this.basicBootsSuffixes = getAffixTable(modifiersJSON, ItemTypes.BOOTS, Affix.SUFFIX);
         Utils.log("Modifiers loaded successfully! (" + this + ")");
     }
     public Map<String, Map<Integer, int[]>> getBasicHelmetPrefixes(){
@@ -686,24 +734,52 @@ public enum ArmorTypes implements AffixTableSelector {
         return this.basicHelmetSuffixes;
     }
 
-//    public Map<String, Map<Integer, int[]>> getBasicChestlatePrefixes() {
-//        return basicChestlatePrefixes;
-//    }
-//    public Map<String, Map<Integer, int[]>> getBasicChesplateSuffixes() {
-//        return basicChesplateSuffixes;
-//    }
-//
-//    public Map<String, Map<Integer, int[]>> getBasicLeggingsPrefixes() {
-//        return basicLeggingsPrefixes;
-//    }
-//    public Map<String, Map<Integer, int[]>> getBasicLeggingsSuffixes() {
-//        return basicLeggingsSuffixes;
-//    }
-//
-//    public Map<String, Map<Integer, int[]>> getBasicBootsPrefixes() {
-//        return basicBootsPrefixes;
-//    }
-//    public Map<String, Map<Integer, int[]>> getBasicBootsSuffixes() {
-//        return basicBootsSuffixes;
-//    }
+    public Map<String, Map<Integer, int[]>> getBasicChestlatePrefixes() {
+        return basicChestlatePrefixes;
+    }
+    public Map<String, Map<Integer, int[]>> getBasicChesplateSuffixes() {
+        return basicChesplateSuffixes;
+    }
+
+    public Map<String, Map<Integer, int[]>> getBasicLeggingsPrefixes() {
+        return basicLeggingsPrefixes;
+    }
+    public Map<String, Map<Integer, int[]>> getBasicLeggingsSuffixes() {
+        return basicLeggingsSuffixes;
+    }
+
+    public Map<String, Map<Integer, int[]>> getBasicBootsPrefixes() {
+        return basicBootsPrefixes;
+    }
+    public Map<String, Map<Integer, int[]>> getBasicBootsSuffixes() {
+        return basicBootsSuffixes;
+    }
+
+    public String getRandomName(Tiers tier){
+        switch (tier){
+            case T1 -> {
+                int rand = CraftingUtils.getRandomNumber(0, this.tier1Names.size()-1);
+                return tier1Names.get(rand);
+            }
+            case T2 -> {
+                int rand = CraftingUtils.getRandomNumber(0, this.tier2Names.size()-1);
+                return tier2Names.get(rand);
+            }
+            case T3 -> {
+                int rand = CraftingUtils.getRandomNumber(0, this.tier3Names.size()-1);
+                return tier3Names.get(rand);
+            }
+            case T4 -> {
+                int rand = CraftingUtils.getRandomNumber(0, this.tier4Names.size()-1);
+                return tier4Names.get(rand);
+            }
+            case T5 -> {
+                int rand = CraftingUtils.getRandomNumber(0, this.tier5Names.size()-1);
+                return tier5Names.get(rand);
+            }
+            default -> {
+                return "";
+            }
+        }
+    }
 }
