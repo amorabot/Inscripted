@@ -66,7 +66,7 @@ public class BasicArmorRenderer implements ItemRenderer {
             itemLore.add("");
         }
 
-        itemLore.add(color("-div-"));
+        itemLore.add(color("@HEADER@"));
     }
 
     @Override
@@ -94,7 +94,7 @@ public class BasicArmorRenderer implements ItemRenderer {
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
         if (armorData.getRarity() != ItemRarities.COMMON){
-            itemLore.add(color("-div-"));
+            itemLore.add(color("@FOOTER@"));
         }
     }
 

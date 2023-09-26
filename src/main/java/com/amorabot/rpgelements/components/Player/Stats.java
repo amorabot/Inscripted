@@ -69,6 +69,6 @@ public class Stats {
         if (armorPiece == null || expectedPiece == null){
             return false;
         }
-        return armorPiece.getArmorPiece() == expectedPiece;
+        return armorPiece.getCategory() == expectedPiece;
     }
 }

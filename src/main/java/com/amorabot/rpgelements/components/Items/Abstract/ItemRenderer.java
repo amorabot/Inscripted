@@ -43,7 +43,7 @@ public interface ItemRenderer extends Serializable {
         }
     }
 
-    default <subType extends Enum<subType> & AffixTableSelector> void renderLore(Item itemData, List<String> itemLore, subType itemSubtype){
+    default <subType extends Enum<subType> & AffixTableSelector> void renderAllCustomLore(Item itemData, List<String> itemLore, subType itemSubtype){
         renderMainStat(itemData, itemLore);
         renderMods(itemData, itemLore);
         renderDescription(itemData, itemLore, itemSubtype);
@@ -95,8 +95,7 @@ public interface ItemRenderer extends Serializable {
                 continue;
             }
             if (loreLine.contains(footerString)){
-                int offRel = deserializedHeader.length() - deserializedFooter.length();
-                int footerOffset = offHeader+offRel/4;
+                int footerOffset = offHeader + (deserializedHeader.length()-deserializedFooter.length())/2 - 2;
                 itemLore.set(itemLore.indexOf(footerString), loreLine.replace(footerString, deserializedFooter).indent(footerOffset));
             }
         }

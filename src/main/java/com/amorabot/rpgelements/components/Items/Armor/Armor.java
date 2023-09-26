@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class Armor extends Item {
 
-    private final ItemTypes armorPiece;
+//    private final ItemTypes armorPiece;
     private final ArmorTypes type; //Trim materials and patterns are inferred
 //    private final ArmorTrim trim;
     private final int baseHealth;
@@ -31,24 +31,29 @@ public class Armor extends Item {
     //Define level limitations for armors
 
     public Armor(ItemTypes armorSlot, int ilvl, ArmorTypes type, ItemRarities rarity, boolean identified, boolean corrupted){
-        super(ilvl, rarity, identified, corrupted);
+        super(ilvl, rarity, identified, corrupted, armorSlot);
         mapTier();
-        this.armorPiece = armorSlot;
         this.type = type;
-        this.name = type.toString();
+//        this.category = armorSlot;
+//        this.name = type.toString();
+//        this.name = getType().getRandomName(getTier()) + " " + getArmorPiece().toString().toLowerCase();
+        setName(getType().getRandomName(getTier()) + " " + getCategory().toString().toLowerCase());
+//        setBaseName();
         setImplicit(defineImplicit(getType().toString()));
         mapBase();
-        this.baseHealth = getType().mapBaseHealth(getTier(), armorPiece);
+        this.baseHealth = getType().mapBaseHealth(getTier(), getCategory());
     }
     public Armor(ItemTypes armorPiece, int ilvl, ItemRarities rarity, boolean identified, boolean corrupted) { //Random generation constructor
-        super(ilvl, rarity, identified, corrupted);
+        super(ilvl, rarity, identified, corrupted, armorPiece);
         mapTier();
         ArmorTypes[] armorTypes = ArmorTypes.values();
         int typeIndex = CraftingUtils.getRandomNumber(0, armorTypes.length-1);
-        ArmorTypes selectedType = armorTypes[typeIndex];
-        this.armorPiece = armorPiece;
-        this.type = selectedType;
-        this.name = type.toString();
+        this.type = armorTypes[typeIndex];
+        //        this.armorPiece = armorPiece;
+//        this.name = type.toString();
+//        this.name = getType().getRandomName(getTier()) + " " + getArmorPiece().toString().toLowerCase();
+//        setBaseName();
+        setName(getType().getRandomName(getTier()) + " " + getCategory().toString().toLowerCase());
         setImplicit(defineImplicit(getType().toString()));
         mapBase();
         this.baseHealth = getType().mapBaseHealth(getTier(), armorPiece);
@@ -56,8 +61,8 @@ public class Armor extends Item {
 
     @Override
     protected void mapBase(){
-        this.vanillaMaterial = getType().mapArmorBase(getTier(), getArmorPiece());
-        getType().mapBaseDefences(getIlvl(), getArmorPiece(), getDefencesMap());
+        this.vanillaMaterial = getType().mapArmorBase(getTier(), getCategory());
+        getType().mapBaseDefences(getIlvl(), getCategory(), getDefencesMap());
     }
 
     @Override
@@ -73,9 +78,9 @@ public class Armor extends Item {
     public ArmorTypes getType() {
         return type;
     }
-    public ItemTypes getArmorPiece() {
-        return armorPiece;
-    }
+//    public ItemTypes getArmorPiece() {
+//        return armorPiece;
+//    }
     public Map<DefenceTypes, Integer> getDefencesMap() {
         return defencesMap;
     }
@@ -88,14 +93,9 @@ public class Armor extends Item {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
         List<String> lore = new ArrayList<>();
-
         ItemRenderer itemRenderer = getRenderer();
-        itemRenderer.renderMainStat(this, lore);
-        itemRenderer.renderMods(this, lore);
-        itemRenderer.renderDescription(this, lore, type);
-        itemRenderer.renderTag(this, lore);
 
-        itemRenderer.placeDivs(lore);
+        itemRenderer.renderAllCustomLore(this, lore, type);
 
         itemMeta.setLore(lore);
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -110,7 +110,7 @@ public class Armor extends Item {
         if (isIdentified()){
             displayName += getName();
         } else {
-            displayName += "Unidentified " + this.type.toString().toLowerCase() + getArmorPiece().toString().toLowerCase();
+            displayName += "Unidentified " + getCategory().toString().toLowerCase();
         }
         itemRenderer.setDisplayName(displayName, item);
     }

@@ -278,7 +278,7 @@ public class PlayerEquipmentHandler implements Listener {
             PersistentDataContainer clickedDataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
             if (isEquipableArmor(clickedDataContainer)){
                 //TODO: check for invalid armor with nbt and move it as if there as was something equipped
-                ItemTypes armorPiece = Objects.requireNonNull(deserializeArmor(clickedDataContainer)).getArmorPiece();
+                ItemTypes armorPiece = Objects.requireNonNull(deserializeArmor(clickedDataContainer)).getCategory();
                 //Equipability by a specific player will be tested later (and may cause this event's cancel)
                 EventAPI.callArmorEquipEvent(event, clickedItem, armorPiece, ItemUsage.ARMOR_SHIFTING_FROM_INV);
                 return;
