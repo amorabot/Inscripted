@@ -4,31 +4,31 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 
 public enum DamageTypes {
-    PHYSICAL("&c", "🗡") {
+    PHYSICAL("&6", "🗡") {
         @Override
         void setColorComponent() {
             this.colorComponent = NamedTextColor.GOLD;
         }
     },
-    FIRE("&4", "\uD83D\uDD25 ") {
+    FIRE("&c", "\uD83D\uDD25") {
         @Override
         void setColorComponent() {
             this.colorComponent = NamedTextColor.RED;
         }
     },
-    COLD("&b", "✽ ") {
+    COLD("&b", "✽") {
         @Override
         void setColorComponent() {
             this.colorComponent = NamedTextColor.AQUA;
         }
     },
-    LIGHTNING("&e", "⚡ ") {
+    LIGHTNING("&e", "⚡") {
         @Override
         void setColorComponent() {
             this.colorComponent = NamedTextColor.YELLOW;
         }
     },
-    ABYSSAL("&#7734AA", "\uD83C\uDF19 ") {
+    ABYSSAL("&#7734AA", "\uD83C\uDF19") {
         @Override
         void setColorComponent() {
             this.colorComponent = TextColor.fromHexString("#7734AA");

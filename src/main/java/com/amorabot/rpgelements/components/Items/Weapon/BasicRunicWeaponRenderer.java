@@ -6,7 +6,7 @@ import com.amorabot.rpgelements.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.RangeTypes;
-import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
+import com.amorabot.rpgelements.components.Items.DataStructures.NewModifier;
 import com.amorabot.rpgelements.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.rpgelements.utils.ColorUtils;
 import net.kyori.adventure.text.Component;
@@ -50,10 +50,10 @@ public class BasicRunicWeaponRenderer implements ItemRenderer {
         Weapon weaponData = (Weapon) itemData;
         String valuesColor = "&#95dbdb"; //pale baby blue
 
-        List<Modifier<WeaponModifiers>> mods = weaponData.getModifiers();
-        List<Modifier<WeaponModifiers>> prefixes = new ArrayList<>();
-        List<Modifier<WeaponModifiers>> suffixes = new ArrayList<>(); //Alternativa: Implementar equals() ou um comparador
-        for (Modifier<WeaponModifiers> mod : mods){
+        List<NewModifier> mods = weaponData.getModifiers();
+        List<NewModifier> prefixes = new ArrayList<>();
+        List<NewModifier> suffixes = new ArrayList<>(); //Alternativa: Implementar equals() ou um comparador
+        for (NewModifier mod : mods){
             if (mod.getModifier().getAffixType() == Affix.PREFIX){
                 prefixes.add(mod);
             } else {
@@ -61,21 +61,23 @@ public class BasicRunicWeaponRenderer implements ItemRenderer {
             }
         }
 
-        for (Modifier<WeaponModifiers> mod : prefixes){
+        for (NewModifier mod : prefixes){
             String modifierDisplayName = getDisplayString(mod, valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
-        for (Modifier<WeaponModifiers> mod : suffixes){
+        for (NewModifier mod : suffixes){
             String modifierDisplayName = getDisplayString(mod, valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
+
+
         if (itemData.getRarity() != ItemRarities.COMMON){
             itemLore.add(color("@FOOTER@"));
         }
     }
 
     @NotNull
-    private String getDisplayString(Modifier<WeaponModifiers> mod, String valuesColor, int indent) {
+    private String getDisplayString(NewModifier mod, String valuesColor, int indent) {
         String modifierDisplayName = "&7" + mod.getModifier().getDisplayName() + "  ";
         RangeTypes rangeType = mod.getModifier().getRangeType();
         switch (rangeType){
@@ -144,7 +146,7 @@ public class BasicRunicWeaponRenderer implements ItemRenderer {
             if (damages.containsKey(dmgType)){
                 int[] extraDmg = damages.get(dmgType);
                 TextComponent extraDmgComponent =
-                        Component.text(dmgType.getCharacter()+" " + extraDmg[0] + " - " + extraDmg[1])
+                        Component.text(dmgType.getCharacter()+ " " + extraDmg[0] + " - " + extraDmg[1])
                                 .color(dmgType.getColorComponent());
 
                 if (dmgType.equals(DamageTypes.PHYSICAL)){

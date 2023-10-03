@@ -5,6 +5,7 @@ import com.amorabot.rpgelements.components.DamageComponent;
 import com.amorabot.rpgelements.components.DefenceComponent;
 import com.amorabot.rpgelements.components.HealthComponent;
 import com.amorabot.rpgelements.components.Player.*;
+import com.amorabot.rpgelements.tasks.PlayerInterfaceRenderer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -32,7 +33,7 @@ public class JSONProfileManager {
     // CRUD Operations ->  Create - Read - Update - Delete
 
     public static Profile createProfile(String uuid){
-        Attributes attributes = new Attributes(10, 0,0);
+        Attributes attributes = new Attributes(0, 0,0);
         Stats stats = new Stats();
         UUID id = UUID.fromString(uuid);
         Profile createdProfile = new Profile(new HealthComponent(), new DefenceComponent(), new DamageComponent(), attributes, stats);
@@ -164,6 +165,7 @@ public class JSONProfileManager {
                     if (!containsProfile(playerId)){ //If profile is not loaded, load
                         profiles.put(playerId, profileMap.get(playerId));
                         log("Profile reloaded: " + player.getDisplayName());
+                        PlayerInterfaceRenderer.startupBossBars(player);
                     }
                 }
             } catch (FileNotFoundException e) {

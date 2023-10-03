@@ -2,10 +2,11 @@ package com.amorabot.rpgelements.components.Items.Armor;
 
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
+//import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
+import com.amorabot.rpgelements.components.Items.DataStructures.ModifierList;
+import com.amorabot.rpgelements.components.Items.DataStructures.NewModifier;
 import com.amorabot.rpgelements.utils.CraftingUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class BasicArmorGenerator {
@@ -17,24 +18,34 @@ public class BasicArmorGenerator {
         //Generating the modifiers to fill the item
         int maxMods = rarity.getMaxMods();
         int numberOfMods = 0;
-        Map<ArmorModifiers, Map<Integer, int[]>> prefixes;
-        Map<ArmorModifiers, Map<Integer, int[]>> suffixes;
+//        Map<ArmorModifiers, Map<Integer, int[]>> prefixes;
+//        Map<ArmorModifiers, Map<Integer, int[]>> suffixes;
+        Map<ModifierList, Map<Integer, int[]>> prefixes;
+        Map<ModifierList, Map<Integer, int[]>> suffixes;
         switch (armorPiece){
             case HELMET -> {
-                prefixes = type.castTo(ArmorModifiers.class, type.getBasicHelmetPrefixes());
-                suffixes = type.castTo(ArmorModifiers.class, type.getBasicHelmetSuffixes());
+//                prefixes = type.castTo(ArmorModifiers.class, type.getBasicHelmetPrefixes());
+//                suffixes = type.castTo(ArmorModifiers.class, type.getBasicHelmetSuffixes());
+                prefixes = type.castToModEnum(type.getBasicHelmetPrefixes());
+                suffixes = type.castToModEnum(type.getBasicHelmetSuffixes());
             }
             case CHESTPLATE -> {
-                prefixes = type.castTo(ArmorModifiers.class, type.getBasicChestlatePrefixes());
-                suffixes = type.castTo(ArmorModifiers.class, type.getBasicChesplateSuffixes());
+//                prefixes = type.castTo(ArmorModifiers.class, type.getBasicChestlatePrefixes());
+//                suffixes = type.castTo(ArmorModifiers.class, type.getBasicChesplateSuffixes());
+                prefixes = type.castToModEnum(type.getBasicChestlatePrefixes());
+                suffixes = type.castToModEnum(type.getBasicChesplateSuffixes());
             }
             case LEGGINGS -> {
-                prefixes = type.castTo(ArmorModifiers.class, type.getBasicLeggingsPrefixes());
-                suffixes = type.castTo(ArmorModifiers.class, type.getBasicLeggingsSuffixes());
+//                prefixes = type.castTo(ArmorModifiers.class, type.getBasicLeggingsPrefixes());
+//                suffixes = type.castTo(ArmorModifiers.class, type.getBasicLeggingsSuffixes());
+                prefixes = type.castToModEnum(type.getBasicLeggingsPrefixes());
+                suffixes = type.castToModEnum(type.getBasicLeggingsSuffixes());
             }
             case BOOTS -> {
-                prefixes = type.castTo(ArmorModifiers.class, type.getBasicBootsPrefixes());
-                suffixes = type.castTo(ArmorModifiers.class, type.getBasicBootsSuffixes());
+//                prefixes = type.castTo(ArmorModifiers.class, type.getBasicBootsPrefixes());
+//                suffixes = type.castTo(ArmorModifiers.class, type.getBasicBootsSuffixes());
+                prefixes = type.castToModEnum(type.getBasicBootsPrefixes());
+                suffixes = type.castToModEnum(type.getBasicBootsSuffixes());
             }
             default -> {
                 return null;
@@ -50,9 +61,11 @@ public class BasicArmorGenerator {
                 for (int i = 0; i<numberOfMods; i++){
                     double random = Math.random();
                     if (random >= 0.5){ //Its a prefix
-                        blankArmor.addModifier(Modifier.getRandomModifier(prefixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
+                        blankArmor.addModifier(NewModifier.getRandomModifier(prefixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
+//                        blankArmor.addModifier(Modifier.getRandomModifier(prefixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
                     } else { //Its a suffix
-                        blankArmor.addModifier(Modifier.getRandomModifier(suffixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
+//                        blankArmor.addModifier(Modifier.getRandomModifier(suffixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
+                        blankArmor.addModifier(NewModifier.getRandomModifier(suffixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
                     }
                 }
                 return blankArmor;
@@ -67,18 +80,22 @@ public class BasicArmorGenerator {
                     double random = Math.random();
                     if (random >= 0.5){ //Its a prefix
                         if (currPrefixes < maxPrefixes){ //Open prefix
-                            blankArmor.addModifier(Modifier.getRandomModifier(prefixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
+//                            blankArmor.addModifier(Modifier.getRandomModifier(prefixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
+                            blankArmor.addModifier(NewModifier.getRandomModifier(prefixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
                             currPrefixes++;
                         } else { //Generate a suffix
-                            blankArmor.addModifier(Modifier.getRandomModifier(suffixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
+//                            blankArmor.addModifier(Modifier.getRandomModifier(suffixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
+                            blankArmor.addModifier(NewModifier.getRandomModifier(suffixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
                             currSuffixes++;
                         }
                     } else { //Its a suffix
                         if (currSuffixes < maxSuffixes){ //Open suffix
-                            blankArmor.addModifier(Modifier.getRandomModifier(suffixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
+//                            blankArmor.addModifier(Modifier.getRandomModifier(suffixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
+                            blankArmor.addModifier(NewModifier.getRandomModifier(suffixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
                             currSuffixes++;
                         } else { //Generate a prefix
-                            blankArmor.addModifier(Modifier.getRandomModifier(prefixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
+//                            blankArmor.addModifier(Modifier.getRandomModifier(prefixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
+                            blankArmor.addModifier(NewModifier.getRandomModifier(prefixes, blankArmor.getIlvl(), blankArmor.getModifiers()));
                             currPrefixes++;
                         }
                     }

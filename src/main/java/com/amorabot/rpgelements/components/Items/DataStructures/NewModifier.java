@@ -5,61 +5,77 @@ import com.amorabot.rpgelements.components.Items.DataStructures.Enums.RangeTypes
 import com.amorabot.rpgelements.components.Items.Interfaces.ItemModifier;
 import com.amorabot.rpgelements.utils.CraftingUtils;
 import com.amorabot.rpgelements.utils.Utils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.*;
 
-public class Modifier <Mod extends Enum<Mod> & ItemModifier> implements Serializable {
+public class NewModifier implements Serializable {
 
-    private Mod modifier;
+
+    private ModifierList modifier;
     private byte tier; //0-maxTier
     private int[] value;
     private byte basePercentile; //0-100
-    private boolean imbued = false; //mods are not fractured by default, but can be altered
+    private boolean imbued = false; //mods are not fractured/imbued by default, but can be altered
 
-
-    public Modifier(){
-
+    private NewModifier(ModifierList mod, byte tier, int[] values, byte basePercentile){
+        this.modifier = mod;
+        this.tier = tier;
+        this.value = values;
+        this.basePercentile = basePercentile;
     }
 
-    public static <M extends Enum<M> & ItemModifier> Modifier<M> getRandomModifier(Map<M, Map<Integer, int[]>> modPool, int itemLevel, List<Modifier<M>> itemModifierList){
-        List<M> availableMods = new ArrayList<>(modPool.keySet()); //All possible mods
-        List<M> currentMods = new ArrayList<>(); //Already selected mods
-        Affix modPoolType = availableMods.get(0).getAffixType();
-        for (Modifier<M> mod : itemModifierList){
-            Affix modType = mod.getModifier().getAffixType();
-            if (modType == modPoolType){ //Only check for same-type mods
-                currentMods.add(mod.getModifier());
-            }
-        }
-        availableMods.removeAll(currentMods); //Currently available mods (All except selected for that category)
-        List<M> blackListedMods = new ArrayList<>();
-        for (M mod : availableMods){ //Checking for attempts to generate a unavailable modifier to given itemlevel
+    /*
+    * @param modPool: The affix section referenced for the mod generation (Prefixes for axes, Suffixes for daggers...)
+    * @param itemLevel: The base level of the item this mod is being generated for
+    * @param currentItemMods: The modifier list that is already present in the item. (Preventing duplicates + X mod can block Y mod)
+    * */
+    public static NewModifier getRandomModifier(Map<ModifierList, Map<Integer, int[]>> modPool, int itemLevel, List<NewModifier> currentItemMods){
+        //If modPool is, for instance, a prefix pool, lets check if the item already has any prefixes so it's removed (Prevents duplicates)
+//        if (currentItemMods.isEmpty()){
+//            //Generate a random mod and return
+//            return null;
+//        }
+
+        Set<ModifierList> availableMods = filterAvailableMods(modPool, currentItemMods);
+
+        Set<ModifierList> blackListedMods = new HashSet<>();
+        //Filter mods with incompatible item level /or blocked mods
+        for (ModifierList mod : availableMods){
             Set<Integer> tierLevels = modPool.get(mod).keySet();
             if (!checkModAvailability(tierLevels, itemLevel)){
                 blackListedMods.add(mod);
-                Utils.log("Blacklisting mod: " + mod.toString() + ", Insufficient item level");
+                Utils.log("Insufficent item level for: " + mod.toString());
             }
         }
         availableMods.removeAll(blackListedMods);
-
-        M selectedMod = availableMods.get(CraftingUtils.getRandomNumber(0, (availableMods.size()-1))); //Getting a random available mod
+        if (availableMods.isEmpty()){
+            Utils.log("No mods available");
+            return null;
+        }
+        List<ModifierList> availableModList = new ArrayList<>(availableMods);
+        ModifierList selectedMod = availableModList.get(CraftingUtils.getRandomNumber(0, (availableModList.size()-1))); //Getting a random available mod
         byte tierCap = getMaximumAllowedTier(new ArrayList<>(modPool.get(selectedMod).keySet()), itemLevel);
         byte selectedTier = (byte) CraftingUtils.getRandomNumber(0, tierCap);
         int[] selectedValue = randomizeValue(selectedMod, selectedTier, modPool);
 
-        Modifier<M> mod = new Modifier<>();
-        mod.setModifier(selectedMod);
-        mod.setTier(selectedTier);
-        mod.setValue(selectedValue);
         byte basePercentile;
         if (tierCap == 0){
             basePercentile = 100;
         } else {
             basePercentile = (byte) (100*(selectedTier/(float) tierCap));
         }
-        mod.setBasePercentile(basePercentile);
-        return mod;
+        return new NewModifier(selectedMod, selectedTier, selectedValue, basePercentile);
+    }
+
+    @NotNull
+    private static Set<ModifierList> filterAvailableMods(Map<ModifierList, Map<Integer, int[]>> modPool, List<NewModifier> currentItemMods) {
+        Set<ModifierList> availableMods = modPool.keySet(); //All possible mods/affixes
+        for (NewModifier mod : currentItemMods){ //If the item alredy has a mod from this modPool, remove it from available mods
+            availableMods.remove(mod.getModifier());
+        }
+        return availableMods;
     }
     private static byte getMaximumAllowedTier(List<Integer> tierList, int itemLevel){
         if (tierList.contains(itemLevel)){
@@ -79,7 +95,7 @@ public class Modifier <Mod extends Enum<Mod> & ItemModifier> implements Serializ
         int initialTier = orderedTierList.get(0);
         return itemLevel >= initialTier;
     }
-    public static <M extends Enum<M> & ItemModifier> int[] randomizeValue(M selectedMod, int selectedTier, Map<M, Map<Integer, int[]>> modPool){
+    public static int[] randomizeValue(ModifierList selectedMod, int selectedTier, Map<ModifierList, Map<Integer, int[]>> modPool){
         List<Integer> sortedTierList = new ArrayList<>(modPool.get(selectedMod).keySet());
         sortedTierList.sort(Comparator.naturalOrder());
         int tierIlvl = sortedTierList.get(selectedTier);
@@ -115,10 +131,10 @@ public class Modifier <Mod extends Enum<Mod> & ItemModifier> implements Serializ
     private void setValue(int[] value){
         this.value = value;
     }
-    public Mod getModifier() {
+    public ModifierList getModifier() {
         return modifier;
     }
-    public void setModifier(Mod modifier) {
+    public void setModifier(ModifierList modifier) {
         this.modifier = modifier;
     }
     public void setBasePercentile(byte basePercentile) {
@@ -130,13 +146,14 @@ public class Modifier <Mod extends Enum<Mod> & ItemModifier> implements Serializ
     public void imbue(){
         this.imbued = true;
     }
-    public <ModClass extends Enum<ModClass> & ItemModifier> Modifier<ModClass> castTo(Class<ModClass> modifierClass){
-        //Modifiers may come from a variety of sources, and must be casted to reflect this.
-        Modifier<ModClass> castedMod = new Modifier<>();
-        castedMod.setModifier(modifierClass.cast(this.modifier));
-        castedMod.setTier(this.tier);
-        castedMod.setValue(this.value);
-        castedMod.setBasePercentile(this.basePercentile);
-        return castedMod;
-    }
+
+//    public <ModClass extends Enum<ModClass> & ItemModifier> Modifier<ModClass> castTo(Class<ModClass> modifierClass){
+//        //Modifiers may come from a variety of sources, and must be casted to reflect this.
+//        Modifier<ModClass> castedMod = new Modifier<>();
+//        castedMod.setModifier(modifierClass.cast(this.modifier));
+//        castedMod.setTier(this.tier);
+//        castedMod.setValue(this.value);
+//        castedMod.setBasePercentile(this.basePercentile);
+//        return castedMod;
+//    }
 }

@@ -1,16 +1,14 @@
 package com.amorabot.rpgelements.components.Items.Armor;
 
 import com.amorabot.rpgelements.RPGElements;
+import com.amorabot.rpgelements.components.Items.DataStructures.NewModifier;
 import com.amorabot.rpgelements.events.FunctionalItemAccessInterface;
 import com.amorabot.rpgelements.components.Items.Abstract.Item;
 import com.amorabot.rpgelements.components.Items.Abstract.ItemRenderer;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.*;
-import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
-import com.amorabot.rpgelements.components.Items.Interfaces.ItemModifier;
 import com.amorabot.rpgelements.components.Items.UnidentifiedRenderer;
 import com.amorabot.rpgelements.utils.CraftingUtils;
 import com.amorabot.rpgelements.utils.Utils;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
@@ -27,14 +25,10 @@ import java.util.Map;
 
 public class Armor extends Item {
 
-//    private final ItemTypes armorPiece;
     private final ArmorTypes type; //Trim materials and patterns are inferred
-//    private final ArmorTrim trim;
-//    private TrimMaterial trimMaterial;
-//    private TrimPattern trimPattern;
     private final int baseHealth;
     private Map<DefenceTypes, Integer> defencesMap = new HashMap<>();
-    private List<Modifier<ArmorModifiers>> modifiers = new ArrayList<>();
+    private List<NewModifier> modifiers = new ArrayList<>();
     //Define level limitations for armors
 
     public Armor(ItemTypes armorSlot, int ilvl, ArmorTypes type, ItemRarities rarity, boolean identified, boolean corrupted){
@@ -65,12 +59,10 @@ public class Armor extends Item {
     }
 
     @Override
-    public <ModifierType extends Enum<ModifierType> & ItemModifier> void addModifier(Modifier<ModifierType> mod) {
-        if (mod.getModifier() instanceof ArmorModifiers){
-            this.modifiers.add(mod.castTo(ArmorModifiers.class));
-        }
+    public void addModifier(NewModifier newMod) {
+        getModifiers().add(newMod);
     }
-    public List<Modifier<ArmorModifiers>> getModifiers(){
+    public List<NewModifier> getModifiers(){
         return this.modifiers;
     }
 
@@ -114,7 +106,9 @@ public class Armor extends Item {
         itemRenderer.renderAllCustomLore(this, lore, type);
 
         itemMeta.setLore(lore);
+        itemMeta.setUnbreakable(true);
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
         item.setItemMeta(itemMeta);
 
         String displayName = "";
@@ -158,10 +152,10 @@ public class Armor extends Item {
     @Override
     public int getStarRating() { //Voltar pra acesso protected, so pra uso interno
         float percentileSum = 0;
-        for (Modifier<ArmorModifiers> mod : modifiers){
+        for (NewModifier mod : modifiers){
             percentileSum += mod.getBasePercentile();
         }
-        if (modifiers.size() > 0){
+        if (!modifiers.isEmpty()){
             return (int) (percentileSum/modifiers.size());
         }
         return 0;

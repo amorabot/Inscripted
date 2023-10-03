@@ -3,7 +3,8 @@ package com.amorabot.rpgelements.components.Items.Armor;
 import com.amorabot.rpgelements.components.Items.Abstract.Item;
 import com.amorabot.rpgelements.components.Items.Abstract.ItemRenderer;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.*;
-import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
+//import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
+import com.amorabot.rpgelements.components.Items.DataStructures.NewModifier;
 import com.amorabot.rpgelements.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.rpgelements.utils.ColorUtils;
 import com.amorabot.rpgelements.utils.Utils;
@@ -57,7 +58,7 @@ public class BasicArmorRenderer implements ItemRenderer {
             itemLore.add(ColorUtils.translateColorCodes(armorLine.indent(indentation)));
         }
         if (dodge > 0){
-            Utils.log("adding dodge line...");
+//            Utils.log("adding dodge line...");
 //            String dodgeLine = DefenceTypes.DODGE.getTextColor()+ DefenceTypes.DODGE.getSpecialChar() + " +" + Utils.getPercentString(dodge) + "%" + " Dodge" ;
             String dodgeLine = DefenceTypes.DODGE.getTextColor()+ DefenceTypes.DODGE.getSpecialChar() + " +" + dodge + " Dodge" ; //Flat stat display
             itemLore.add(ColorUtils.translateColorCodes(dodgeLine.indent(indentation)));
@@ -74,46 +75,80 @@ public class BasicArmorRenderer implements ItemRenderer {
         Armor armorData = (Armor) itemData;
         String valuesColor = "&#95dbdb";
 
-        List<Modifier<ArmorModifiers>> mods = armorData.getModifiers();
-        List<Modifier<ArmorModifiers>> prefixes = new ArrayList<>();
-        List<Modifier<ArmorModifiers>> suffixes = new ArrayList<>(); //TODO: ordenacao por ordinal value + affixType no Enum (prefix 1 > prefix 7, suffix 18 > suffix 28)
+//        List<Modifier<ArmorModifiers>> mods = armorData.getModifiers();
+//        List<Modifier<ArmorModifiers>> prefixes = new ArrayList<>();
+//        List<Modifier<ArmorModifiers>> suffixes = new ArrayList<>(); //TODO: ordenacao por ordinal value + affixType no Enum (prefix 1 > prefix 7, suffix 18 > suffix 28)
+        List<NewModifier> mods = armorData.getModifiers();
+        List<NewModifier> prefixes = new ArrayList<>();
+        List<NewModifier> suffixes = new ArrayList<>();
         //Sorting prefixes and suffixes
-        for (Modifier<ArmorModifiers> mod : mods){
-            if (mod.getModifier().getAffixType() == Affix.PREFIX){
+        for (NewModifier mod : mods){
+            if (mod.getModifier().getAffixType().equals(Affix.PREFIX)){
                 prefixes.add(mod);
             } else {
                 suffixes.add(mod);
             }
         }
-        for (Modifier<ArmorModifiers> mod : prefixes){
+//        for (Modifier<ArmorModifiers> mod : mods){
+//            if (mod.getModifier().getAffixType() == Affix.PREFIX){
+//                prefixes.add(mod);
+//            } else {
+//                suffixes.add(mod);
+//            }
+//        }
+        for (NewModifier mod : prefixes){
             String modifierDisplayName = getModifierDisplayName(mod, valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
-        for (Modifier<ArmorModifiers> mod : suffixes){
+        for (NewModifier mod : suffixes){
             String modifierDisplayName = getModifierDisplayName(mod, valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
+//        for (Modifier<ArmorModifiers> mod : prefixes){
+//            String modifierDisplayName = getModifierDisplayName(mod, valuesColor, 2);
+//            itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
+//        }
+//        for (Modifier<ArmorModifiers> mod : suffixes){
+//            String modifierDisplayName = getModifierDisplayName(mod, valuesColor, 2);
+//            itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
+//        }
         if (armorData.getRarity() != ItemRarities.COMMON){
             itemLore.add(color("@FOOTER@"));
         }
     }
 
-    private String getModifierDisplayName(Modifier<ArmorModifiers> mod, String valuesColor, int indent) {
-        String modifierDisplayName = "&7" + mod.getModifier().getDisplayName();
-        RangeTypes rangeType = mod.getModifier().getRangeType();
-        switch (rangeType){
-            case SINGLE_VALUE -> {} //Utils.getPercentString(dodge)
-            case SINGLE_RANGE -> modifierDisplayName = (modifierDisplayName
-                    .replace("@value1@", valuesColor + mod.getValue()[0]+"&7")).indent(indent);
-            case DOUBLE_RANGE -> {
-                int[] values = mod.getValue();
-                modifierDisplayName = (modifierDisplayName
-                        .replace("@value1@", valuesColor +values[0]+"&7")
-                        .replace("@value2@", valuesColor +values[1]+"&7")).indent(indent);
-            }
+//    private String getModifierDisplayName(Modifier<ArmorModifiers> mod, String valuesColor, int indent) {
+//        String modifierDisplayName = "&7" + mod.getModifier().getDisplayName();
+//        RangeTypes rangeType = mod.getModifier().getRangeType();
+//        switch (rangeType){
+//            case SINGLE_VALUE -> {} //Utils.getPercentString(dodge)
+//            case SINGLE_RANGE -> modifierDisplayName = (modifierDisplayName
+//                    .replace("@value1@", valuesColor + mod.getValue()[0]+"&7")).indent(indent);
+//            case DOUBLE_RANGE -> {
+//                int[] values = mod.getValue();
+//                modifierDisplayName = (modifierDisplayName
+//                        .replace("@value1@", valuesColor +values[0]+"&7")
+//                        .replace("@value2@", valuesColor +values[1]+"&7")).indent(indent);
+//            }
+//        }
+//        return modifierDisplayName;
+//    }
+private String getModifierDisplayName(NewModifier mod, String valuesColor, int indent) {
+    String modifierDisplayName = "&7" + mod.getModifier().getDisplayName();
+    RangeTypes rangeType = mod.getModifier().getRangeType();
+    switch (rangeType){
+        case SINGLE_VALUE -> {} //Utils.getPercentString(dodge)
+        case SINGLE_RANGE -> modifierDisplayName = (modifierDisplayName
+                .replace("@value1@", valuesColor + mod.getValue()[0]+"&7")).indent(indent);
+        case DOUBLE_RANGE -> {
+            int[] values = mod.getValue();
+            modifierDisplayName = (modifierDisplayName
+                    .replace("@value1@", valuesColor +values[0]+"&7")
+                    .replace("@value2@", valuesColor +values[1]+"&7")).indent(indent);
         }
-        return modifierDisplayName;
     }
+    return modifierDisplayName;
+}
 
     @Override
     public <subType extends Enum<subType> & AffixTableSelector> void renderDescription(Item itemData, List<String> itemLore, subType itemSubtype) {

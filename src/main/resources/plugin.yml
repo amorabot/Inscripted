@@ -40,3 +40,6 @@ commands:
   show:
     description: shows the held item in chat
     usage: /show
+  template:
+    description: template command for testing arbritraty functionalities
+    usage: /template

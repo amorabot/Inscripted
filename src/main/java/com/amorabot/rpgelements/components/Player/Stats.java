@@ -38,32 +38,14 @@ public class Stats {
         return armorSet[0];
     }
 
-//    public void setArmorSet(Armor helmet, Armor chestplate, Armor leggings, Armor boots){
-//        setArmorPiece(helmet, ItemTypes.HELMET);
-//        setArmorPiece(chestplate, ItemTypes.CHESTPLATE);
-//        setArmorPiece(leggings, ItemTypes.LEGGINGS);
-//        setArmorPiece(boots, ItemTypes.BOOTS);
-//    }
+    public void setArmorSet(Armor helmet, Armor chestplate, Armor leggings, Armor boots){
+        setArmorPiece(helmet, ItemTypes.HELMET);
+        setArmorPiece(chestplate, ItemTypes.CHESTPLATE);
+        setArmorPiece(leggings, ItemTypes.LEGGINGS);
+        setArmorPiece(boots, ItemTypes.BOOTS);
+    }
     public boolean setArmorPiece(Armor armorPiece, ItemTypes expectedType){
         if (expectedType == ItemTypes.WEAPON){return false;}
-//        if (expectedType != null){
-//            switch (expectedType){
-//                case HELMET -> armorSet[3] = null;
-//                case CHESTPLATE -> armorSet[2] = null;
-//                case LEGGINGS -> armorSet[1] = null;
-//                case BOOTS -> armorSet[0] = null;
-//            }
-//            Utils.log(expectedType.toString().toLowerCase() +" unequip");
-//            return;
-//        }
-//        if (matchingSetPiece(armorPiece, expectedType)){
-//            switch (expectedType){
-//                case HELMET -> armorSet[3] = armorPiece;
-//                case CHESTPLATE -> armorSet[2] = armorPiece;
-//                case LEGGINGS -> armorSet[1] = armorPiece;
-//                case BOOTS -> armorSet[0] = armorPiece;
-//            }
-//        }
         if (expectedType == null){
             return false;
         }
@@ -83,12 +65,5 @@ public class Stats {
             case BOOTS -> armorSet[0] = armorPiece;
         }
         return true;
-
     }
-//    private boolean matchingSetPiece(Armor armorPiece, ItemTypes expectedPiece){
-//        if (expectedPiece == null){
-//            return false;
-//        }
-//        return armorPiece.getCategory() == expectedPiece;
-//    }
 }

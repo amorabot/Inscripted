@@ -2,13 +2,14 @@ package com.amorabot.rpgelements.commands;
 
 import com.amorabot.rpgelements.RPGElements;
 import com.amorabot.rpgelements.components.Items.Armor.Armor;
-import com.amorabot.rpgelements.components.Items.Armor.ArmorModifiers;
+//import com.amorabot.rpgelements.components.Items.Armor.ArmorModifiers;
 import com.amorabot.rpgelements.components.Items.Armor.ArmorTypes;
 import com.amorabot.rpgelements.components.Items.Armor.BasicArmorGenerator;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
+//import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
+import com.amorabot.rpgelements.components.Items.DataStructures.NewModifier;
 import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -58,7 +59,7 @@ public class GenerateArmor implements CommandExecutor {
         try {
             if (args[4].equals("-d")){
                 assert randomArmor != null;
-                for (Modifier<ArmorModifiers> mod : randomArmor.getModifiers()){
+                for (NewModifier mod : randomArmor.getModifiers()){
                     player.sendMessage(mod.getModifier().getDisplayName());
                 }
             }
