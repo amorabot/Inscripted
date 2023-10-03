@@ -12,6 +12,7 @@ import com.amorabot.rpgelements.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -28,6 +29,7 @@ public class ArmorEquipListener implements Listener {
 
     @EventHandler
     public void onArmorEquipAttempt(ArmorEquipEvent event){
+        //TODO: unequip all at death (death listener)
         if (!event.isValid()){
             event.setCancelled(true);
             if (event.getRootEvent() != null){
@@ -39,12 +41,13 @@ public class ArmorEquipListener implements Listener {
 
         if (event.getRootEvent() instanceof PlayerInteractEvent){
             PlayerInteractEvent rootEvent = (PlayerInteractEvent) event.getRootEvent();
-
+            //TODO: click interactions (right, left...)
             return;
         }
 
         if (event.getRootEvent() instanceof InventoryClickEvent){
             InventoryClickEvent rootEvent = (InventoryClickEvent) event.getRootEvent();
+            //TODO: drop checks
             if (!(rootEvent.getWhoClicked() instanceof Player) || event.getArmorSlot() == null){
                 event.setCancelled(true);
                 Utils.log("Invalid parameter for ArmorEquipEvent");
@@ -63,8 +66,10 @@ public class ArmorEquipListener implements Listener {
                         Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
                         if (playerProfile.getStats().setArmorPiece(null, event.getArmorSlot())){
                             player.playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 0.5f, 1.7f);
+//                            playerProfile.getHealthComponent().regenHealth(0);
                             //Call for a stat recompilation
                             playerProfile.updateArmorSlot();
+//                            playerProfile.getHealthComponent().resetCurrentHealth();
                             return;
                         }
                         //If the armor couldn't be set
@@ -75,6 +80,22 @@ public class ArmorEquipListener implements Listener {
 
                 }
                 case ARMOR_SHIFTING_FROM_INV -> clickEquipArmorPiece(event, rootEvent, player, inventory, armorToEquip);
+//                case ARMOR_SWAP -> equipArmor(event, player, 0.9f,1.0f);
+                case ARMOR_SWAP -> {
+                    if (event.isValid()){
+                        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
+                        if (playerProfile.getStats().setArmorPiece(event.getArmorData(), event.getArmorSlot())){
+                            player.playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 1.0f, 0.2f);
+//                            playerProfile.getHealthComponent().regenHealth(0);
+                            //Call for a stat recompilation
+                            playerProfile.updateArmorSlot();
+//                            playerProfile.getHealthComponent().resetCurrentHealth();
+                            return;
+                        }
+                        //If the armor couldn't be set
+                        rootEvent.setCancelled(true);
+                    }
+                }
             }
         }
     }
@@ -142,5 +163,32 @@ public class ArmorEquipListener implements Listener {
 
         //Call for a stat recompilation
         playerProfile.updateArmorSlot();
+    }
+
+    private boolean equipArmor(ArmorEquipEvent event, Player player, float volume, float pitch){
+//        if (event.isValid()){
+//            Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
+//            if (playerProfile.getStats().setArmorPiece(event.getArmorData(), event.getArmorSlot())){
+//                player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_NETHERITE, volume, pitch);
+//                //Call for a stat recompilation
+//                playerProfile.updateArmorSlot();
+//                playerProfile.getHealthComponent().resetCurrentHealth();
+//                return true;
+//            }
+//            //If the armor couldn't be set
+//            Event rootEvent = event.getRootEvent();
+//            if (rootEvent instanceof InventoryClickEvent){
+//                InventoryClickEvent castRootEvent = (InventoryClickEvent) rootEvent;
+//                castRootEvent.setCancelled(true);
+//                return false;
+//            }
+//            if (rootEvent instanceof PlayerInteractEvent){
+//                PlayerInteractEvent castRootEvent = (PlayerInteractEvent) rootEvent;
+//                castRootEvent.setCancelled(true);
+//                return false;
+//            }
+//        }
+//        return false;
+        return true;
     }
 }

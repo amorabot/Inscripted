@@ -1,7 +1,12 @@
 package com.amorabot.rpgelements.components;
 
+import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.rpgelements.components.Items.Interfaces.EntityComponent;
 import com.amorabot.rpgelements.components.Player.Profile;
+import com.amorabot.rpgelements.utils.CraftingUtils;
+import com.amorabot.rpgelements.utils.Utils;
+
+import java.util.Map;
 
 public class HealthComponent implements EntityComponent {
 
@@ -9,6 +14,7 @@ public class HealthComponent implements EntityComponent {
     private float maxHealth; //addedHealth+startinghealth * 1 + incHealth
     private int addedHealth;
     private final int startingHealth;
+    private final int baseHealthRegen;
     private int healthRegen;
 
     private int increasedHealth;
@@ -23,14 +29,47 @@ public class HealthComponent implements EntityComponent {
     public HealthComponent(){
         this.startingHealth = 40;
         this.startingWard = 0;
+        this.baseHealthRegen = 5;
 
         this.addedHealth = 0;
         this.extraWard = 0;
-        setMaxHealth(this.startingHealth+this.addedHealth, 0);
-        setMaxWard();
+        setMaxHealth(this.addedHealth, 0);
+        setMaxWard(this.extraWard, 0);
     }
 
     //------------LIFE METHODS-------------
+    public void regenHealth(int regeneratedHealthTick){
+        int regenTick = regeneratedHealthTick + baseHealthRegen;
+        //In the specific case its already been capped out, ignore
+        if (currentHealth == maxHealth){
+            return;
+        }
+        //If this tick of regen surpasses the maxHP, cap it to maxHP
+        if (currentHealth+regenTick>maxHealth){
+            currentHealth = maxHealth;
+            return;
+        }
+        //If theres room to regenerate, do
+        if (currentHealth+regenTick <= maxHealth){
+            this.currentHealth += regenTick;
+        }
+    }
+    public void damage(Map<DamageTypes, int[]> attackerDamages){
+        int physDamage = 0;
+
+        for (DamageTypes dmg : attackerDamages.keySet()){
+            int[] currTypeDamage = attackerDamages.get(dmg);
+            physDamage += CraftingUtils.getRandomNumber(currTypeDamage[0], currTypeDamage[1]);
+        }
+        if (currentHealth-physDamage > 0){
+            currentHealth -= physDamage;
+        } else {
+            currentHealth = 1;
+        }
+    }
+    public void resetCurrentHealth(){
+        this.currentHealth = maxHealth;
+    }
 
     public float getCurrentHealth(){
         return this.currentHealth;
@@ -87,10 +126,12 @@ public class HealthComponent implements EntityComponent {
     }
     public void setIncreasedWard(int increasedWard){
         this.increasedWard = increasedWard;
-        setMaxWard();
+//        setMaxWard();
     }
-    private void setMaxWard(){
-        this.maxWard = extraWard * (1 + getIncreasedWard());
+    private void setMaxWard(int addedWard, int increasedWard){
+        setExtraWard(addedWard);
+        setIncreasedWard(increasedWard);
+        this.maxWard = extraWard * (1 + getIncreasedWard()/100f);
     }
 
     @Override
@@ -100,7 +141,6 @@ public class HealthComponent implements EntityComponent {
     public void updateHealthComponent(int flatHealth, int percentHealth, int healthRegen, int flatWard, int percentWard){
         setMaxHealth(flatHealth, percentHealth);
         setHealthRegen(healthRegen);
-        setExtraWard(flatWard);
-        setIncreasedWard(percentWard);
+        setMaxWard(flatWard, percentWard);
     }
 }

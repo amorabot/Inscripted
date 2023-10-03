@@ -4,11 +4,13 @@ import com.amorabot.rpgelements.components.DamageComponent;
 import com.amorabot.rpgelements.components.DefenceComponent;
 import com.amorabot.rpgelements.components.HealthComponent;
 import com.amorabot.rpgelements.components.Items.Armor.Armor;
-import com.amorabot.rpgelements.components.Items.Armor.ArmorModifiers;
+//import com.amorabot.rpgelements.components.Items.Armor.ArmorModifiers;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.*;
-import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
+//import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
+import com.amorabot.rpgelements.components.Items.DataStructures.ModifierList;
+import com.amorabot.rpgelements.components.Items.DataStructures.NewModifier;
 import com.amorabot.rpgelements.components.Items.Weapon.Weapon;
-import com.amorabot.rpgelements.components.Items.Weapon.WeaponModifiers;
+//import com.amorabot.rpgelements.components.Items.Weapon.WeaponModifiers;
 import com.amorabot.rpgelements.utils.Utils;
 
 import java.util.HashMap;
@@ -190,9 +192,10 @@ public class Profile {
             }
 
             //Mapping modifiers to stats
-            for (Modifier<ArmorModifiers> armorMod : armorPiece.getModifiers()){
+//            for (Modifier<ArmorModifiers> armorMod : armorPiece.getModifiers()){
+            for (NewModifier armorMod : armorPiece.getModifiers()){
                 //TODO: Encapsular o somatório nas variáveis
-                ArmorModifiers mod = armorMod.getModifier();
+                ModifierList mod = armorMod.getModifier();
                 switch (mod.getTargetStat()){
                     case HEALTH -> {
                         switch (mod.getValueType()){
@@ -345,7 +348,8 @@ public class Profile {
             //Getting stats from weapon modifiers
 
             //Getting weapon stats
-            for (Modifier<WeaponModifiers> mod : weaponData.getModifiers()){
+//            for (Modifier<WeaponModifiers> mod : weaponData.getModifiers()){
+            for (NewModifier mod : weaponData.getModifiers()){
                 TargetStats targetStat = mod.getModifier().getTargetStat();
                 ValueTypes valueType = mod.getModifier().getValueType();
                 int[] modValue = mod.getValue();

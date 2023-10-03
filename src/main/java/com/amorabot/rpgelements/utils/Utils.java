@@ -108,4 +108,10 @@ public class Utils {
 
         return armor;
     }
+
+    public static double getRandomOffset(){ //nos dá um offset entre 0 e 0.999...
+        double random = Math.random();
+        if (Math.random() > 0.5){random *= -1;}
+        return random;
+    }
 }

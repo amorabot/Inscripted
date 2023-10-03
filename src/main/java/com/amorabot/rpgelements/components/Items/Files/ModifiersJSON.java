@@ -13,12 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModifiersJSON {
-    private static Map<String, Map<String, Map<String, Map<String, Map<Integer, int[]>>>>> itemType = new HashMap<>();
-    private static final RPGElements plugin = RPGElements.getPlugin();
+//    private static Map<String, Map<String, Map<String, Map<String, Map<Integer, int[]>>>>> itemType = new HashMap<>();
+//    private static final RPGElements plugin = RPGElements.getPlugin();
 
-    public static void setup(){
-        //do whatever
-    }
+//    public static void setup(){
+//        //do whatever
+//    }
 
     public static Map<String, Map<String, Map<String, Map<String, Map<Integer, int[]>>>>> getBasicModifiers(){ //JSON de-serialization for modifiers.json resource (Entire file)
         InputStream jsonData = getJsonAsStream();
@@ -43,6 +43,4 @@ public class ModifiersJSON {
         Utils.log("File not found: " + fileName);
         return null;
     }
-    //Todo: organizar WeaponModifiers para filtrar prefixes e suffixes (metodos novos em ItemModifier)
-
 }

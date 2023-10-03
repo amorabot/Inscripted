@@ -30,6 +30,15 @@ public class DamageComponent implements EntityComponent {
         setDps();
     }
 
+    public DamageComponent(int lowerPhys, int upperPhys){
+        this.damage = new HashMap<>();
+        damage.put(DamageTypes.PHYSICAL, new int[]{lowerPhys, upperPhys});
+        setDps();
+    }
+
+    public Map<DamageTypes, int[]> getDamage() {
+        return damage;
+    }
     private void setDps(){
         if (damage.isEmpty()){
             this.DPS = 1;

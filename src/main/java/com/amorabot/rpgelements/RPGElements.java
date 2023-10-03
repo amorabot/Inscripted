@@ -1,24 +1,39 @@
 package com.amorabot.rpgelements;
 
 import com.amorabot.rpgelements.commands.*;
+import com.amorabot.rpgelements.components.HealthComponent;
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.rpgelements.components.Player.Profile;
+import com.amorabot.rpgelements.handlers.Combat.CombatDamageHandler;
+import com.amorabot.rpgelements.handlers.Combat.MobDropHandler;
 import com.amorabot.rpgelements.handlers.GUI.GUIHandler;
 import com.amorabot.rpgelements.handlers.Inventory.ArmorEquipListener;
 import com.amorabot.rpgelements.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.rpgelements.handlers.Inventory.WeaponEquipListener;
 import com.amorabot.rpgelements.handlers.JoinQuitHandler;
 import com.amorabot.rpgelements.managers.JSONProfileManager;
+import com.amorabot.rpgelements.tasks.CombatLogger;
+import com.amorabot.rpgelements.tasks.DamageHologramDepleter;
+import com.amorabot.rpgelements.tasks.PlayerInterfaceRenderer;
 import com.amorabot.rpgelements.utils.DelayedTask;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static com.amorabot.rpgelements.utils.Utils.log;
@@ -27,6 +42,9 @@ import static com.amorabot.rpgelements.utils.Utils.msgPlayerAB;
 public final class RPGElements extends JavaPlugin {
     private static Logger logger;
     private static RPGElements rpgElementsPlugin;
+    private static BukkitTask holoDepleterTask;
+    private static BukkitTask combatLogger;
+    private static BukkitTask playerInterfaceRenderer;
     private World world;
 
     @Override
@@ -34,6 +52,7 @@ public final class RPGElements extends JavaPlugin {
         // Plugin startup logic
         logger = getLogger(); //pega o logger desse plugin, que dá acesso ao console do servidor
         rpgElementsPlugin = this;
+        this.world = Bukkit.getWorld("world");
         log("O novo hello world!");
 
         if (!new File(this.getDataFolder().getAbsolutePath() + "/profiles.json").exists()){
@@ -49,11 +68,9 @@ public final class RPGElements extends JavaPlugin {
             }
         }
         JSONProfileManager.loadOnlinePlayersOnReload(Bukkit.getOnlinePlayers());
-//        ModifiersJSON.setup(this);
+//        getWorld().getLivingEntities()
 
-        //Todo: color interpolation for Uniques and corrupted items
-
-//        SkillsUI skillsUI = new SkillsUI(this);
+        //Todo: color interpolation for corrupted items
 
         getCommand("updatenbt").setExecutor(new UpdateNBT(this));
         getCommand("getnbt").setExecutor(new GetNBT(this));
@@ -61,48 +78,46 @@ public final class RPGElements extends JavaPlugin {
         getCommand("generatearmor").setExecutor(new GenerateArmor(this));
         getCommand("identify").setExecutor(new Identify(this));
         getCommand("recolor").setExecutor(new Recolor(this));
-//        getCommand("skills").setExecutor(skillsUI);
-//        getCommand("skills").setTabCompleter(skillsUI);
         getCommand("resetattributes").setExecutor(new ResetAttributes(this));
         getCommand("editmods").setExecutor(new EditMods(this));
         getCommand("show").setExecutor(new Show());
+        getCommand("template").setExecutor(new TemplateCommand());
 
         //---------   LISTENERS   ------------
         new JoinQuitHandler(this);
         new PlayerEquipmentHandler(this);
         new DelayedTask(this);
         new GUIHandler(this);
+        new CombatDamageHandler();
+        new MobDropHandler(this);
 
         //CUSTOM EVENT LISTENERS
         new ArmorEquipListener();
         new WeaponEquipListener();
 
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                for (Player currentPlayer : Bukkit.getOnlinePlayers()){
-                    Profile playerProfile = JSONProfileManager.getProfile(currentPlayer.getUniqueId());
-                    float maxHealth = playerProfile.getHealthComponent().getMaxHealth();
-                    float curHealth = playerProfile.getHealthComponent().getCurrentHealth();
-                    float maxWard = playerProfile.getHealthComponent().getMaxWard();
-                    float curWard = playerProfile.getHealthComponent().getCurrentWard();
-                    float dps = playerProfile.getDamageComponent().getDPS();
-                    String healthTextHex = DefenceTypes.HEALTH.getTextColor();
-                    String wardTextHex = DefenceTypes.WARD.getTextColor();
-                    String healthSegment = healthTextHex + (int)curHealth + "&7/" + healthTextHex + (int)maxHealth + DefenceTypes.HEALTH.getSpecialChar();
-                    String wardSegment = wardTextHex + (int)curWard + "&7/" + wardTextHex + (int)maxWard + DefenceTypes.WARD.getSpecialChar();
-                    String stamina = String.valueOf(playerProfile.getDamageComponent().getStamina());
-                    msgPlayerAB(currentPlayer, (healthSegment +"   "+ wardSegment) + "     &7" + dps + "     &2&l"+ stamina);
-                }
-            }
-        }.runTaskTimer(this, 0L, 10L);
+        //Damage hologram depleter
+        holoDepleterTask = DamageHologramDepleter.getInstance().runTaskTimer(this,0, 1L);
+        //Combat logger
+        combatLogger = CombatLogger.getInstance().runTaskTimer(this, 0, 20L);
+        //Interface renderer
+        playerInterfaceRenderer = PlayerInterfaceRenderer.getInstance().runTaskTimer(this, 0, 5L);
     }
 
     @Override
     public void onDisable() {
-
         // Plugin shutdown logic
         Bukkit.getLogger().info("Shutting Down...");
+        if (holoDepleterTask != null && !holoDepleterTask.isCancelled()){
+            holoDepleterTask.cancel();
+        }
+        if (combatLogger != null && !combatLogger.isCancelled()){
+            combatLogger.cancel();
+        }
+        if (playerInterfaceRenderer != null && !playerInterfaceRenderer.isCancelled()){
+            playerInterfaceRenderer.cancel();
+        }
+        PlayerInterfaceRenderer.shutdownAllBars();
+
         try {
             JSONProfileManager.saveAllToJSON();
         } catch (IOException e) {
@@ -111,17 +126,6 @@ public final class RPGElements extends JavaPlugin {
     }
     public static Logger getPluginLogger(){
         return logger;
-    }
-
-    public int getRandomWithNeg(int range){
-        int random = (int) (Math.random() * (range+1)); //gere um número no range
-        if (Math.random() > 0.5){random *= -1;} //50% de ser negativo
-        return random;
-    }
-    public double getRandomOffset(){ //nos dá um offset entre 0 e 0.999...
-        double random = Math.random();
-        if (Math.random() > 0.5){random *= -1;}
-        return random;
     }
     public World getWorld(){
         return world;

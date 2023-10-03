@@ -1,10 +1,9 @@
 package com.amorabot.rpgelements.components.Items.Abstract;
 
 import com.amorabot.rpgelements.components.Items.DataStructures.Enums.*;
+import com.amorabot.rpgelements.components.Items.DataStructures.NewModifier;
 import com.amorabot.rpgelements.components.Items.Interfaces.RPGElementsContainer;
 import com.amorabot.rpgelements.RPGElements;
-import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
-import com.amorabot.rpgelements.components.Items.Interfaces.ItemModifier;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -132,5 +131,6 @@ public abstract class Item implements RPGElementsContainer {
         //If ilvl is greater than T5 threshold, return t5
         setTier(Tiers.T5);
     }
-    public abstract  <ModifierType extends Enum<ModifierType> & ItemModifier> void addModifier(Modifier<ModifierType> mod);
+//    public abstract  <ModifierType extends Enum<ModifierType> & ItemModifier> void addModifier(Modifier<ModifierType> mod);
+    public abstract void addModifier(NewModifier newMod);
 }
