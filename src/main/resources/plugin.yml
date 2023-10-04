@@ -1,6 +1,6 @@
-name: RPGElements
+name: Inscripted
 version: '0.2'
-main: com.amorabot.rpgelements.RPGElements
+main: com.amorabot.inscripted.Inscripted
 api-version: 1.19
 permissions:
     pluginstudies.fly:
