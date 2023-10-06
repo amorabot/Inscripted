@@ -3,11 +3,14 @@ package com.amorabot.inscripted.components.Items.Abstract;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 import com.amorabot.inscripted.components.Items.DataStructures.NewModifier;
-import com.amorabot.inscripted.components.Items.Interfaces.RPGElementsContainer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class Item implements RPGElementsContainer {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class Item implements Serializable {
 
     private boolean identified;
     private final int ilvl;
@@ -20,6 +23,7 @@ public abstract class Item implements RPGElementsContainer {
     protected String name;
     protected Material vanillaMaterial;
     protected boolean corrupted;
+    private List<NewModifier> modifiers = new ArrayList<>();
 
     public Item(int ilvl, ItemRarities rarity, boolean identified, boolean corrupted, ItemTypes itemCategory){
         this.identified = identified;
@@ -29,6 +33,7 @@ public abstract class Item implements RPGElementsContainer {
         this.category = itemCategory;
         setInitialRenderer();
     }
+    protected abstract void setup();
     //-------------------------------------------------------------------------
     public abstract void imprint(ItemStack item);
     public abstract ItemStack getItemForm(Inscripted plugin);
@@ -36,7 +41,6 @@ public abstract class Item implements RPGElementsContainer {
     public ItemTypes getCategory(){
         return this.category;
     }
-    protected abstract int getStarRating();
     //-------------------------------------------------------------------------
     public boolean isIdentified() {
         return identified;
@@ -131,6 +135,20 @@ public abstract class Item implements RPGElementsContainer {
         //If ilvl is greater than T5 threshold, return t5
         setTier(Tiers.T5);
     }
-//    public abstract  <ModifierType extends Enum<ModifierType> & ItemModifier> void addModifier(Modifier<ModifierType> mod);
-    public abstract void addModifier(NewModifier newMod);
+    public List<NewModifier> getModifiers(){
+        return this.modifiers;
+    }
+    public void addModifier(NewModifier newMod) {
+        getModifiers().add(newMod);
+    }
+    public int getStarRating() { //Voltar pra acesso protected, so pra uso interno
+        float percentileSum = 0;
+        for (NewModifier mod : getModifiers()){
+            percentileSum += mod.getBasePercentile();
+        }
+        if (!getModifiers().isEmpty()){
+            return (int) (percentileSum/getModifiers().size());
+        }
+        return 0;
+    }
 }

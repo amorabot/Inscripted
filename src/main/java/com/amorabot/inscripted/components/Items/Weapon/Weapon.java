@@ -18,55 +18,45 @@ import org.bukkit.persistence.PersistentDataContainer;
 import java.util.*;
 
 //!!!!!!!!!!!!!Kill counter -> upgrade after N kills?!!!!!!!!!!!!!!! glow + enchant (veiled)
-//Similar ao sistema de potions, kills validas maiores que o ilvl do item, acumulam num contador interno
+//Similar ao sistema de potions, kills validas maiores que o ilvl do item, acumulam num contador interno //Milestones -> mobKill custom event!
 
 //TODO: Use multiple event priorities to order eventlisteners listening to the same event
 public class Weapon extends Item {
     private final WeaponTypes type;
     private Map<DamageTypes, int[]> baseDmg = new HashMap<>();
-//    private List<Modifier<WeaponModifiers>> modifiers = new ArrayList<>();
-    private List<NewModifier> modifiers = new ArrayList<>();
     //Define stat require for weapons
 
     public Weapon(int ilvl, WeaponTypes type, ItemRarities rarity, boolean identified, boolean corrupted){
         super(ilvl, rarity, identified, corrupted, ItemTypes.WEAPON);
-        mapTier();
         this.type = type;
-        setImplicit(defineImplicit(getType().toString()));
-        this.name = type.getRandomName(getTier());
-        mapBase();
+        setup();
     }
     public Weapon(int ilvl, ItemRarities rarity, boolean identified, boolean corrupted){ //Random generic weapon constructor
         super(ilvl, rarity, identified, corrupted, ItemTypes.WEAPON);
-        mapTier();
         //Do the rest...
         WeaponTypes[] weapons = WeaponTypes.values();
         int weaponIndex = CraftingUtils.getRandomNumber(0, weapons.length-1);
         this.type = weapons[weaponIndex];
+        setup();
+    }
+
+    @Override
+    protected void setup() {
+        mapTier();
         setImplicit(defineImplicit(getType().toString()));
         this.name = getType().getRandomName(getTier());
         mapBase();
     }
+
     @Override
     protected void mapBase(){
         baseDmg.put(DamageTypes.PHYSICAL, type.mapDamage(getIlvl()));
         vanillaMaterial = type.mapWeaponBase(getTier());
     }
 
-    @Override
-    public void addModifier(NewModifier newMod) {
-        getModifiers().add(newMod);
-    }
-
-    //-------------------------------------------------------------------------
-    public void deleteModifier(){}
-    public List<NewModifier> getModifiers(){
-        return this.modifiers;
-    }
-
     //-------------------------------------------------------------------------
     public void updateBaseDamageFromModifiers(){ //Once a weapon is created, the damage map needs to be updated to contain any possible new damages
-        for (NewModifier mod : modifiers){
+        for (NewModifier mod : getModifiers()){
             ModifierList weaponModifier = mod.getModifier();
             if (weaponModifier.equals(ModifierList.ADDED_PHYSICAL)){
                 int[] physDmg = baseDmg.get(DamageTypes.PHYSICAL);
@@ -154,17 +144,6 @@ public class Weapon extends Item {
         item.setItemMeta(itemMeta);
     }
 
-    @Override
-    public int getStarRating() { //Voltar pra acesso protected, so pra uso interno
-        float percentileSum = 0;
-        for (NewModifier mod : modifiers){
-            percentileSum += mod.getBasePercentile();
-        }
-        if (!modifiers.isEmpty()){
-            return (int) (percentileSum/modifiers.size());
-        }
-        return 0;
-    }
     public ItemRenderer getRenderer(){
         switch (this.renderer){
             case UNIDENTIFIED -> {

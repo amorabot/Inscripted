@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.commands;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.utils.ColorUtils;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
@@ -57,8 +59,19 @@ public class TemplateCommand implements CommandExecutor {
                         ItemStack[] armorSet = new ItemStack[]{boots, leggings, chestplate, helmet};
                         equipment.setArmorContents(armorSet);
                         equipment.setItemInMainHand(null);
+
+                        skeleton.getPersistentDataContainer().set(
+                                new NamespacedKey(Inscripted.getPlugin(), "INSCRIPTED_MOB"), new PersistentDataType.BooleanPersistentDataType(), true);
+
+                        String displayName = ColorUtils.translateColorCodes("&c&lTest Dummy");
+
                         testDummy = skeleton;
+                        testDummy.setCustomName(displayName);
+                        testDummy.setCustomNameVisible(true);
+                        return true;
                     }
+                    //Its not null
+                    testDummy = null;
                     break;
                 case "remove":
                     if (testDummy != null){

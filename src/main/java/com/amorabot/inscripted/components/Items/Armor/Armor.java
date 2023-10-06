@@ -25,45 +25,37 @@ import java.util.Map;
 
 public class Armor extends Item {
 
-    private final ArmorTypes type; //Trim materials and patterns are inferred
+    private final ArmorTypes type;
     private final int baseHealth;
     private Map<DefenceTypes, Integer> defencesMap = new HashMap<>();
-    private List<NewModifier> modifiers = new ArrayList<>();
     //Define level limitations for armors
 
     public Armor(ItemTypes armorSlot, int ilvl, ArmorTypes type, ItemRarities rarity, boolean identified, boolean corrupted){
         super(ilvl, rarity, identified, corrupted, armorSlot);
-        mapTier();
         this.type = type;
-        setName(getType().getRandomName(getTier()) + " " + getCategory().toString().toLowerCase());
-        setImplicit(defineImplicit(getType().toString()));
-        mapBase();
+        setup();
         this.baseHealth = getType().mapBaseHealth(getTier(), getCategory());
     }
     public Armor(ItemTypes armorPiece, int ilvl, ItemRarities rarity, boolean identified, boolean corrupted) { //Random generation constructor
         super(ilvl, rarity, identified, corrupted, armorPiece);
-        mapTier();
         ArmorTypes[] armorTypes = ArmorTypes.values();
         int typeIndex = CraftingUtils.getRandomNumber(0, armorTypes.length-1);
         this.type = armorTypes[typeIndex];
+        setup();
+        this.baseHealth = getType().mapBaseHealth(getTier(), getCategory());
+    }
+    @Override
+    protected void setup(){
+        mapTier();
         setName(getType().getRandomName(getTier()) + " " + getCategory().toString().toLowerCase());
         setImplicit(defineImplicit(getType().toString()));
         mapBase();
-        this.baseHealth = getType().mapBaseHealth(getTier(), armorPiece);
     }
 
     @Override
     protected void mapBase(){
         this.vanillaMaterial = getType().mapArmorBase(getTier(), getCategory());
         getType().mapBaseDefences(getIlvl(), getCategory(), getDefencesMap());
-    }
-
-    @Override
-    public void addModifier(NewModifier newMod) {
-        getModifiers().add(newMod);
-    }
-    public List<NewModifier> getModifiers(){
-        return this.modifiers;
     }
 
     public ArmorTypes getType() {
@@ -149,17 +141,6 @@ public class Armor extends Item {
         item.setItemMeta(itemMeta);
     }
 
-    @Override
-    public int getStarRating() { //Voltar pra acesso protected, so pra uso interno
-        float percentileSum = 0;
-        for (NewModifier mod : modifiers){
-            percentileSum += mod.getBasePercentile();
-        }
-        if (!modifiers.isEmpty()){
-            return (int) (percentileSum/modifiers.size());
-        }
-        return 0;
-    }
     @Override
     public ItemRenderer getRenderer() {
         switch (this.renderer){
