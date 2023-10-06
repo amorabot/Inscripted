@@ -24,6 +24,18 @@ public class DefenceComponent implements EntityComponent {
         this.dodge = 0;
         this.baseArmor = 0;
     }
+    public DefenceComponent(int fireRes, int coldRes, int lightRes, int abyssRes, int dodge, int baseArmor, int incArmor){
+        this.fireResistance = fireRes;
+        this.coldResistance = coldRes;
+        this.lightningResistance = lightRes;
+        this.abyssalResistance = abyssRes;
+
+        this.dodge = dodge;
+
+        this.baseArmor = baseArmor;
+        this.increasedArmor = incArmor;
+        setFinalArmor(getBaseArmor(), getIncreasedArmor());
+    }
 
     //------------ELE RES METHODS-------------
     public void setFireResistance(int newFireResistance) {

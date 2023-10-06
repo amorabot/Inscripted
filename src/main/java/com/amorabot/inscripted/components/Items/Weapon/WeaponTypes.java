@@ -22,7 +22,7 @@ public enum WeaponTypes implements AffixTableSelector {
             List.of("Noble axe", "Gilded War-Axe", "Runic-Gold axe", "Warlord axe")
             ){
         @Override
-        public int[] mapDamage(int ilvl) {
+        public int[] mapDamage(int ilvl) { //Todo: re-map damages and map according to tier
             if (ilvl > 0 && ilvl <= 11){
                 return new int[]{6,11};
             } else if (ilvl <= 30){
