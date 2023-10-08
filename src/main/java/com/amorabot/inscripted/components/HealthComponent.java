@@ -34,23 +34,25 @@ public class HealthComponent implements EntityComponent {
         this.extraWard = 0;
         setMaxHealth(this.addedHealth, 0);
         setMaxWard(this.extraWard, 0);
+        setHealthRegen(0);
     }
 
     //------------LIFE METHODS-------------
     public void regenHealth(int regeneratedHealthTick){
-        int regenTick = regeneratedHealthTick + baseHealthRegen;
+//        int regenTick = regeneratedHealthTick;
+//        int regenTick = regeneratedHealthTick + baseHealthRegen;
         //In the specific case its already been capped out, ignore
         if (currentHealth == maxHealth){
             return;
         }
         //If this tick of regen surpasses the maxHP, cap it to maxHP
-        if (currentHealth+regenTick>maxHealth){
+        if (currentHealth+regeneratedHealthTick>maxHealth){
             currentHealth = maxHealth;
             return;
         }
         //If theres room to regenerate, do
-        if (currentHealth+regenTick <= maxHealth){
-            this.currentHealth += regenTick;
+        if (currentHealth+regeneratedHealthTick <= maxHealth){
+            this.currentHealth += regeneratedHealthTick;
         }
     }
     public void damage(Map<DamageTypes, int[]> attackerDamages){
@@ -100,7 +102,7 @@ public class HealthComponent implements EntityComponent {
     }
 
     public void setHealthRegen(int healthRegen) {
-        this.healthRegen = healthRegen;
+        this.healthRegen = healthRegen + baseHealthRegen;
     }
     public int getHealthRegen() {
         return healthRegen;
@@ -131,6 +133,13 @@ public class HealthComponent implements EntityComponent {
         setExtraWard(addedWard);
         setIncreasedWard(increasedWard);
         this.maxWard = extraWard * (1 + getIncreasedWard()/100f);
+    }
+
+    public float getNormalizedHP(){
+        return Math.min(currentHealth/maxHealth, 1F);
+    }
+    public double getMappedHealth(int basePlayerHearts){
+        return Math.max(0.5, getNormalizedHP()*basePlayerHearts);
     }
 
     @Override

@@ -15,18 +15,6 @@ public interface AffixTableSelector {
         }
         return modifiersJSON.get(type.toString()).get(this.toString()).get(affixType.toString());
     }
-//    default <T extends Enum<T> & ItemModifier> Map<T, Map<Integer, int[]>> castTo(Class<T> castClass, Map<String, Map<Integer, int[]>> affixMap){
-//        Map<T, Map<Integer, int[]>> castMap = new HashMap<>();
-//        Set<String> mods = affixMap.keySet();
-//        for (String mod : mods){
-//            for (T m : castClass.getEnumConstants()){
-//                if (m.toString().equals(mod)){
-//                    castMap.put(m, affixMap.get(mod));
-//                }
-//            }
-//        }
-//        return castMap;
-//    }
 
     default Map<ModifierList, Map<Integer, int[]>> castToModEnum(Map<String, Map<Integer, int[]>> rawAffixMap){
         Map<ModifierList, Map<Integer, int[]>> castedMap = new HashMap<>();

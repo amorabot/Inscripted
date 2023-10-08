@@ -65,10 +65,9 @@ public class ArmorEquipListener implements Listener {
                         Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
                         if (playerProfile.getStats().setArmorPiece(null, event.getArmorSlot())){
                             player.playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 0.5f, 1.7f);
-//                            playerProfile.getHealthComponent().regenHealth(0);
                             //Call for a stat recompilation
                             playerProfile.updateArmorSlot();
-//                            playerProfile.getHealthComponent().resetCurrentHealth();
+                            player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
                             return;
                         }
                         //If the armor couldn't be set
@@ -85,10 +84,9 @@ public class ArmorEquipListener implements Listener {
                         Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
                         if (playerProfile.getStats().setArmorPiece(event.getArmorData(), event.getArmorSlot())){
                             player.playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 1.0f, 0.2f);
-//                            playerProfile.getHealthComponent().regenHealth(0);
                             //Call for a stat recompilation
                             playerProfile.updateArmorSlot();
-//                            playerProfile.getHealthComponent().resetCurrentHealth();
+                            player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
                             return;
                         }
                         //If the armor couldn't be set
@@ -162,32 +160,10 @@ public class ArmorEquipListener implements Listener {
 
         //Call for a stat recompilation
         playerProfile.updateArmorSlot();
+        player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
     }
 
     private boolean equipArmor(ArmorEquipEvent event, Player player, float volume, float pitch){
-//        if (event.isValid()){
-//            Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
-//            if (playerProfile.getStats().setArmorPiece(event.getArmorData(), event.getArmorSlot())){
-//                player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_NETHERITE, volume, pitch);
-//                //Call for a stat recompilation
-//                playerProfile.updateArmorSlot();
-//                playerProfile.getHealthComponent().resetCurrentHealth();
-//                return true;
-//            }
-//            //If the armor couldn't be set
-//            Event rootEvent = event.getRootEvent();
-//            if (rootEvent instanceof InventoryClickEvent){
-//                InventoryClickEvent castRootEvent = (InventoryClickEvent) rootEvent;
-//                castRootEvent.setCancelled(true);
-//                return false;
-//            }
-//            if (rootEvent instanceof PlayerInteractEvent){
-//                PlayerInteractEvent castRootEvent = (PlayerInteractEvent) rootEvent;
-//                castRootEvent.setCancelled(true);
-//                return false;
-//            }
-//        }
-//        return false;
         return true;
     }
 }
