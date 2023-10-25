@@ -2,7 +2,7 @@ package com.amorabot.inscripted.components.Items.DataStructures.Enums;
 
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 
-public enum Implicit {
+public enum Implicits {
     AXE_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.AXE.getDefaulNameColor()+"@value1@** SHRED",
             TargetStats.SHRED, new int[]{5}, ValueTypes.FLAT_PERCENT, false),
     AXE_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
@@ -54,7 +54,7 @@ public enum Implicit {
     private final ValueTypes valueType;
     private final boolean hybrid;
 
-    Implicit(ImplicitType implicitType, String templateDisplayName, TargetStats targetStat, int[] value, ValueTypes valueType, boolean hybrid){
+    Implicits(ImplicitType implicitType, String templateDisplayName, TargetStats targetStat, int[] value, ValueTypes valueType, boolean hybrid){
         this.implicitType = implicitType;
         String implicitDisplayName = templateDisplayName
                 .replace("@value1@", ""+value[0])

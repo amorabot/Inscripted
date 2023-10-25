@@ -1,18 +1,19 @@
 package com.amorabot.inscripted;
 
 import com.amorabot.inscripted.commands.*;
-import com.amorabot.inscripted.handlers.Combat.CombatDamageHandler;
-import com.amorabot.inscripted.handlers.Combat.MobDropHandler;
+import com.amorabot.inscripted.handlers.Combat.DamageHandler;
 import com.amorabot.inscripted.handlers.GUI.GUIHandler;
 import com.amorabot.inscripted.handlers.Inventory.ArmorEquipListener;
 import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.inscripted.handlers.Inventory.WeaponEquipListener;
-import com.amorabot.inscripted.handlers.JoinQuitHandler;
+import com.amorabot.inscripted.handlers.misc.JoinQuitHandler;
+import com.amorabot.inscripted.handlers.misc.SunlightBurnHandler;
 import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.tasks.CombatLogger;
 import com.amorabot.inscripted.tasks.DamageHologramDepleter;
 import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
-import com.amorabot.inscripted.tasks.PlayerRegen;
+//import com.amorabot.inscripted.tasks.PlayerRegen;
 import com.amorabot.inscripted.utils.DelayedTask;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -32,7 +33,7 @@ public final class Inscripted extends JavaPlugin {
     private static BukkitTask holoDepleterTask;
     private static BukkitTask combatLogger;
     private static BukkitTask playerInterfaceRenderer;
-    private static BukkitTask playerRegen;
+//    private static BukkitTask playerRegen;
     private World world;
 
     @Override
@@ -55,7 +56,8 @@ public final class Inscripted extends JavaPlugin {
                 throw new RuntimeException(e);
             }
         }
-        JSONProfileManager.loadOnlinePlayersOnReload(Bukkit.getOnlinePlayers());
+        reloadRoutine();
+
 //        getWorld().getLivingEntities()
 
         //Todo: color interpolation for corrupted items
@@ -71,13 +73,17 @@ public final class Inscripted extends JavaPlugin {
         getCommand("show").setExecutor(new Show());
         getCommand("template").setExecutor(new TemplateCommand());
 
+        //Has tab executor functionality, if its all in MobCommand class, no need to setTabCompleter()
+        getCommand("mob").setExecutor(new MobCommand());
+
         //---------   LISTENERS   ------------
         new JoinQuitHandler(this);
         new PlayerEquipmentHandler(this);
         new DelayedTask(this);
         new GUIHandler(this);
-        new CombatDamageHandler();
-        new MobDropHandler(this);
+        new DamageHandler(this);
+
+        new SunlightBurnHandler();
 
         //CUSTOM EVENT LISTENERS
         new ArmorEquipListener();
@@ -90,7 +96,7 @@ public final class Inscripted extends JavaPlugin {
         //Interface renderer
         playerInterfaceRenderer = PlayerInterfaceRenderer.getInstance().runTaskTimer(this, 0, 5L);
         //Player regeneration
-        playerRegen = PlayerRegen.getInstance().runTaskTimer(this, 0, 20L);
+//        playerRegen = PlayerRegen.getInstance().runTaskTimer(this, 0, 10L);
     }
 
     @Override
@@ -107,6 +113,7 @@ public final class Inscripted extends JavaPlugin {
             playerInterfaceRenderer.cancel();
         }
         PlayerInterfaceRenderer.shutdownAllBars();
+        PlayerRegenManager.shutdown();
 
         try {
             JSONProfileManager.saveAllToJSON();
@@ -122,5 +129,10 @@ public final class Inscripted extends JavaPlugin {
     }
     public static Inscripted getPlugin(){
         return inscriptedPlugin;
+    }
+
+    private void reloadRoutine(){
+        JSONProfileManager.reloadOnlinePlayers(Bukkit.getOnlinePlayers());
+        PlayerRegenManager.reloadOnlinePlayers();
     }
 }

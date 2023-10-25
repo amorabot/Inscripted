@@ -2,153 +2,142 @@ package com.amorabot.inscripted.components;
 
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
+import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Player.Profile;
 
-import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
-
 public class DamageComponent implements EntityComponent {
-    private float DPS;
-    private Map<DamageTypes, int[]> damage;
-    private int stamina;
-    private float staminaRegen;
-    private float accuracy;
-    private float critChance;
-    private int critDamage;
-    private int shred;
-    private int maelstrom;
-    private float bleedChance;
-    private float elementalDamage;
+
+    private HitComponent hitData;
+
     private int lifeOnHit;
-    //fire light cold damages
+    private int lifeSteal;
+    private int projectileDamage;
+    private int areaDamage;
+    private int increasedPhysicalDamage;
+    private int increasedElementalDamage;
+    private int increasedFireDamage;
+    private int increasedLightningDamage;
+    private int increasedColdDamage;
+    private int increasedAbyssalDamage;
+
+    //Added damage is added directly to hitData, doesnt need to be stored
+
+    //List of special on-hit keystones
 
     public DamageComponent(){
-        this.damage = new HashMap<>();
-        setDps();
+        this.hitData = new HitComponent(null);
+    }
+    public void reset(Weapon weaponData){
+        this.hitData = new HitComponent(weaponData);
+
+        this.lifeOnHit = 0;
+        this.lifeSteal = 0;
+        this.areaDamage = 0;
+        this.increasedPhysicalDamage = 0;
+        this.increasedElementalDamage = 0;
+        this.increasedFireDamage = 0;
+        this.increasedLightningDamage = 0;
+        this.increasedColdDamage = 0;
+        this.increasedAbyssalDamage = 0;
     }
 
-    public DamageComponent(int lowerPhys, int upperPhys){
-        this.damage = new HashMap<>();
-        damage.put(DamageTypes.PHYSICAL, new int[]{lowerPhys, upperPhys});
-        setDps();
+    public HitComponent getHitData() {
+        return hitData;
     }
 
-    public Map<DamageTypes, int[]> getDamage() {
-        return damage;
-    }
-    private void setDps(){
-        if (damage.isEmpty()){
-            this.DPS = 1;
-            return;
-        }
-        int lowerDamage = 0;
-        int upperDamage = 0;
-        for (DamageTypes dmgType : damage.keySet()){
-            if (damage.containsKey(dmgType)){
-                int[] dmg = damage.get(dmgType);
-                lowerDamage += dmg[0];
-                upperDamage += dmg[1];
-            }
-        }
-        DPS = (float) (lowerDamage + upperDamage)/2;
-    }
-    public float getDPS(){
-        return DPS;
-    }
+
     @Override
     public void update(Profile profileData) {
     }
-    public static void applyAddedPercentageToDamageMap(Map<DamageTypes, int[]> damages, DamageTypes damageType, int genericPercentAdded){
-        if (damages.containsKey(damageType)){
-            int[] damageValues = damages.get(damageType);
-            damageValues[0] = (int) (damageValues[0] * (1 + genericPercentAdded/100f ));
-            damageValues[1] = (int) (damageValues[1] * (1 + genericPercentAdded/100f ));
 
-            damages.put(damageType, damageValues);
-        }
-    }
-    public static void sumWeaponFlatDamage(Map<DamageTypes, int[]> weaponDamages, DamageTypes type, int[] damageSumVar){
-        if (weaponDamages.containsKey(type)){
-            int[] weaponDmg = weaponDamages.get(type);
-            damageSumVar[0] += weaponDmg[0];
-            damageSumVar[1] += weaponDmg[1];
-            weaponDamages.put(type,damageSumVar);
-        } else {
-            weaponDamages.put(type, damageSumVar);
-        }
-    }
+    public void applyDamageMods(){
+        //Different protocol when considering areaDamage, proj DMG, ...
+        hitData.applyPercentDamage(DamageTypes.PHYSICAL, increasedPhysicalDamage);
+        hitData.applyPercentDamage(DamageTypes.FIRE, increasedFireDamage + increasedElementalDamage);
+        hitData.applyPercentDamage(DamageTypes.LIGHTNING, increasedLightningDamage + increasedElementalDamage);
+        hitData.applyPercentDamage(DamageTypes.COLD, increasedColdDamage + increasedElementalDamage);
+        hitData.applyPercentDamage(DamageTypes.ABYSSAL, increasedAbyssalDamage);
 
-    public void update(Map<DamageTypes, int[]> weaponDamages,
-                       int totalStamina,
-                       int percentStamina,
-                       int staminaRegen,
-                       int percentStaminaRegen,
-                       int baseCrit,
-                       int critChance,
-                       int critDamage,
-                       int totalAccuracy,
-                       int percentAccuracy,
-                       int bleedChance,
-                       int shred,
-                       int maelstrom,
-                       int elementalDamage,
-                       int lifeOnHit){
 
-        this.stamina = 100 + (int) (totalStamina * (1 + (percentStamina/100f)));
-        DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        String staminaRegenToFixed = decimalFormat.format(staminaRegen * (1 + (percentStaminaRegen/100f)));
-        this.staminaRegen = Float.parseFloat(staminaRegenToFixed);
-        this.critChance = baseCrit * (1 + (critChance/100f));
-        this.critDamage = critDamage;
-        this.accuracy = totalAccuracy * (1 + (percentAccuracy/100f) );
-        this.bleedChance = bleedChance;
-        this.shred = shred;
-        this.maelstrom = maelstrom;
-        this.elementalDamage = elementalDamage;
-        this.lifeOnHit = lifeOnHit;
-
-        this.damage = weaponDamages;
-        setDps();
-    }
-
-    public int getStamina() {
-        return stamina;
-    }
-
-    public float getStaminaRegen() {
-        return staminaRegen;
-    }
-
-    public float getAccuracy() {
-        return accuracy;
-    }
-
-    public float getCritChance() {
-        return critChance;
-    }
-
-    public int getCritDamage() {
-        return critDamage;
-    }
-
-    public int getShred() {
-        return shred;
-    }
-
-    public int getMaelstrom() {
-        return maelstrom;
-    }
-
-    public float getBleedChance() {
-        return bleedChance;
-    }
-
-    public float getElementalDamage() {
-        return elementalDamage;
     }
 
     public int getLifeOnHit() {
         return lifeOnHit;
+    }
+
+    public void setLifeOnHit(int lifeOnHit) {
+        this.lifeOnHit = lifeOnHit;
+    }
+
+    public int getLifeSteal() {
+        return lifeSteal;
+    }
+
+    public void setLifeSteal(int lifeSteal) {
+        this.lifeSteal = lifeSteal;
+    }
+
+    public int getProjectileDamage() {
+        return projectileDamage;
+    }
+
+    public void setProjectileDamage(int projectileDamage) {
+        this.projectileDamage = projectileDamage;
+    }
+
+    public int getAreaDamage() {
+        return areaDamage;
+    }
+
+    public void setAreaDamage(int areaDamage) {
+        this.areaDamage = areaDamage;
+    }
+
+    public int getIncreasedPhysicalDamage() {
+        return increasedPhysicalDamage;
+    }
+
+    public void setIncreasedPhysicalDamage(int increasedPhysicalDamage) {
+        this.increasedPhysicalDamage = increasedPhysicalDamage;
+    }
+
+    public int getIncreasedElementalDamage() {
+        return increasedElementalDamage;
+    }
+
+    public void setIncreasedElementalDamage(int increasedElementalDamage) {
+        this.increasedElementalDamage = increasedElementalDamage;
+    }
+
+    public int getIncreasedFireDamage() {
+        return increasedFireDamage;
+    }
+
+    public void setIncreasedFireDamage(int increasedFireDamage) {
+        this.increasedFireDamage = increasedFireDamage;
+    }
+
+    public int getIncreasedLightningDamage() {
+        return increasedLightningDamage;
+    }
+
+    public void setIncreasedLightningDamage(int increasedLightningDamage) {
+        this.increasedLightningDamage = increasedLightningDamage;
+    }
+
+    public int getIncreasedColdDamage() {
+        return increasedColdDamage;
+    }
+
+    public void setIncreasedColdDamage(int increasedColdDamage) {
+        this.increasedColdDamage = increasedColdDamage;
+    }
+
+    public int getIncreasedAbyssalDamage() {
+        return increasedAbyssalDamage;
+    }
+
+    public void setIncreasedAbyssalDamage(int increasedAbyssalDamage) {
+        this.increasedAbyssalDamage = increasedAbyssalDamage;
     }
 }

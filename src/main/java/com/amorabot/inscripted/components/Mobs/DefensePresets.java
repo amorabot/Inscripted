@@ -5,7 +5,8 @@ import com.amorabot.inscripted.components.DefenceComponent;
 public enum DefensePresets {
 
     //cold -> fire -> light -> cold ->...
-    BASIC_PHYSICAL_RESISTANT(10,10,10, -30, 0, 1500, 150),
+    BASIC_PHYSICAL_RESISTANT(10,10,10, -30, 0, 200, 30),
+    PHYSICAL_RESISTANT(10,10,10, -30, 0, 1500, 70),
     BASIC_EVASIVE(10,10,10,-30, 2000, 0 ,0),
     FIRE_RESISTANT(70, -10, 10, -30, 0, 300, 50),
     LIGHTNING_RESISTANT(-10, 10, 70, -30 , 0, 150, 25),
@@ -13,7 +14,7 @@ public enum DefensePresets {
     ABYSS_RESISTANT(20, 20 , 20, 50, 0, 500, 50);
 
 
-    final DefenceComponent defenceComponent;
+    private final DefenceComponent defenceComponent;
 
     DefensePresets(int fireRes, int coldRes, int lightRes, int abyssRes, int dodge, int baseArmor, int incArmor){
         this.defenceComponent = new DefenceComponent(fireRes, coldRes, lightRes, abyssRes, dodge, baseArmor, incArmor);

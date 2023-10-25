@@ -3,7 +3,6 @@ package com.amorabot.inscripted.components.Items.Armor;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Abstract.ItemRenderer;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
-//import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.DataStructures.NewModifier;
 import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.inscripted.utils.ColorUtils;
@@ -57,8 +56,6 @@ public class BasicArmorRenderer implements ItemRenderer {
             itemLore.add(ColorUtils.translateColorCodes(armorLine.indent(indentation)));
         }
         if (dodge > 0){
-//            Utils.log("adding dodge line...");
-//            String dodgeLine = DefenceTypes.DODGE.getTextColor()+ DefenceTypes.DODGE.getSpecialChar() + " +" + Utils.getPercentString(dodge) + "%" + " Dodge" ;
             String dodgeLine = DefenceTypes.DODGE.getTextColor()+ DefenceTypes.DODGE.getSpecialChar() + " +" + dodge + " Dodge" ; //Flat stat display
             itemLore.add(ColorUtils.translateColorCodes(dodgeLine.indent(indentation)));
         }
@@ -88,13 +85,6 @@ public class BasicArmorRenderer implements ItemRenderer {
                 suffixes.add(mod);
             }
         }
-//        for (Modifier<ArmorModifiers> mod : mods){
-//            if (mod.getModifier().getAffixType() == Affix.PREFIX){
-//                prefixes.add(mod);
-//            } else {
-//                suffixes.add(mod);
-//            }
-//        }
         for (NewModifier mod : prefixes){
             String modifierDisplayName = getModifierDisplayName(mod, valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
@@ -103,35 +93,10 @@ public class BasicArmorRenderer implements ItemRenderer {
             String modifierDisplayName = getModifierDisplayName(mod, valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
-//        for (Modifier<ArmorModifiers> mod : prefixes){
-//            String modifierDisplayName = getModifierDisplayName(mod, valuesColor, 2);
-//            itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
-//        }
-//        for (Modifier<ArmorModifiers> mod : suffixes){
-//            String modifierDisplayName = getModifierDisplayName(mod, valuesColor, 2);
-//            itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
-//        }
         if (armorData.getRarity() != ItemRarities.COMMON){
             itemLore.add(color("@FOOTER@"));
         }
     }
-
-//    private String getModifierDisplayName(Modifier<ArmorModifiers> mod, String valuesColor, int indent) {
-//        String modifierDisplayName = "&7" + mod.getModifier().getDisplayName();
-//        RangeTypes rangeType = mod.getModifier().getRangeType();
-//        switch (rangeType){
-//            case SINGLE_VALUE -> {} //Utils.getPercentString(dodge)
-//            case SINGLE_RANGE -> modifierDisplayName = (modifierDisplayName
-//                    .replace("@value1@", valuesColor + mod.getValue()[0]+"&7")).indent(indent);
-//            case DOUBLE_RANGE -> {
-//                int[] values = mod.getValue();
-//                modifierDisplayName = (modifierDisplayName
-//                        .replace("@value1@", valuesColor +values[0]+"&7")
-//                        .replace("@value2@", valuesColor +values[1]+"&7")).indent(indent);
-//            }
-//        }
-//        return modifierDisplayName;
-//    }
 private String getModifierDisplayName(NewModifier mod, String valuesColor, int indent) {
     String modifierDisplayName = "&7" + mod.getModifier().getDisplayName();
     RangeTypes rangeType = mod.getModifier().getRangeType();
@@ -154,7 +119,7 @@ private String getModifierDisplayName(NewModifier mod, String valuesColor, int i
         Armor armorData = (Armor) itemData;
         itemLore.add("");
         itemLore.add(color("&7 Item Level: " + "&f&l" + armorData.getIlvl()));
-        Implicit armorImplicit = armorData.getImplicit();
+        Implicits armorImplicit = armorData.getImplicit();
         String implicitString = armorImplicit.getDisplayName();
         if (!armorImplicit.isHybrid()){
             String passiveString = " &7Passive: " + implicitString;

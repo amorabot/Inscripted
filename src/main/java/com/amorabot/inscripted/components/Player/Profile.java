@@ -3,6 +3,7 @@ package com.amorabot.inscripted.components.Player;
 import com.amorabot.inscripted.components.DamageComponent;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
+import com.amorabot.inscripted.components.HitComponent;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
 //import com.amorabot.rpgelements.components.Items.Armor.ArmorModifiers;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
@@ -10,13 +11,14 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierList;
 import com.amorabot.inscripted.components.Items.DataStructures.NewModifier;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
+import com.amorabot.inscripted.utils.Utils;
 //import com.amorabot.rpgelements.components.Items.Weapon.WeaponModifiers;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.amorabot.inscripted.components.DamageComponent.applyAddedPercentageToDamageMap;
-import static com.amorabot.inscripted.components.DamageComponent.sumWeaponFlatDamage;
+//import static com.amorabot.inscripted.components.DamageComponent.applyPercentDamage;
+//import static com.amorabot.inscripted.components.DamageComponent.sumWeaponFlatDamage;
 
 public class Profile {
     private HealthComponent health;
@@ -103,13 +105,13 @@ public class Profile {
 
 
         Map<DamageTypes, int[]> damageMap = new HashMap<>();
-        int baseStaminaRegen = 2;
+//        int baseStaminaRegen = 2;
         int staminaRegenPercentSum = 0;
 
         int accuracySum = 0;
         int percentAccuracySum = 0;
 
-        int baseCrit = 1;
+//        int baseCrit = 1;
         int percentCritChanceSum = 0;
         int percentCritDamageSum = 0;
 
@@ -156,7 +158,7 @@ public class Profile {
             }
 
             //Mapping implicit
-            Implicit armorImplicit = armorPiece.getImplicit();
+            Implicits armorImplicit = armorPiece.getImplicit();
             int[] armorImplicitValue = armorImplicit.getValue();
             switch (armorImplicit.getTargetStat()){
                 case STRENGTH -> {
@@ -330,7 +332,7 @@ public class Profile {
             //Mapping base stats from weapon
 
             //Applying weapon implicits
-            Implicit weaponImplicit = weaponData.getImplicit();
+            Implicits weaponImplicit = weaponData.getImplicit();
             switch (weaponImplicit.getTargetStat()){
                 case SHRED -> shredSum += weaponImplicit.getValue()[0]; //Theres only % Shred
                 case ACCURACY -> {
@@ -347,7 +349,7 @@ public class Profile {
             //Getting stats from weapon modifiers
 
             //Getting weapon stats
-//            for (Modifier<WeaponModifiers> mod : weaponData.getModifiers()){
+    //            for (Modifier<WeaponModifiers> mod : weaponData.getModifiers()){
             for (NewModifier mod : weaponData.getModifiers()){
                 TargetStats targetStat = mod.getModifier().getTargetStat();
                 ValueTypes valueType = mod.getModifier().getValueType();
@@ -384,29 +386,9 @@ public class Profile {
                 }
             }
             Map<DamageTypes, int[]> originalDamageMap = weaponData.getBaseDamage(); //Will be cloned to be modified
-            for (DamageTypes dmgType : originalDamageMap.keySet()){
+            for (DamageTypes dmgType : originalDamageMap.keySet()){ //Turn into a entrySet
                 damageMap.put(dmgType, originalDamageMap.get(dmgType));
             }
-            //The weapon has been created previously and the damageMap is up-to-date with any flat elemental damages
-            //Once its cloned, the DamageComponent can hold de post-calculation values
-
-            //All additional flat damage (from wherever) is added here (Before percent modifiers)
-            sumWeaponFlatDamage(damageMap, DamageTypes.PHYSICAL, addedPhys);
-            sumWeaponFlatDamage(damageMap, DamageTypes.FIRE, addedFire);
-            sumWeaponFlatDamage(damageMap, DamageTypes.COLD, addedCold);
-            sumWeaponFlatDamage(damageMap, DamageTypes.LIGHTNING, addedLightning);
-            sumWeaponFlatDamage(damageMap, DamageTypes.ABYSSAL, addedAbyssal);
-            //Then the percent modifiers should take effect
-            //...
-            //fire cold and light. are updated individually and then generic elemental is applied to each one
-            percentFire += percentElementalDamageSum;
-            percentLightning += percentElementalDamageSum;
-            percentCold += percentElementalDamageSum;
-
-            applyAddedPercentageToDamageMap(damageMap, DamageTypes.PHYSICAL, percentPhys);
-            applyAddedPercentageToDamageMap(damageMap, DamageTypes.FIRE, percentFire);
-            applyAddedPercentageToDamageMap(damageMap, DamageTypes.LIGHTNING, percentLightning);
-            applyAddedPercentageToDamageMap(damageMap, DamageTypes.COLD, percentCold);
         }
 
         //Setting attributes
@@ -420,16 +402,52 @@ public class Profile {
         //Setting health
         getHealthComponent().updateHealthComponent(flatHealthSum, percentHealthSum, healthRegenSum, flatWardSum, percentWardSum);
 
-        //Setting damage
-        getDamageComponent().update(damageMap, flatStaminaSum, percentStaminaSum, baseStaminaRegen, staminaRegenPercentSum, baseCrit, percentCritChanceSum, percentCritDamageSum,
-                accuracySum, percentAccuracySum, bleedSum, shredSum, maelstromSum, percentElementalDamageSum, lifeOnHitSum);
+        //Setting misc.
+        Miscellaneous miscComponent = getMiscellaneous();
+        miscComponent.setWalkSpeed(walkSpeedSum);
+
+        miscComponent.setExtraStamina(flatStaminaSum);
+        miscComponent.setPercentStamina(percentStaminaSum);
+
+        miscComponent.setExtraStaminaRegen(0); // #NOT IMPLEMENTED#
+        miscComponent.setPercentStaminaRegen(staminaRegenPercentSum);
+
+        //Setting the player's damage
+        DamageComponent damageComponent = getDamageComponent();
+        Utils.log(""+ percentElementalDamageSum);
+
+        damageComponent.reset(weaponData); //No problem if null
+        damageComponent.setLifeOnHit(lifeOnHitSum);
+        damageComponent.setLifeSteal(0); // #NOT IMPLEMENTED#
+        damageComponent.setAreaDamage(0); // #NOT IMPLEMENTED#
+        damageComponent.setIncreasedPhysicalDamage(percentPhys);
+        damageComponent.setIncreasedElementalDamage(percentElementalDamageSum);
+        damageComponent.setIncreasedFireDamage(percentFire);
+        damageComponent.setIncreasedLightningDamage(percentLightning);
+        damageComponent.setIncreasedColdDamage(percentCold);
+        damageComponent.setIncreasedAbyssalDamage(0); // #NOT IMPLEMENTED#
+
+        //Now that the damage component is set, lets setup the hit component
+        HitComponent hitComponent = damageComponent.getHitData();
+        hitComponent.setAccuracy(accuracySum);
+        hitComponent.setCritChance(percentCritChanceSum);
+        hitComponent.setCritDamage(percentCritDamageSum);
+        hitComponent.setShred(shredSum);
+        hitComponent.setMaelstrom(maelstromSum);
+        hitComponent.setBleedChance(bleedSum);
+
+        //Adding any flat damage from items, and then amplifying them
+        hitComponent.addFlatDamage(DamageTypes.PHYSICAL, addedPhys);
+        hitComponent.addFlatDamage(DamageTypes.FIRE, addedFire);
+        hitComponent.addFlatDamage(DamageTypes.LIGHTNING, addedLightning);
+        hitComponent.addFlatDamage(DamageTypes.COLD, addedCold);
+        hitComponent.addFlatDamage(DamageTypes.ABYSSAL, addedAbyssal);
+
+        damageComponent.applyDamageMods();
     }
 
     //todo: Arrumar triggers de update no profile
     public void updateMainHand(Weapon weapon){
-        if (weapon == null){
-            setDamage(new DamageComponent()); //Clearing the damage component upon unequip (weapon == null)
-        }
         getStats().setWeaponSlot(weapon);
         updateProfile();
     }

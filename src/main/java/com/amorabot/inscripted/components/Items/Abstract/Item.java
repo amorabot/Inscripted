@@ -12,18 +12,25 @@ import java.util.List;
 
 public abstract class Item implements Serializable {
 
-    private boolean identified;
     private final int ilvl;
+    protected final ItemTypes category;
+    private boolean identified;
     private ItemRarities rarity;
     private Tiers tier;
-    private Implicit implicit;
+    private Implicits implicit;
     protected RendererTypes renderer;
-    protected final ItemTypes category;
 
     protected String name;
     protected Material vanillaMaterial;
     protected boolean corrupted;
     private List<NewModifier> modifiers = new ArrayList<>();
+
+    public Item(int ilvl, ItemTypes category){
+        this.ilvl = ilvl;
+        this.category = category;
+        this.identified = false;
+        this.corrupted = false;
+    }
 
     public Item(int ilvl, ItemRarities rarity, boolean identified, boolean corrupted, ItemTypes itemCategory){
         this.identified = identified;
@@ -71,27 +78,30 @@ public abstract class Item implements Serializable {
         return corrupted;
     }
     public void corrupt(){
+        if (isCorrupted()){
+            return;
+        }
         this.corrupted = true;
     }
-    public Implicit getImplicit() {
+    public Implicits getImplicit() {
         return implicit;
     }
-    protected void setImplicit(Implicit implicit) {
+    protected void setImplicit(Implicits implicit) {
         this.implicit = implicit;
     }
-    protected Implicit defineImplicit(String subTypeString){
-        Implicit itemImplicit;
+    protected Implicits defineImplicit(String subTypeString){
+        Implicits itemImplicit;
         try {
             if (isCorrupted()){
                 //...
-                itemImplicit = Implicit.valueOf(subTypeString+"_"+ ImplicitType.CORRUPTED);
+                itemImplicit = Implicits.valueOf(subTypeString+"_"+ ImplicitType.CORRUPTED);
                 //Or alternate corrupted...
             } else {
-                itemImplicit = Implicit.valueOf(subTypeString+"_"+ImplicitType.STANDARD);
+                itemImplicit = Implicits.valueOf(subTypeString+"_"+ImplicitType.STANDARD);
             }
         } catch (IllegalArgumentException exception){
             exception.printStackTrace();
-            itemImplicit = Implicit.AXE_STANDARD;
+            itemImplicit = Implicits.AXE_STANDARD;
         }
         return itemImplicit;
     }

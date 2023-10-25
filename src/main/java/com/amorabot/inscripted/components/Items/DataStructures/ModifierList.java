@@ -190,7 +190,7 @@ public enum ModifierList {
              TargetStats.ACCURACY, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
              Set.of(ModTags.UTILITY), false, 1),
     STAMINA_REGEN(Set.of(ModifierList.WEAPONTAG),Affix.SUFFIX, "+@value1@% Stamina regen", 6,
-                  TargetStats.STAMINA, ValueTypes.PERCENT_ADDED, RangeTypes.SINGLE_RANGE,
+                  TargetStats.STAMINA_REGEN, ValueTypes.PERCENT_ADDED, RangeTypes.SINGLE_RANGE,
                   Set.of(ModTags.DAMAGE,ModTags.PHYSICAL), false, 1),
     BLEEDING(Set.of(ModifierList.WEAPONTAG),Affix.SUFFIX, "+@value1@% Bleeding chance", 4,
              TargetStats.BLEED, ValueTypes.FLAT_PERCENT, RangeTypes.SINGLE_RANGE,

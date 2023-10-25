@@ -154,7 +154,7 @@ public class JSONProfileManager {
             log("Profile loaded: " + uuid);
         }
     }
-    public static void loadOnlinePlayersOnReload(Collection<? extends Player> onlinePlayers){
+    public static void reloadOnlinePlayers(Collection<? extends Player> onlinePlayers){
         Gson gson = new Gson();
         File file = new File(plugin.getDataFolder().getAbsolutePath() + "/profiles.json");
         if (file.exists()){

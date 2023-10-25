@@ -43,3 +43,6 @@ commands:
   template:
     description: template command for testing arbritraty functionalities
     usage: /template
+  mob:
+    description: spawning custom mobs individually for tests
+    usage: /mob

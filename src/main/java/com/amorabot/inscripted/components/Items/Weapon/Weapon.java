@@ -24,7 +24,7 @@ import java.util.*;
 public class Weapon extends Item {
     private final WeaponTypes type;
     private Map<DamageTypes, int[]> baseDmg = new HashMap<>();
-    //Define stat require for weapons
+    //Define stat requirement for weapons
 
     public Weapon(int ilvl, WeaponTypes type, ItemRarities rarity, boolean identified, boolean corrupted){
         super(ilvl, rarity, identified, corrupted, ItemTypes.WEAPON);
@@ -103,6 +103,7 @@ public class Weapon extends Item {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
         List<String> lore = new ArrayList<>();
+        //TODO: renderer should be inferred
         ItemRenderer currentRenderer = getRenderer();
 
         currentRenderer.renderAllCustomLore(this, lore, type);
@@ -150,7 +151,6 @@ public class Weapon extends Item {
                 return new UnidentifiedRenderer();
             }
             case BASIC -> {
-//                return new BasicWeaponRenderer();
                 return new BasicRunicWeaponRenderer();
             }
             case CORRUPTED -> {

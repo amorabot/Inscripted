@@ -17,8 +17,8 @@ import org.bukkit.entity.Player;
 
 import java.util.Set;
 
+@Deprecated
 public class GenerateArmor implements CommandExecutor {
-
 
     private final Inscripted plugin;
     public GenerateArmor(Inscripted plugin){

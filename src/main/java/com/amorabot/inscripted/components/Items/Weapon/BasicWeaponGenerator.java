@@ -1,7 +1,6 @@
 package com.amorabot.inscripted.components.Items.Weapon;
 
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRarities;
-//import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierList;
 import com.amorabot.inscripted.components.Items.DataStructures.NewModifier;
 import com.amorabot.inscripted.utils.CraftingUtils;
@@ -17,8 +16,6 @@ public class BasicWeaponGenerator { //Modularize the generation steps for re-use
         //Generating the modifiers to fill the item
         int maxMods = rarity.getMaxMods();
         int numberOfMods = 0;
-//        Map<WeaponModifiers, Map<Integer, int[]>> prefixes = type.castTo(WeaponModifiers.class, type.getBasicPrefixes());
-//        Map<WeaponModifiers, Map<Integer, int[]>> suffixes = type.castTo(WeaponModifiers.class, type.getBasicSuffixes());
         Map<ModifierList, Map<Integer, int[]>> prefixes = type.castToModEnum(type.getBasicPrefixes());
         Map<ModifierList, Map<Integer, int[]>> suffixes = type.castToModEnum(type.getBasicSuffixes());
         switch (rarity){
@@ -31,10 +28,8 @@ public class BasicWeaponGenerator { //Modularize the generation steps for re-use
                 for (int i = 0; i<numberOfMods; i++){
                     double random = Math.random();
                     if (random >= 0.5){ //Its a prefix
-//                        blankWeapon.addModifier(Modifier.getRandomModifier(prefixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                         blankWeapon.addModifier(NewModifier.getRandomModifier(prefixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                     } else { //Its a suffix
-//                        blankWeapon.addModifier(Modifier.getRandomModifier(suffixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                         blankWeapon.addModifier(NewModifier.getRandomModifier(suffixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                     }
                 }
@@ -51,21 +46,17 @@ public class BasicWeaponGenerator { //Modularize the generation steps for re-use
                     double random = Math.random();
                     if (random >= 0.5){ //Its a prefix
                         if (currPrefixes < maxPrefixes){ //Open prefix
-//                            blankWeapon.addModifier(Modifier.getRandomModifier(prefixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                             blankWeapon.addModifier(NewModifier.getRandomModifier(prefixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                             currPrefixes++;
                         } else { //Generate a suffix
-//                            blankWeapon.addModifier(Modifier.getRandomModifier(suffixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                             blankWeapon.addModifier(NewModifier.getRandomModifier(suffixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                             currSuffixes++;
                         }
                     } else { //Its a suffix
                         if (currSuffixes < maxSuffixes){ //Open suffix
-//                            blankWeapon.addModifier(Modifier.getRandomModifier(suffixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                             blankWeapon.addModifier(NewModifier.getRandomModifier(suffixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                             currSuffixes++;
                         } else { //Generate a prefix
-//                            blankWeapon.addModifier(Modifier.getRandomModifier(prefixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                             blankWeapon.addModifier(NewModifier.getRandomModifier(prefixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                             currPrefixes++;
                         }

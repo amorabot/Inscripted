@@ -2,6 +2,8 @@ package com.amorabot.inscripted.components.Items.Interfaces;
 
 import com.amorabot.inscripted.components.Player.*;
 
-public interface EntityComponent {
+import java.io.Serializable;
+
+public interface EntityComponent extends Serializable {
     void update(Profile profileData);
 }
