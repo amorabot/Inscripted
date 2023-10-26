@@ -1,7 +1,6 @@
 package com.amorabot.inscripted.handlers.misc;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Mob;
@@ -27,7 +26,6 @@ public class SunlightBurnHandler implements Listener {
 
         if (event.getEntity() instanceof Mob){
             Mob mob = (Mob) event.getEntity();
-            Utils.log(""+mob.getType());
             if (!sunlightBurnable.contains(mob.getType().toString())){return;}
             ItemStack mobHelmet = mob.getEquipment().getHelmet();
             if (mobHelmet != null && mobHelmet.getType() != Material.AIR){return;} //It does have something "protecting" its head, ignore the event

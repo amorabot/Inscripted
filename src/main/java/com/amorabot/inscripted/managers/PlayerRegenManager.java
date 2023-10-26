@@ -13,13 +13,17 @@ import java.util.UUID;
 
 public class PlayerRegenManager {
     private static final int secondsBeforeWardRecharge = 4;
+    private static final int regenTimerCooldown = 20;
 
     private static final Map<UUID, PlayerRegenerationTask> activeRegenTasks = new HashMap<>();
     private static final Map<UUID, Long> wardRegenCooldown = new HashMap<>();
 
+
+
     public static void playerHit(UUID playerID){
         wardRegenCooldown.put(playerID, System.currentTimeMillis());
     }
+
     public static boolean canRegenWard(UUID playerID){
         if (wardRegenCooldown.containsKey(playerID)){
             int timeSincelastHit = (int) ((System.currentTimeMillis()-wardRegenCooldown.get(playerID))/1000);
@@ -42,7 +46,7 @@ public class PlayerRegenManager {
             return;
         }
         PlayerRegenerationTask playerRegen = new PlayerRegenerationTask(playerID);
-        playerRegen.runTaskTimer(Inscripted.getPlugin(), 0, 10);
+        playerRegen.runTaskTimer(Inscripted.getPlugin(), 0, regenTimerCooldown);
         activeRegenTasks.put(playerID, playerRegen);
         wardRegenCooldown.put(playerID, 0L);
     }
@@ -50,7 +54,7 @@ public class PlayerRegenManager {
         if (!activeRegenTasks.containsKey(playerID)){return;}
         BukkitRunnable regenTask = activeRegenTasks.remove(playerID);
         regenTask.cancel();
-//        Bukkit.getScheduler().cancelTask(regenTask.getTaskId());
+//        Bukkit.getScheduler().cancelTask(regenTask.getTaskId()); //Alternative way
         wardRegenCooldown.remove(playerID);
     }
 

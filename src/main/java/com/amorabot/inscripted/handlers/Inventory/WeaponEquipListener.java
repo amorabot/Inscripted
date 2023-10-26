@@ -101,44 +101,5 @@ public class WeaponEquipListener implements Listener {
     }
 
     public void renderWeaponEquipToPlayer(Player player, ItemStack weaponItem, Weapon weaponData){
-//        List<String> weaponLore = weaponItem.getItemMeta().getLore();
-//        ItemRarities weaponRarity = weaponData.getRarity();
-//
-//        Utils.msgPlayer(player,"");
-//        if (weaponRarity == ItemRarities.COMMON){
-//            String equipString = "&f------->> "+ weaponData.getName();
-//            Utils.msgPlayer(player, equipString, "&f" + "-".repeat(Utils.decolor(equipString).length()-4));
-//        } else {
-//            String equipString;
-//            String closingString = "";
-//            if (weaponRarity == ItemRarities.MAGIC){
-//                equipString = "&9------->> "+ weaponData.getName();
-//                closingString = "&9" + "-".repeat(Utils.decolor(equipString).length()-4);
-//                Utils.msgPlayer(player, equipString);
-//            } else if (weaponRarity == ItemRarities.RARE){
-//                equipString = "&e------->> "+ weaponData.getName();
-//                closingString = "&e" + "-".repeat(Utils.decolor(equipString).length()-4);
-//                Utils.msgPlayer(player, equipString);
-//            }
-//
-//            assert weaponLore != null;
-//            String div;
-//            int acc = 0;
-//            while (!weaponLore.get(acc).contains("---")){
-//                acc++;
-//            }
-//            div = weaponLore.get(acc);
-//
-//            int modStart = weaponLore.indexOf(div);
-//            int modEnd = weaponLore.lastIndexOf(div);
-//            if (modStart != -1 && modEnd != -1){
-//                for (int i = modStart+1; i<modEnd; i++){
-//                    String statLine = weaponLore.get(i);
-//                    Utils.msgPlayer(player, "  "+statLine);
-//                }
-//            }
-//            Utils.msgPlayer(player, closingString);
-//        }
-//        Utils.msgPlayer(player,"");
     }
 }

@@ -30,6 +30,10 @@ public class MobStats implements Serializable {
         return mobLevel;
     }
 
+    public HitComponent getMobHit() {
+        return mobHit;
+    }
+
     public HealthComponent getMobHealth() {
         return mobHealth;
     }

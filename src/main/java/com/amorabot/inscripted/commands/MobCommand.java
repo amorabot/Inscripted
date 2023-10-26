@@ -34,6 +34,7 @@ public class MobCommand implements TabExecutor {
             return false;
         }
         Player player = (Player) commandSender;
+        NamespacedKey mobKey = new NamespacedKey(Inscripted.getPlugin(), "INSCRIPTED_MOB");
         Location locationToSpawn = player.getLocation();
 
         if (strings.length == 1){ //spawn a specific mob, lets map it
@@ -72,9 +73,8 @@ public class MobCommand implements TabExecutor {
                                     new int[]{100,120}, new int[]{20,60}, new int[2], new int[2], new int[2],
                                     10F, 0, 0, 0, 0),
                             new HealthComponent(1000, 150, 0, 0, 10),
-                            DefensePresets.BASIC_EVASIVE);
+                            DefensePresets.PHYSICAL_RESISTANT);
 
-                    NamespacedKey mobKey = new NamespacedKey(Inscripted.getPlugin(), "INSCRIPTED_MOB");
                     skeleton.getPersistentDataContainer().set(mobKey, new MobStatsContainer(), mobStats);
 
                     String displayName = ColorUtils.translateColorCodes("&c&lTest Dummy" + " &7[ lv." + mobStats.getMobLevel() + "]");
@@ -90,6 +90,21 @@ public class MobCommand implements TabExecutor {
                     MedicalCareAPI.removeMobGoals(zombieVillager, List.of(goal1, goal2));
                     MedicalCareAPI.showMobGoals(player, zombieVillager);
 
+                    zombieVillager.setMaximumNoDamageTicks(10);
+                    zombieVillager.setHealth(1);
+                    MobStats zombieStats = new MobStats(
+                            30,
+                            new HitComponent(
+                                    new int[]{100,120}, new int[]{10,20}, new int[2], new int[2], new int[]{70,70},
+                                    10F, 0, 0, 0, 0),
+                            new HealthComponent(1000, 150, 0, 0, 10),
+                            DefensePresets.BASIC_EVASIVE);
+
+                    zombieVillager.getPersistentDataContainer().set(mobKey, new MobStatsContainer(), zombieStats);
+                    String zombieName = ColorUtils.translateColorCodes("&6&lMeno" + " &7[Lv." + zombieStats.getMobLevel() + "]");
+
+                    zombieVillager.setCustomName(zombieName);
+                    zombieVillager.setCustomNameVisible(true);
                     break;
             }
 

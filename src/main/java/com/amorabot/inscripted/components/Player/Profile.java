@@ -349,7 +349,6 @@ public class Profile {
             //Getting stats from weapon modifiers
 
             //Getting weapon stats
-    //            for (Modifier<WeaponModifiers> mod : weaponData.getModifiers()){
             for (NewModifier mod : weaponData.getModifiers()){
                 TargetStats targetStat = mod.getModifier().getTargetStat();
                 ValueTypes valueType = mod.getModifier().getValueType();
@@ -414,7 +413,6 @@ public class Profile {
 
         //Setting the player's damage
         DamageComponent damageComponent = getDamageComponent();
-        Utils.log(""+ percentElementalDamageSum);
 
         damageComponent.reset(weaponData); //No problem if null
         damageComponent.setLifeOnHit(lifeOnHitSum);

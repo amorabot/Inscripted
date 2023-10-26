@@ -55,11 +55,9 @@ public class HitComponent implements EntityComponent {
     }
     public float getDPS(){return DPS;}
     private void setDps(){
-        Utils.log("setting dps");
         int lowerDamageSum = 0;
         int upperDamageSum = 0;
         for (DamageTypes dmgType : damage.keySet()){
-            Utils.log("aaaaa" + dmgType);
             if (damage.containsKey(dmgType)){
                 int[] dmg = damage.get(dmgType);
                 lowerDamageSum += dmg[0];
@@ -68,7 +66,7 @@ public class HitComponent implements EntityComponent {
         }
         float avgDamage = (float) (lowerDamageSum + upperDamageSum)/2;
         if (avgDamage == 0){
-            Utils.log("No DPS ????");
+            Utils.log("No DPS ???? (HitComponent)");
             damage.put(DamageTypes.PHYSICAL, new int[]{1,1});
             this.DPS = 1;
             return;

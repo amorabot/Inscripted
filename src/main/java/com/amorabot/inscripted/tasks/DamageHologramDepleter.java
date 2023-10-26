@@ -6,10 +6,7 @@ import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import org.bukkit.Location;
-import org.bukkit.entity.Display;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.TextDisplay;
+import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,7 +47,7 @@ public class DamageHologramDepleter extends BukkitRunnable {
         return instance;
     }
 
-    public void createDamageHologram(int[] incomingDamage, LivingEntity entity){
+    public void createDamageHologram(int[] incomingDamage, Entity entity){
         Location hologramLocation = entity.getLocation().clone().add(getRandomOffset(), 2.5 + getRandomOffset(), getRandomOffset());
         TextDisplay damageHologram = Inscripted.getPlugin().getWorld().spawn(hologramLocation, TextDisplay.class);
         damageHologram.setText(getDamageString(incomingDamage));
