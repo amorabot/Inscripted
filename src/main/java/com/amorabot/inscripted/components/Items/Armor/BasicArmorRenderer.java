@@ -3,7 +3,7 @@ package com.amorabot.inscripted.components.Items.Armor;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Abstract.ItemRenderer;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
-import com.amorabot.inscripted.components.Items.DataStructures.NewModifier;
+import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.inscripted.utils.ColorUtils;
 import org.bukkit.inventory.ItemStack;
@@ -74,22 +74,22 @@ public class BasicArmorRenderer implements ItemRenderer {
 //        List<Modifier<ArmorModifiers>> mods = armorData.getModifiers();
 //        List<Modifier<ArmorModifiers>> prefixes = new ArrayList<>();
 //        List<Modifier<ArmorModifiers>> suffixes = new ArrayList<>(); //TODO: ordenacao por ordinal value + affixType no Enum (prefix 1 > prefix 7, suffix 18 > suffix 28)
-        List<NewModifier> mods = armorData.getModifiers();
-        List<NewModifier> prefixes = new ArrayList<>();
-        List<NewModifier> suffixes = new ArrayList<>();
+        List<Modifier> mods = armorData.getModifiers();
+        List<Modifier> prefixes = new ArrayList<>();
+        List<Modifier> suffixes = new ArrayList<>();
         //Sorting prefixes and suffixes
-        for (NewModifier mod : mods){
-            if (mod.getModifier().getAffixType().equals(Affix.PREFIX)){
+        for (Modifier mod : mods){
+            if (mod.getModifierID().getAffixType().equals(Affix.PREFIX)){
                 prefixes.add(mod);
             } else {
                 suffixes.add(mod);
             }
         }
-        for (NewModifier mod : prefixes){
+        for (Modifier mod : prefixes){
             String modifierDisplayName = getModifierDisplayName(mod, valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
-        for (NewModifier mod : suffixes){
+        for (Modifier mod : suffixes){
             String modifierDisplayName = getModifierDisplayName(mod, valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
@@ -97,9 +97,9 @@ public class BasicArmorRenderer implements ItemRenderer {
             itemLore.add(color("@FOOTER@"));
         }
     }
-private String getModifierDisplayName(NewModifier mod, String valuesColor, int indent) {
-    String modifierDisplayName = "&7" + mod.getModifier().getDisplayName();
-    RangeTypes rangeType = mod.getModifier().getRangeType();
+private String getModifierDisplayName(Modifier mod, String valuesColor, int indent) {
+    String modifierDisplayName = "&7" + mod.getModifierID().getDisplayName();
+    RangeTypes rangeType = mod.getModifierID().getRangeType();
     switch (rangeType){
         case SINGLE_VALUE -> {} //Utils.getPercentString(dodge)
         case SINGLE_RANGE -> modifierDisplayName = (modifierDisplayName

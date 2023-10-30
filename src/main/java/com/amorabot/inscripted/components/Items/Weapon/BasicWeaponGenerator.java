@@ -1,8 +1,8 @@
 package com.amorabot.inscripted.components.Items.Weapon;
 
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRarities;
-import com.amorabot.inscripted.components.Items.DataStructures.ModifierList;
-import com.amorabot.inscripted.components.Items.DataStructures.NewModifier;
+import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
+import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.utils.CraftingUtils;
 
 import java.util.Map;
@@ -16,8 +16,8 @@ public class BasicWeaponGenerator { //Modularize the generation steps for re-use
         //Generating the modifiers to fill the item
         int maxMods = rarity.getMaxMods();
         int numberOfMods = 0;
-        Map<ModifierList, Map<Integer, int[]>> prefixes = type.castToModEnum(type.getBasicPrefixes());
-        Map<ModifierList, Map<Integer, int[]>> suffixes = type.castToModEnum(type.getBasicSuffixes());
+        Map<ModifierIDs, Map<Integer, int[]>> prefixes = type.castToModEnum(type.getBasicPrefixes());
+        Map<ModifierIDs, Map<Integer, int[]>> suffixes = type.castToModEnum(type.getBasicSuffixes());
         switch (rarity){
             case COMMON -> {
                 //No mods should be added
@@ -28,9 +28,9 @@ public class BasicWeaponGenerator { //Modularize the generation steps for re-use
                 for (int i = 0; i<numberOfMods; i++){
                     double random = Math.random();
                     if (random >= 0.5){ //Its a prefix
-                        blankWeapon.addModifier(NewModifier.getRandomModifier(prefixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
+                        blankWeapon.addModifier(Modifier.getRandomModifier(prefixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                     } else { //Its a suffix
-                        blankWeapon.addModifier(NewModifier.getRandomModifier(suffixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
+                        blankWeapon.addModifier(Modifier.getRandomModifier(suffixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                     }
                 }
                 blankWeapon.updateBaseDamageFromModifiers();
@@ -46,18 +46,18 @@ public class BasicWeaponGenerator { //Modularize the generation steps for re-use
                     double random = Math.random();
                     if (random >= 0.5){ //Its a prefix
                         if (currPrefixes < maxPrefixes){ //Open prefix
-                            blankWeapon.addModifier(NewModifier.getRandomModifier(prefixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
+                            blankWeapon.addModifier(Modifier.getRandomModifier(prefixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                             currPrefixes++;
                         } else { //Generate a suffix
-                            blankWeapon.addModifier(NewModifier.getRandomModifier(suffixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
+                            blankWeapon.addModifier(Modifier.getRandomModifier(suffixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                             currSuffixes++;
                         }
                     } else { //Its a suffix
                         if (currSuffixes < maxSuffixes){ //Open suffix
-                            blankWeapon.addModifier(NewModifier.getRandomModifier(suffixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
+                            blankWeapon.addModifier(Modifier.getRandomModifier(suffixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                             currSuffixes++;
                         } else { //Generate a prefix
-                            blankWeapon.addModifier(NewModifier.getRandomModifier(prefixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
+                            blankWeapon.addModifier(Modifier.getRandomModifier(prefixes, blankWeapon.getIlvl(), blankWeapon.getModifiers()));
                             currPrefixes++;
                         }
                     }

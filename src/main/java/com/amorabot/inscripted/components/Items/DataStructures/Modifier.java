@@ -8,16 +8,16 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.*;
 
-public class NewModifier implements Serializable {
+public class Modifier implements Serializable {
 
 
-    private ModifierList modifier;
+    private ModifierIDs modifier;
     private byte tier; //0-maxTier
     private int[] value;
     private byte basePercentile; //0-100
     private boolean imbued = false; //mods are not fractured/imbued by default, but can be altered
 
-    private NewModifier(ModifierList mod, byte tier, int[] values, byte basePercentile){
+    private Modifier(ModifierIDs mod, byte tier, int[] values, byte basePercentile){
         this.modifier = mod;
         this.tier = tier;
         this.value = values;
@@ -29,18 +29,18 @@ public class NewModifier implements Serializable {
     * @param itemLevel: The base level of the item this mod is being generated for
     * @param currentItemMods: The modifier list that is already present in the item. (Preventing duplicates + X mod can block Y mod)
     * */
-    public static NewModifier getRandomModifier(Map<ModifierList, Map<Integer, int[]>> modPool, int itemLevel, List<NewModifier> currentItemMods){
+    public static Modifier getRandomModifier(Map<ModifierIDs, Map<Integer, int[]>> modPool, int itemLevel, List<Modifier> currentItemMods){
         //If modPool is, for instance, a prefix pool, lets check if the item already has any prefixes so it's removed (Prevents duplicates)
 //        if (currentItemMods.isEmpty()){
 //            //Generate a random mod and return
 //            return null;
 //        }
 
-        Set<ModifierList> availableMods = filterAvailableMods(modPool, currentItemMods);
+        Set<ModifierIDs> availableMods = filterAvailableMods(modPool, currentItemMods);
 
-        Set<ModifierList> blackListedMods = new HashSet<>();
+        Set<ModifierIDs> blackListedMods = new HashSet<>();
         //Filter mods with incompatible item level /or blocked mods
-        for (ModifierList mod : availableMods){
+        for (ModifierIDs mod : availableMods){
             Set<Integer> tierLevels = modPool.get(mod).keySet();
             if (!checkModAvailability(tierLevels, itemLevel)){
                 blackListedMods.add(mod);
@@ -52,8 +52,8 @@ public class NewModifier implements Serializable {
             Utils.log("No mods available");
             return null;
         }
-        List<ModifierList> availableModList = new ArrayList<>(availableMods);
-        ModifierList selectedMod = availableModList.get(CraftingUtils.getRandomNumber(0, (availableModList.size()-1))); //Getting a random available mod
+        List<ModifierIDs> availableModList = new ArrayList<>(availableMods);
+        ModifierIDs selectedMod = availableModList.get(CraftingUtils.getRandomNumber(0, (availableModList.size()-1))); //Getting a random available mod
         byte tierCap = getMaximumAllowedTier(new ArrayList<>(modPool.get(selectedMod).keySet()), itemLevel);
         byte selectedTier = (byte) CraftingUtils.getRandomNumber(0, tierCap);
         int[] selectedValue = randomizeValue(selectedMod, selectedTier, modPool);
@@ -64,14 +64,14 @@ public class NewModifier implements Serializable {
         } else {
             basePercentile = (byte) (100*(selectedTier/(float) tierCap));
         }
-        return new NewModifier(selectedMod, selectedTier, selectedValue, basePercentile);
+        return new Modifier(selectedMod, selectedTier, selectedValue, basePercentile);
     }
 
     @NotNull
-    private static Set<ModifierList> filterAvailableMods(Map<ModifierList, Map<Integer, int[]>> modPool, List<NewModifier> currentItemMods) {
-        Set<ModifierList> availableMods = modPool.keySet(); //All possible mods/affixes
-        for (NewModifier mod : currentItemMods){ //If the item alredy has a mod from this modPool, remove it from available mods
-            availableMods.remove(mod.getModifier());
+    private static Set<ModifierIDs> filterAvailableMods(Map<ModifierIDs, Map<Integer, int[]>> modPool, List<Modifier> currentItemMods) {
+        Set<ModifierIDs> availableMods = modPool.keySet(); //All possible mods/affixes
+        for (Modifier mod : currentItemMods){ //If the item alredy has a mod from this modPool, remove it from available mods
+            availableMods.remove(mod.getModifierID());
         }
         return availableMods;
     }
@@ -93,7 +93,7 @@ public class NewModifier implements Serializable {
         int initialTier = orderedTierList.get(0);
         return itemLevel >= initialTier;
     }
-    public static int[] randomizeValue(ModifierList selectedMod, int selectedTier, Map<ModifierList, Map<Integer, int[]>> modPool){
+    public static int[] randomizeValue(ModifierIDs selectedMod, int selectedTier, Map<ModifierIDs, Map<Integer, int[]>> modPool){
         List<Integer> sortedTierList = new ArrayList<>(modPool.get(selectedMod).keySet());
         sortedTierList.sort(Comparator.naturalOrder());
         int tierIlvl = sortedTierList.get(selectedTier);
@@ -129,10 +129,10 @@ public class NewModifier implements Serializable {
     private void setValue(int[] value){
         this.value = value;
     }
-    public ModifierList getModifier() {
+    public ModifierIDs getModifierID() {
         return modifier;
     }
-    public void setModifier(ModifierList modifier) {
+    public void setModifier(ModifierIDs modifier) {
         this.modifier = modifier;
     }
     public void setBasePercentile(byte basePercentile) {

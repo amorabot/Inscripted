@@ -4,6 +4,8 @@ import com.amorabot.inscripted.APIs.MedicalCareAPI;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.HitComponent;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Mobs.DefensePresets;
 import com.amorabot.inscripted.components.Mobs.MobStats;
 import com.amorabot.inscripted.components.Mobs.MobStatsContainer;
@@ -12,10 +14,7 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.Mob;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.ZombieVillager;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -101,10 +100,34 @@ public class MobCommand implements TabExecutor {
                             DefensePresets.BASIC_EVASIVE);
 
                     zombieVillager.getPersistentDataContainer().set(mobKey, new MobStatsContainer(), zombieStats);
-                    String zombieName = ColorUtils.translateColorCodes("&6&lMeno" + " &7[Lv." + zombieStats.getMobLevel() + "]");
+                    String zombieName = ColorUtils.translateColorCodes( "&e" + DamageTypes.LIGHTNING.getCharacter() + " "
+                            + "&c" + DefenceTypes.ARMOR.getSpecialChar() + "&e" + DefenceTypes.ARMOR.getSpecialChar() + "&b" + DefenceTypes.ARMOR.getSpecialChar() +
+                            " &6&lMeno" + " &7[Lv." + zombieStats.getMobLevel() + "]");
 
                     zombieVillager.setCustomName(zombieName);
                     zombieVillager.setCustomNameVisible(true);
+                    break;
+                case "Nengue":
+                    Enderman nengue = locationToSpawn.getWorld().spawn(player.getLocation().clone(), Enderman.class);
+                    MedicalCareAPI.showMobGoals(player,nengue);
+
+                    nengue.setMaximumNoDamageTicks(5);
+                    nengue.setHealth(1);
+
+                    MobStats nengueStats = new MobStats(
+                            999,
+                            new HitComponent(
+                                    new int[]{100,120}, new int[2], new int[2], new int[2], new int[]{200,250},
+                                    10F, 0, 0, 0, 0),
+                            new HealthComponent(5000, 20, 0, 0, 10),
+                            DefensePresets.ABYSS_RESISTANT);
+
+                    nengue.getPersistentDataContainer().set(mobKey, new MobStatsContainer(), nengueStats);
+
+                    String nenguename = ColorUtils.translateColorCodes("&d&lNengue" + " &7[Lv." + nengueStats.getMobLevel() + "]");
+
+                    nengue.setCustomName(nenguename);
+                    nengue.setCustomNameVisible(true);
                     break;
             }
 
@@ -123,6 +146,7 @@ public class MobCommand implements TabExecutor {
             //Ideally comes from a Enum
             mobList.add("Dummy");
             mobList.add("TestMob");
+            mobList.add("Nengue");
 
             return mobList;
         } else if (strings.length == 2) { //%Life modifiers, for example

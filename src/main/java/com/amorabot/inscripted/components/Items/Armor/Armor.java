@@ -1,7 +1,6 @@
 package com.amorabot.inscripted.components.Items.Armor;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.DataStructures.NewModifier;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Abstract.ItemRenderer;

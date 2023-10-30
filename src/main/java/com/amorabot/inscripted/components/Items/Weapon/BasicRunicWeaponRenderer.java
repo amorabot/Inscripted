@@ -6,7 +6,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.RangeTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.NewModifier;
+import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.inscripted.utils.ColorUtils;
 import net.kyori.adventure.text.Component;
@@ -50,22 +50,22 @@ public class BasicRunicWeaponRenderer implements ItemRenderer {
         Weapon weaponData = (Weapon) itemData;
         String valuesColor = "&#95dbdb"; //pale baby blue
 
-        List<NewModifier> mods = weaponData.getModifiers();
-        List<NewModifier> prefixes = new ArrayList<>();
-        List<NewModifier> suffixes = new ArrayList<>(); //Alternativa: Implementar equals() ou um comparador
-        for (NewModifier mod : mods){
-            if (mod.getModifier().getAffixType() == Affix.PREFIX){
+        List<Modifier> mods = weaponData.getModifiers();
+        List<Modifier> prefixes = new ArrayList<>();
+        List<Modifier> suffixes = new ArrayList<>(); //Alternativa: Implementar equals() ou um comparador
+        for (Modifier mod : mods){
+            if (mod.getModifierID().getAffixType() == Affix.PREFIX){
                 prefixes.add(mod);
             } else {
                 suffixes.add(mod);
             }
         }
 
-        for (NewModifier mod : prefixes){
+        for (Modifier mod : prefixes){
             String modifierDisplayName = getDisplayString(mod, valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
-        for (NewModifier mod : suffixes){
+        for (Modifier mod : suffixes){
             String modifierDisplayName = getDisplayString(mod, valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
@@ -77,9 +77,9 @@ public class BasicRunicWeaponRenderer implements ItemRenderer {
     }
 
     @NotNull
-    private String getDisplayString(NewModifier mod, String valuesColor, int indent) {
-        String modifierDisplayName = "&7" + mod.getModifier().getDisplayName() + "  ";
-        RangeTypes rangeType = mod.getModifier().getRangeType();
+    private String getDisplayString(Modifier mod, String valuesColor, int indent) {
+        String modifierDisplayName = "&7" + mod.getModifierID().getDisplayName() + "  ";
+        RangeTypes rangeType = mod.getModifierID().getRangeType();
         switch (rangeType){
             case SINGLE_VALUE -> {}
             case SINGLE_RANGE -> modifierDisplayName = (modifierDisplayName

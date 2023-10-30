@@ -2,7 +2,7 @@ package com.amorabot.inscripted.components.Items.Abstract;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
-import com.amorabot.inscripted.components.Items.DataStructures.NewModifier;
+import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,7 +23,7 @@ public abstract class Item implements Serializable {
     protected String name;
     protected Material vanillaMaterial;
     protected boolean corrupted;
-    private List<NewModifier> modifiers = new ArrayList<>();
+    private List<Modifier> modifiers = new ArrayList<>();
 
     public Item(int ilvl, ItemTypes category){
         this.ilvl = ilvl;
@@ -145,15 +145,15 @@ public abstract class Item implements Serializable {
         //If ilvl is greater than T5 threshold, return t5
         setTier(Tiers.T5);
     }
-    public List<NewModifier> getModifiers(){
+    public List<Modifier> getModifiers(){
         return this.modifiers;
     }
-    public void addModifier(NewModifier newMod) {
+    public void addModifier(Modifier newMod) {
         getModifiers().add(newMod);
     }
     public int getStarRating() { //Voltar pra acesso protected, so pra uso interno
         float percentileSum = 0;
-        for (NewModifier mod : getModifiers()){
+        for (Modifier mod : getModifiers()){
             percentileSum += mod.getBasePercentile();
         }
         if (!getModifiers().isEmpty()){

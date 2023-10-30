@@ -8,7 +8,7 @@ import com.amorabot.inscripted.components.Items.Armor.BasicArmorGenerator;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 //import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
-import com.amorabot.inscripted.components.Items.DataStructures.NewModifier;
+import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -57,8 +57,8 @@ public class GenerateArmor implements CommandExecutor {
         try {
             if (args[4].equals("-d")){
                 assert randomArmor != null;
-                for (NewModifier mod : randomArmor.getModifiers()){
-                    player.sendMessage(mod.getModifier().getDisplayName());
+                for (Modifier mod : randomArmor.getModifiers()){
+                    player.sendMessage(mod.getModifierID().getDisplayName());
                 }
             }
             Utils.log("Running armor generation in debug mode");

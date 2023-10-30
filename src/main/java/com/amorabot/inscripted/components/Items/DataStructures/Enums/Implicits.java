@@ -4,29 +4,29 @@ import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 
 public enum Implicits {
     AXE_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.AXE.getDefaulNameColor()+"@value1@** SHRED",
-            TargetStats.SHRED, new int[]{5}, ValueTypes.FLAT_PERCENT, false),
+            TargetStats.SHRED, new int[]{5}, ValueTypes.PERCENT, false),
     AXE_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
-            null, new int[]{0}, ValueTypes.FLAT_PERCENT, false),
+            null, new int[]{0}, ValueTypes.PERCENT, false),
     SWORD_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.SWORD.getDefaulNameColor()+"@value1@** ACC",
-            TargetStats.ACCURACY, new int[]{30}, ValueTypes.FLAT_PERCENT, false),
+            TargetStats.ACCURACY, new int[]{30}, ValueTypes.PERCENT, false),
     SWORD_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
-            null, new int[]{0}, ValueTypes.FLAT_PERCENT, false),
+            null, new int[]{0}, ValueTypes.PERCENT, false),
     BOW_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.BOW.getDefaulNameColor()+"@value1@** DODGE",
             TargetStats.DODGE, new int[]{10}, ValueTypes.FLAT, false),
     BOW_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
-            null, new int[]{0}, ValueTypes.FLAT_PERCENT, false),
+            null, new int[]{0}, ValueTypes.PERCENT, false),
     DAGGER_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.DAGGER.getDefaulNameColor()+"@value1@** CRIT DMG",
-            TargetStats.CRITICAL_DAMAGE, new int[]{10}, ValueTypes.FLAT_PERCENT, false),
+            TargetStats.CRITICAL_DAMAGE, new int[]{10}, ValueTypes.PERCENT, false),
     DAGGER_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
-            null, new int[]{0}, ValueTypes.FLAT_PERCENT, false),
+            null, new int[]{0}, ValueTypes.PERCENT, false),
     WAND_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.WAND.getDefaulNameColor()+"@value1@** MAELSTROM",
-            TargetStats.MAELSTROM, new int[]{5}, ValueTypes.FLAT_PERCENT, false),
+            TargetStats.MAELSTROM, new int[]{5}, ValueTypes.PERCENT, false),
     WAND_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
-            null, new int[]{0}, ValueTypes.FLAT_PERCENT, false),
+            null, new int[]{0}, ValueTypes.PERCENT, false),
     SCEPTRE_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.SCEPTRE.getDefaulNameColor()+"@value1@** ELE DMG",
-            TargetStats.ELEMENTAL_DAMAGE, new int[]{10}, ValueTypes.FLAT_PERCENT, false),
+            TargetStats.ELEMENTAL_DAMAGE, new int[]{10}, ValueTypes.PERCENT, false),
     SCEPTRE_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
-            null, new int[]{0}, ValueTypes.FLAT_PERCENT, false),
+            null, new int[]{0}, ValueTypes.PERCENT, false),
 
     HEAVY_PLATING_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.AXE.getDefaulNameColor()+"**@value1@ STR",
             TargetStats.STRENGTH, new int[]{25}, ValueTypes.FLAT, false),
@@ -83,5 +83,15 @@ public enum Implicits {
     }
     public boolean isHybrid() {
         return hybrid;
+    }
+
+    public String getModifierKey(){ //Behaves the same as ModifierIDs version, consider merging
+        String modKey;
+        if (!isHybrid()){
+            modKey = getTargetStat().toString().replace("_", "") + "_" + getValueType();
+        } else {
+            modKey = getTargetStat() + "_" + getValueType();
+        }
+        return modKey;
     }
 }

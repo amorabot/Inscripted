@@ -3,12 +3,7 @@ version: '0.2'
 main: com.amorabot.inscripted.Inscripted
 api-version: 1.19
 permissions:
-    pluginstudies.fly:
-      description: Allows the player to use the /fly command
-    pluginstudies.menu:
-      description: Allows the player to open various menus.
-    pluginstudies.builder:
-      description: Gives the player the building privileges.
+
 commands:
   updatenbt:
     description: Updates a item's item level NBT data.

@@ -22,6 +22,5 @@ public class EventAPI {
 
     public static void callWeaponEquipEvent(Event event, ItemStack weaponItem){
         Bukkit.getServer().getPluginManager().callEvent(new WeaponEquipEvent(event, weaponItem));
-        Utils.log("weapon equip API call #DEBUG");
     }
 }

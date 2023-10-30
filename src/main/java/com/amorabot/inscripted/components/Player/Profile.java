@@ -4,17 +4,22 @@ import com.amorabot.inscripted.components.DamageComponent;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.HitComponent;
+import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
 //import com.amorabot.rpgelements.components.Items.Armor.ArmorModifiers;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 //import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
-import com.amorabot.inscripted.components.Items.DataStructures.ModifierList;
-import com.amorabot.inscripted.components.Items.DataStructures.NewModifier;
+import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
+import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.utils.Utils;
 //import com.amorabot.rpgelements.components.Items.Weapon.WeaponModifiers;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 //import static com.amorabot.inscripted.components.DamageComponent.applyPercentDamage;
@@ -138,6 +143,98 @@ public class Profile {
 
         int[] addedAbyssal = new int[2];
 
+        Map<String, int[]> compiledStats = new HashMap<>();
+
+        int healthSum = 0;
+
+        int wardSum = 0;
+        int armorSum = 0;
+        int dodgeSum = 0;
+        //Compiling Armor data
+        Armor[] equippedArmorSet = stats.getArmorSet();
+        for (Armor equippedArmor : equippedArmorSet){
+            if (equippedArmor == null){
+                continue;
+            }
+            Utils.log(equippedArmor.getName());
+            /*
+            After they are generated,
+            SINGLE_VALUES stay unchanged, still a standalone int
+            SINGLE_RANGE values become a Single value ===>  [12, 35] -> 27
+            DOUBLE_RANGE becomes a SINGLE_RANGE array ===>  [12,35,  40,56] -> [20, 46]
+            And so on... (In case more complex mods are added)
+            So when accessing these MAPPED/ALREADY GENERATED values, assume this structure
+            */
+
+            //Redirect base stats
+            healthSum += equippedArmor.getBaseHealth();
+            Map<DefenceTypes, Integer> defences = equippedArmor.getDefencesMap();
+            if (defences.containsKey(DefenceTypes.WARD)){wardSum += defences.get(DefenceTypes.WARD);}
+            if (defences.containsKey(DefenceTypes.ARMOR)){armorSum += defences.get(DefenceTypes.ARMOR);}
+            if (defences.containsKey(DefenceTypes.DODGE)){dodgeSum += defences.get(DefenceTypes.DODGE);}
+            //....
+
+            compileItem(compiledStats, equippedArmor);
+        }
+        updateModValue(compiledStats, ModifierIDs.HEALTH.getModifierKey(), new int[]{healthSum});
+
+        updateModValue(compiledStats, ModifierIDs.WARD.getModifierKey(), new int[]{wardSum});
+        updateModValue(compiledStats, ModifierIDs.ARMOR.getModifierKey(), new int[]{armorSum});
+        updateModValue(compiledStats, ModifierIDs.DODGE.getModifierKey(), new int[]{dodgeSum});
+
+        //Compiling Weapon data
+        if (hasWeaponEquipped()){
+            Weapon equippedWeapon = stats.getWeaponSlot();
+
+            //Redirect base stats
+            Map<DamageTypes, int[]> weaponBaseDamage = equippedWeapon.getBaseDamage();
+            //....
+
+            compileItem(compiledStats, equippedWeapon);
+        }
+
+        Utils.log("-----START-----");
+        for (Map.Entry<String, int[]> stat : compiledStats.entrySet()){
+            int[] values = stat.getValue();
+            Utils.log(stat.getKey());
+            if (values.length == 1){
+                Utils.log("Value: "+values[0]);
+            } else if (values.length == 2){
+                Utils.log("Value: "+values[0] + " / " + values[1]);
+            } else if (values.length == 4){
+                Utils.log("Value1: "+values[0] + " / " + values[1]);
+                Utils.log("Value2: "+values[2] + " / " + values[3]);
+            }
+        }
+        Utils.log("----------------------");
+
+        //Lets see what stats were compiled through the compiledStats map's keySet:
+        String modKey = ModifierIDs.INTELLIGENCE.getModifierKey();
+        if (compiledStats.containsKey(ModifierIDs.INTELLIGENCE.getModifierKey())){
+            Utils.log("Temos INT!, compilando...");
+            //Tokenization
+            //Can be expanded with more complex regex.
+            //For now, assumes a standard naming for more complex hybrid mods (See ModifierIDs class for more info)
+            String[] modTokens = modKey.split("_");
+            String typeToken = modTokens[modTokens.length-1]; //The last string should be the "valueType" key.
+            //Tokenization explanation:
+
+            //...
+            try {
+                //Non-Hybrid Mods
+                String modToken = modTokens[0];
+                String methodKey = "set"+modToken;
+                Method method = this.getClass().getDeclaredMethod(methodKey, String.class,int[].class);
+                Utils.log("Temos o método set" + modToken + "!!!");
+                method.invoke(this, typeToken, (Object) compiledStats.get(modKey));
+            } catch (NoSuchMethodException exception){
+                Utils.log("No 'Set' method for " + "INTELLIGENCE");
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        //OLD STUFF FROM NOW ON
 
         //Getting stats from armor
         for (Armor armorPiece : getStats().getArmorSet()){
@@ -193,20 +290,18 @@ public class Profile {
             }
 
             //Mapping modifiers to stats
-//            for (Modifier<ArmorModifiers> armorMod : armorPiece.getModifiers()){
-            for (NewModifier armorMod : armorPiece.getModifiers()){
-                //TODO: Encapsular o somatório nas variáveis
-                ModifierList mod = armorMod.getModifier();
+            for (Modifier armorMod : armorPiece.getModifiers()){
+                ModifierIDs mod = armorMod.getModifierID();
                 switch (mod.getTargetStat()){
                     case HEALTH -> {
                         switch (mod.getValueType()){
                             case FLAT -> {
                                 flatHealthSum += armorMod.getValue()[0];
                             }
-                            case PERCENT_ADDED -> {
+                            case ADDED -> {
                                 percentHealthSum += armorMod.getValue()[0];
                             }
-                            case PERCENT_MULTI -> {
+                            case MULTI -> {
                                 //Not available yet
                             }
                         }
@@ -338,7 +433,7 @@ public class Profile {
                 case ACCURACY -> {
                     switch (weaponImplicit.getValueType()){
                         case FLAT -> accuracySum += weaponImplicit.getValue()[0];
-                        case PERCENT_ADDED -> percentAccuracySum += weaponImplicit.getValue()[0];
+                        case ADDED -> percentAccuracySum += weaponImplicit.getValue()[0];
                     }
                 }
                 case DODGE -> flatDodgeSum += weaponImplicit.getValue()[0];
@@ -349,26 +444,26 @@ public class Profile {
             //Getting stats from weapon modifiers
 
             //Getting weapon stats
-            for (NewModifier mod : weaponData.getModifiers()){
-                TargetStats targetStat = mod.getModifier().getTargetStat();
-                ValueTypes valueType = mod.getModifier().getValueType();
+            for (Modifier mod : weaponData.getModifiers()){
+                TargetStats targetStat = mod.getModifierID().getTargetStat();
+                ValueTypes valueType = mod.getModifierID().getValueType();
                 int[] modValue = mod.getValue();
                 switch (targetStat){
                     case STAMINA -> { //Updating Stamina Stats
                         switch (valueType){
                             case FLAT -> flatStaminaSum += modValue[0];
-                            case PERCENT_ADDED -> percentStaminaSum += modValue[0];
+                            case ADDED -> percentStaminaSum += modValue[0];
                         }
                     }
                     case ACCURACY -> { //Updating Accuracy Stats
                         switch (valueType){
                             case FLAT -> accuracySum += modValue[0];
-                            case PERCENT_ADDED -> percentAccuracySum += modValue[0];
+                            case ADDED -> percentAccuracySum += modValue[0];
                         }
                     }
                     case BLEED -> bleedSum += modValue[0]; //There's only %bleed
                     case CRITICAL -> { //Updating Crit. Stats
-                        if (valueType == ValueTypes.PERCENT_ADDED) {
+                        if (valueType == ValueTypes.ADDED) {
                             percentCritChanceSum += modValue[0];
                         }
                     }
@@ -403,6 +498,9 @@ public class Profile {
 
         //Setting misc.
         Miscellaneous miscComponent = getMiscellaneous();
+
+//        Miscellaneous.class.getDeclaredMethods()[0].invoke(whateverArgs);
+
         miscComponent.setWalkSpeed(walkSpeedSum);
 
         miscComponent.setExtraStamina(flatStaminaSum);
@@ -444,7 +542,44 @@ public class Profile {
         damageComponent.applyDamageMods();
     }
 
-    //todo: Arrumar triggers de update no profile
+    private void compileItem(Map<String, int[]> compiledStats, Item equippedItem){
+        //Compiling mods
+        List<Modifier> armorMods = equippedItem.getModifiers();
+        for (Modifier mod : armorMods){
+            //Ignore local physical mods for weapons
+            if ((equippedItem instanceof Weapon) && (mod.getModifierID() == ModifierIDs.ADDED_PHYSICAL || mod.getModifierID() == ModifierIDs.PERCENT_PHYSICAL)){continue;}
+
+            ModifierIDs modifierID = mod.getModifierID();
+            compileStat(compiledStats, modifierID, mod.getValue().clone());
+        }
+
+        //Compiling implicit
+        Implicits implicitID = equippedItem.getImplicit();
+        compileStat(compiledStats, implicitID, implicitID.getValue().clone());
+    }
+
+    private void compileStat(Map<String, int[]> compiledStats, ModifierIDs modID, int[] values){
+        String modKey = modID.getModifierKey();
+        updateModValue(compiledStats, modKey, values);
+    }
+    //TODO: Merge both methods
+    private void compileStat(Map<String, int[]> compiledStats, Implicits implicitID, int[] values){
+        String modKey = implicitID.getModifierKey();
+        updateModValue(compiledStats, modKey, values);
+    }
+
+    private void updateModValue(Map<String, int[]> compiledStats, String modKey, int[] value){
+        if (compiledStats.containsKey(modKey)){
+            int[] previousValue = compiledStats.get(modKey).clone();
+            for (int i = 0; i < previousValue.length; i++){
+                value[i] += previousValue[i];
+            }
+            compiledStats.put(modKey, value);
+        } else {
+            compiledStats.put(modKey, value);
+        }
+    }
+
     public void updateMainHand(Weapon weapon){
         getStats().setWeaponSlot(weapon);
         updateProfile();
@@ -457,7 +592,24 @@ public class Profile {
         return this.stats.getWeaponSlot() != null;
     }
 
-    private void setDamage(DamageComponent damage) {
-        this.damage = damage;
+    private void setINTELLIGENCE(String typeToken, int[] intelligenceValue){
+        ValueTypes type = null;
+        try {
+            type = ValueTypes.valueOf(typeToken);
+        } catch (IllegalArgumentException exception){
+            Utils.log("Invalid typeToken (INTELLIGENCE setter)");
+        }
+        if (type == null){
+            return;
+        }
+        switch (type){
+            case FLAT -> {
+                Utils.log(intelligenceValue[0] + " :D");
+            }
+            case MULTI -> {
+
+            }
+            default -> Utils.log("TypeToken not handled: " + typeToken + "in INTELLIGENCE setter");
+        }
     }
 }

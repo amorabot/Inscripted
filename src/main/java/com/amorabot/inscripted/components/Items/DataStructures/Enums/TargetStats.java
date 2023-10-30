@@ -25,7 +25,18 @@ public enum TargetStats {
     LIGHTNING_RESISTANCE,
     ABYSSAL_RESISTANCE,
     PHYSICAL_DAMAGE,
-    PHYSICAL_DAMAGE_ACCURACY,
+    /*
+    * Modifiers compostos como PHYSICALDAMAGE_ACCURACY devem seguir essa regra de nomenclatura pois, durante o processo
+    * de compilação dos stats, todos os modificadores que tem como target PHYSICAL_DAMAGE são reconhecidos pela key "PHYSICALDAMAGE"
+    *
+    * Isso simplifica o processo de redirecionamento de stats hibridos onde o nome teria mais de uma "_", permitindo separar imediatamente
+    * o modificador em 2 tokens coerentes para o compilador, "PHYSICALDAMAGE" e "ACCURACY".
+    *
+    * O mesmo resultado poderia ser obtido ao dar para o compilador o contexto de que se trata de um modificador hibrido com nome composto
+    * (No caso, PHYSICAL_DAMAGE) e efetuar as devidas transformacoes na string. Mas para fins de simplicidade e estrutura, mods hibridos
+    * com nomes compostos devem ser declarados já em sua forma simplificada.
+     */
+    PHYSICALDAMAGE_ACCURACY,
     FIRE_DAMAGE,
     COLD_DAMAGE,
     LIGHTNING_DAMAGE,
@@ -34,7 +45,7 @@ public enum TargetStats {
     ACCURACY,
     BLEED,
     CRITICAL,
-    BASE_CRITICAL,
+//    BASE_CRITICAL,
     CRITICAL_DAMAGE,
     LIFE_ON_HIT,
     LIFESTEAL,
