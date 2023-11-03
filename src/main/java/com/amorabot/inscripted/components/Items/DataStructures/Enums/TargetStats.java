@@ -24,6 +24,7 @@ public enum TargetStats {
     COLD_RESISTANCE,
     LIGHTNING_RESISTANCE,
     ABYSSAL_RESISTANCE,
+    //Add resistance cap targets and stats
     PHYSICAL_DAMAGE,
     /*
     * Modifiers compostos como PHYSICALDAMAGE_ACCURACY devem seguir essa regra de nomenclatura pois, durante o processo
@@ -44,7 +45,7 @@ public enum TargetStats {
     ABYSSAL_DAMAGE,
     ACCURACY,
     BLEED,
-    CRITICAL,
+    CRITICAL_CHANCE,
 //    BASE_CRITICAL,
     CRITICAL_DAMAGE,
     LIFE_ON_HIT,

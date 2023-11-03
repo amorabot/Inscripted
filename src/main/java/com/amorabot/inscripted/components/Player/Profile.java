@@ -6,24 +6,19 @@ import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.HitComponent;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
-//import com.amorabot.rpgelements.components.Items.Armor.ArmorModifiers;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
-//import com.amorabot.rpgelements.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
 import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.utils.Utils;
-//import com.amorabot.rpgelements.components.Items.Weapon.WeaponModifiers;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-//import static com.amorabot.inscripted.components.DamageComponent.applyPercentDamage;
-//import static com.amorabot.inscripted.components.DamageComponent.sumWeaponFlatDamage;
 
 public class Profile {
     private HealthComponent health;
@@ -75,73 +70,11 @@ public class Profile {
         return this.damage;
     }
     private void updateProfile(){
-
-        int strSum = 0;
-        int dexSum = 0;
-        int intSum = 0;
-
-        int strMultiSum = 0;
-        int dexMultiSum = 0;
-        int intMultiSum = 0;
-
-        int flatStaminaSum = 0;
-        int percentStaminaSum = 0;
-
-        int flatHealthSum = 0;
-        int percentHealthSum = 0;
-        int healthRegenSum = 0;
-//        int percenthealthRegenSum = 0;
-
-        int flatWardSum = 0;
-        int percentWardSum = 0;
-
-        int flatArmorSum = 0;
-        int percentArmorSum = 0;
-
-        int flatDodgeSum = 0;
-
-        int walkSpeedSum = 0; //MISC
-
-        int coldResSum = 0;
-        int fireResSum = 0;
-        int lightResSum = 0;
-        int abyssResSum = 0;
-
-
-
-        Map<DamageTypes, int[]> damageMap = new HashMap<>();
-//        int baseStaminaRegen = 2;
-        int staminaRegenPercentSum = 0;
-
-        int accuracySum = 0;
-        int percentAccuracySum = 0;
-
-//        int baseCrit = 1;
-        int percentCritChanceSum = 0;
-        int percentCritDamageSum = 0;
-
-        int bleedSum = 0;
-
-        int shredSum = 0;
-        int maelstromSum = 0;
-
-        int percentElementalDamageSum = 0;
-
-        int lifeOnHitSum = 0;
-
-        int[] addedPhys = new int[2];
-        int percentPhys = 0;
-
-        int[] addedFire = new int[2];
-        int percentFire = 0;
-
-        int[] addedLightning = new int[2];
-        int percentLightning = 0;
-
-        int[] addedCold = new int[2];
-        int percentCold = 0;
-
-        int[] addedAbyssal = new int[2];
+        attributes.reset();
+        defences.reset();
+        health.reset();
+        miscellaneous.reset();
+        damage.reset(stats.getWeaponSlot()); //No problem if null
 
         Map<String, int[]> compiledStats = new HashMap<>();
 
@@ -186,9 +119,7 @@ public class Profile {
         if (hasWeaponEquipped()){
             Weapon equippedWeapon = stats.getWeaponSlot();
 
-            //Redirect base stats
-            Map<DamageTypes, int[]> weaponBaseDamage = equippedWeapon.getBaseDamage();
-            //....
+            Utils.log(equippedWeapon.getName());
 
             compileItem(compiledStats, equippedWeapon);
         }
@@ -209,345 +140,82 @@ public class Profile {
         Utils.log("----------------------");
 
         //Lets see what stats were compiled through the compiledStats map's keySet:
-        String modKey = ModifierIDs.INTELLIGENCE.getModifierKey();
-        if (compiledStats.containsKey(ModifierIDs.INTELLIGENCE.getModifierKey())){
-            Utils.log("Temos INT!, compilando...");
+        for (String modKey : compiledStats.keySet()){
+            if (!compiledStats.containsKey(modKey)){
+                continue;
+            }
             //Tokenization
             //Can be expanded with more complex regex.
             //For now, assumes a standard naming for more complex hybrid mods (See ModifierIDs class for more info)
             String[] modTokens = modKey.split("_");
             String typeToken = modTokens[modTokens.length-1]; //The last string should be the "valueType" key.
+            int tokens = modTokens.length;
             //Tokenization explanation:
 
             //...
             try {
-                //Non-Hybrid Mods
-                String modToken = modTokens[0];
-                String methodKey = "set"+modToken;
-                Method method = this.getClass().getDeclaredMethod(methodKey, String.class,int[].class);
-                Utils.log("Temos o método set" + modToken + "!!!");
-                method.invoke(this, typeToken, (Object) compiledStats.get(modKey));
+                switch (tokens){
+                    case 2:
+                        //Non-Hybrid Mods
+                        String modToken = modTokens[0];
+                        String methodKey = "set"+modToken;
+                        Method method = this.getClass().getDeclaredMethod(methodKey, String.class,int[].class);
+                        Utils.log("Temos o método set" + modToken + "!!!");
+                        method.invoke(this, typeToken, (Object) compiledStats.get(modKey));
+                        break;
+                    case 3:
+                        Utils.log("Hybrid mod");
+                        //Non-Hybrid Mods
+                        //1st mod token
+                        String mod1Token = modTokens[0];
+                        //2nd mod token
+                        String mod2Token = modTokens[1];
+
+                        //Target methods of each stat
+                        String method1Key = "set"+mod1Token;
+                        String method2Key = "set"+mod2Token;
+
+                        Method method1 = this.getClass().getDeclaredMethod(method1Key, String.class,int[].class);
+                        Method method2 = this.getClass().getDeclaredMethod(method2Key, String.class,int[].class);
+
+                        Utils.log("Temos o método set " + mod1Token + " e " + mod2Token + "!!!");
+                        //The hybrid mod structure assumes a mod like:
+                        //DEX_INT_FLAT -> [13, 15]. That is, a single int for each value
+                        //In this example, 13 FLAT DEX and 15 FLAT INT
+                        method1.invoke(this, typeToken, (Object) new int[]{compiledStats.get(modKey)[0]});
+                        method2.invoke(this, typeToken, (Object) new int[]{compiledStats.get(modKey)[1]});
+                        break;
+                    default:
+                        Utils.log("Token array size not handled: " + tokens);
+                        break;
+                }
             } catch (NoSuchMethodException exception){
-                Utils.log("No 'Set' method for " + "INTELLIGENCE");
+                Utils.log("No 'Set' method for " + modKey);
             } catch (InvocationTargetException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        //OLD STUFF FROM NOW ON
-
-        //Getting stats from armor
-        for (Armor armorPiece : getStats().getArmorSet()){
-            if (armorPiece == null){
-                continue;
-            }
-            //Adding the armors base health
-            flatHealthSum += armorPiece.getBaseHealth();
-
-            //Mapping baseStats
-            Map<DefenceTypes, Integer> defenceMap = armorPiece.getDefencesMap();
-            for (DefenceTypes def : defenceMap.keySet()){
-                switch (def){
-                    case WARD -> flatWardSum += defenceMap.get(DefenceTypes.WARD);
-                    case ARMOR -> flatArmorSum += defenceMap.get(DefenceTypes.ARMOR);
-                    case DODGE -> flatDodgeSum += defenceMap.get(DefenceTypes.DODGE);
-                }
-            }
-
-            //Mapping implicit
-            Implicits armorImplicit = armorPiece.getImplicit();
-            int[] armorImplicitValue = armorImplicit.getValue();
-            switch (armorImplicit.getTargetStat()){
-                case STRENGTH -> {
-                    int addedAttribute = armorImplicitValue[0];
-                    strSum += addedAttribute;
-                }
-                case DEXTERITY -> {
-                    int addedAttribute = armorImplicitValue[0];
-                    dexSum += addedAttribute;
-                }
-                case INTELLIGENCE -> {
-                    int addedAttribute = armorImplicitValue[0];
-                    intSum += addedAttribute;
-                }
-                case DEXTERITY_INTELLIGENCE -> {
-                    //Only available in implicits for now
-                    //Only flat-hybrid attributes (in case of attributes, both share the same value
-                    int addedAttribute = armorImplicitValue[0];
-                    dexSum += addedAttribute;
-                    intSum += addedAttribute;
-                }
-                case STRENGTH_DEXTERITY -> {
-                    int addedAttribute = armorImplicitValue[0];
-                    dexSum += addedAttribute;
-                    strSum += addedAttribute;
-                }
-                case INTELLIGENCE_STRENGTH -> {
-                    int addedAttribute = armorImplicitValue[0];
-                    strSum += addedAttribute;
-                    intSum += addedAttribute;
-                }
-            }
-
-            //Mapping modifiers to stats
-            for (Modifier armorMod : armorPiece.getModifiers()){
-                ModifierIDs mod = armorMod.getModifierID();
-                switch (mod.getTargetStat()){
-                    case HEALTH -> {
-                        switch (mod.getValueType()){
-                            case FLAT -> {
-                                flatHealthSum += armorMod.getValue()[0];
-                            }
-                            case ADDED -> {
-                                percentHealthSum += armorMod.getValue()[0];
-                            }
-                            case MULTI -> {
-                                //Not available yet
-                            }
-                        }
-                    }
-                    case HEALTH_REGEN -> {
-                        //Only flat life regen
-                        healthRegenSum += armorMod.getValue()[0];
-                    }
-                    case STAMINA -> {
-                        if (mod.getValueType() == ValueTypes.FLAT){
-                            flatStaminaSum += armorMod.getValue()[0];
-                        } else {
-                            //ValueTypes.PERCENT_ADDED
-                            percentStaminaSum += armorMod.getValue()[0];
-                        }
-                    }
-                    case STRENGTH -> {
-                        if (mod.getValueType() == ValueTypes.FLAT){
-                            strSum += armorMod.getValue()[0];
-                        } else {
-                            //ValueTypes.PERCENT_MULTI
-                            strMultiSum += armorMod.getValue()[0];
-                        }
-                    }
-                    case DEXTERITY -> {
-                        if (mod.getValueType() == ValueTypes.FLAT){
-                            dexSum += armorMod.getValue()[0];
-                        } else {
-                            //ValueTypes.PERCENT_MULTI
-                            dexMultiSum += armorMod.getValue()[0];
-                        }
-                    }
-                    case INTELLIGENCE -> {
-                        if (mod.getValueType() == ValueTypes.FLAT){
-                            intSum += armorMod.getValue()[0];
-                        } else {
-                            //ValueTypes.PERCENT_MULTI
-                            intMultiSum += armorMod.getValue()[0];
-                        }
-                    }
-                    case WARD -> {
-                        if (mod.getValueType() == ValueTypes.FLAT){
-                            flatWardSum += armorMod.getValue()[0];
-                        } else {//PERCENT_ADDED
-                            percentWardSum += armorMod.getValue()[0];
-                        }
-                    }
-                    case ARMOR -> {
-                        if (mod.getValueType() == ValueTypes.FLAT){
-                            flatArmorSum+= armorMod.getValue()[0];
-                        } else {//PERCENT_ADDED
-                            percentArmorSum += armorMod.getValue()[0];
-                        }
-                    }
-                    //Hybrid mod section => double range (2 single ranges)
-                    case ARMOR_HEALTH -> {
-                        if (mod.getValueType().equals(ValueTypes.FLAT)){
-                            int[] modValues = armorMod.getValue();
-                            flatArmorSum += modValues[0];
-                            flatHealthSum += modValues[1];
-                        }
-                    }
-                    case ARMOR_DODGE -> {
-                        if (mod.getValueType().equals(ValueTypes.FLAT)){
-                            int[] modValues = armorMod.getValue();
-                            flatArmorSum += modValues[0];
-                            flatDodgeSum += modValues[1];
-                        }
-                    }
-                    case ARMOR_WARD -> {
-                        if (mod.getValueType().equals(ValueTypes.FLAT)){
-                            int[] modValues = armorMod.getValue();
-                            flatArmorSum += modValues[0];
-                            flatWardSum += modValues[1];
-                        }
-                    }
-                    case WARD_HEALTH -> {
-                        if (mod.getValueType().equals(ValueTypes.FLAT)){
-                            int[] modValues = armorMod.getValue();
-                            flatWardSum += modValues[0];
-                            flatHealthSum += modValues[1];
-                        }
-                    }
-                    case DODGE_HEALTH -> {
-                        if (mod.getValueType().equals(ValueTypes.FLAT)){
-                            int[] modValues = armorMod.getValue();
-                            flatDodgeSum += modValues[0];
-                            flatHealthSum += modValues[1];
-                        }
-                    }
-                    case DODGE_WARD -> {
-                        if (mod.getValueType().equals(ValueTypes.FLAT)){
-                            int[] modValues = armorMod.getValue();
-                            flatDodgeSum += modValues[0];
-                            flatWardSum += modValues[1];
-                        }
-                    }
-                    //----------------------------------------------------
-                    case DODGE -> {
-                        flatDodgeSum+= armorMod.getValue()[0];
-                    }
-                    case WALK_SPEED -> {
-                        walkSpeedSum += armorMod.getValue()[0];
-                    }
-                    case COLD_RESISTANCE -> {
-                        coldResSum += armorMod.getValue()[0];
-                    }
-                    case FIRE_RESISTANCE -> {
-                        fireResSum += armorMod.getValue()[0];
-                    }
-                    case LIGHTNING_RESISTANCE -> {
-                        lightResSum += armorMod.getValue()[0];
-                    }
-                    case ABYSSAL_RESISTANCE -> {
-                        abyssResSum += armorMod.getValue()[0];
-                    }
-                }
-            }
-        }
-        //Getting stats from weapon
-        Weapon weaponData = getStats().getWeaponSlot();
-        if (weaponData != null){
-            //Mapping base stats from weapon
-
-            //Applying weapon implicits
-            Implicits weaponImplicit = weaponData.getImplicit();
-            switch (weaponImplicit.getTargetStat()){
-                case SHRED -> shredSum += weaponImplicit.getValue()[0]; //Theres only % Shred
-                case ACCURACY -> {
-                    switch (weaponImplicit.getValueType()){
-                        case FLAT -> accuracySum += weaponImplicit.getValue()[0];
-                        case ADDED -> percentAccuracySum += weaponImplicit.getValue()[0];
-                    }
-                }
-                case DODGE -> flatDodgeSum += weaponImplicit.getValue()[0];
-                case CRITICAL_DAMAGE -> percentCritDamageSum += weaponImplicit.getValue()[0]; //Theres only % Crit DMG
-                case MAELSTROM -> maelstromSum += weaponImplicit.getValue()[0]; //Theres only % Crit DMG
-                case ELEMENTAL_DAMAGE -> percentElementalDamageSum += weaponImplicit.getValue()[0]; //Theres only % Ele DMG
-            }
-            //Getting stats from weapon modifiers
-
-            //Getting weapon stats
-            for (Modifier mod : weaponData.getModifiers()){
-                TargetStats targetStat = mod.getModifierID().getTargetStat();
-                ValueTypes valueType = mod.getModifierID().getValueType();
-                int[] modValue = mod.getValue();
-                switch (targetStat){
-                    case STAMINA -> { //Updating Stamina Stats
-                        switch (valueType){
-                            case FLAT -> flatStaminaSum += modValue[0];
-                            case ADDED -> percentStaminaSum += modValue[0];
-                        }
-                    }
-                    case ACCURACY -> { //Updating Accuracy Stats
-                        switch (valueType){
-                            case FLAT -> accuracySum += modValue[0];
-                            case ADDED -> percentAccuracySum += modValue[0];
-                        }
-                    }
-                    case BLEED -> bleedSum += modValue[0]; //There's only %bleed
-                    case CRITICAL -> { //Updating Crit. Stats
-                        if (valueType == ValueTypes.ADDED) {
-                            percentCritChanceSum += modValue[0];
-                        }
-                    }
-                    case SHRED -> shredSum += modValue[0]; //There's only %shred
-                    case MAELSTROM -> maelstromSum += modValue[0];
-                    case ELEMENTAL_DAMAGE -> percentElementalDamageSum += modValue[0]; //There's only %eleDMG
-                    case LIFE_ON_HIT -> lifeOnHitSum += modValue[0];
-                    case STRENGTH -> strSum += modValue[0];
-                    case DEXTERITY -> dexSum += modValue[0];
-                    case INTELLIGENCE -> intSum += modValue[0];
-                    case STAMINA_REGEN -> staminaRegenPercentSum += modValue[0];
-                    //ADD SPECIFIC ELEMENT MODS (fire light cold)
-                    //Add VS MOBS, VS PLAYERS
-                }
-            }
-            Map<DamageTypes, int[]> originalDamageMap = weaponData.getBaseDamage(); //Will be cloned to be modified
-            for (DamageTypes dmgType : originalDamageMap.keySet()){ //Turn into a entrySet
-                damageMap.put(dmgType, originalDamageMap.get(dmgType));
-            }
-        }
-
-        //Setting attributes
-        getAttributes().updateStats(strSum, strMultiSum, dexSum, dexMultiSum, intSum, intMultiSum);
-        flatHealthSum += getAttributes().getStrength()/3;
-        flatWardSum += getAttributes().getIntelligence()/5;
-
-        //Setting defences
-        getDefenceComponent().update(fireResSum, coldResSum, lightResSum, abyssResSum, flatArmorSum, percentArmorSum, flatDodgeSum);
-
-        //Setting health
-        getHealthComponent().updateHealthComponent(flatHealthSum, percentHealthSum, healthRegenSum, flatWardSum, percentWardSum);
-
-        //Setting misc.
-        Miscellaneous miscComponent = getMiscellaneous();
-
-//        Miscellaneous.class.getDeclaredMethods()[0].invoke(whateverArgs);
-
-        miscComponent.setWalkSpeed(walkSpeedSum);
-
-        miscComponent.setExtraStamina(flatStaminaSum);
-        miscComponent.setPercentStamina(percentStaminaSum);
-
-        miscComponent.setExtraStaminaRegen(0); // #NOT IMPLEMENTED#
-        miscComponent.setPercentStaminaRegen(staminaRegenPercentSum);
-
-        //Setting the player's damage
-        DamageComponent damageComponent = getDamageComponent();
-
-        damageComponent.reset(weaponData); //No problem if null
-        damageComponent.setLifeOnHit(lifeOnHitSum);
-        damageComponent.setLifeSteal(0); // #NOT IMPLEMENTED#
-        damageComponent.setAreaDamage(0); // #NOT IMPLEMENTED#
-        damageComponent.setIncreasedPhysicalDamage(percentPhys);
-        damageComponent.setIncreasedElementalDamage(percentElementalDamageSum);
-        damageComponent.setIncreasedFireDamage(percentFire);
-        damageComponent.setIncreasedLightningDamage(percentLightning);
-        damageComponent.setIncreasedColdDamage(percentCold);
-        damageComponent.setIncreasedAbyssalDamage(0); // #NOT IMPLEMENTED#
-
-        //Now that the damage component is set, lets setup the hit component
-        HitComponent hitComponent = damageComponent.getHitData();
-        hitComponent.setAccuracy(accuracySum);
-        hitComponent.setCritChance(percentCritChanceSum);
-        hitComponent.setCritDamage(percentCritDamageSum);
-        hitComponent.setShred(shredSum);
-        hitComponent.setMaelstrom(maelstromSum);
-        hitComponent.setBleedChance(bleedSum);
-
-        //Adding any flat damage from items, and then amplifying them
-        hitComponent.addFlatDamage(DamageTypes.PHYSICAL, addedPhys);
-        hitComponent.addFlatDamage(DamageTypes.FIRE, addedFire);
-        hitComponent.addFlatDamage(DamageTypes.LIGHTNING, addedLightning);
-        hitComponent.addFlatDamage(DamageTypes.COLD, addedCold);
-        hitComponent.addFlatDamage(DamageTypes.ABYSSAL, addedAbyssal);
-
-        damageComponent.applyDamageMods();
+        attributes.update(this);
+        defences.update(this);
+        health.update(this);
+        miscellaneous.update(this);
+        damage.update(this);
     }
 
     private void compileItem(Map<String, int[]> compiledStats, Item equippedItem){
         //Compiling mods
         List<Modifier> armorMods = equippedItem.getModifiers();
         for (Modifier mod : armorMods){
-            //Ignore local physical mods for weapons
-            if ((equippedItem instanceof Weapon) && (mod.getModifierID() == ModifierIDs.ADDED_PHYSICAL || mod.getModifierID() == ModifierIDs.PERCENT_PHYSICAL)){continue;}
+            //Ignore local damage mods for weapons
+            Set<ModifierIDs> ignoredWeaponMods = Set.of(
+                      ModifierIDs.ADDED_PHYSICAL
+                    , ModifierIDs.ADDED_FIRE
+                    , ModifierIDs.ADDED_LIGHTNING
+                    , ModifierIDs.ADDED_COLD
+                    , ModifierIDs.ADDED_ABYSSAL
+                    , ModifierIDs.PERCENT_PHYSICAL);
+            if ((equippedItem instanceof Weapon) && (ignoredWeaponMods.contains(mod.getModifierID())) ){continue;}
 
             ModifierIDs modifierID = mod.getModifierID();
             compileStat(compiledStats, modifierID, mod.getValue().clone());
@@ -592,24 +260,277 @@ public class Profile {
         return this.stats.getWeaponSlot() != null;
     }
 
+    /*
+    Compiler methods use the "add" method for each stat because that stat can, hipotetically,
+    come from all different sources. If that is the case, the previous stat would be
+    overriden and not accumulated, as it should
+
+    Apart from using the add method, at the end of the compilation step all components
+    should be updated to signal this. The update() method does all final calculations
+    and cross-stat modifications needed for each component.
+
+    The compilation process, basically, is:
+
+    Reset all player components -> Compile all stats -> Fill all the fresh components -> Update all
+    */
+    private void setHEALTH(String typeToken, int[] healthValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> health.addBaseHealth(healthValue[0]);
+            case ADDED -> health.addIncreasedHealth(healthValue[0]);
+            //No multiplier mods for HEALTH
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in HEALTH setter");
+        }
+    }
+    private void setHEALTHREGEN(String typeToken, int[] healthRegenValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> health.addBaseHealthRegen(healthRegenValue[0]);
+            //No %Added health regen mods
+            //No multiplier mods for HEALTHREGEN
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in HEALTHREGEN setter");
+        }
+    }
+    private void setWARD(String typeToken, int[] wardValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> health.addBaseWard(wardValue[0]);
+            case ADDED -> health.addIncreasedWard(wardValue[0]);
+            //No multiplier mods for WARD
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in WARD setter");
+        }
+    }
+    private void setSTRENGTH(String typeToken, int[] strengthValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> attributes.addBaseStrength(strengthValue[0]);
+            case MULTI -> attributes.addBaseStrMulti(strengthValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in STRENGTH setter");
+        }
+    }
+    private void setDEXTERITY(String typeToken, int[] dexterityValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> attributes.addBaseDexterity(dexterityValue[0]);
+            case MULTI -> attributes.addBaseDexMulti(dexterityValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in DEXTERITY setter");
+        }
+    }
     private void setINTELLIGENCE(String typeToken, int[] intelligenceValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> attributes.addBaseIntelligence(intelligenceValue[0]);
+            case MULTI -> attributes.addBaseIntMulti(intelligenceValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in INTELLIGENCE setter");
+        }
+    }
+    private void setDODGE(String typeToken, int[] dodgeValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> defences.addBaseDodge(dodgeValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in DODGE setter");
+        }
+    }
+    private void setARMOR(String typeToken, int[] armorValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> defences.addBaseArmor(armorValue[0]);
+            case ADDED -> defences.addBaseIncreasedArmor(armorValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in ARMOR setter");
+        }
+    }
+    private void setFIRERESISTANCE(String typeToken, int[] fireResValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case PERCENT -> defences.addBaseFireRes(fireResValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in FIRE RESISTANCE setter");
+        }
+    }
+    private void setLIGHTNINGRESISTANCE(String typeToken, int[] lightResValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case PERCENT -> defences.addBaseLightningResistance(lightResValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in LIGHTNING RESISTANCE setter");
+        }
+    }
+    private void setCOLDRESISTANCE(String typeToken, int[] coldResValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case PERCENT -> defences.addBaseColdResistance(coldResValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in COLD RESISTANCE setter");
+        }
+    }
+    private void setABYSSALRESISTANCE(String typeToken, int[] abyssResValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case PERCENT -> defences.addBaseAbyssalResistance(abyssResValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in ABYSS RESISTANCE setter");
+        }
+    }
+    private void setSTAMINA(String typeToken, int[] staminaValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> miscellaneous.addBaseStamina(staminaValue[0]);
+            case ADDED -> miscellaneous.addBasePercentStamina(staminaValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in STAMINA setter");
+        }
+    }
+    private void setSTAMINAREGEN(String typeToken, int[] staminaRegenValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> miscellaneous.addBaseStaminaRegen(staminaRegenValue[0]);
+            case ADDED -> miscellaneous.addBasePercentStaminaRegen(staminaRegenValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in STAMINA REGEN setter");
+        }
+    }
+    private void setWALKSPEED(String typeToken, int[] walkSpeedValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> miscellaneous.addBaseWalkSpeed(walkSpeedValue[0]);
+            case ADDED -> miscellaneous.addBasePercentWalkSpeed(walkSpeedValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in WALK SPEED setter");
+        }
+    }
+    private void setLIFEONHIT(String typeToken, int[] lifeOnHitValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> damage.addBaseLifeOnHit(lifeOnHitValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in LIFE ON HIT setter");
+        }
+    }
+    private void setSHRED(String typeToken, int[] shredValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case PERCENT -> damage.getHitData().addBaseShred(shredValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in SHRED setter");
+        }
+    }
+    private void setMAELSTROM(String typeToken, int[] maelstromValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case PERCENT -> damage.getHitData().addBaseMaelstrom(maelstromValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in MAELSTROM setter");
+        }
+    }
+    private void setBLEED(String typeToken, int[] bleedValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case PERCENT -> damage.getHitData().addBaseBleedChance(bleedValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in BLEED CHANCE setter");
+        }
+    }
+    private void setPHYSICALDAMAGE(String typeToken, int[] physicalValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> damage.getHitData().addFlatDamage(DamageTypes.PHYSICAL,physicalValue);
+            case ADDED -> damage.addBaseIncreasedPhysicalDamage(physicalValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in PHYS DAMAGE setter");
+        }
+    }
+    private void setFIREDAMAGE(String typeToken, int[] fireValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> damage.getHitData().addFlatDamage(DamageTypes.FIRE,fireValue);
+            case ADDED -> damage.addBaseIncreasedFireDamage(fireValue[0]);
+            //MULTI mapping shoud be added soon
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in FIRE DAMAGE setter");
+        }
+    }
+    private void setLIGHTNINGDAMAGE(String typeToken, int[] lightningValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> damage.getHitData().addFlatDamage(DamageTypes.LIGHTNING,lightningValue);
+            case ADDED -> damage.addBaseIncreasedLightningDamage(lightningValue[0]);
+            //MULTI mapping shoud be added soon
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in LIGHTNING DAMAGE setter");
+        }
+    }
+    private void setCOLDDAMAGE(String typeToken, int[] coldValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> damage.getHitData().addFlatDamage(DamageTypes.COLD,coldValue);
+            case ADDED -> damage.addBaseIncreasedColdDamage(coldValue[0]);
+            //MULTI mapping shoud be added soon
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in COLD DAMAGE setter");
+        }
+    }
+    private void setABYSSALDAMAGE(String typeToken, int[] abyssValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> damage.getHitData().addFlatDamage(DamageTypes.ABYSSAL,abyssValue);
+            case ADDED -> damage.addBaseIncreasedAbyssalDamage(abyssValue[0]);
+            //MULTI mapping shoud be added soon
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in ABYSSAL DAMAGE setter");
+        }
+    }
+    private void setELEMENTALDAMAGE(String typeToken, int[] elementalValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case ADDED -> damage.addBaseIncreasedElementalDamage(elementalValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in ELE DAMAGE setter");
+        }
+    }
+    private void setACCURACY(String typeToken, int[] accuracyValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case FLAT -> damage.getHitData().addBaseAccuracy(accuracyValue[0]);
+            case ADDED -> damage.addBaseIncreasedAccuracy(accuracyValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in ACCURACY setter");
+        }
+    }
+    private void setCRITICALCHANCE(String typeToken, int[] critChanceValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            //a FLAT mapping could be extra base crit chance!
+            case ADDED -> damage.addBaseIncreasedCritChance(critChanceValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in CRIT CHANCE setter");
+        }
+    }
+    private void setCRITICALDAMAGE(String typeToken, int[] critDamageValue){
+        ValueTypes type = mapValueType(typeToken);
+        if (type == null){return;}
+        switch (type){
+            case ADDED -> damage.getHitData().addBaseCritDamage(critDamageValue[0]);
+            default -> Utils.error("TypeToken not handled: " + typeToken + "in CRIT DAMAGE setter");
+        }
+    }
+
+
+    //Null if invalid token, ValueType Enum entry if valid token
+    private ValueTypes mapValueType(String valueTypeString){
         ValueTypes type = null;
         try {
-            type = ValueTypes.valueOf(typeToken);
+            type = ValueTypes.valueOf(valueTypeString);
         } catch (IllegalArgumentException exception){
-            Utils.log("Invalid typeToken (INTELLIGENCE setter)");
+            Utils.log("Invalid typeToken (mapValueType function for "+ valueTypeString +")");
         }
-        if (type == null){
-            return;
-        }
-        switch (type){
-            case FLAT -> {
-                Utils.log(intelligenceValue[0] + " :D");
-            }
-            case MULTI -> {
-
-            }
-            default -> Utils.log("TypeToken not handled: " + typeToken + "in INTELLIGENCE setter");
-        }
+        return type;
     }
 }

@@ -6,50 +6,95 @@ public class Miscellaneous implements EntityComponent {
 
     //Unique modifier list
 
-    private int extraStamina;
+    private int stamina; //100 base
     private int percentStamina;
-    private float extraStaminaRegen;
+    private float staminaRegen; //5 base
     private int percentStaminaRegen;
+    //Not implemented
     private int extraProjectiles;
     private int projectileSpeed;
     private int extraArea;
-    private int walkSpeed;
+    private float walkSpeed; //100 base
+    private int percentWalkSpeed;
     //inc. Healing
     //thorns
     //damage per stat
 
-    @Override
-    public void update(Profile profileData) {
+    public Miscellaneous(){
+        reset();
     }
 
-    public void setExtraStamina(int extraStamina) {
-        this.extraStamina = extraStamina;
+    public void reset(){
+        walkSpeed = 100;
+        percentWalkSpeed = 0;
+
+        stamina = 100;
+        percentStamina = 0;
+
+        staminaRegen = 5;
+        percentStaminaRegen =0;
+
+        extraProjectiles = 0;
+        projectileSpeed = 0;
+        extraArea = 0;
     }
-    public void setPercentStamina(int percentStamina) {
-        this.percentStamina = percentStamina;
+    @Override
+    public void update(Profile profileData) {
+        setFinalStamina(getStamina(), getPercentStamina());
+        setFinalStaminaRegen(getStaminaRegen(), getPercentStaminaRegen());
+        setFinalWalkSpeed(getWalkSpeed(), getPercentWalkSpeed());
     }
 
     public int getStamina(){
-        int baseStamina = 100;
-        return (int) ((baseStamina+extraStamina) * (1+ (percentStamina/100F) ) );
+        return stamina;
+    }
+    public void addBaseStamina(int stamina){
+        this.stamina += stamina;
     }
 
-    public void setExtraStaminaRegen(float extraStaminaRegen) {
-        this.extraStaminaRegen = extraStaminaRegen;
+
+    public int getPercentStamina() {
+        return percentStamina;
     }
-    public void setPercentStaminaRegen(int percentStaminaRegen) {
-        this.percentStaminaRegen = percentStaminaRegen;
+    public void addBasePercentStamina(int perentStamina){
+        this.percentStamina += perentStamina;
     }
+    public void setFinalStamina(int baseStamina, int increasedStamina){
+        this.stamina = (int) ((baseStamina) * (1+ (increasedStamina/100F) ) );
+    }
+
 
     public float getStaminaRegen(){
-        int baseStaminaRegen = 5;
-        return ((baseStaminaRegen+extraStaminaRegen) * (1+ (percentStaminaRegen/100F) ) );
+        return staminaRegen;
+    }
+    public void addBaseStaminaRegen(int staminaRegen){
+        this.staminaRegen += staminaRegen;
     }
 
-    public void setWalkSpeed(int walkSpeed) {
-        this.walkSpeed = walkSpeed;
+
+    public int getPercentStaminaRegen() {
+        return percentStaminaRegen;
     }
-    public int getWalkSpeed(){
+    public void addBasePercentStaminaRegen(int percentStaminaRegen){
+        this.percentStaminaRegen += percentStaminaRegen;
+    }
+    public void setFinalStaminaRegen(float staminaRegen, int percentStaminaRegen){
+        this.staminaRegen = (staminaRegen * (1 + (percentStaminaRegen/100F) ) );
+    }
+
+    public float getWalkSpeed(){
         return walkSpeed;
+    }
+    public void addBaseWalkSpeed(int walkSpeed){
+        this.walkSpeed += walkSpeed;
+    }
+    public int getPercentWalkSpeed() {
+        return percentWalkSpeed;
+    }
+    public void addBasePercentWalkSpeed(int WSPercent){
+        this.percentWalkSpeed += WSPercent;
+    }
+    public void setFinalWalkSpeed(float baseWalkSpeed, int percentWalkSpeed){
+        this.walkSpeed = (baseWalkSpeed * (1 + (percentWalkSpeed/100F) ) );
     }
 }

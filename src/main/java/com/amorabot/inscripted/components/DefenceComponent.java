@@ -23,14 +23,14 @@ public class DefenceComponent implements EntityComponent {
 
     //Player constructor
     public DefenceComponent(){
-        setFireResistance(15);
-        setColdResistance(15);
-        setLightningResistance(15);
+        this.fireResistance = 15;
+        this.lightningResistance = 15;
+        this.coldResistance = 15;
 
         this.baseElementalCap = 75; //Player base elemental cap
-        setFireCapMod(0);
-        setColdCapMod(0);
-        setLightningCapMod(0);
+        this.fireCapMod = 0;
+        this.lightningCapMod = 0;
+        this.coldCapMod = 0;
 
         this.dodge = 0;
         this.baseArmor = 0;
@@ -39,14 +39,14 @@ public class DefenceComponent implements EntityComponent {
     public DefenceComponent(int fireRes, int coldRes, int lightRes, int abyssRes, int dodge, int baseArmor, int incArmor){
 
         this.baseElementalCap = 80; //Monster base elemental cap
-        setFireCapMod(0);
-        setColdCapMod(0);
-        setLightningCapMod(0);
+        this.fireCapMod = 0;
+        this.lightningCapMod = 0;
+        this.coldCapMod = 0;
 
-        setFireResistance(fireRes);
-        setColdResistance(coldRes);
-        setLightningResistance(lightRes);
-        setAbyssalResistance(abyssRes);
+        this.fireResistance = fireRes;
+        this.lightningResistance = coldRes;
+        this.coldResistance = lightRes;
+        this.abyssalResistance = abyssRes;
 
         this.dodge = dodge;
 
@@ -54,31 +54,46 @@ public class DefenceComponent implements EntityComponent {
         this.increasedArmor = incArmor;
         setFinalArmor(getBaseArmor(), getIncreasedArmor());
     }
+    @Override
+    public void reset(){
+        fireCapMod = 0;
+        lightningCapMod = 0;
+        coldCapMod = 0;
+
+        fireResistance = 0;
+        lightningResistance = 0;
+        coldResistance = 0;
+        abyssalResistance = 0;
+
+        dodge = 0;
+        baseArmor = 0;
+        increasedArmor = 0;
+        setFinalArmor(getBaseArmor(), getIncreasedArmor());
+    }
 
     //------------ELE RES METHODS-------------
     //The resistance value can be higher than the cap for that element, it will be capped upon get()
-    public void setFireResistance(int newFireResistance) {
-        this.fireResistance = newFireResistance;
+    public void addBaseFireRes(int fireRes){
+        this.fireResistance += fireRes;
+    }
+    public void addBaseColdResistance(int coldRes){
+        this.coldResistance += coldRes;
+    }
+    public void addBaseLightningResistance(int lightRes){
+        this.lightningResistance += lightRes;
+    }
+    public void addBaseAbyssalResistance(int abyssRes){
+        this.abyssalResistance += abyssRes;
     }
 
-    public void setColdResistance(int newColdResistance) {
-        this.coldResistance = newColdResistance;
+    public void addBaseFireCap(int fireCapMod){
+        this.fireCapMod += fireCapMod;
     }
-    public void setLightningResistance(int newLightningResistance) {
-        this.lightningResistance = newLightningResistance;
+    public void addBaseColdCap(int coldCapMod){
+        this.coldCapMod += coldCapMod;
     }
-    public void setAbyssalResistance(int newAbyssalResistance) {
-        this.abyssalResistance = newAbyssalResistance;
-    }
-
-    public void setFireCapMod(int fireCapMod) {
-        this.fireCapMod = fireCapMod;
-    }
-    public void setColdCapMod(int coldCapMod) {
-        this.coldCapMod = coldCapMod;
-    }
-    public void setLightningCapMod(int lightningCapMod) {
-        this.lightningCapMod = lightningCapMod;
+    public void addBaseLightCap(int lightCapMod){
+        this.lightningCapMod += lightCapMod;
     }
 
     /*
@@ -115,22 +130,23 @@ public class DefenceComponent implements EntityComponent {
     }
 
     //------------DODGE METHODS-------------
-    public void setDodge(int newDodge){
-        this.dodge = newDodge;
+    public void addBaseDodge(int dodge){
+        this.dodge += dodge;
     }
+
     public int getDodge() {
         return dodge;
     }
     //------------ARMOR METHODS-------------
-    public void setBaseArmor(int newBaseArmor){
-        this.baseArmor = newBaseArmor;
+    public void addBaseArmor(int armor){
+        this.baseArmor += armor;
     }
-    public void setIncreasedArmor(int incArmor){
-        this.increasedArmor = incArmor;
+
+    public void addBaseIncreasedArmor(int incArmor){
+        this.increasedArmor += incArmor;
     }
+
     private void setFinalArmor(int flatArmor, int incArmor){
-        setBaseArmor(flatArmor);
-        setIncreasedArmor(incArmor);
         this.finalArmor = (float) flatArmor * (1 + incArmor/100f);
     }
 
@@ -146,19 +162,9 @@ public class DefenceComponent implements EntityComponent {
 
     @Override
     public void update(Profile profileData) {
-    }
-    public void update(int fireResistance, int coldResistance, int lightningResistance, int abyssalResistance, int baseArmor, int increasedArmor, int dodge){
-        //Setup elemental cap modifiers arguments
-        setFireCapMod(0);
-        setColdCapMod(0);
-        setLightningCapMod(0);
-
-        setFireResistance(fireResistance);
-        setColdResistance(coldResistance);
-        setLightningResistance(lightningResistance);
-        setAbyssalResistance(abyssalResistance);
+        //When more complex math needs to be done for defence stat calcs,
+        //It should be done here
 
         setFinalArmor(baseArmor, increasedArmor);
-        setDodge(dodge);
     }
 }

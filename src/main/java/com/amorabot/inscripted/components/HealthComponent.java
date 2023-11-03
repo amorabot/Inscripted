@@ -53,6 +53,20 @@ public class HealthComponent implements EntityComponent {
         setHealthRegen(0);
     }
 
+    @Override
+    public void reset(){
+        this.addedHealth = 0;
+        this.maxHealth = startingHealth;
+        this.healthRegen = baseHealthRegen;
+
+        this.increasedHealth = 0;
+
+        this.extraWard = 0;
+        this.maxWard = startingWard;
+
+        this.increasedWard = 0;
+    }
+
     //------------LIFE METHODS-------------
     public void replenishLife(){
         currentHealth = maxHealth;
@@ -109,10 +123,6 @@ public class HealthComponent implements EntityComponent {
         }
     }
 
-    public void resetCurrentHealth(){
-        this.currentHealth = maxHealth;
-    }
-
     public float getCurrentHealth(){
         return this.currentHealth;
     }
@@ -130,33 +140,36 @@ public class HealthComponent implements EntityComponent {
         }
         this.addedHealth = addedHealth;
     }
+    //Alternative/Test method for adding life (needs a manual call to set the component as "final", so it can execute all the math)
+    public void addBaseHealth(int addedHealth){
+        this.addedHealth += addedHealth;
+    }
+
     public int getIncreasedHealth() {
         return increasedHealth;
     }
     public void setIncreasedHealth(int increasedHealth){
         this.increasedHealth = increasedHealth;
     }
+    //Compiler usage only
+    public void addIncreasedHealth(int incHealth){
+        this.increasedHealth += incHealth;
+    }
     public void setMaxHealth(int addedHealth, int percentHealth){
         setAddedHealth(addedHealth);
         setIncreasedHealth(percentHealth);
         this.maxHealth = (getAddedHealth()+this.startingHealth) * (1 + getIncreasedHealth()/100f);
     }
-
     public void setHealthRegen(int healthRegen) {
         this.healthRegen = healthRegen + baseHealthRegen;
+    }
+    public void addBaseHealthRegen(int healthRegen){
+        this.healthRegen += healthRegen;
     }
     public int getHealthRegen() {
         return healthRegen;
     }
     //------------WARD METHODS-------------
-    //Debug method
-    public void halfWard(){
-        this.currentWard = maxWard/2;
-    }
-    public void zeroWrd(){
-        this.currentWard = 0;
-    }
-
     public void regenWard(){
         float wardRegenTick = getWardRegenTick();
         //In the specific case its already been capped out, ignore
@@ -190,12 +203,19 @@ public class HealthComponent implements EntityComponent {
     public void setExtraWard(int extraWard){
         this.extraWard = this.startingWard + extraWard;
     }
+    //Same logic as addBaseHealth
+    public void addBaseWard(int extraWard){
+        this.extraWard += extraWard;
+    }
     public int getIncreasedWard() {
         return increasedWard;
     }
     public void setIncreasedWard(int increasedWard){
         this.increasedWard = increasedWard;
-//        setMaxWard();
+    }
+    //Compiler usage only
+    public void addIncreasedWard(int incWard){
+        this.increasedWard += incWard;
     }
     private void setMaxWard(int addedWard, int increasedWard){
         setExtraWard(addedWard);
@@ -217,12 +237,9 @@ public class HealthComponent implements EntityComponent {
 
     @Override
     public void update(Profile profileData) {
-    }
+        setMaxHealth(getAddedHealth(), getIncreasedHealth());
+        setMaxWard(getExtraWard(), getIncreasedWard());
 
-    public void updateHealthComponent(int flatHealth, int percentHealth, int healthRegen, int flatWard, int percentWard){
-        setMaxHealth(flatHealth, percentHealth);
-        setHealthRegen(healthRegen);
-        setMaxWard(flatWard, percentWard);
         if (getCurrentHealth() > getMaxHealth()){
             currentHealth = getMaxHealth();
         }

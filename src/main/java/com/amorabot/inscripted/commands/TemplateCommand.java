@@ -91,14 +91,14 @@ public class TemplateCommand implements CommandExecutor {
                     }
                     redTeam.setColor(ChatColor.RED);
                     return true;
-                case "damageWard":
-                    HP.halfWard();
-                    PlayerRegenManager.playerHit(player.getUniqueId());
-                    return true;
-                case "zeroWard":
-                    HP.zeroWrd();
-                    PlayerRegenManager.playerHit(player.getUniqueId());
-                    return true;
+//                case "damageWard":
+////                    HP.halfWard();
+////                    PlayerRegenManager.playerHit(player.getUniqueId());
+//                    return true;
+//                case "zeroWard":
+////                    HP.zeroWrd();
+////                    PlayerRegenManager.playerHit(player.getUniqueId());
+//                    return true;
             }
         }
 

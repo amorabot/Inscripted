@@ -66,7 +66,7 @@ public enum ModifierIDs {
             TargetStats.DODGE_WARD, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
             Set.of(ModTags.UTILITY), true, 1),//-------------------------------------------------
     WALK_SPEED(
-            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% Walk speed", 4,
+            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@ Walk speed", 4,
             TargetStats.WALK_SPEED, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.UTILITY), false, 1),
     STRENGTH_PERCENT(
@@ -164,16 +164,6 @@ public enum ModifierIDs {
     //extra proj
 
 
-
-//    STRENGTH(Affix.SUFFIX, "+@value1@ STR", 8,
-//             TargetStats.STRENGTH, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
-//             List.of(ModTags.ATTRIBUTE, ModTags.HEALTH), false, 1),
-//    DEXTERITY(Affix.SUFFIX, "+@value1@ DEX", 8,
-//              TargetStats.DEXTERITY, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
-//              List.of(ModTags.ATTRIBUTE), false, 1),
-//    INTELLIGENCE(Affix.SUFFIX, "+@value1@ INT", 8,
-//                 TargetStats.INTELLIGENCE, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
-//                 List.of(ModTags.ATTRIBUTE), false, 1),
     //    ATTACK_SPEED(Affix.SUFFIX, "+@value1@% Inc. Attack Speed", 7,
 //            TargetStats.PHYSICAL_DAMAGE, ValueTypes.FLAT_PERCENT, RangeTypes.SINGLE_RANGE,
 //            List.of(ModTags.DAMAGE, ModTags.UTILITY), false, 1),
@@ -190,7 +180,7 @@ public enum ModifierIDs {
              TargetStats.BLEED, ValueTypes.PERCENT, RangeTypes.SINGLE_RANGE,
              Set.of(ModTags.PHYSICAL,ModTags.AILMENT), false, 1),
     CRITICAL_CHANCE(Set.of(ModifierIDs.WEAPONTAG),Affix.SUFFIX, "+@value1@% Inc. Crit Chance", 6,
-                    TargetStats.CRITICAL, ValueTypes.ADDED, RangeTypes.SINGLE_RANGE,
+                    TargetStats.CRITICAL_CHANCE, ValueTypes.ADDED, RangeTypes.SINGLE_RANGE,
                     Set.of(ModTags.DAMAGE), false, 1);
     //TODO: adicionar freeze, ignite, shock (sonzinho de poção)
 
