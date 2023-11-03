@@ -2,7 +2,7 @@ package com.amorabot.inscripted.components.Items.Abstract;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
-import com.amorabot.inscripted.components.Items.DataStructures.NewModifier;
+import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -12,18 +12,25 @@ import java.util.List;
 
 public abstract class Item implements Serializable {
 
-    private boolean identified;
     private final int ilvl;
+    protected final ItemTypes category;
+    private boolean identified;
     private ItemRarities rarity;
     private Tiers tier;
-    private Implicit implicit;
+    private Implicits implicit;
     protected RendererTypes renderer;
-    protected final ItemTypes category;
 
     protected String name;
     protected Material vanillaMaterial;
     protected boolean corrupted;
-    private List<NewModifier> modifiers = new ArrayList<>();
+    private List<Modifier> modifiers = new ArrayList<>();
+
+    public Item(int ilvl, ItemTypes category){
+        this.ilvl = ilvl;
+        this.category = category;
+        this.identified = false;
+        this.corrupted = false;
+    }
 
     public Item(int ilvl, ItemRarities rarity, boolean identified, boolean corrupted, ItemTypes itemCategory){
         this.identified = identified;
@@ -71,27 +78,30 @@ public abstract class Item implements Serializable {
         return corrupted;
     }
     public void corrupt(){
+        if (isCorrupted()){
+            return;
+        }
         this.corrupted = true;
     }
-    public Implicit getImplicit() {
+    public Implicits getImplicit() {
         return implicit;
     }
-    protected void setImplicit(Implicit implicit) {
+    protected void setImplicit(Implicits implicit) {
         this.implicit = implicit;
     }
-    protected Implicit defineImplicit(String subTypeString){
-        Implicit itemImplicit;
+    protected Implicits defineImplicit(String subTypeString){
+        Implicits itemImplicit;
         try {
             if (isCorrupted()){
                 //...
-                itemImplicit = Implicit.valueOf(subTypeString+"_"+ ImplicitType.CORRUPTED);
+                itemImplicit = Implicits.valueOf(subTypeString+"_"+ ImplicitType.CORRUPTED);
                 //Or alternate corrupted...
             } else {
-                itemImplicit = Implicit.valueOf(subTypeString+"_"+ImplicitType.STANDARD);
+                itemImplicit = Implicits.valueOf(subTypeString+"_"+ImplicitType.STANDARD);
             }
         } catch (IllegalArgumentException exception){
             exception.printStackTrace();
-            itemImplicit = Implicit.AXE_STANDARD;
+            itemImplicit = Implicits.AXE_STANDARD;
         }
         return itemImplicit;
     }
@@ -135,15 +145,15 @@ public abstract class Item implements Serializable {
         //If ilvl is greater than T5 threshold, return t5
         setTier(Tiers.T5);
     }
-    public List<NewModifier> getModifiers(){
+    public List<Modifier> getModifiers(){
         return this.modifiers;
     }
-    public void addModifier(NewModifier newMod) {
+    public void addModifier(Modifier newMod) {
         getModifiers().add(newMod);
     }
     public int getStarRating() { //Voltar pra acesso protected, so pra uso interno
         float percentileSum = 0;
-        for (NewModifier mod : getModifiers()){
+        for (Modifier mod : getModifiers()){
             percentileSum += mod.getBasePercentile();
         }
         if (!getModifiers().isEmpty()){

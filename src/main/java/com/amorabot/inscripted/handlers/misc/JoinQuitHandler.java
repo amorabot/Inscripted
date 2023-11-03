@@ -1,7 +1,8 @@
-package com.amorabot.inscripted.handlers;
+package com.amorabot.inscripted.handlers.misc;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
@@ -28,19 +29,23 @@ public class JoinQuitHandler implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event){
 
         Player player = event.getPlayer();
-
-        if (JSONProfileManager.isNewPlayer(player.getUniqueId())){ //If new player:
-            JSONProfileManager.createProfile(player.getUniqueId().toString()); //Creates and instantiates the profile.
+        UUID playerID = player.getUniqueId();
+        if (JSONProfileManager.isNewPlayer(playerID)){ //If new player:
+            JSONProfileManager.createProfile(playerID.toString()); //Creates and instantiates the profile.
             Utils.log("O perfil para o player " + player.getDisplayName() + " foi criado. (JSON)");
 
-            startupBossBars(player);
+            initializePlayer(player);
+//            PlayerRegenManager.addPlayer(playerID);
+//            startupBossBars(player);
 
             return;
         }
         JSONProfileManager.loadProfileFromJSON(player.getUniqueId()); //Loads specific profile into memory
         Utils.log("Bem vindo de volta " + player.getDisplayName() + "! (JSON)");
 
-        startupBossBars(player);
+        initializePlayer(player);
+//        PlayerRegenManager.addPlayer(playerID);
+//        startupBossBars(player);
     }
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event){
@@ -49,7 +54,18 @@ public class JoinQuitHandler implements Listener {
         UUID playerUUID = player.getUniqueId();
         JSONProfileManager.saveProfileOnQuitToJSON(playerUUID, JSONProfileManager.getProfile(playerUUID));
 
+        destroyPlayerData(player);
+//        //Un-instantiate bossbars
+//        PlayerInterfaceRenderer.deleteBossBars(player);
+    }
+
+    private void initializePlayer(Player player){
+        PlayerRegenManager.addPlayer(player.getUniqueId());
+        startupBossBars(player);
+    }
+    private void destroyPlayerData(Player player){
         //Un-instantiate bossbars
+        PlayerRegenManager.removePlayer(player.getUniqueId());
         PlayerInterfaceRenderer.deleteBossBars(player);
     }
 }

@@ -4,7 +4,9 @@ import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.DamageComponent;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
-import com.amorabot.inscripted.components.Player.*;
+import com.amorabot.inscripted.components.Player.Attributes;
+import com.amorabot.inscripted.components.Player.Profile;
+import com.amorabot.inscripted.components.Player.Stats;
 import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -152,7 +154,7 @@ public class JSONProfileManager {
             log("Profile loaded: " + uuid);
         }
     }
-    public static void loadOnlinePlayersOnReload(Collection<? extends Player> onlinePlayers){
+    public static void reloadOnlinePlayers(Collection<? extends Player> onlinePlayers){
         Gson gson = new Gson();
         File file = new File(plugin.getDataFolder().getAbsolutePath() + "/profiles.json");
         if (file.exists()){

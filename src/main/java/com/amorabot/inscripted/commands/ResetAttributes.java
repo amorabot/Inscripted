@@ -27,7 +27,8 @@ public class ResetAttributes implements CommandExecutor {
         Profile profile = JSONProfileManager.getProfile(player.getUniqueId());
         profile.getStats().setArmorSet(null,null,null,null);
         profile.updateArmorSlot();
-        profile.getHealthComponent().resetCurrentHealth();
+//        profile.getHealthComponent().resetCurrentHealth();
+        profile.getHealthComponent().replenishLife();
         return true;
     }
 }

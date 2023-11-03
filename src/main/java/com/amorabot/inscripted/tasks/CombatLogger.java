@@ -1,9 +1,11 @@
 package com.amorabot.inscripted.tasks;
 
+import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
 
@@ -16,7 +18,6 @@ public class CombatLogger extends BukkitRunnable {
 
     private static final CombatLogger instance = new CombatLogger();
     private static final Map<UUID, Integer> COMBAT = new HashMap<>();
-    private static final Team RED_TEAM = Objects.requireNonNull(Bukkit.getScoreboardManager()).getMainScoreboard().getTeam(ChatColor.RED + "team");
 
     private CombatLogger(){
     }
@@ -32,26 +33,22 @@ public class CombatLogger extends BukkitRunnable {
         }
     }
 
-    public static void addToCombat(UUID playerID){
-        Player player = Bukkit.getPlayer(playerID);
+    public static void addToCombat(Player player){
         if (player == null ){return;}
+        UUID playerID = player.getUniqueId();
         if (COMBAT.containsKey(playerID)){
             Utils.log("Player already in combat, resetting the timer");
             COMBAT.put(playerID, 10);
             return;
         }
         COMBAT.put(playerID, 10); //10 seconds for combat to deplete
-        player.setGlowing(true);
-        assert RED_TEAM != null;
-        RED_TEAM.addEntry(player.getDisplayName());
+        player.setMetadata("onCombat", new FixedMetadataValue(Inscripted.getPlugin(), "kek"));
     }
     public static void removeFromCombat(UUID playerID){
         Player player = Bukkit.getPlayer(playerID);
         if (player == null ){return;}
         COMBAT.remove(playerID);
-        player.setGlowing(false);
-        assert RED_TEAM != null;
-        RED_TEAM.removeEntry(player.getDisplayName());
+        player.removeMetadata("onCombat", Inscripted.getPlugin());
     }
 
     public static CombatLogger getInstance() {

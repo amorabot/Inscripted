@@ -61,6 +61,10 @@ public class Utils {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         return decimalFormat.format(flatDodge/100.0f);
     }
+    public static float toTwoDigitsFloat(float floatToConvert){
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        return Float.valueOf(decimalFormat.format(floatToConvert/100.0f));
+    }
 
     public static ItemStack createItem(Material type, int amount, boolean enchanted, boolean unbreakable, boolean hideUnbreakable
     , String name, String... lore){

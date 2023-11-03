@@ -1,6 +1,12 @@
 package com.amorabot.inscripted.commands;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.components.HealthComponent;
+import com.amorabot.inscripted.components.Mobs.DefensePresets;
+import com.amorabot.inscripted.components.Mobs.MobStats;
+import com.amorabot.inscripted.components.Mobs.MobStatsContainer;
+import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.utils.ColorUtils;
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -30,7 +36,8 @@ public class TemplateCommand implements CommandExecutor {
             return false;
         }
         Player player = (Player) commandSender;
-        player.sendMessage("a");
+        HealthComponent HP = JSONProfileManager.getProfile(player.getUniqueId()).getHealthComponent();
+//        player.sendMessage("a");
 
         World playerWorld = player.getWorld();
 
@@ -38,40 +45,6 @@ public class TemplateCommand implements CommandExecutor {
             String action = strings[0];
             switch (action){
                 case "add":
-                    if (testDummy == null){
-                        Skeleton skeleton = playerWorld.spawn(player.getLocation().clone(), Skeleton.class);
-                        skeleton.setAI(false);
-                        EntityEquipment equipment = skeleton.getEquipment();
-
-                        //Make templates for mods (mobs.JSON)
-                        ItemStack helmet = new ItemStack(Material.TARGET);
-                        ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
-                        ItemStack leggings = new ItemStack(Material.LEATHER_LEGGINGS);
-                        ItemStack boots = new ItemStack(Material.LEATHER_BOOTS);
-                        LeatherArmorMeta armorMeta = (LeatherArmorMeta) chestplate.getItemMeta();
-                        assert armorMeta != null;
-                        armorMeta.setColor(Color.fromRGB(200, 50, 50));
-                        chestplate.setItemMeta(armorMeta);
-                        leggings.setItemMeta(armorMeta);
-                        boots.setItemMeta(armorMeta);
-
-                        assert equipment != null;
-                        ItemStack[] armorSet = new ItemStack[]{boots, leggings, chestplate, helmet};
-                        equipment.setArmorContents(armorSet);
-                        equipment.setItemInMainHand(null);
-
-                        skeleton.getPersistentDataContainer().set(
-                                new NamespacedKey(Inscripted.getPlugin(), "INSCRIPTED_MOB"), new PersistentDataType.BooleanPersistentDataType(), true);
-
-                        String displayName = ColorUtils.translateColorCodes("&c&lTest Dummy");
-
-                        testDummy = skeleton;
-                        testDummy.setCustomName(displayName);
-                        testDummy.setCustomNameVisible(true);
-                        return true;
-                    }
-                    //Its not null
-                    testDummy = null;
                     break;
                 case "remove":
                     if (testDummy != null){
@@ -118,10 +91,14 @@ public class TemplateCommand implements CommandExecutor {
                     }
                     redTeam.setColor(ChatColor.RED);
                     return true;
-                case "toggleRed":
-                    return true;
-                case "bossbar":
-                    return true;
+//                case "damageWard":
+////                    HP.halfWard();
+////                    PlayerRegenManager.playerHit(player.getUniqueId());
+//                    return true;
+//                case "zeroWard":
+////                    HP.zeroWrd();
+////                    PlayerRegenManager.playerHit(player.getUniqueId());
+//                    return true;
             }
         }
 
