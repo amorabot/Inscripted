@@ -25,7 +25,6 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
     private static final PlayerInterfaceRenderer INSTANCE = new PlayerInterfaceRenderer();
     private static final Map<String, BossBar> PLAYERS_BOSS_BARS = new HashMap<>();
     private static final String HP_KEY = "_HEALTH";
-    private static final String WARD_KEY = "_WARD";
 
     private PlayerInterfaceRenderer(){
     }
@@ -70,7 +69,6 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             Component mainText = playerStatComponent.append(healthText).append(wardText);
 
             BossBar HPBossbar = PlayerInterfaceRenderer.getHPBossbar(currentPlayer);
-//            BossBar WardBossbar = PlayerInterfaceRenderer.getWardBossbar(currentPlayer);
             if (HPBossbar != null){
                 HPBossbar.name(mainText);
                 if (healthComponent.getCurrentWard()>0){
@@ -81,9 +79,6 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
                     HPBossbar.progress(healthComponent.getNormalizedHP());
                 }
             }
-//            if (WardBossbar != null){
-//                WardBossbar.name(wardText);
-//            }
         }
     }
 
@@ -94,32 +89,16 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
         return null;
     }
     public static void hideHPBossBar(Player player){
-        Audience playerAudience = (Audience) player;
         String hpKey = player.getUniqueId()+HP_KEY;
         if (PLAYERS_BOSS_BARS.containsKey(hpKey)){
             BossBar hpBar = PLAYERS_BOSS_BARS.get(hpKey);
-            playerAudience.hideBossBar(hpBar);
+            player.hideBossBar(hpBar);
         }
     }
-//    public static void hideWardBossBar(Player player){
-//        Audience playerAudience = (Audience) player;
-//        String wardKey = player.getUniqueId()+WARD_KEY;
-//        if (PLAYERS_BOSS_BARS.containsKey(wardKey)){
-//            BossBar wardBar = PLAYERS_BOSS_BARS.get(wardKey);
-//            playerAudience.hideBossBar(wardBar);
-//        }
-//    }
-//    public static BossBar getWardBossbar(Player player){
-//        if (PLAYERS_BOSS_BARS.containsKey(player.getUniqueId()+WARD_KEY)){
-//            return PLAYERS_BOSS_BARS.get(player.getUniqueId()+WARD_KEY);
-//        }
-//        return null;
-//    }
 
     public static void shutdownAllBars(){
         for (Player currentPlayer : Bukkit.getOnlinePlayers()){
             hideHPBossBar(currentPlayer);
-//            hideWardBossBar(currentPlayer);
             deleteBossBars(currentPlayer);
         }
     }
@@ -130,28 +109,21 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
         Component bossBarText = Component.text("Setting bossbars...");
         BossBar HPBossBar = BossBar.bossBar(bossBarText, 0.5F, BossBar.Color.RED, BossBar.Overlay.PROGRESS);
         PLAYERS_BOSS_BARS.put(playerID+HP_KEY, HPBossBar);
-//        BossBar WardBossBar = BossBar.bossBar(bossBarText, 0.5F, BossBar.Color.BLUE, BossBar.Overlay.NOTCHED_6);
-//        PLAYERS_BOSS_BARS.put(playerID+WARD_KEY, WardBossBar);
         Utils.log("Bossbars created for: " + playerID);
     }
 
     public static void deleteBossBars(Player player){
         UUID playerID = player.getUniqueId();
         PLAYERS_BOSS_BARS.remove(playerID+HP_KEY);
-        PLAYERS_BOSS_BARS.remove(playerID+WARD_KEY);
     }
 
     public static void startupBossBars(Player player){
         PlayerInterfaceRenderer.createBossbars(player);
         Audience playerAudience = Audience.audience(player);
         BossBar HPBossbar = PlayerInterfaceRenderer.getHPBossbar(player);
-//        BossBar WardBossBar = PlayerInterfaceRenderer.getWardBossbar(player);
         if (HPBossbar != null){
             playerAudience.showBossBar(HPBossbar);
         }
-//        if (WardBossBar != null){
-//            playerAudience.showBossBar(WardBossBar);
-//        }
     }
 
 
