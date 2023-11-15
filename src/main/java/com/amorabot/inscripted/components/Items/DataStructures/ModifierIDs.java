@@ -8,13 +8,15 @@ import java.util.List;
 import java.util.Set;
 
 public enum ModifierIDs {
+//Names should not be renamed casually -> they're sync'ed with the modifier table
 
+    // ============================ PREFIXES ====================================
     HEALTH(
             Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@ Health", 12,
             TargetStats.HEALTH, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.HEALTH), false, 1),
     HEALTH_PERCENT(
-            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% Inc. Health", 6,
+            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% Increased Health", 6,
             TargetStats.HEALTH, ValueTypes.ADDED, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.HEALTH), false, 1),
     HEALTH_REGEN_PERCENT(
@@ -26,7 +28,7 @@ public enum ModifierIDs {
             TargetStats.ARMOR, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.PHYSICAL, ModTags.DEFENSE), false, 1),
     ARMOR_PERCENT(
-            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% Inc. Armor", 6,
+            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% Increased Armor", 6,
             TargetStats.ARMOR, ValueTypes.ADDED, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.PHYSICAL, ModTags.DEFENSE), false, 1),
     DODGE(
@@ -38,7 +40,7 @@ public enum ModifierIDs {
             TargetStats.WARD, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.HEALTH, ModTags.DEFENSE), false, 1),
     WARD_PERCENT(
-            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% Inc. Ward", 6,
+            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% Increased Ward", 6,
             TargetStats.WARD, ValueTypes.ADDED, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.HEALTH, ModTags.DEFENSE), false, 1),
     ARMOR_HEALTH(
@@ -81,12 +83,49 @@ public enum ModifierIDs {
             Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% INT", 3,
             TargetStats.INTELLIGENCE, ValueTypes.MULTI, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.UTILITY), false, 1),
-
-
     STAMINA(
             Set.of(ModifierIDs.ARMORTAG, ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@ Stamina", 6,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.UTILITY), false, 1),
+
+
+
+    HYBRID_PHYS_ACC( //Not finished
+            Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@hvalue1@ Physical DMG / +@hvalue2@ Accuracy", 8,
+            TargetStats.PHYSICALDAMAGE_ACCURACY, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
+            Set.of(ModTags.DAMAGE, ModTags.PHYSICAL), true, 1),
+    PERCENT_PHYSICAL(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@% Increased Physical DMG", 8,
+            TargetStats.PHYSICAL_DAMAGE, ValueTypes.ADDED, RangeTypes.SINGLE_RANGE,
+            Set.of(ModTags.DAMAGE, ModTags.PHYSICAL), false, 1),
+    PERCENT_ELEMENTAL(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@% Increased Elemental DMG", 8,
+            TargetStats.ELEMENTAL_DAMAGE, ValueTypes.ADDED, RangeTypes.SINGLE_RANGE,
+            Set.of(ModTags.DAMAGE, ModTags.ELEMENTAL), false, 1),
+    ADDED_PHYSICAL(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@ - @value2@ Physical DMG", 9,
+            TargetStats.PHYSICAL_DAMAGE, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
+            Set.of(ModTags.DAMAGE, ModTags.PHYSICAL), false, 1),
+    ADDED_FIRE(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@ - @value2@ Fire DMG", 10,
+            TargetStats.FIRE_DAMAGE, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
+            Set.of(ModTags.DAMAGE, ModTags.ELEMENTAL), false, 1),
+    ADDED_COLD(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@ - @value2@ Cold DMG", 10,
+            TargetStats.COLD_DAMAGE, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
+            Set.of(ModTags.DAMAGE, ModTags.ELEMENTAL), false, 1),
+    ADDED_LIGHTNING(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@ - @value2@ Lightning DMG", 10,
+            TargetStats.LIGHTNING_DAMAGE, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
+            Set.of(ModTags.DAMAGE, ModTags.ELEMENTAL), false, 1),
+    ADDED_ABYSSAL(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@ - @value2@ Abyssal DMG", 1,
+            TargetStats.ABYSSAL_DAMAGE, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
+            Set.of(ModTags.DAMAGE, ModTags.ABYSSAL), false, 1), //ou void
+    PHYSICAL_LIFESTEAL(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@% Physical lifesteal", 3,
+            TargetStats.LIFESTEAL, ValueTypes.PERCENT, RangeTypes.SINGLE_RANGE,
+            Set.of(ModTags.UTILITY), false, 1),
+    SHRED(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@% Shred", 5,
+            TargetStats.SHRED, ValueTypes.PERCENT, RangeTypes.SINGLE_RANGE,
+            Set.of(ModTags.DAMAGE,ModTags.PHYSICAL), false, 1),
+    MAELSTROM(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@% Maelstrom", 5,
+            TargetStats.MAELSTROM, ValueTypes.PERCENT, RangeTypes.SINGLE_RANGE,
+            Set.of(ModTags.DAMAGE,ModTags.ELEMENTAL), false, 1),
+
+
 
 
 
@@ -125,42 +164,8 @@ public enum ModifierIDs {
 
 
 
+// ============================ SUFFIXES ====================================
 
-
-    HYBRID_PHYS_ACC( //Not finished
-            Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@hvalue1@ Physical DMG / +@hvalue2@ Accuracy", 8,
-            TargetStats.PHYSICALDAMAGE_ACCURACY, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
-            Set.of(ModTags.DAMAGE, ModTags.PHYSICAL), true, 1),
-    PERCENT_PHYSICAL(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@% Inc. Physical DMG", 8,
-                     TargetStats.PHYSICAL_DAMAGE, ValueTypes.ADDED, RangeTypes.SINGLE_RANGE,
-                     Set.of(ModTags.DAMAGE, ModTags.PHYSICAL), false, 1),
-    PERCENT_ELEMENTAL(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@% Inc. Elemental DMG", 8,
-                      TargetStats.ELEMENTAL_DAMAGE, ValueTypes.ADDED, RangeTypes.SINGLE_RANGE,
-                      Set.of(ModTags.DAMAGE, ModTags.ELEMENTAL), false, 1),
-    ADDED_PHYSICAL(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@ - @value2@ Physical DMG", 9,
-                   TargetStats.PHYSICAL_DAMAGE, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
-                   Set.of(ModTags.DAMAGE, ModTags.PHYSICAL), false, 1),
-    ADDED_FIRE(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@ - @value2@ Fire DMG", 10,
-               TargetStats.FIRE_DAMAGE, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
-               Set.of(ModTags.DAMAGE, ModTags.ELEMENTAL), false, 1),
-    ADDED_COLD(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@ - @value2@ Cold DMG", 10,
-               TargetStats.COLD_DAMAGE, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
-               Set.of(ModTags.DAMAGE, ModTags.ELEMENTAL), false, 1),
-    ADDED_LIGHTNING(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@ - @value2@ Lightning DMG", 10,
-                    TargetStats.LIGHTNING_DAMAGE, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
-                    Set.of(ModTags.DAMAGE, ModTags.ELEMENTAL), false, 1),
-    ADDED_ABYSSAL(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@ - @value2@ Abyssal DMG", 1,
-                  TargetStats.ABYSSAL_DAMAGE, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
-                  Set.of(ModTags.DAMAGE, ModTags.ABYSSAL), false, 1), //ou void
-    PHYSICAL_LIFESTEAL(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@% Physical lifesteal", 3,
-                       TargetStats.LIFESTEAL, ValueTypes.PERCENT, RangeTypes.SINGLE_RANGE,
-                       Set.of(ModTags.UTILITY), false, 1),
-    SHRED(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@% Shred", 5,
-          TargetStats.SHRED, ValueTypes.PERCENT, RangeTypes.SINGLE_RANGE,
-          Set.of(ModTags.DAMAGE,ModTags.PHYSICAL), false, 1),
-    MAELSTROM(Set.of(ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@% Maelstrom", 5,
-              TargetStats.MAELSTROM, ValueTypes.PERCENT, RangeTypes.SINGLE_RANGE,
-              Set.of(ModTags.DAMAGE,ModTags.ELEMENTAL), false, 1),
     //extra proj
 
 
@@ -179,7 +184,7 @@ public enum ModifierIDs {
     BLEEDING(Set.of(ModifierIDs.WEAPONTAG),Affix.SUFFIX, "+@value1@% Bleeding chance", 4,
              TargetStats.BLEED, ValueTypes.PERCENT, RangeTypes.SINGLE_RANGE,
              Set.of(ModTags.PHYSICAL,ModTags.AILMENT), false, 1),
-    CRITICAL_CHANCE(Set.of(ModifierIDs.WEAPONTAG),Affix.SUFFIX, "+@value1@% Inc. Crit Chance", 6,
+    CRITICAL_CHANCE(Set.of(ModifierIDs.WEAPONTAG),Affix.SUFFIX, "+@value1@% Increased Crit Chance", 6,
                     TargetStats.CRITICAL_CHANCE, ValueTypes.ADDED, RangeTypes.SINGLE_RANGE,
                     Set.of(ModTags.DAMAGE), false, 1);
     //TODO: adicionar freeze, ignite, shock (sonzinho de poção)

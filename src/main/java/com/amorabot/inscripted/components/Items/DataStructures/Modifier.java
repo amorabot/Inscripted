@@ -145,7 +145,64 @@ public class Modifier implements Serializable {
         this.imbued = true;
     }
 
-//    public <ModClass extends Enum<ModClass> & ItemModifier> Modifier<ModClass> castTo(Class<ModClass> modifierClass){
+    public int getModifierOrdinal(){
+        return getModifierID().ordinal();
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Modifier comparedMod = (Modifier) o;
+        return modifier == comparedMod.modifier;
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(modifier);
+    }
+
+    public String getModifierDisplayName(String valuesColor, int indent) {
+        String modCategoryRune;
+        switch (this.getModifierID().getAffixType()){
+            case PREFIX -> modCategoryRune = "ᚴ";
+            case SUFFIX -> modCategoryRune = "ᚭ";
+            case UNIQUE -> modCategoryRune = "ᛟ";
+            default -> modCategoryRune = "0";
+        }
+        String modifierDisplayName = "&7" + this.getModifierID().getDisplayName() + " &8" + modCategoryRune + " " + mapRomanicTierValue() + " ".repeat(indent);
+        switch (this.getModifierID().getRangeType()){
+            case SINGLE_VALUE -> {} //Utils.getPercentString(dodge)
+            case SINGLE_RANGE -> modifierDisplayName = (modifierDisplayName
+                    .replace("@value1@", valuesColor + this.getValue()[0]+"&7")).indent(indent);
+            case DOUBLE_RANGE -> {
+                int[] values = this.getValue();
+                modifierDisplayName = (modifierDisplayName
+                        .replace("@value1@", valuesColor+values[0]+"&7")
+                        .replace("@value2@", valuesColor+values[1]+"&7")).indent(indent);
+            }
+        }
+        return modifierDisplayName;
+    }
+    private String mapRomanicTierValue(){
+        //Todo: more robust mapping
+        return switch (this.tier) {
+            case 0 -> "∅";
+            case 1 -> "I";
+            case 2 -> "II";
+            case 3 -> "III";
+            case 4 -> "IV";
+            case 5 -> "V";
+            case 6 -> "VI";
+            case 7 -> "VII";
+            case 8 -> "VIII";
+            case 9 -> "IX";
+            case 10 -> "X";
+            case 11 -> "XI";
+            case 12 -> "XII";
+            default -> "*";
+        };
+    }
+
+    //    public <ModClass extends Enum<ModClass> & ItemModifier> Modifier<ModClass> castTo(Class<ModClass> modifierClass){
 //        //Modifiers may come from a variety of sources, and must be casted to reflect this.
 //        Modifier<ModClass> castedMod = new Modifier<>();
 //        castedMod.setModifier(modifierClass.cast(this.modifier));

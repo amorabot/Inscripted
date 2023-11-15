@@ -2,37 +2,20 @@ package com.amorabot.inscripted.components.Items.Weapon;
 
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Abstract.ItemRenderer;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRarities;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.RangeTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.inscripted.utils.ColorUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static com.amorabot.inscripted.utils.Utils.color;
 
 public class BasicRunicWeaponRenderer implements ItemRenderer {
-
-    @Override
-    public void setDisplayName(String name, ItemStack item) {
-        ItemMeta itemMeta = item.getItemMeta();
-        assert itemMeta != null;
-        itemMeta.setDisplayName(color(name));
-        item.setItemMeta(itemMeta);
-    }
-
     @Override
     public void renderMainStat(Item itemData, List<String> itemLore) {
         Weapon weaponData = (Weapon) itemData;
@@ -46,55 +29,6 @@ public class BasicRunicWeaponRenderer implements ItemRenderer {
     }
 
     @Override
-    public void renderMods(Item itemData, List<String> itemLore) {
-        Weapon weaponData = (Weapon) itemData;
-        String valuesColor = "&#95dbdb"; //pale baby blue
-
-        List<Modifier> mods = weaponData.getModifiers();
-        List<Modifier> prefixes = new ArrayList<>();
-        List<Modifier> suffixes = new ArrayList<>(); //Alternativa: Implementar equals() ou um comparador
-        for (Modifier mod : mods){
-            if (mod.getModifierID().getAffixType() == Affix.PREFIX){
-                prefixes.add(mod);
-            } else {
-                suffixes.add(mod);
-            }
-        }
-
-        for (Modifier mod : prefixes){
-            String modifierDisplayName = getDisplayString(mod, valuesColor, 2);
-            itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
-        }
-        for (Modifier mod : suffixes){
-            String modifierDisplayName = getDisplayString(mod, valuesColor, 2);
-            itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
-        }
-
-
-        if (itemData.getRarity() != ItemRarities.COMMON){
-            itemLore.add(color("@FOOTER@"));
-        }
-    }
-
-    @NotNull
-    private String getDisplayString(Modifier mod, String valuesColor, int indent) {
-        String modifierDisplayName = "&7" + mod.getModifierID().getDisplayName() + "  ";
-        RangeTypes rangeType = mod.getModifierID().getRangeType();
-        switch (rangeType){
-            case SINGLE_VALUE -> {}
-            case SINGLE_RANGE -> modifierDisplayName = (modifierDisplayName
-                    .replace("@value1@", valuesColor + mod.getValue()[0]+"&7")).indent(indent);
-            case DOUBLE_RANGE -> {
-                int[] values = mod.getValue();
-                modifierDisplayName = (modifierDisplayName
-                        .replace("@value1@", valuesColor +values[0]+"&7")
-                        .replace("@value2@", valuesColor +values[1]+"&7")).indent(indent);
-            }
-        }
-        return modifierDisplayName;
-    }
-
-    @Override
     public <subType extends Enum<subType> & AffixTableSelector> void renderDescription(Item itemData, List<String> itemLore, subType itemSubtype) {
         Weapon weaponData = (Weapon) itemData;
 
@@ -103,33 +37,6 @@ public class BasicRunicWeaponRenderer implements ItemRenderer {
         String passiveString = " &7Passive: " + weaponData.getImplicit().getDisplayName() + " ";
         itemLore.add(ColorUtils.translateColorCodes(passiveString));
         itemLore.add("");
-    }
-
-    @Override
-    public void renderTag(Item itemData, List<String> itemLore) {
-        Weapon weaponData = (Weapon) itemData;
-        ItemRarities rarity = weaponData.getRarity();
-        String tag = "";
-        switch (rarity){
-            case COMMON -> {
-                tag += ("&f&l"+rarity);
-                itemLore.add(color(tag));
-                return;
-            }
-            case MAGIC -> tag += ("&9&l"+rarity);
-            case RARE -> tag += ("&e&l"+rarity);
-        }
-        int starRating = weaponData.getStarRating();
-        if (starRating >= 0 && starRating<=50){
-            tag += "&8 " + "★";
-        } else if (starRating<=70){
-            tag += "&7 " + "★";
-        } else if (starRating<=90) {
-            tag += "&f " + "★";
-        } else {
-            tag += "&6 " + "★";
-        }
-        itemLore.add(color(tag));
     }
 
     private void serializeTextComponent(List<String> lore, TextComponent textComponent, int indentation){
