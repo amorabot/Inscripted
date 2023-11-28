@@ -4,7 +4,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
-import com.amorabot.inscripted.components.Items.Files.ModifiersJSON;
+import com.amorabot.inscripted.components.Items.Files.ResourcesJSONReader;
 import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import com.amorabot.inscripted.utils.Utils;
@@ -712,19 +712,21 @@ public enum ArmorTypes implements AffixTableSelector {
         loadBasicAffixes();
     }
     private void loadBasicAffixes(){
-        Map<String, Map<String, Map<String, Map<String, Map<Integer, int[]>>>>> modifiersJSON = ModifiersJSON.getBasicModifiers();
-        //The "Entire set" of a armor specialization is loaded at once and accessed later via getPiece() methods.
-        this.basicHelmetPrefixes = getAffixTable(modifiersJSON, ItemTypes.HELMET, Affix.PREFIX);
-        this.basicHelmetSuffixes = getAffixTable(modifiersJSON, ItemTypes.HELMET, Affix.SUFFIX);
+        Map<String, Map<String, Map<String, Map<Integer, int[]>>>> helmetsJSON = ResourcesJSONReader.getModifierTableFor(ItemTypes.HELMET);
+        this.basicHelmetPrefixes = getAffixes(helmetsJSON, Affix.PREFIX);
+        this.basicHelmetSuffixes = getAffixes(helmetsJSON, Affix.SUFFIX);
 
-        this.basicChestlatePrefixes = getAffixTable(modifiersJSON, ItemTypes.CHESTPLATE, Affix.PREFIX);
-        this.basicChesplateSuffixes = getAffixTable(modifiersJSON, ItemTypes.CHESTPLATE, Affix.SUFFIX);
-//
-        this.basicLeggingsPrefixes = getAffixTable(modifiersJSON, ItemTypes.LEGGINGS, Affix.PREFIX);
-        this.basicLeggingsSuffixes = getAffixTable(modifiersJSON, ItemTypes.LEGGINGS, Affix.SUFFIX);
+        Map<String, Map<String, Map<String, Map<Integer, int[]>>>> chestJSON = ResourcesJSONReader.getModifierTableFor(ItemTypes.CHESTPLATE);
+        this.basicChestlatePrefixes = getAffixes(chestJSON, Affix.PREFIX);
+        this.basicChesplateSuffixes = getAffixes(chestJSON, Affix.SUFFIX);
 
-        this.basicBootsPrefixes = getAffixTable(modifiersJSON, ItemTypes.BOOTS, Affix.PREFIX);
-        this.basicBootsSuffixes = getAffixTable(modifiersJSON, ItemTypes.BOOTS, Affix.SUFFIX);
+        Map<String, Map<String, Map<String, Map<Integer, int[]>>>> leggingsJSON = ResourcesJSONReader.getModifierTableFor(ItemTypes.LEGGINGS);
+        this.basicLeggingsPrefixes = getAffixes(leggingsJSON, Affix.PREFIX);
+        this.basicLeggingsSuffixes = getAffixes(leggingsJSON, Affix.SUFFIX);
+
+        Map<String, Map<String, Map<String, Map<Integer, int[]>>>> bootsJSON = ResourcesJSONReader.getModifierTableFor(ItemTypes.BOOTS);
+        this.basicBootsPrefixes = getAffixes(bootsJSON, Affix.PREFIX);
+        this.basicBootsSuffixes = getAffixes(bootsJSON, Affix.SUFFIX);
         Utils.log("Modifiers loaded successfully! (" + this + ")");
     }
     public Map<String, Map<Integer, int[]>> getBasicHelmetPrefixes(){

@@ -3,7 +3,7 @@ package com.amorabot.inscripted.commands;
 import com.amorabot.inscripted.APIs.MedicalCareAPI;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.HealthComponent;
-import com.amorabot.inscripted.components.HitComponent;
+import com.amorabot.inscripted.components.Attack;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Mobs.DefensePresets;
@@ -68,7 +68,7 @@ public class MobCommand implements TabExecutor {
                     skeleton.setHealth(1);
                     MobStats mobStats = new MobStats(
                             155,
-                            new HitComponent(
+                            new Attack(
                                     new int[]{100,120}, new int[]{20,60}, new int[2], new int[2], new int[2],
                                     10F, 0, 0, 0, 0),
                             new HealthComponent(1000, 150, 0, 0, 10),
@@ -93,7 +93,7 @@ public class MobCommand implements TabExecutor {
                     zombieVillager.setHealth(1);
                     MobStats zombieStats = new MobStats(
                             30,
-                            new HitComponent(
+                            new Attack(
                                     new int[]{100,120}, new int[]{10,20}, new int[2], new int[2], new int[]{70,70},
                                     10F, 0, 0, 0, 0),
                             new HealthComponent(1000, 150, 0, 0, 10),
@@ -116,7 +116,7 @@ public class MobCommand implements TabExecutor {
 
                     MobStats nengueStats = new MobStats(
                             999,
-                            new HitComponent(
+                            new Attack(
                                     new int[]{100,120}, new int[2], new int[2], new int[2], new int[]{200,250},
                                     10F, 0, 0, 0, 0),
                             new HealthComponent(5000, 20, 0, 0, 10),

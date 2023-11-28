@@ -8,12 +8,20 @@ import com.amorabot.inscripted.utils.Utils;
 import java.util.*;
 
 public interface AffixTableSelector {
-    default Map<String, Map<Integer, int[]>> getAffixTable(Map<String, Map<String, Map<String, Map<String, Map<Integer, int[]>>>>> modifiersJSON, ItemTypes type, Affix affixType) {
+//    default Map<String, Map<Integer, int[]>> getAffixTable(Map<String, Map<String, Map<String, Map<String, Map<Integer, int[]>>>>> modifiersJSON, ItemTypes type, Affix affixType) {
+//        if (modifiersJSON == null){
+//            Utils.log("De-Serialization error:" + type);
+//            return null;
+//        }
+//        return modifiersJSON.get(type.toString()).get(this.toString()).get(affixType.toString());
+//    }
+
+    default Map<String, Map<Integer, int[]>> getAffixes(Map<String, Map<String, Map<String, Map<Integer, int[]>>>> modifiersJSON, Affix affixType) {
         if (modifiersJSON == null){
-            Utils.log("De-Serialization error:" + type);
+            Utils.log("De-Serialization error: " + this);
             return null;
         }
-        return modifiersJSON.get(type.toString()).get(this.toString()).get(affixType.toString());
+        return modifiersJSON.get(this.toString()).get(affixType.toString());
     }
 
     default Map<ModifierIDs, Map<Integer, int[]>> castToModEnum(Map<String, Map<Integer, int[]>> rawAffixMap){

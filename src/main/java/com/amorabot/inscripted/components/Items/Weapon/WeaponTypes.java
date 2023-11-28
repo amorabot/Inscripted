@@ -4,7 +4,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
-import com.amorabot.inscripted.components.Items.Files.ModifiersJSON;
+import com.amorabot.inscripted.components.Items.Files.ResourcesJSONReader;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Material;
@@ -294,9 +294,9 @@ public enum WeaponTypes implements AffixTableSelector {
         loadBasicAffixes();
     }
     private void loadBasicAffixes(){
-        Map<String, Map<String, Map<String, Map<String, Map<Integer, int[]>>>>> modifiersJSON = ModifiersJSON.getBasicModifiers();
-        this.basicPrefixes = getAffixTable(modifiersJSON, ItemTypes.WEAPON, Affix.PREFIX);
-        this.basicSuffixes = getAffixTable(modifiersJSON, ItemTypes.WEAPON, Affix.SUFFIX);
+        Map<String, Map<String, Map<String, Map<Integer, int[]>>>> testJSON = ResourcesJSONReader.getModifierTableFor(ItemTypes.WEAPON);
+        this.basicPrefixes  = getAffixes(testJSON, Affix.PREFIX);
+        this.basicSuffixes = getAffixes(testJSON, Affix.SUFFIX);
         Utils.log("Modifiers loaded successfully!(" + this + ")");
     }
     public Map<String, Map<Integer, int[]>> getBasicPrefixes(){

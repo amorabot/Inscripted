@@ -6,8 +6,9 @@ public enum DefenceTypes {
     //&#26edcc - &#73bab5
     //"&#562bff", "&#6f5fed"
     FIRE("&4", "&c", "\uD83D\uDD25"),
-    COLD("&b", "&#79b7c7", "✽"),
     LIGHTNING("&e", "&#d6d463", "⚡"),
+    COLD("&b", "&#79b7c7", "✽"),
+    ABYSSAL("&d","&#7734AA", "\uD83C\uDF19"),
 //    ARMOR("&#e625cc", "&#d46cce", "\uD83D\uDEE1"),
     ARMOR("&#9996b5", "&#8170c4", "\uD83D\uDEE1"),
     DODGE("&a", "&#9dc797", "✦");

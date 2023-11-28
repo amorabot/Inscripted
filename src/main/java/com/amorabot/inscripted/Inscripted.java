@@ -63,9 +63,9 @@ public final class Inscripted extends JavaPlugin {
         //Todo: color interpolation for corrupted items
 
         getCommand("updatenbt").setExecutor(new UpdateNBT(this));
-        getCommand("getnbt").setExecutor(new GetNBT(this));
-        getCommand("generateweapon").setExecutor(new GenerateWeapon(this));
-        getCommand("generatearmor").setExecutor(new GenerateArmor(this));
+        getCommand("stats").setExecutor(new StatsCommand(this));
+//        getCommand("generateweapon").setExecutor(new GenerateWeapon(this));
+        getCommand("generateitem").setExecutor(new GenerateItem(this));
         getCommand("identify").setExecutor(new Identify(this));
         getCommand("recolor").setExecutor(new Recolor(this));
         getCommand("resetattributes").setExecutor(new ResetAttributes(this));

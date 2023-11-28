@@ -9,7 +9,7 @@ import com.amorabot.inscripted.utils.Utils;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HitComponent implements EntityComponent {
+public class Attack implements EntityComponent {
 
     private float DPS;
 
@@ -22,7 +22,9 @@ public class HitComponent implements EntityComponent {
     private int maelstrom;
     private float bleedChance;
 
-    public HitComponent(Weapon weaponData){
+    //Special attack modifiers go here
+
+    public Attack(Weapon weaponData){
         if (weaponData == null){
             reset();
             return;
@@ -39,7 +41,7 @@ public class HitComponent implements EntityComponent {
     }
 
     //For mobs
-    public HitComponent(int[] phys, int[] fire, int[] light, int[] cold, int[] abyss, float critChance, int critDamage, int shred, int maelstrom, float bleedChance){
+    public Attack(int[] phys, int[] fire, int[] light, int[] cold, int[] abyss, float critChance, int critDamage, int shred, int maelstrom, float bleedChance){
         this.hitDamage = new HashMap<>();
         hitDamage.put(DamageTypes.PHYSICAL, phys);
         hitDamage.put(DamageTypes.FIRE, fire);
@@ -124,7 +126,6 @@ public class HitComponent implements EntityComponent {
     public int getCritDamage() {
         return critDamage;
     }
-
     public void addBaseCritDamage(int critDamage) {
         this.critDamage += critDamage;
     }

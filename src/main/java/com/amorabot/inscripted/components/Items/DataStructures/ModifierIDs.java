@@ -60,7 +60,7 @@ public enum ModifierIDs {
             TargetStats.ARMOR_WARD, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
             Set.of(ModTags.HEALTH,ModTags.PHYSICAL, ModTags.DEFENSE), true, 1),
     ARMOR_DODGE(
-            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@ Armor / +@value2@% Dodge", 4,
+            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@ Armor / +@value2@ Dodge", 4,
             TargetStats.ARMOR_DODGE, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
             Set.of(ModTags.UTILITY, ModTags.PHYSICAL, ModTags.DEFENSE), true, 1),
     DODGE_WARD(

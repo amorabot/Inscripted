@@ -16,7 +16,7 @@ public enum Implicits {
     BOW_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
             null, new int[]{0}, ValueTypes.PERCENT, false),
     DAGGER_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.DAGGER.getDefaulNameColor()+"@value1@** CRIT DMG",
-            TargetStats.CRITICAL_DAMAGE, new int[]{10}, ValueTypes.PERCENT, false),
+            TargetStats.CRITICAL_DAMAGE, new int[]{10}, ValueTypes.ADDED, false),
     DAGGER_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
             null, new int[]{0}, ValueTypes.PERCENT, false),
     WAND_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.WAND.getDefaulNameColor()+"@value1@** MAELSTROM",

@@ -16,16 +16,16 @@ public enum DamageTypes {
             this.colorComponent = NamedTextColor.RED;
         }
     },
-    COLD("&b", "✽") {
-        @Override
-        void setColorComponent() {
-            this.colorComponent = NamedTextColor.AQUA;
-        }
-    },
     LIGHTNING("&e", "⚡") {
         @Override
         void setColorComponent() {
             this.colorComponent = NamedTextColor.YELLOW;
+        }
+    },
+    COLD("&b", "✽") {
+        @Override
+        void setColorComponent() {
+            this.colorComponent = NamedTextColor.AQUA;
         }
     },
     ABYSSAL("&#7734AA", "\uD83C\uDF19") {

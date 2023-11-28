@@ -3,7 +3,7 @@ package com.amorabot.inscripted.APIs;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
-import com.amorabot.inscripted.components.HitComponent;
+import com.amorabot.inscripted.components.Attack;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.Mobs.MobStats;
 import com.amorabot.inscripted.components.Mobs.MobStatsContainer;
@@ -28,8 +28,7 @@ public class DamageAPI {
     private static final NamespacedKey mobKey = new NamespacedKey(Inscripted.getPlugin(), "INSCRIPTED_MOB");
 
 
-    public static int[] processAttack(DefenceComponent defenderDefence, HitComponent attackerDamage){
-        //Should only aplly calculations to the resulting damage (considering all special modifiers, reductions...
+    public static int[] processAttack(DefenceComponent defenderDefence, Attack attackerDamage){
         int[] incomingHit = rollDamages(attackerDamage.getDamages());
         //Incoming hit processing...
         return applyDefences(incomingHit, attackerDamage, defenderDefence);
@@ -64,7 +63,7 @@ public class DamageAPI {
         return 0;
     }
 
-    public static int[] applyDefences(int[] incomingHit, HitComponent attackerDamage, DefenceComponent defenderDefences){
+    public static int[] applyDefences(int[] incomingHit, Attack attackerDamage, DefenceComponent defenderDefences){
         if (incomingHit[0] > 0 && defenderDefences.getFinalArmor()>0){ //Physical mitigation
             incomingHit[0] = mitigatePhysical(incomingHit[0], attackerDamage, defenderDefences.getFinalArmor());
         }
@@ -75,27 +74,34 @@ public class DamageAPI {
 
         return incomingHit;
     }
-    private static int mitigatePhysical(int rawPhysicalDamage, HitComponent attackerDamage, float defenderArmor){
+    private static int mitigatePhysical(int rawPhysicalDamage, Attack attackerDamage, float defenderArmor){
         //Armour will never prevent more damage than its value divided by X (e.g. X = 5 -> 1000 armour will never prevent more than 200 damage)
         //Bigger hits -> less effective armor
         //https://www.poewiki.net/wiki/Armour/math
 
         // Alternative -> armorMult = 100 / (100 + armor)
-        int armorMitigationFactor = 10;
-        float armorPenetration = (attackerDamage.getShred()/100F); // 0 - 1 Shred value
-        float damageReduction = (defenderArmor / ( defenderArmor + armorMitigationFactor*rawPhysicalDamage )) - armorPenetration;
-        float resultingDamage = rawPhysicalDamage - (rawPhysicalDamage * damageReduction);
+//        int armorMitigationFactor = 10;
+//        float armorPenetration = (attackerDamage.getShred()/100F); // 0 - 1 Shred value
+//        float damageReduction = (defenderArmor / ( defenderArmor + armorMitigationFactor*rawPhysicalDamage )) - armorPenetration;
+//        float resultingDamage = rawPhysicalDamage - (rawPhysicalDamage * damageReduction);
+
+        float damageReduction = 1 - (100 / ( 100 + defenderArmor )); // DamageReduction = 1 - physDmgMulti
+        int attackerShred = attackerDamage.getShred();
+
+        float resultingReduction = (100*damageReduction ) - attackerShred; //Can be negative => More damage multiplier
+
+        float resultingDamage = rawPhysicalDamage * (1 - (100-resultingReduction)/100F);
 
         return (int) resultingDamage;
     }
-    private static void applyElementalResistance(int[] incomingHit, HitComponent attackerDamage, int elementIndex, int elementalRes){
+    private static void applyElementalResistance(int[] incomingHit, Attack attackerDamage, int elementIndex, int elementalRes){
         //If the incoming damage is 0, or the there is no resulting resistance, there's no need to calculate changes
         float elementalPenetration = attackerDamage.getMaelstrom()/100F;
         if (incomingHit[elementIndex] > 0 && (elementalRes-elementalPenetration)!=0){
             incomingHit[elementIndex] = mitigateElemental(incomingHit[elementIndex], attackerDamage,  elementalRes);
         }
     }
-    private static int mitigateElemental(int rawEleDamage, HitComponent attackerDamage, float defenderEleRes){
+    private static int mitigateElemental(int rawEleDamage, Attack attackerDamage, float defenderEleRes){
         //In case of negative resistances, elemental damage gets amplified
         //defenderEleRes is capped below 100, but can be negative
         float newDamage = ( 1 - ((defenderEleRes-attackerDamage.getMaelstrom())/100F) ) * rawEleDamage;
