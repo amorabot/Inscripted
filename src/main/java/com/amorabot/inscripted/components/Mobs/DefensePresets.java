@@ -6,7 +6,7 @@ public enum DefensePresets {
 
     //cold -> fire -> light -> cold ->...
     BASIC_PHYSICAL_RESISTANT(10,10,10, -30, 0, 200, 30),
-    PHYSICAL_RESISTANT(10,10,10, -30, 0, 1500, 70),
+    PHYSICAL_RESISTANT(10,10,10, -30, 0, 900, 0),
     BASIC_EVASIVE(10,10,10,-30, 2000, 0 ,0),
     FIRE_RESISTANT(70, -10, 10, -30, 0, 300, 50),
     LIGHTNING_RESISTANT(-10, 10, 70, -30 , 0, 150, 25),

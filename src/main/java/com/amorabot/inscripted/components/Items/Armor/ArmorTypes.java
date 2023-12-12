@@ -25,22 +25,23 @@ public enum ArmorTypes implements AffixTableSelector {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
+            int meanArmorPerPiece = 80;
             //Base item defences definition
             switch (armorBase){
                 case HELMET -> {
-                    int maximumHelmetArmor = 400;
+                    int maximumHelmetArmor = (int)( meanArmorPerPiece*HELMET_MAIN_STAT_WEIGHT);
                     putArmor(ilvl, maxItemLevel, maximumHelmetArmor, defences);
                 }
                 case CHESTPLATE -> {
-                    int maximumChestplateArmor = 800;
+                    int maximumChestplateArmor = (int)( meanArmorPerPiece*CHESTPLATE_MAIN_STAT_WEIGHT);
                     putArmor(ilvl, maxItemLevel, maximumChestplateArmor, defences);
                 }
                 case LEGGINGS -> {
-                    int maximumLeggingsArmor = 600;
+                    int maximumLeggingsArmor = (int)( meanArmorPerPiece*LEGGINGS_MAIN_STAT_WEIGHT);
                     putArmor(ilvl, maxItemLevel, maximumLeggingsArmor, defences);
                 }
                 case BOOTS -> {
-                    int maximumBootsArmor = 300;
+                    int maximumBootsArmor = (int)( meanArmorPerPiece*BOOTS_MAIN_STAT_WEIGHT);
                     putArmor(ilvl, maxItemLevel, maximumBootsArmor, defences);
                 }
                 default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
@@ -102,28 +103,30 @@ public enum ArmorTypes implements AffixTableSelector {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
+            int meanArmorPerPiece = 50; // Half of full STR armor + 1/8
+            int meanDodgePerPiece = 50;
             switch (armorBase){
                 case HELMET -> {
-                    int maximumHelmetArmor = 250;
-                    int maxDodge = 100;
+                    int maximumHelmetArmor = (int) ( meanArmorPerPiece * HELMET_MAIN_STAT_WEIGHT );
+                    int maxDodge = (int) ( meanDodgePerPiece * HELMET_MAIN_STAT_WEIGHT );
                     putArmor(ilvl, maxItemLevel, maximumHelmetArmor, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case CHESTPLATE -> {
-                    int maximumChestplateArmor = 600;
-                    int maxDodge = 400;
+                    int maximumChestplateArmor = (int) ( meanArmorPerPiece * CHESTPLATE_MAIN_STAT_WEIGHT );
+                    int maxDodge = (int) ( meanDodgePerPiece * CHESTPLATE_MAIN_STAT_WEIGHT );
                     putArmor(ilvl, maxItemLevel, maximumChestplateArmor, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case LEGGINGS -> {
-                    int maximumLeggingsArmor = 400;
-                    int maxDodge = 300;
+                    int maximumLeggingsArmor = (int) ( meanArmorPerPiece * LEGGINGS_MAIN_STAT_WEIGHT );
+                    int maxDodge = (int) ( meanDodgePerPiece * LEGGINGS_MAIN_STAT_WEIGHT );
                     putArmor(ilvl, maxItemLevel, maximumLeggingsArmor, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case BOOTS -> {
-                    int maximumBootsArmor = 150;
-                    int maxDodge = 200;
+                    int maximumBootsArmor = (int) ( meanArmorPerPiece * BOOTS_MAIN_STAT_WEIGHT );
+                    int maxDodge = (int) ( meanDodgePerPiece * BOOTS_MAIN_STAT_WEIGHT );
                     putArmor(ilvl, maxItemLevel, maximumBootsArmor, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
@@ -186,21 +189,22 @@ public enum ArmorTypes implements AffixTableSelector {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
+            int meanDodgePerPiece = 100;
             switch (armorBase){
                 case HELMET -> {
-                    int maxDodge = 200;
+                    int maxDodge = (int) (meanDodgePerPiece * HELMET_MAIN_STAT_WEIGHT);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case CHESTPLATE -> {
-                    int maxDodge = 800;
+                    int maxDodge = (int) (meanDodgePerPiece * CHESTPLATE_MAIN_STAT_WEIGHT);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case LEGGINGS -> {
-                    int maxDodge = 600;
+                    int maxDodge = (int) (meanDodgePerPiece * LEGGINGS_MAIN_STAT_WEIGHT);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case BOOTS -> {
-                    int maxDodge = 400;
+                    int maxDodge = (int) (meanDodgePerPiece * BOOTS_MAIN_STAT_WEIGHT);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
@@ -262,28 +266,30 @@ public enum ArmorTypes implements AffixTableSelector {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
+            int meanWardPerPiece = 150;
+            int meanDodgePerPiece = 50;
             switch (armorBase){
                 case HELMET -> {
-                    int maximumWard = 50;
-                    int maxDodge = 100;
+                    int maximumWard = (int) ( meanWardPerPiece * HELMET_MAIN_STAT_WEIGHT);
+                    int maxDodge = (int) ( meanDodgePerPiece * HELMET_MAIN_STAT_WEIGHT);
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case CHESTPLATE -> {
-                    int maximumWard = 120;
-                    int maxDodge = 400;
+                    int maximumWard = (int) ( meanWardPerPiece * CHESTPLATE_MAIN_STAT_WEIGHT);
+                    int maxDodge = (int) ( meanDodgePerPiece * CHESTPLATE_MAIN_STAT_WEIGHT);
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case LEGGINGS -> {
-                    int maximumWard = 90;
-                    int maxDodge = 300;
+                    int maximumWard = (int) ( meanWardPerPiece * LEGGINGS_MAIN_STAT_WEIGHT);
+                    int maxDodge = (int) ( meanDodgePerPiece * LEGGINGS_MAIN_STAT_WEIGHT);
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case BOOTS -> {
-                    int maximumWard = 40;
-                    int maxDodge = 200;
+                    int maximumWard = (int) ( meanWardPerPiece * BOOTS_MAIN_STAT_WEIGHT);
+                    int maxDodge = (int) ( meanDodgePerPiece * BOOTS_MAIN_STAT_WEIGHT);
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
@@ -346,21 +352,22 @@ public enum ArmorTypes implements AffixTableSelector {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
+            int meanWardPerPiece = 500;
             switch (armorBase){
                 case HELMET -> {
-                    int maxWard = 360;
+                    int maxWard = (int) ( meanWardPerPiece * HELMET_MAIN_STAT_WEIGHT );
                     putWard(ilvl, maxItemLevel, maxWard, defences);
                 }
                 case CHESTPLATE -> {
-                    int maxWard = 700;
+                    int maxWard = (int) ( meanWardPerPiece * CHESTPLATE_MAIN_STAT_WEIGHT );
                     putWard(ilvl, maxItemLevel, maxWard, defences);
                 }
                 case LEGGINGS -> {
-                    int maxWard = 600;
+                    int maxWard = (int) ( meanWardPerPiece * LEGGINGS_MAIN_STAT_WEIGHT );
                     putWard(ilvl, maxItemLevel, maxWard, defences);
                 }
                 case BOOTS -> {
-                    int maxWard = 300;
+                    int maxWard = (int) ( meanWardPerPiece * BOOTS_MAIN_STAT_WEIGHT );
                     putWard(ilvl, maxItemLevel, maxWard, defences);
                 }
                 default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
@@ -422,28 +429,30 @@ public enum ArmorTypes implements AffixTableSelector {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
+            int meanArmorPerPiece = 60;
+            int meanWardPerPiece = 150;
             switch (armorBase){
                 case HELMET -> {
-                    int maximumHelmetArmor = 250;
-                    int maximumWard = 50;
+                    int maximumHelmetArmor = (int) (meanArmorPerPiece * HELMET_MAIN_STAT_WEIGHT);
+                    int maximumWard = (int) (meanWardPerPiece * HELMET_MAIN_STAT_WEIGHT);
                     putArmor(ilvl, maxItemLevel, maximumHelmetArmor, defences);
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                 }
                 case CHESTPLATE -> {
-                    int maximumChestplateArmor = 600;
-                    int maximumWard = 120;
+                    int maximumChestplateArmor = (int) (meanArmorPerPiece * CHESTPLATE_MAIN_STAT_WEIGHT);
+                    int maximumWard = (int) (meanWardPerPiece * CHESTPLATE_MAIN_STAT_WEIGHT);
                     putArmor(ilvl, maxItemLevel, maximumChestplateArmor, defences);
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                 }
                 case LEGGINGS -> {
-                    int maximumLeggingsArmor = 400;
-                    int maximumWard = 90;
+                    int maximumLeggingsArmor = (int) (meanArmorPerPiece * LEGGINGS_MAIN_STAT_WEIGHT);
+                    int maximumWard = (int) (meanWardPerPiece * LEGGINGS_MAIN_STAT_WEIGHT);
                     putArmor(ilvl, maxItemLevel, maximumLeggingsArmor, defences);
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                 }
                 case BOOTS -> {
-                    int maximumBootsArmor = 150;
-                    int maximumWard = 40;
+                    int maximumBootsArmor = (int) (meanArmorPerPiece * BOOTS_MAIN_STAT_WEIGHT);
+                    int maximumWard = (int) (meanWardPerPiece * BOOTS_MAIN_STAT_WEIGHT);
                     putArmor(ilvl, maxItemLevel, maximumBootsArmor, defences);
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                 }
@@ -508,6 +517,12 @@ public enum ArmorTypes implements AffixTableSelector {
 
     private Map<String, Map<Integer, int[]>> basicBootsPrefixes;
     private Map<String, Map<Integer, int[]>> basicBootsSuffixes;
+
+
+    private static final double HELMET_MAIN_STAT_WEIGHT = 0.8;
+    private static final double CHESTPLATE_MAIN_STAT_WEIGHT = 1.3;
+    private static final double LEGGINGS_MAIN_STAT_WEIGHT = 1.2;
+    private static final double BOOTS_MAIN_STAT_WEIGHT = 0.7;
 
     private final List<String> tier1Names;
     private final List<String> tier2Names;

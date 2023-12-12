@@ -4,7 +4,6 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.events.ArmorEquipEvent;
 import com.amorabot.inscripted.events.ItemUsage;
 import com.amorabot.inscripted.events.WeaponEquipEvent;
-import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
