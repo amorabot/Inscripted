@@ -62,43 +62,6 @@ public class GenerateItem implements TabExecutor {
             }
             giveGeneratedItem(armor, player);
         }
-
-//        int ilvlArg = Integer.parseInt(args[0]);
-//        String rarityArg = args[1];
-//        String armorTypeArg = args[2];
-//        String armorSubTypeArg = args[3];
-//        ItemRarities rarity;
-//        ItemTypes armorType;
-//        ArmorTypes armorSubtype;
-//        try { //Argument Validation
-//            rarity = ItemRarities.valueOf(rarityArg.toUpperCase());
-//            armorType = ItemTypes.valueOf(armorTypeArg.toUpperCase());
-//            armorSubtype = ArmorTypes.valueOf(armorSubTypeArg.toUpperCase());
-//        } catch (IllegalArgumentException exception){
-//            player.sendMessage(Utils.color("&cCorrect syntax -> /armor itemLevel rarity armorType [-d]"));
-//            return false;
-//        }
-//
-//        Set<ItemTypes> armorSet = Set.of(ItemTypes.HELMET, ItemTypes.CHESTPLATE, ItemTypes.LEGGINGS, ItemTypes.BOOTS);
-//        if (!armorSet.contains(armorType)){ //ArmorSlot Validation
-//            return false;
-//        }
-//
-//        Armor randomArmor = BasicArmorGenerator.createGenericArmor(armorType, armorSubtype, ilvlArg, rarity, false, false);
-//        try {
-//            if (args[4].equals("-d")){
-//                assert randomArmor != null;
-//                for (Modifier mod : randomArmor.getModifiers()){
-//                    player.sendMessage(mod.getModifierID().getDisplayName());
-//                }
-//            }
-//            Utils.log("Running armor generation in debug mode");
-//        } catch (IndexOutOfBoundsException e){
-//            Utils.log("Running armor generation in basic mode");
-//        }
-//        player.getInventory().addItem(randomArmor.getItemForm(plugin));
-//
-//
         return true;
     }
 

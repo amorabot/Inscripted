@@ -1,6 +1,8 @@
 package com.amorabot.inscripted;
 
 import com.amorabot.inscripted.commands.*;
+import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
+import com.amorabot.inscripted.components.Items.Files.ItemModifiersConfig;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
 import com.amorabot.inscripted.handlers.GUI.GUIHandler;
 import com.amorabot.inscripted.handlers.Inventory.ArmorEquipListener;
@@ -44,6 +46,7 @@ public final class Inscripted extends JavaPlugin {
         this.world = Bukkit.getWorld("world");
         log("O novo hello world!");
 
+        //TODO: encapsulate
         if (!new File(this.getDataFolder().getAbsolutePath() + "/profiles.json").exists()){
             try {
                 String uuid = UUID.randomUUID().toString();
@@ -57,6 +60,7 @@ public final class Inscripted extends JavaPlugin {
             }
         }
         reloadRoutine();
+        ModifierIDs.loadModifiers();
 
 //        getWorld().getLivingEntities()
 
@@ -134,5 +138,8 @@ public final class Inscripted extends JavaPlugin {
     private void reloadRoutine(){
         JSONProfileManager.reloadOnlinePlayers(Bukkit.getOnlinePlayers());
         PlayerRegenManager.reloadOnlinePlayers();
+
+//        ModifierIDs.loadModifiers();
+        ItemModifiersConfig.setup();
     }
 }

@@ -19,7 +19,7 @@ public class Modifier implements Serializable {
 
     private Modifier(ModifierIDs mod, byte tier, int[] values, byte basePercentile){
         this.modifier = mod;
-        this.tier = tier;
+        this.tier = (byte) Math.min(tier, mod.getNumberOfTiers());
         this.value = values;
         this.basePercentile = basePercentile;
     }
@@ -31,10 +31,6 @@ public class Modifier implements Serializable {
     * */
     public static Modifier getRandomModifier(Map<ModifierIDs, Map<Integer, int[]>> modPool, int itemLevel, List<Modifier> currentItemMods){
         //If modPool is, for instance, a prefix pool, lets check if the item already has any prefixes so it's removed (Prevents duplicates)
-//        if (currentItemMods.isEmpty()){
-//            //Generate a random mod and return
-//            return null;
-//        }
 
         Set<ModifierIDs> availableMods = filterAvailableMods(modPool, currentItemMods);
 
@@ -201,14 +197,4 @@ public class Modifier implements Serializable {
             default -> "*";
         };
     }
-
-    //    public <ModClass extends Enum<ModClass> & ItemModifier> Modifier<ModClass> castTo(Class<ModClass> modifierClass){
-//        //Modifiers may come from a variety of sources, and must be casted to reflect this.
-//        Modifier<ModClass> castedMod = new Modifier<>();
-//        castedMod.setModifier(modifierClass.cast(this.modifier));
-//        castedMod.setTier(this.tier);
-//        castedMod.setValue(this.value);
-//        castedMod.setBasePercentile(this.basePercentile);
-//        return castedMod;
-//    }
 }

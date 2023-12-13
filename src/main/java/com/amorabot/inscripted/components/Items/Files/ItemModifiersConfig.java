@@ -1,14 +1,16 @@
 package com.amorabot.inscripted.components.Items.Files;
 
+import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
-@Deprecated
 public class ItemModifiersConfig {
     /*
     https://bukkit.fandom.com/wiki/Configuration_API_Reference#Setting_Values   -   referencia para yml config
@@ -34,39 +36,58 @@ public class ItemModifiersConfig {
             //ao setar, definimos a primeira string como key e a segunda como value
             config.save();
     */
+
+
+    /*
+    To get a HashMap, a ConfigurationSection must must first be retrieved. You can return the configuration with getConfigurationSection method.
+    The getValues method will return the values in the ConfigurationSection as a map, it takes a boolean which controls if the nested maps will
+    be returned in the map.
+
+    Usage:
+    this.getConfig().getConfigurationSection("path.to.map").getValues(false)
+     */
     private static File file; //Actual file, holding the info
-    private static FileConfiguration fileConfig; //The data within the file becomes accessible through FileConfiguration
+    private static YamlConfiguration config;
 
     //Finds or generates the config file.
     public static void setup(){
-        file = new File(Bukkit.getServer().getPluginManager().getPlugin("Inscripted").getDataFolder(), "modifiers.yml");
+        file = new File(Inscripted.getPlugin().getDataFolder(), "modifiers.yml");
 
         if (!file.exists()){
-            try{
-                file.createNewFile();
-            }catch (IOException exception){
-                exception.printStackTrace();
-            }
+            Inscripted.getPlugin().saveResource("modifiers.yml", false);
         }
 
-        fileConfig = YamlConfiguration.loadConfiguration(file);
+        config = new YamlConfiguration();
+        config.options().parseComments(true);
+
+        try {
+            config.load(file);
+        } catch (IOException | InvalidConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+        Utils.log("Loading modifiers config");
+        }
+
+
+    public static YamlConfiguration get(){
+        return config;
     }
 
-    public static FileConfiguration get(){
-        return fileConfig;
+    public static void set(String path, Object value){
+        config.set(path, value);
+
+        save();
     }
 
     public static void save(){
-        if (!file.exists()){
-            try{
-                fileConfig.save(file);
-            }catch (IOException exception){
-                Utils.log("Unable to save modifiers.yml file");
-            }
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
     public static void reload(){
-        fileConfig = YamlConfiguration.loadConfiguration(file); //Retrieves the updated file data and stores it
+        config = YamlConfiguration.loadConfiguration(file); //Retrieves the updated file data and stores it
     }
 }
