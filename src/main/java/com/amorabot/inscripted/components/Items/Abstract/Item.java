@@ -3,12 +3,15 @@ package com.amorabot.inscripted.components.Items.Abstract;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
+import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class Item implements Serializable {
 
@@ -126,6 +129,7 @@ public abstract class Item implements Serializable {
     }
     protected abstract void mapBase();
     protected void mapTier(){
+        //Substitute for for-loop
         if (getIlvl()<=Tiers.T1.getMaxLevel()){
             setTier(Tiers.T1);
             return;
@@ -145,19 +149,26 @@ public abstract class Item implements Serializable {
         //If ilvl is greater than T5 threshold, return t5
         setTier(Tiers.T5);
     }
-    public List<Modifier> getModifiers(){
+    public List<Modifier> getModifierList(){
         return this.modifiers;
     }
-    public void addModifier(Modifier newMod) {
-        getModifiers().add(newMod);
+    public Set<ModifierIDs> getModIDs(){
+        Set<ModifierIDs> auxSet = new HashSet<>();
+        for (Modifier mod : this.modifiers){
+            auxSet.add(mod.getModifierID());
+        }
+        return auxSet;
     }
-    public int getStarRating() { //Voltar pra acesso protected, so pra uso interno
-        float percentileSum = 0;
-        for (Modifier mod : getModifiers()){
+    public void addModifier(Modifier newMod) {
+        getModifierList().add(newMod);
+    }
+    public double getStarRating() { //Voltar pra acesso protected, so pra uso interno
+        double percentileSum = 0;
+        for (Modifier mod : getModifierList()){
             percentileSum += mod.getBasePercentile();
         }
-        if (!getModifiers().isEmpty()){
-            return (int) (percentileSum/getModifiers().size());
+        if (!getModifierList().isEmpty()){
+            return (percentileSum/ getModifierList().size());
         }
         return 0;
     }

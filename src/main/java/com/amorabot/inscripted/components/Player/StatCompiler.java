@@ -11,6 +11,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.Implicits;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
+import com.amorabot.inscripted.components.Items.DataStructures.ModifierManager;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.utils.Utils;
 
@@ -144,11 +145,9 @@ public class StatCompiler {
                         String modToken = modTokens[0];
                         String methodKey = "set"+modToken;
                         Method method = this.getClass().getDeclaredMethod(methodKey, String.class,int[].class);
-//                        Utils.log("Temos o método set" + modToken + "!!!"); //TODO REMOVE
                         method.invoke(this, typeToken, compiledStats.get(modKey));
                         break;
                     case 3:
-//                        Utils.log("Hybrid mod"); //TODO REMOVE
                         //Non-Hybrid Mods
                         //1st mod token
                         String mod1Token = modTokens[0];
@@ -185,23 +184,46 @@ public class StatCompiler {
 
     private void compileItem(Map<String, int[]> compiledStats, Item equippedItem){
         //Compiling mods
-        List<Modifier> armorMods = equippedItem.getModifiers();
-        for (Modifier mod : armorMods){
-            //Ignore local damage mods for weapons
-            Set<ModifierIDs> ignoredWeaponMods = Set.of(
-                    ModifierIDs.ADDED_PHYSICAL
-                    , ModifierIDs.ADDED_FIRE
-                    , ModifierIDs.ADDED_LIGHTNING
-                    , ModifierIDs.ADDED_COLD
-                    , ModifierIDs.ADDED_ABYSSAL
-                    , ModifierIDs.PERCENT_PHYSICAL);
-            if ((equippedItem instanceof Weapon) && (ignoredWeaponMods.contains(mod.getModifierID())) ){continue;}
+        List<Modifier> itemMods = equippedItem.getModifierList();
+        for (Modifier mod : itemMods){
+//            if ((equippedItem instanceof Weapon) && (ignoredWeaponMods.contains(mod.getModifierID())) ){continue;}
+
+            if (equippedItem instanceof Weapon){
+                //Ignore local damage mods for weapons
+                Set<ModifierIDs> ignoredWeaponMods = Set.of(
+                        ModifierIDs.ADDED_PHYSICAL
+                        , ModifierIDs.ADDED_FIRE
+                        , ModifierIDs.ADDED_LIGHTNING
+                        , ModifierIDs.ADDED_COLD
+                        , ModifierIDs.ADDED_ABYSSAL
+                        , ModifierIDs.PERCENT_PHYSICAL);
+                if (ignoredWeaponMods.contains(mod.getModifierID())){
+                    continue;
+                }
+            }
 
             ModifierIDs modifierID = mod.getModifierID();
-            compileStat(compiledStats, modifierID, mod.getValue().clone());
+
+            /*
+            The value that needs to be compiled comes directly from the modifiers.yml table.
+            We need to fetch the current modifier's tier from the table and map the value ranges based on the mod's
+            base percentile (0-1)
+            Ex:
+                ARMOR_WARD Tier 3, Item's BP = 0.95
+                      - 10    | ARMOR RANGE
+                      - 14    |
+                      - 18          | WARD RANGE
+                      - 20          |
+                ArmorValue = A value thats 95% of the way between 10 - 14 = roundedParametricValue(10, 14, 0.95) = 14
+                WardValue = roundedParametricValue(18,20, 0.95)
+
+                int[] wantedFinalArray = [ArmorValue, WardValue]
+             */
+            compileStat(compiledStats, modifierID, ModifierManager.getMappedFinalValueFor(mod));
         }
 
         //Compiling implicit
+        //Implicits use the old system of fixed values for mods
         Implicits implicitID = equippedItem.getImplicit();
         compileStat(compiledStats, implicitID, implicitID.getValue().clone());
     }
@@ -246,6 +268,12 @@ public class StatCompiler {
 
     Reset all player components -> Compile all stats -> Fill all the fresh components -> Update/Build all
     */
+
+    /*
+    Every mod's value is contained within a int[] argument. Single value mods will be handled within the correspondent
+    method accordingly, and more complex mods like hybrid ones will take advantage of the multiple values that
+     can be (and are) stored, also handling them within their methods
+     */
     private void setHEALTH(String typeToken, int[] healthValue){
         ValueTypes type = mapValueType(typeToken);
         if (type == null){return;}

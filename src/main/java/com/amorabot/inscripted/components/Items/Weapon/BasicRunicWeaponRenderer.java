@@ -5,6 +5,7 @@ import com.amorabot.inscripted.components.Items.Abstract.ItemRenderer;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.inscripted.utils.ColorUtils;
+import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -33,8 +34,8 @@ public class BasicRunicWeaponRenderer implements ItemRenderer {
         Weapon weaponData = (Weapon) itemData;
 
         itemLore.add("");
-        itemLore.add(color("&7 Item Level: " + "&f&l" + weaponData.getIlvl()));
-        String passiveString = " &7Passive: " + weaponData.getImplicit().getDisplayName() + " ";
+        itemLore.add(color(Utils.convertToPrettyString(" &7Item Level: ") + "&f&l" + weaponData.getIlvl()));
+        String passiveString = Utils.convertToPrettyString(" &7Passive: ") + weaponData.getImplicit().getDisplayName() + " ";
         itemLore.add(ColorUtils.translateColorCodes(passiveString));
         itemLore.add("");
     }
@@ -44,7 +45,7 @@ public class BasicRunicWeaponRenderer implements ItemRenderer {
         lore.add(translatedString.indent(indentation));
     }
     private TextComponent getDmgPrefixComponent(){
-        return Component.text("DMG: ").color(NamedTextColor.GRAY);
+        return Component.text("ᴅᴍɢ: ").color(NamedTextColor.GRAY);
     }
 
     private void serializeDamageLineComponent(Map<DamageTypes, int[]> damages, List<String> itemLore, int indent){

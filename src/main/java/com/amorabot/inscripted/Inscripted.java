@@ -17,6 +17,7 @@ import com.amorabot.inscripted.tasks.DamageHologramDepleter;
 import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
 //import com.amorabot.inscripted.tasks.PlayerRegen;
 import com.amorabot.inscripted.utils.DelayedTask;
+import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -35,7 +36,6 @@ public final class Inscripted extends JavaPlugin {
     private static BukkitTask holoDepleterTask;
     private static BukkitTask combatLogger;
     private static BukkitTask playerInterfaceRenderer;
-//    private static BukkitTask playerRegen;
     private World world;
 
     @Override
@@ -61,6 +61,8 @@ public final class Inscripted extends JavaPlugin {
         }
         reloadRoutine();
         ModifierIDs.loadModifiers();
+        Utils.populatePrettyAlphabet();
+        Utils.populateRomanChars();
 
 //        getWorld().getLivingEntities()
 
@@ -139,7 +141,6 @@ public final class Inscripted extends JavaPlugin {
         JSONProfileManager.reloadOnlinePlayers(Bukkit.getOnlinePlayers());
         PlayerRegenManager.reloadOnlinePlayers();
 
-//        ModifierIDs.loadModifiers();
         ItemModifiersConfig.setup();
     }
 }

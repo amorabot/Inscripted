@@ -44,7 +44,7 @@ public class ModifierEditor {
         Utils.log("Saving...");
     }
 
-    public static int[] getModValues(ModifierIDs mod, int tier){
+    public static int[] getModValuesFor(ModifierIDs mod, int tier){
         String affixType = mod.getAffixType().toString();
         String modString = mod.toString();
         String path = affixType+"."+modString+"."+tier;

@@ -1,10 +1,9 @@
 package com.amorabot.inscripted.components.Items.Weapon;
 
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
-import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.inscripted.components.Items.Files.ResourcesJSONReader;
+import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Material;
@@ -246,8 +245,10 @@ public enum WeaponTypes implements AffixTableSelector {
     private final List<String> tier4Names;
     private final List<String> tier5Names;
     private final String color;
-    private Map<String, Map<Integer, int[]>> basicPrefixes;
-    private Map<String, Map<Integer, int[]>> basicSuffixes;
+
+    private Map<String, Map<String, Map<Integer, Integer>>> affixes;
+//    private Map<String, Map<Integer, int[]>> basicPrefixes;
+//    private Map<String, Map<Integer, int[]>> basicSuffixes;
     WeaponTypes(String defaultColor, List<String> t1, List<String> t2, List<String> t3, List<String> t4, List<String> t5){
         this.tier1Names = t1;
         this.tier2Names = t2;
@@ -294,15 +295,11 @@ public enum WeaponTypes implements AffixTableSelector {
         loadBasicAffixes();
     }
     private void loadBasicAffixes(){
-        Map<String, Map<String, Map<String, Map<Integer, int[]>>>> testJSON = ResourcesJSONReader.getModifierTableFor(ItemTypes.WEAPON);
-        this.basicPrefixes  = getAffixes(testJSON, Affix.PREFIX);
-        this.basicSuffixes = getAffixes(testJSON, Affix.SUFFIX);
+        this.affixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.WEAPON, this);
+
         Utils.log("Modifiers loaded successfully!(" + this + ")");
     }
-    public Map<String, Map<Integer, int[]>> getBasicPrefixes(){
-        return this.basicPrefixes;
-    }
-    public Map<String, Map<Integer, int[]>> getBasicSuffixes(){
-        return this.basicSuffixes;
+    public Map<String, Map<String, Map<Integer, Integer>>> getAffixes(){
+        return this.affixes;
     }
 }

@@ -1,6 +1,5 @@
 package com.amorabot.inscripted.components.Items.Armor;
 
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
@@ -506,17 +505,10 @@ public enum ArmorTypes implements AffixTableSelector {
         }
     };
 
-    private Map<String, Map<Integer, int[]>> basicHelmetPrefixes;
-    private Map<String, Map<Integer, int[]>> basicHelmetSuffixes;
-
-    private Map<String, Map<Integer, int[]>> basicChestlatePrefixes;
-    private Map<String, Map<Integer, int[]>> basicChesplateSuffixes;
-
-    private Map<String, Map<Integer, int[]>> basicLeggingsPrefixes;
-    private Map<String, Map<Integer, int[]>> basicLeggingsSuffixes;
-
-    private Map<String, Map<Integer, int[]>> basicBootsPrefixes;
-    private Map<String, Map<Integer, int[]>> basicBootsSuffixes;
+    private Map<String, Map<String, Map<Integer, Integer>>> helmetAffixes;
+    private Map<String, Map<String, Map<Integer, Integer>>> chestplateAffixes;
+    private Map<String, Map<String, Map<Integer, Integer>>> leggingsAffixes;
+    private Map<String, Map<String, Map<Integer, Integer>>> bootsAffixes;
 
 
     private static final double HELMET_MAIN_STAT_WEIGHT = 0.8;
@@ -524,6 +516,7 @@ public enum ArmorTypes implements AffixTableSelector {
     private static final double LEGGINGS_MAIN_STAT_WEIGHT = 1.2;
     private static final double BOOTS_MAIN_STAT_WEIGHT = 0.7;
 
+    //TODO: Move these stats to Tiers enum, specify names for each tier of itemType, for example
     private final List<String> tier1Names;
     private final List<String> tier2Names;
     private final List<String> tier3Names;
@@ -569,7 +562,8 @@ public enum ArmorTypes implements AffixTableSelector {
             defences.put(DefenceTypes.WARD, 0);
         }
     }
-    protected void putDodge(int givenItemLevel, float maxItemLevel, int maximumBaseStat, Map<DefenceTypes, Integer> defences){ //Will put -1 if invalid maxIlvl is given
+    protected void putDodge(int givenItemLevel, float maxItemLevel, int maximumBaseStat, Map<DefenceTypes, Integer> defences){
+        //Will put -1 if invalid maxIlvl is given
         //Dodge will cap below the max item level given
         //Dodge will be a int value to represent a percentage (100x)  1% = 100, 56% = 5600
         int softCapOffset = 20;
@@ -727,49 +721,26 @@ public enum ArmorTypes implements AffixTableSelector {
         loadBasicAffixes();
     }
     private void loadBasicAffixes(){
-        Map<String, Map<String, Map<String, Map<Integer, int[]>>>> helmetsJSON = ResourcesJSONReader.getModifierTableFor(ItemTypes.HELMET);
-        this.basicHelmetPrefixes = getAffixes(helmetsJSON, Affix.PREFIX);
-        this.basicHelmetSuffixes = getAffixes(helmetsJSON, Affix.SUFFIX);
+        this.helmetAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.HELMET, this);
+        this.chestplateAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.CHESTPLATE, this);
+        this.leggingsAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.LEGGINGS, this);
+        this.bootsAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.BOOTS, this);
 
-        Map<String, Map<String, Map<String, Map<Integer, int[]>>>> chestJSON = ResourcesJSONReader.getModifierTableFor(ItemTypes.CHESTPLATE);
-        this.basicChestlatePrefixes = getAffixes(chestJSON, Affix.PREFIX);
-        this.basicChesplateSuffixes = getAffixes(chestJSON, Affix.SUFFIX);
-
-        Map<String, Map<String, Map<String, Map<Integer, int[]>>>> leggingsJSON = ResourcesJSONReader.getModifierTableFor(ItemTypes.LEGGINGS);
-        this.basicLeggingsPrefixes = getAffixes(leggingsJSON, Affix.PREFIX);
-        this.basicLeggingsSuffixes = getAffixes(leggingsJSON, Affix.SUFFIX);
-
-        Map<String, Map<String, Map<String, Map<Integer, int[]>>>> bootsJSON = ResourcesJSONReader.getModifierTableFor(ItemTypes.BOOTS);
-        this.basicBootsPrefixes = getAffixes(bootsJSON, Affix.PREFIX);
-        this.basicBootsSuffixes = getAffixes(bootsJSON, Affix.SUFFIX);
         Utils.log("Modifiers loaded successfully! (" + this + ")");
     }
-    public Map<String, Map<Integer, int[]>> getBasicHelmetPrefixes(){
-        return this.basicHelmetPrefixes;
-    }
-    public Map<String, Map<Integer, int[]>> getBasicHelmetSuffixes(){
-        return this.basicHelmetSuffixes;
-    }
 
-    public Map<String, Map<Integer, int[]>> getBasicChestlatePrefixes() {
-        return basicChestlatePrefixes;
-    }
-    public Map<String, Map<Integer, int[]>> getBasicChesplateSuffixes() {
-        return basicChesplateSuffixes;
-    }
 
-    public Map<String, Map<Integer, int[]>> getBasicLeggingsPrefixes() {
-        return basicLeggingsPrefixes;
+    public Map<String, Map<String, Map<Integer, Integer>>> getHelmetAffixes(){
+        return this.helmetAffixes;
     }
-    public Map<String, Map<Integer, int[]>> getBasicLeggingsSuffixes() {
-        return basicLeggingsSuffixes;
+    public Map<String, Map<String, Map<Integer, Integer>>> getChestplateAffixes(){
+        return this.chestplateAffixes;
     }
-
-    public Map<String, Map<Integer, int[]>> getBasicBootsPrefixes() {
-        return basicBootsPrefixes;
+    public Map<String, Map<String, Map<Integer, Integer>>> getLeggingsAffixes(){
+        return this.leggingsAffixes;
     }
-    public Map<String, Map<Integer, int[]>> getBasicBootsSuffixes() {
-        return basicBootsSuffixes;
+    public Map<String, Map<String, Map<Integer, Integer>>> getBootsAffixes(){
+        return this.bootsAffixes;
     }
 
     public String getRandomName(Tiers tier){

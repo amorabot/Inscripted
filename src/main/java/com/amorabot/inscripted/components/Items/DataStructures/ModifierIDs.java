@@ -7,6 +7,17 @@ import com.amorabot.inscripted.utils.Utils;
 import java.util.*;
 
 public enum ModifierIDs {
+
+    /*
+    Extra proj
+    Weapon stamina
+    ES faster initial recharge
+    ES shit altogether....
+    Lesser speed
+    Lesser phys
+    Lesser bleed
+    Lesser elemental damages or new tiers for existing ones in the .yml
+     */
 //Names should not be renamed casually -> they're sync'ed with the modifier table
 
     // ============================ PREFIXES ====================================
@@ -71,15 +82,15 @@ public enum ModifierIDs {
             TargetStats.WALK_SPEED, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.UTILITY), false, 1),
     STRENGTH_PERCENT(
-            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% STR", 3,
+            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% Increased STR", 3,
             TargetStats.STRENGTH, ValueTypes.MULTI, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.UTILITY), false, 1),
     DEXTERITY_PERCENT(
-            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% DEX", 3,
+            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% Increased DEX", 3,
             TargetStats.DEXTERITY, ValueTypes.MULTI, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.UTILITY), false, 1),
     INTELLIGENCE_PERCENT(
-            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% INT", 3,
+            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% Increased INT", 3,
             TargetStats.INTELLIGENCE, ValueTypes.MULTI, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.UTILITY), false, 1),
     STAMINA(
@@ -252,13 +263,24 @@ public enum ModifierIDs {
         return MODIFIER_VALUES;
     }
 
+    public static int[] getModifierValuesFor(Modifier mod){
+        return getModifierValuesFor(mod.getModifierID(), mod.getTier());
+    }
+    public static int[] getModifierValuesFor(ModifierIDs mod, int tier){
+        Affix affixType = mod.getAffixType();
+        int[] values = getModifierTable().get(affixType).get(mod).get(tier);
+        if (values == null){
+            Utils.log("Invalid combination: " + mod + " & Tier " + tier);
+            return new int[4];
+        }
+        return values;
+    }
+
     public static void loadModifiers(){
         Map<ModifierIDs, Map<Integer, int[]>> prefixModData = new HashMap<>();
         Map<ModifierIDs, Map<Integer, int[]>> suffixModData = new HashMap<>();
         for (ModifierIDs mod : ModifierIDs.values()){
             Affix modAffixType = mod.getAffixType();
-            //Debbugging
-            Utils.log("Adding " + modAffixType + ": " + mod);
             switch (modAffixType){
                 case PREFIX -> prefixModData.put(mod, mod.fetchModifierValues());
                 case SUFFIX -> suffixModData.put(mod, mod.fetchModifierValues());
@@ -273,21 +295,10 @@ public enum ModifierIDs {
             return null;
         }
         Map<Integer,int[]> tempTierValueMapping = new HashMap<>();
-        //Debbugging
-        Utils.log("Loading " + this);
         for (int i = 0; i < this.tiers; i++){
-            //Debbugging
-            Utils.log("Tier: " + i);
-            int[] currValue = ModifierEditor.getModValues(this, i);
-            //Debbugging
-            for (int value : currValue){
-                Utils.log(" - " + value);
-            }
-            //Debbugging
+            int[] currValue = ModifierEditor.getModValuesFor(this, i);
             tempTierValueMapping.put(i, currValue);
         }
-        //Debbugging
-        Utils.log("Finishing...");
         return tempTierValueMapping;
     }
 
