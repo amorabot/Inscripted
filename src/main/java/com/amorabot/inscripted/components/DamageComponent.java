@@ -8,7 +8,7 @@ import com.amorabot.inscripted.utils.Utils;
 
 public class DamageComponent implements EntityComponent {
 
-    private HitComponent hitData;
+    private Attack hitData;
 
     private int increasedAccuracy;
     private int increasedCritChance;
@@ -28,7 +28,7 @@ public class DamageComponent implements EntityComponent {
     //List of special on-hit keystones
 
     public DamageComponent(){
-        this.hitData = new HitComponent(null);
+        this.hitData = new Attack(null);
     }
     @Override
     public void reset(){
@@ -36,7 +36,7 @@ public class DamageComponent implements EntityComponent {
     }
 
     public void reset(Weapon weaponData){
-        this.hitData = new HitComponent(weaponData);
+        this.hitData = new Attack(weaponData);
 
         this.increasedCritChance = 0;
         this.increasedAccuracy = 0;
@@ -51,7 +51,7 @@ public class DamageComponent implements EntityComponent {
         this.increasedAbyssalDamage = 0;
     }
 
-    public HitComponent getHitData() {
+    public Attack getHitData() {
         return hitData;
     }
 

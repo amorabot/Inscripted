@@ -1,29 +1,23 @@
 package com.amorabot.inscripted.components.Items.Interfaces;
 
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
 import com.amorabot.inscripted.utils.Utils;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public interface AffixTableSelector {
-    default Map<String, Map<Integer, int[]>> getAffixTable(Map<String, Map<String, Map<String, Map<String, Map<Integer, int[]>>>>> modifiersJSON, ItemTypes type, Affix affixType) {
-        if (modifiersJSON == null){
-            Utils.log("De-Serialization error:" + type);
-            return null;
-        }
-        return modifiersJSON.get(type.toString()).get(this.toString()).get(affixType.toString());
-    }
 
-    default Map<ModifierIDs, Map<Integer, int[]>> castToModEnum(Map<String, Map<Integer, int[]>> rawAffixMap){
-        Map<ModifierIDs, Map<Integer, int[]>> castedMap = new HashMap<>();
+    default Map<ModifierIDs, Map<Integer, Integer>> castModMap(Map<String, Map<Integer, Integer>> rawAffixMap){
+        Map<ModifierIDs, Map<Integer, Integer>> castedMap = new HashMap<>();
         Set<String> mods = rawAffixMap.keySet();
         for (String mod : mods){
             try {
                 ModifierIDs castedMod = ModifierIDs.valueOf(mod);
                 castedMap.put(castedMod, rawAffixMap.get(mod));
             } catch (IllegalArgumentException exception){
+                Utils.log("Couldn't cast mod: " + mod);
                 continue;
             }
         }

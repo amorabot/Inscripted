@@ -1,6 +1,8 @@
 package com.amorabot.inscripted;
 
 import com.amorabot.inscripted.commands.*;
+import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
+import com.amorabot.inscripted.components.Items.Files.ItemModifiersConfig;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
 import com.amorabot.inscripted.handlers.GUI.GUIHandler;
 import com.amorabot.inscripted.handlers.Inventory.ArmorEquipListener;
@@ -15,6 +17,7 @@ import com.amorabot.inscripted.tasks.DamageHologramDepleter;
 import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
 //import com.amorabot.inscripted.tasks.PlayerRegen;
 import com.amorabot.inscripted.utils.DelayedTask;
+import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,7 +36,6 @@ public final class Inscripted extends JavaPlugin {
     private static BukkitTask holoDepleterTask;
     private static BukkitTask combatLogger;
     private static BukkitTask playerInterfaceRenderer;
-//    private static BukkitTask playerRegen;
     private World world;
 
     @Override
@@ -44,6 +46,7 @@ public final class Inscripted extends JavaPlugin {
         this.world = Bukkit.getWorld("world");
         log("O novo hello world!");
 
+        //TODO: encapsulate
         if (!new File(this.getDataFolder().getAbsolutePath() + "/profiles.json").exists()){
             try {
                 String uuid = UUID.randomUUID().toString();
@@ -57,15 +60,18 @@ public final class Inscripted extends JavaPlugin {
             }
         }
         reloadRoutine();
+        ModifierIDs.loadModifiers();
+        Utils.populatePrettyAlphabet();
+        Utils.populateRomanChars();
 
 //        getWorld().getLivingEntities()
 
         //Todo: color interpolation for corrupted items
 
         getCommand("updatenbt").setExecutor(new UpdateNBT(this));
-        getCommand("getnbt").setExecutor(new GetNBT(this));
-        getCommand("generateweapon").setExecutor(new GenerateWeapon(this));
-        getCommand("generatearmor").setExecutor(new GenerateArmor(this));
+        getCommand("stats").setExecutor(new StatsCommand(this));
+//        getCommand("generateweapon").setExecutor(new GenerateWeapon(this));
+        getCommand("generateitem").setExecutor(new GenerateItem(this));
         getCommand("identify").setExecutor(new Identify(this));
         getCommand("recolor").setExecutor(new Recolor(this));
         getCommand("resetattributes").setExecutor(new ResetAttributes(this));
@@ -134,5 +140,7 @@ public final class Inscripted extends JavaPlugin {
     private void reloadRoutine(){
         JSONProfileManager.reloadOnlinePlayers(Bukkit.getOnlinePlayers());
         PlayerRegenManager.reloadOnlinePlayers();
+
+        ItemModifiersConfig.setup();
     }
 }

@@ -3,6 +3,7 @@ package com.amorabot.inscripted.components.Items.Weapon;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
 import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
+import com.amorabot.inscripted.components.Items.DataStructures.ModifierManager;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Abstract.ItemRenderer;
@@ -56,32 +57,33 @@ public class Weapon extends Item {
 
     //-------------------------------------------------------------------------
     public void updateBaseDamageFromModifiers(){ //Once a weapon is created, the damage map needs to be updated to contain any possible new damages
-        for (Modifier mod : getModifiers()){
+        for (Modifier mod : getModifierList()){
             ModifierIDs weaponModifier = mod.getModifierID();
             if (weaponModifier.equals(ModifierIDs.ADDED_PHYSICAL)){
                 int[] physDmg = baseDmg.get(DamageTypes.PHYSICAL);
-                physDmg[0] = physDmg[0] + mod.getValue()[0];
-                physDmg[1] = physDmg[1] + mod.getValue()[0];
+                int[] localPhys = ModifierManager.getMappedFinalValueFor(mod);
+                physDmg[0] = physDmg[0] + localPhys[0];
+                physDmg[1] = physDmg[1] + localPhys[1];
                 baseDmg.put(DamageTypes.PHYSICAL, physDmg);
             }
             if (weaponModifier.equals(ModifierIDs.ADDED_FIRE)){
-                baseDmg.put(DamageTypes.FIRE, mod.getValue());
+                baseDmg.put(DamageTypes.FIRE, ModifierManager.getMappedFinalValueFor(mod));
                 continue;
             }
             if (weaponModifier.equals(ModifierIDs.ADDED_ABYSSAL)){
-                baseDmg.put(DamageTypes.ABYSSAL, mod.getValue());
+                baseDmg.put(DamageTypes.ABYSSAL, ModifierManager.getMappedFinalValueFor(mod));
                 continue;
             }
             if (weaponModifier.equals(ModifierIDs.ADDED_LIGHTNING)){
-                baseDmg.put(DamageTypes.LIGHTNING, mod.getValue());
+                baseDmg.put(DamageTypes.LIGHTNING, ModifierManager.getMappedFinalValueFor(mod));
                 continue;
             }
             if (weaponModifier.equals(ModifierIDs.ADDED_COLD)){
-                baseDmg.put(DamageTypes.COLD, mod.getValue());
+                baseDmg.put(DamageTypes.COLD, ModifierManager.getMappedFinalValueFor(mod));
                 continue;
             }
             if (weaponModifier.equals(ModifierIDs.PERCENT_PHYSICAL)){
-                int percentPhys = mod.getValue()[0];
+                int percentPhys = ModifierManager.getMappedFinalValueFor(mod)[0];
                 int[] physDmg = baseDmg.get(DamageTypes.PHYSICAL);
                 float phys1 = physDmg[0] * (1 + (float) percentPhys/100);
                 float phys2 = physDmg[1] * (1 + (float) percentPhys/100);

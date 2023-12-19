@@ -2,12 +2,16 @@ package com.amorabot.inscripted.commands;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.HealthComponent;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
+import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
+import com.amorabot.inscripted.components.Items.Files.ModifierEditor;
 import com.amorabot.inscripted.components.Mobs.DefensePresets;
 import com.amorabot.inscripted.components.Mobs.MobStats;
 import com.amorabot.inscripted.components.Mobs.MobStatsContainer;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.utils.ColorUtils;
+import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,6 +28,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public class TemplateCommand implements CommandExecutor {
 
@@ -91,14 +97,18 @@ public class TemplateCommand implements CommandExecutor {
                     }
                     redTeam.setColor(ChatColor.RED);
                     return true;
-//                case "damageWard":
-////                    HP.halfWard();
-////                    PlayerRegenManager.playerHit(player.getUniqueId());
-//                    return true;
-//                case "zeroWard":
-////                    HP.zeroWrd();
-////                    PlayerRegenManager.playerHit(player.getUniqueId());
-//                    return true;
+                case "modtest1":
+                    Map<Affix, Map<ModifierIDs, Map<Integer, int[]>>> suffmodTable = ModifierIDs.getModifierTable();
+                    for (ModifierIDs mod : suffmodTable.get(Affix.SUFFIX).keySet()){
+                        Utils.log(mod.toString());
+                    }
+                    return true;
+                case "modtest2":
+                    Map<Affix, Map<ModifierIDs, Map<Integer, int[]>>> prefmodTable = ModifierIDs.getModifierTable();
+                    for (ModifierIDs mod : prefmodTable.get(Affix.PREFIX).keySet()){
+                        Utils.log(mod.toString());
+                    }
+                    return true;
             }
         }
 

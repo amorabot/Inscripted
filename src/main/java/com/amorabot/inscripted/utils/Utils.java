@@ -17,6 +17,8 @@ import java.util.logging.Logger;
 
 public class Utils {
 
+    private static Map<String, String> PRETTY_CHARACTERS = new HashMap<>();
+    private static Map<String, String> ROMAN_CHAR = new HashMap<>();
     private static Logger logger = Inscripted.getPluginLogger();
 
     public static void log(String ... messages){ // ... indica um numero indefinido de strings a serem passadas
@@ -64,6 +66,61 @@ public class Utils {
     public static float toTwoDigitsFloat(float floatToConvert){
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         return Float.valueOf(decimalFormat.format(floatToConvert/100.0f));
+    }
+
+    public static void populatePrettyAlphabet(){
+//        "ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘꞯʀꜱᴛᴜᴠᴡxʏᴢ"
+        PRETTY_CHARACTERS.put("A", "ᴀ");PRETTY_CHARACTERS.put("B", "ʙ");PRETTY_CHARACTERS.put("C", "ᴄ");
+        PRETTY_CHARACTERS.put("D", "ᴅ");PRETTY_CHARACTERS.put("E", "ᴇ");PRETTY_CHARACTERS.put("F", "ꜰ");
+        PRETTY_CHARACTERS.put("G", "ɢ");PRETTY_CHARACTERS.put("H", "ʜ");PRETTY_CHARACTERS.put("I", "ɪ");
+        PRETTY_CHARACTERS.put("J", "ᴊ");PRETTY_CHARACTERS.put("K", "ᴋ");PRETTY_CHARACTERS.put("L", "ʟ");
+        PRETTY_CHARACTERS.put("M", "ᴍ");PRETTY_CHARACTERS.put("N", "ɴ");PRETTY_CHARACTERS.put("O", "ᴏ");
+        PRETTY_CHARACTERS.put("P", "ᴘ");PRETTY_CHARACTERS.put("Q", "ꞯ");PRETTY_CHARACTERS.put("R", "ʀ");
+        PRETTY_CHARACTERS.put("S", "ꜱ");PRETTY_CHARACTERS.put("T", "ᴛ");PRETTY_CHARACTERS.put("U", "ᴜ");
+        PRETTY_CHARACTERS.put("V", "ᴠ");PRETTY_CHARACTERS.put("W", "ᴡ");PRETTY_CHARACTERS.put("X", "x");
+        PRETTY_CHARACTERS.put("Y", "ʏ");PRETTY_CHARACTERS.put("Z", "ᴢ");
+    }
+    private static String getPrettyCharacter(String charac){
+        if (!PRETTY_CHARACTERS.containsKey(charac)){
+            return charac;
+        }
+        return PRETTY_CHARACTERS.get(charac);
+    }
+    public static String convertToPrettyString(String originalText){
+        StringBuilder convertedStringBuilder = new StringBuilder();
+        originalText = originalText.toUpperCase();
+        for (int i = 0; i < originalText.length(); i++){
+            char currChar = originalText.charAt(i);
+            if (currChar == ' '){
+                convertedStringBuilder.append(currChar);
+                continue;
+            }
+            String prettyChar = getPrettyCharacter(String.valueOf(currChar));
+            convertedStringBuilder.append(prettyChar);
+        }
+        return convertedStringBuilder.toString();
+    }
+    public static void populateRomanChars(){
+        ROMAN_CHAR.put("0","∅");
+        ROMAN_CHAR.put("1", "I");
+        ROMAN_CHAR.put("2", "II");
+        ROMAN_CHAR.put("3", "III");
+        ROMAN_CHAR.put("4", "IV");
+        ROMAN_CHAR.put("5", "V");
+        ROMAN_CHAR.put("6", "VI");
+        ROMAN_CHAR.put("7", "VII");
+        ROMAN_CHAR.put("8", "VIII");
+        ROMAN_CHAR.put("9", "IX");
+        ROMAN_CHAR.put("10", "X");
+        ROMAN_CHAR.put("11", "XI");
+        ROMAN_CHAR.put("12", "XII");
+    }
+    public static String getRomanChar(int value){
+        String stringValue = String.valueOf(value);
+        if (!ROMAN_CHAR.containsKey(stringValue)){
+            return "*";
+        }
+        return ROMAN_CHAR.get(stringValue);
     }
 
     public static ItemStack createItem(Material type, int amount, boolean enchanted, boolean unbreakable, boolean hideUnbreakable
@@ -117,5 +174,24 @@ public class Utils {
         double random = Math.random();
         if (Math.random() > 0.5){random *= -1;}
         return random;
+    }
+
+    public static int getRoundedParametricValue(double r1, double r2, double t){
+        return (int) Math.ceil(getParametricValue(r1, r2, t));
+    }
+
+    public static double getParametricValue(double r1, double r2, double t){
+        return r1*(1.0 - t) + r2*t;
+    }
+
+    public static double getRandomInclusiveValue(double x1, double x2){
+        double normalizedRand = getNormalizedValue();
+        return x1*(1.0 - normalizedRand) + x2*normalizedRand; //Parametric mapping between x1 and x2
+    }
+
+    public static double getNormalizedValue(){
+        return Math.random()/Math.nextDown(1.0);
+        //nextDown(1) é o valor máximo de Math.random(), que não inclui 1.
+        //Com isso, o valor é devidamente mapeado de 0-1
     }
 }

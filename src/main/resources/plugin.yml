@@ -12,26 +12,22 @@ commands:
     description: Identifies a custom item.
     usage: /identify
     aliases: [id]
-  generateweapon:
-    description: generates a custom weapon.
-    usage: /generateweapon
-    aliases: [weapon, genw]
   resetattributes:
     description: resets the attribute data for the sender.
     usage: /resetatt
-  getnbt:
-    description: gets a specified NBT data tag.
-    usage: /getnbt
+  stats:
+    description: displays player stats in chat.
+    usage: /stats
   recolor:
     description: recolors a item's display name.
     usage: /recolor
   editmods:
     description: modifiers JSON edit interface
     usage: /editmods
-  generatearmor:
-    description: generates a custom armor.
-    usage: /generatearmor
-    aliases: [ armor, gena ]
+  generateitem:
+    description: generates a custom item.
+    usage: /generateitem
+    aliases: [item]
   show:
     description: shows the held item in chat
     usage: /show

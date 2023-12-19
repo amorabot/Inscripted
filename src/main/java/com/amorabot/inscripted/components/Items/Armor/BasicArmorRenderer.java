@@ -6,6 +6,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceType
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Implicits;
 import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.inscripted.utils.ColorUtils;
+import com.amorabot.inscripted.utils.Utils;
 
 import java.util.List;
 import java.util.Map;
@@ -18,40 +19,99 @@ public class BasicArmorRenderer implements ItemRenderer {
         Armor armorData = (Armor) itemData;
         Map<DefenceTypes, Integer> defencesMap = armorData.getDefencesMap();
         int hp = armorData.getBaseHealth();
-        int ward = 0;
-        if (defencesMap.containsKey(DefenceTypes.WARD)){
-            ward = defencesMap.get(DefenceTypes.WARD);
-        }
-        int armor = 0;
-        if (defencesMap.containsKey(DefenceTypes.ARMOR)){
-            armor = defencesMap.get(DefenceTypes.ARMOR);
-        }
-        int dodge = 0;
-        if (defencesMap.containsKey(DefenceTypes.DODGE)){
-            dodge = defencesMap.get(DefenceTypes.DODGE);
-        }
+
+        int ward = defencesMap.getOrDefault(DefenceTypes.WARD, 0);
+
+        int armor = defencesMap.getOrDefault(DefenceTypes.ARMOR, 0);
+        int dodge = defencesMap.getOrDefault(DefenceTypes.DODGE, 0);
 
         int indentation = 1;
-        String healthLine = DefenceTypes.HEALTH.getTextColor()+ DefenceTypes.HEALTH.getSpecialChar() + " +" + hp + " Health" ;
-        itemLore.add(ColorUtils.translateColorCodes(healthLine.indent(indentation)));
-        if (ward > 0){
-            String wardLine = DefenceTypes.WARD.getTextColor()+ DefenceTypes.WARD.getSpecialChar() + " +" + ward + " Ward" ;
-            itemLore.add(ColorUtils.translateColorCodes(wardLine.indent(indentation)));
-        }
+        String margin = " ".repeat(2);
+        int HP = 1;
+        int DEF = 0;
+
         itemLore.add("");
 
+        String HPcomponent = Utils.convertToPrettyString("&7HP: ");
+        String DEFcomponent = Utils.convertToPrettyString("&7DEF: ");
+
+        String healthLine = DefenceTypes.HEALTH.getTextColor()+ DefenceTypes.HEALTH.getSpecialChar() + " +" + hp + " Health" ;
+        int healthLength = healthLine.length();
+
+        String wardLine = "";
+        String armorLine = "";
+        String dodgeLine = "";
+
+        if (ward > 0){
+            wardLine = DefenceTypes.WARD.getTextColor()+ DefenceTypes.WARD.getSpecialChar() + " +" + ward + " Ward" ;
+            HP++;
+        }
         if (armor > 0){
-            String armorLine = DefenceTypes.ARMOR.getStatColor()+ DefenceTypes.ARMOR.getSpecialChar() + " +" + armor + " Armor" ;
-            itemLore.add(ColorUtils.translateColorCodes(armorLine.indent(indentation)));
+            armorLine = DefenceTypes.ARMOR.getStatColor()+ DefenceTypes.ARMOR.getSpecialChar() + " +" + armor + " Armor" ;
+            DEF++;
         }
         if (dodge > 0){
-            String dodgeLine = DefenceTypes.DODGE.getTextColor()+ DefenceTypes.DODGE.getSpecialChar() + " +" + dodge + " Dodge" ; //Flat stat display
-            itemLore.add(ColorUtils.translateColorCodes(dodgeLine.indent(indentation)));
-        }
-        if ((armor != 0 || dodge != 0)){
-            itemLore.add("");
+            dodgeLine = DefenceTypes.DODGE.getTextColor()+ DefenceTypes.DODGE.getSpecialChar() + " +" + dodge + " Dodge" ;
+            DEF++;
         }
 
+        String firstLine = healthLine + margin;
+        String DEFSpacing = " ".repeat(healthLength - 5) + margin + DEFcomponent;
+        switch (DEF){
+            case 0:
+                itemLore.add(ColorUtils.translateColorCodes(HPcomponent.indent(indentation)));
+                if (HP == 1){
+                    itemLore.add(firstLine.indent(indentation));
+                } else {
+                    itemLore.add(ColorUtils.translateColorCodes(firstLine.indent(indentation)));
+                    itemLore.add(ColorUtils.translateColorCodes(wardLine.indent(indentation)));
+                }
+                break;
+            case 1:
+                if (armor > 0){
+                    firstLine += "&8|" + margin + armorLine + " ";
+                } else {
+                    firstLine += "&8|" + margin + dodgeLine + " ";
+                }
+                if (HP == 1){
+
+                    HPcomponent += DEFSpacing;
+
+                    itemLore.add(ColorUtils.translateColorCodes(HPcomponent.indent(indentation)));
+                    itemLore.add(ColorUtils.translateColorCodes(firstLine.indent(indentation)));
+
+                } else {
+                    int wardLength = wardLine.length();
+                    int offset = healthLength-wardLength;
+                    wardLine += " ".repeat(Math.abs(offset)) + margin + "&8|";
+
+                    HPcomponent += DEFSpacing;
+
+                    itemLore.add(ColorUtils.translateColorCodes(HPcomponent.indent(indentation)));
+                    itemLore.add(ColorUtils.translateColorCodes(firstLine.indent(indentation)));
+                    itemLore.add(ColorUtils.translateColorCodes(wardLine.indent(indentation)));
+                }
+                break;
+            case 2:
+                //It only makes sense, CURRENTLY, to have double defences armor with the hp stat being only health, lets assume that for now
+                HPcomponent += DEFSpacing;
+                itemLore.add(ColorUtils.translateColorCodes(HPcomponent.indent(indentation)));
+
+                firstLine += "&8|" + margin + armorLine + " ";
+                String secondLine = "";
+                int secondLineOffset = healthLine.length()-5+2; //5 = hex, 2 = margin
+                secondLine += " ".repeat(secondLineOffset) + margin + "&8|" + margin + dodgeLine + " ";
+
+                itemLore.add(ColorUtils.translateColorCodes(firstLine.indent(indentation)));
+                itemLore.add(ColorUtils.translateColorCodes(secondLine.indent(indentation)));
+
+                break;
+            default:
+                Utils.log("Number of defense stats not handled: " + DEF);
+                break;
+        }
+
+        itemLore.add("");
         itemLore.add(color("@HEADER@"));
     }
 

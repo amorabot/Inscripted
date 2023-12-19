@@ -1,13 +1,23 @@
 package com.amorabot.inscripted.components.Items.DataStructures;
 
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
+import com.amorabot.inscripted.components.Items.Files.ModifierEditor;
+import com.amorabot.inscripted.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public enum ModifierIDs {
+
+    /*
+    Extra proj
+    Weapon stamina
+    ES faster initial recharge
+    ES shit altogether....
+    Lesser speed
+    Lesser phys
+    Lesser bleed
+    Lesser elemental damages or new tiers for existing ones in the .yml
+     */
 //Names should not be renamed casually -> they're sync'ed with the modifier table
 
     // ============================ PREFIXES ====================================
@@ -60,7 +70,7 @@ public enum ModifierIDs {
             TargetStats.ARMOR_WARD, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
             Set.of(ModTags.HEALTH,ModTags.PHYSICAL, ModTags.DEFENSE), true, 1),
     ARMOR_DODGE(
-            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@ Armor / +@value2@% Dodge", 4,
+            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@ Armor / +@value2@ Dodge", 4,
             TargetStats.ARMOR_DODGE, ValueTypes.FLAT, RangeTypes.DOUBLE_RANGE,
             Set.of(ModTags.UTILITY, ModTags.PHYSICAL, ModTags.DEFENSE), true, 1),
     DODGE_WARD(
@@ -72,21 +82,22 @@ public enum ModifierIDs {
             TargetStats.WALK_SPEED, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.UTILITY), false, 1),
     STRENGTH_PERCENT(
-            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% STR", 3,
+            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% Increased STR", 3,
             TargetStats.STRENGTH, ValueTypes.MULTI, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.UTILITY), false, 1),
     DEXTERITY_PERCENT(
-            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% DEX", 3,
+            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% Increased DEX", 3,
             TargetStats.DEXTERITY, ValueTypes.MULTI, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.UTILITY), false, 1),
     INTELLIGENCE_PERCENT(
-            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% INT", 3,
+            Set.of(ModifierIDs.ARMORTAG),Affix.PREFIX, "+@value1@% Increased INT", 3,
             TargetStats.INTELLIGENCE, ValueTypes.MULTI, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.UTILITY), false, 1),
     STAMINA(
             Set.of(ModifierIDs.ARMORTAG, ModifierIDs.WEAPONTAG),Affix.PREFIX, "+@value1@ Stamina", 6,
             TargetStats.STAMINA, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.UTILITY), false, 1),
+    //Create WEAPON_STAMINA
 
 
 
@@ -133,11 +144,23 @@ public enum ModifierIDs {
             Set.of(ModifierIDs.ARMORTAG, ModifierIDs.WEAPONTAG),Affix.SUFFIX, "+@value1@ STR", 8,
             TargetStats.STRENGTH, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.UTILITY), false, 1),
+    LESSER_STRENGTH(
+            Set.of(ModifierIDs.ARMORTAG, ModifierIDs.WEAPONTAG),Affix.SUFFIX, "+@value1@ STR", 8,
+            TargetStats.STRENGTH, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
+            Set.of(ModTags.UTILITY), false, 1),
     DEXTERITY(
             Set.of(ModifierIDs.ARMORTAG, ModifierIDs.WEAPONTAG),Affix.SUFFIX, "+@value1@ DEX", 8,
             TargetStats.DEXTERITY, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.UTILITY), false, 1),
+    LESSER_DEXTERITY(
+            Set.of(ModifierIDs.ARMORTAG, ModifierIDs.WEAPONTAG),Affix.SUFFIX, "+@value1@ DEX", 8,
+            TargetStats.DEXTERITY, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
+            Set.of(ModTags.UTILITY), false, 1),
     INTELLIGENCE(
+            Set.of(ModifierIDs.ARMORTAG, ModifierIDs.WEAPONTAG),Affix.SUFFIX, "+@value1@ INT", 8,
+            TargetStats.INTELLIGENCE, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
+            Set.of(ModTags.UTILITY), false, 1),
+    LESSER_INTELLIGENCE(
             Set.of(ModifierIDs.ARMORTAG, ModifierIDs.WEAPONTAG),Affix.SUFFIX, "+@value1@ INT", 8,
             TargetStats.INTELLIGENCE, ValueTypes.FLAT, RangeTypes.SINGLE_RANGE,
             Set.of(ModTags.UTILITY), false, 1),
@@ -198,6 +221,8 @@ public enum ModifierIDs {
     public static final String WEAPONTAG = "#WEAPONMOD";
     public static final String ARMORTAG = "#ARMORMOD"; //Encapsulates HELMET, CHESTPLATE, ... ItemTypes values
 
+    private static Map<Affix, Map<ModifierIDs, Map<Integer, int[]>>> MODIFIER_VALUES = new HashMap<>();
+
     private final Set<String> filterTags;
     private final Affix affix;
     private final String displayName;
@@ -232,7 +257,55 @@ public enum ModifierIDs {
         this.modTags = modTags;
         this.hybrid = hybrid;
         this.weight = weight;
+
     }
+    public static Map<Affix, Map<ModifierIDs, Map<Integer, int[]>>> getModifierTable(){
+        return MODIFIER_VALUES;
+    }
+
+    public static int[] getModifierValuesFor(Modifier mod){
+        return getModifierValuesFor(mod.getModifierID(), mod.getTier());
+    }
+    public static int[] getModifierValuesFor(ModifierIDs mod, int tier){
+        Affix affixType = mod.getAffixType();
+        int[] values = getModifierTable().get(affixType).get(mod).get(tier);
+        if (values == null){
+            Utils.log("Invalid combination: " + mod + " & Tier " + tier);
+            return new int[4];
+        }
+        return values;
+    }
+
+    public static void loadModifiers(){
+        Map<ModifierIDs, Map<Integer, int[]>> prefixModData = new HashMap<>();
+        Map<ModifierIDs, Map<Integer, int[]>> suffixModData = new HashMap<>();
+        for (ModifierIDs mod : ModifierIDs.values()){
+            Affix modAffixType = mod.getAffixType();
+            switch (modAffixType){
+                case PREFIX -> prefixModData.put(mod, mod.fetchModifierValues());
+                case SUFFIX -> suffixModData.put(mod, mod.fetchModifierValues());
+            }
+        }
+        ModifierIDs.MODIFIER_VALUES.put(Affix.PREFIX, prefixModData);
+        ModifierIDs.MODIFIER_VALUES.put(Affix.SUFFIX, suffixModData);
+    }
+
+    public Map<Integer, int[]> fetchModifierValues(){
+        if (affix.equals(Affix.UNIQUE)){
+            return null;
+        }
+        Map<Integer,int[]> tempTierValueMapping = new HashMap<>();
+        for (int i = 0; i < this.tiers; i++){
+            int[] currValue = ModifierEditor.getModValuesFor(this, i);
+            tempTierValueMapping.put(i, currValue);
+        }
+        return tempTierValueMapping;
+    }
+
+
+
+
+    //TODO: Filter concept can be applied best for "Sword mods", "Light_Cloth mods"
     public List<ModifierIDs> getWeaponMods(){
         List<ModifierIDs> weaponMods = new ArrayList<>();
         for (ModifierIDs mod : ModifierIDs.values()){

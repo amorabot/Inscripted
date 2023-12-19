@@ -1,10 +1,9 @@
 package com.amorabot.inscripted.components.Items.Armor;
 
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
-import com.amorabot.inscripted.components.Items.Files.ModifiersJSON;
+import com.amorabot.inscripted.components.Items.Files.ResourcesJSONReader;
 import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import com.amorabot.inscripted.utils.Utils;
@@ -25,22 +24,23 @@ public enum ArmorTypes implements AffixTableSelector {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
+            int meanArmorPerPiece = 80;
             //Base item defences definition
             switch (armorBase){
                 case HELMET -> {
-                    int maximumHelmetArmor = 400;
+                    int maximumHelmetArmor = (int)( meanArmorPerPiece*HELMET_MAIN_STAT_WEIGHT);
                     putArmor(ilvl, maxItemLevel, maximumHelmetArmor, defences);
                 }
                 case CHESTPLATE -> {
-                    int maximumChestplateArmor = 800;
+                    int maximumChestplateArmor = (int)( meanArmorPerPiece*CHESTPLATE_MAIN_STAT_WEIGHT);
                     putArmor(ilvl, maxItemLevel, maximumChestplateArmor, defences);
                 }
                 case LEGGINGS -> {
-                    int maximumLeggingsArmor = 600;
+                    int maximumLeggingsArmor = (int)( meanArmorPerPiece*LEGGINGS_MAIN_STAT_WEIGHT);
                     putArmor(ilvl, maxItemLevel, maximumLeggingsArmor, defences);
                 }
                 case BOOTS -> {
-                    int maximumBootsArmor = 300;
+                    int maximumBootsArmor = (int)( meanArmorPerPiece*BOOTS_MAIN_STAT_WEIGHT);
                     putArmor(ilvl, maxItemLevel, maximumBootsArmor, defences);
                 }
                 default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
@@ -102,28 +102,30 @@ public enum ArmorTypes implements AffixTableSelector {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
+            int meanArmorPerPiece = 50; // Half of full STR armor + 1/8
+            int meanDodgePerPiece = 50;
             switch (armorBase){
                 case HELMET -> {
-                    int maximumHelmetArmor = 250;
-                    int maxDodge = 100;
+                    int maximumHelmetArmor = (int) ( meanArmorPerPiece * HELMET_MAIN_STAT_WEIGHT );
+                    int maxDodge = (int) ( meanDodgePerPiece * HELMET_MAIN_STAT_WEIGHT );
                     putArmor(ilvl, maxItemLevel, maximumHelmetArmor, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case CHESTPLATE -> {
-                    int maximumChestplateArmor = 600;
-                    int maxDodge = 400;
+                    int maximumChestplateArmor = (int) ( meanArmorPerPiece * CHESTPLATE_MAIN_STAT_WEIGHT );
+                    int maxDodge = (int) ( meanDodgePerPiece * CHESTPLATE_MAIN_STAT_WEIGHT );
                     putArmor(ilvl, maxItemLevel, maximumChestplateArmor, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case LEGGINGS -> {
-                    int maximumLeggingsArmor = 400;
-                    int maxDodge = 300;
+                    int maximumLeggingsArmor = (int) ( meanArmorPerPiece * LEGGINGS_MAIN_STAT_WEIGHT );
+                    int maxDodge = (int) ( meanDodgePerPiece * LEGGINGS_MAIN_STAT_WEIGHT );
                     putArmor(ilvl, maxItemLevel, maximumLeggingsArmor, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case BOOTS -> {
-                    int maximumBootsArmor = 150;
-                    int maxDodge = 200;
+                    int maximumBootsArmor = (int) ( meanArmorPerPiece * BOOTS_MAIN_STAT_WEIGHT );
+                    int maxDodge = (int) ( meanDodgePerPiece * BOOTS_MAIN_STAT_WEIGHT );
                     putArmor(ilvl, maxItemLevel, maximumBootsArmor, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
@@ -186,21 +188,22 @@ public enum ArmorTypes implements AffixTableSelector {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
+            int meanDodgePerPiece = 100;
             switch (armorBase){
                 case HELMET -> {
-                    int maxDodge = 200;
+                    int maxDodge = (int) (meanDodgePerPiece * HELMET_MAIN_STAT_WEIGHT);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case CHESTPLATE -> {
-                    int maxDodge = 800;
+                    int maxDodge = (int) (meanDodgePerPiece * CHESTPLATE_MAIN_STAT_WEIGHT);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case LEGGINGS -> {
-                    int maxDodge = 600;
+                    int maxDodge = (int) (meanDodgePerPiece * LEGGINGS_MAIN_STAT_WEIGHT);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case BOOTS -> {
-                    int maxDodge = 400;
+                    int maxDodge = (int) (meanDodgePerPiece * BOOTS_MAIN_STAT_WEIGHT);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
@@ -262,28 +265,30 @@ public enum ArmorTypes implements AffixTableSelector {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
+            int meanWardPerPiece = 150;
+            int meanDodgePerPiece = 50;
             switch (armorBase){
                 case HELMET -> {
-                    int maximumWard = 50;
-                    int maxDodge = 100;
+                    int maximumWard = (int) ( meanWardPerPiece * HELMET_MAIN_STAT_WEIGHT);
+                    int maxDodge = (int) ( meanDodgePerPiece * HELMET_MAIN_STAT_WEIGHT);
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case CHESTPLATE -> {
-                    int maximumWard = 120;
-                    int maxDodge = 400;
+                    int maximumWard = (int) ( meanWardPerPiece * CHESTPLATE_MAIN_STAT_WEIGHT);
+                    int maxDodge = (int) ( meanDodgePerPiece * CHESTPLATE_MAIN_STAT_WEIGHT);
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case LEGGINGS -> {
-                    int maximumWard = 90;
-                    int maxDodge = 300;
+                    int maximumWard = (int) ( meanWardPerPiece * LEGGINGS_MAIN_STAT_WEIGHT);
+                    int maxDodge = (int) ( meanDodgePerPiece * LEGGINGS_MAIN_STAT_WEIGHT);
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
                 case BOOTS -> {
-                    int maximumWard = 40;
-                    int maxDodge = 200;
+                    int maximumWard = (int) ( meanWardPerPiece * BOOTS_MAIN_STAT_WEIGHT);
+                    int maxDodge = (int) ( meanDodgePerPiece * BOOTS_MAIN_STAT_WEIGHT);
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                     putDodge(ilvl, maxItemLevel, maxDodge, defences);
                 }
@@ -346,21 +351,22 @@ public enum ArmorTypes implements AffixTableSelector {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
+            int meanWardPerPiece = 500;
             switch (armorBase){
                 case HELMET -> {
-                    int maxWard = 360;
+                    int maxWard = (int) ( meanWardPerPiece * HELMET_MAIN_STAT_WEIGHT );
                     putWard(ilvl, maxItemLevel, maxWard, defences);
                 }
                 case CHESTPLATE -> {
-                    int maxWard = 700;
+                    int maxWard = (int) ( meanWardPerPiece * CHESTPLATE_MAIN_STAT_WEIGHT );
                     putWard(ilvl, maxItemLevel, maxWard, defences);
                 }
                 case LEGGINGS -> {
-                    int maxWard = 600;
+                    int maxWard = (int) ( meanWardPerPiece * LEGGINGS_MAIN_STAT_WEIGHT );
                     putWard(ilvl, maxItemLevel, maxWard, defences);
                 }
                 case BOOTS -> {
-                    int maxWard = 300;
+                    int maxWard = (int) ( meanWardPerPiece * BOOTS_MAIN_STAT_WEIGHT );
                     putWard(ilvl, maxItemLevel, maxWard, defences);
                 }
                 default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
@@ -422,28 +428,30 @@ public enum ArmorTypes implements AffixTableSelector {
         @Override
         public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
             float maxItemLevel = 120;
+            int meanArmorPerPiece = 60;
+            int meanWardPerPiece = 150;
             switch (armorBase){
                 case HELMET -> {
-                    int maximumHelmetArmor = 250;
-                    int maximumWard = 50;
+                    int maximumHelmetArmor = (int) (meanArmorPerPiece * HELMET_MAIN_STAT_WEIGHT);
+                    int maximumWard = (int) (meanWardPerPiece * HELMET_MAIN_STAT_WEIGHT);
                     putArmor(ilvl, maxItemLevel, maximumHelmetArmor, defences);
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                 }
                 case CHESTPLATE -> {
-                    int maximumChestplateArmor = 600;
-                    int maximumWard = 120;
+                    int maximumChestplateArmor = (int) (meanArmorPerPiece * CHESTPLATE_MAIN_STAT_WEIGHT);
+                    int maximumWard = (int) (meanWardPerPiece * CHESTPLATE_MAIN_STAT_WEIGHT);
                     putArmor(ilvl, maxItemLevel, maximumChestplateArmor, defences);
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                 }
                 case LEGGINGS -> {
-                    int maximumLeggingsArmor = 400;
-                    int maximumWard = 90;
+                    int maximumLeggingsArmor = (int) (meanArmorPerPiece * LEGGINGS_MAIN_STAT_WEIGHT);
+                    int maximumWard = (int) (meanWardPerPiece * LEGGINGS_MAIN_STAT_WEIGHT);
                     putArmor(ilvl, maxItemLevel, maximumLeggingsArmor, defences);
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                 }
                 case BOOTS -> {
-                    int maximumBootsArmor = 150;
-                    int maximumWard = 40;
+                    int maximumBootsArmor = (int) (meanArmorPerPiece * BOOTS_MAIN_STAT_WEIGHT);
+                    int maximumWard = (int) (meanWardPerPiece * BOOTS_MAIN_STAT_WEIGHT);
                     putArmor(ilvl, maxItemLevel, maximumBootsArmor, defences);
                     putWard(ilvl, maxItemLevel, maximumWard, defences);
                 }
@@ -497,18 +505,18 @@ public enum ArmorTypes implements AffixTableSelector {
         }
     };
 
-    private Map<String, Map<Integer, int[]>> basicHelmetPrefixes;
-    private Map<String, Map<Integer, int[]>> basicHelmetSuffixes;
+    private Map<String, Map<String, Map<Integer, Integer>>> helmetAffixes;
+    private Map<String, Map<String, Map<Integer, Integer>>> chestplateAffixes;
+    private Map<String, Map<String, Map<Integer, Integer>>> leggingsAffixes;
+    private Map<String, Map<String, Map<Integer, Integer>>> bootsAffixes;
 
-    private Map<String, Map<Integer, int[]>> basicChestlatePrefixes;
-    private Map<String, Map<Integer, int[]>> basicChesplateSuffixes;
 
-    private Map<String, Map<Integer, int[]>> basicLeggingsPrefixes;
-    private Map<String, Map<Integer, int[]>> basicLeggingsSuffixes;
+    private static final double HELMET_MAIN_STAT_WEIGHT = 0.8;
+    private static final double CHESTPLATE_MAIN_STAT_WEIGHT = 1.3;
+    private static final double LEGGINGS_MAIN_STAT_WEIGHT = 1.2;
+    private static final double BOOTS_MAIN_STAT_WEIGHT = 0.7;
 
-    private Map<String, Map<Integer, int[]>> basicBootsPrefixes;
-    private Map<String, Map<Integer, int[]>> basicBootsSuffixes;
-
+    //TODO: Move these stats to Tiers enum, specify names for each tier of itemType, for example
     private final List<String> tier1Names;
     private final List<String> tier2Names;
     private final List<String> tier3Names;
@@ -554,7 +562,8 @@ public enum ArmorTypes implements AffixTableSelector {
             defences.put(DefenceTypes.WARD, 0);
         }
     }
-    protected void putDodge(int givenItemLevel, float maxItemLevel, int maximumBaseStat, Map<DefenceTypes, Integer> defences){ //Will put -1 if invalid maxIlvl is given
+    protected void putDodge(int givenItemLevel, float maxItemLevel, int maximumBaseStat, Map<DefenceTypes, Integer> defences){
+        //Will put -1 if invalid maxIlvl is given
         //Dodge will cap below the max item level given
         //Dodge will be a int value to represent a percentage (100x)  1% = 100, 56% = 5600
         int softCapOffset = 20;
@@ -712,47 +721,26 @@ public enum ArmorTypes implements AffixTableSelector {
         loadBasicAffixes();
     }
     private void loadBasicAffixes(){
-        Map<String, Map<String, Map<String, Map<String, Map<Integer, int[]>>>>> modifiersJSON = ModifiersJSON.getBasicModifiers();
-        //The "Entire set" of a armor specialization is loaded at once and accessed later via getPiece() methods.
-        this.basicHelmetPrefixes = getAffixTable(modifiersJSON, ItemTypes.HELMET, Affix.PREFIX);
-        this.basicHelmetSuffixes = getAffixTable(modifiersJSON, ItemTypes.HELMET, Affix.SUFFIX);
+        this.helmetAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.HELMET, this);
+        this.chestplateAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.CHESTPLATE, this);
+        this.leggingsAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.LEGGINGS, this);
+        this.bootsAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.BOOTS, this);
 
-        this.basicChestlatePrefixes = getAffixTable(modifiersJSON, ItemTypes.CHESTPLATE, Affix.PREFIX);
-        this.basicChesplateSuffixes = getAffixTable(modifiersJSON, ItemTypes.CHESTPLATE, Affix.SUFFIX);
-//
-        this.basicLeggingsPrefixes = getAffixTable(modifiersJSON, ItemTypes.LEGGINGS, Affix.PREFIX);
-        this.basicLeggingsSuffixes = getAffixTable(modifiersJSON, ItemTypes.LEGGINGS, Affix.SUFFIX);
-
-        this.basicBootsPrefixes = getAffixTable(modifiersJSON, ItemTypes.BOOTS, Affix.PREFIX);
-        this.basicBootsSuffixes = getAffixTable(modifiersJSON, ItemTypes.BOOTS, Affix.SUFFIX);
         Utils.log("Modifiers loaded successfully! (" + this + ")");
     }
-    public Map<String, Map<Integer, int[]>> getBasicHelmetPrefixes(){
-        return this.basicHelmetPrefixes;
-    }
-    public Map<String, Map<Integer, int[]>> getBasicHelmetSuffixes(){
-        return this.basicHelmetSuffixes;
-    }
 
-    public Map<String, Map<Integer, int[]>> getBasicChestlatePrefixes() {
-        return basicChestlatePrefixes;
-    }
-    public Map<String, Map<Integer, int[]>> getBasicChesplateSuffixes() {
-        return basicChesplateSuffixes;
-    }
 
-    public Map<String, Map<Integer, int[]>> getBasicLeggingsPrefixes() {
-        return basicLeggingsPrefixes;
+    public Map<String, Map<String, Map<Integer, Integer>>> getHelmetAffixes(){
+        return this.helmetAffixes;
     }
-    public Map<String, Map<Integer, int[]>> getBasicLeggingsSuffixes() {
-        return basicLeggingsSuffixes;
+    public Map<String, Map<String, Map<Integer, Integer>>> getChestplateAffixes(){
+        return this.chestplateAffixes;
     }
-
-    public Map<String, Map<Integer, int[]>> getBasicBootsPrefixes() {
-        return basicBootsPrefixes;
+    public Map<String, Map<String, Map<Integer, Integer>>> getLeggingsAffixes(){
+        return this.leggingsAffixes;
     }
-    public Map<String, Map<Integer, int[]>> getBasicBootsSuffixes() {
-        return basicBootsSuffixes;
+    public Map<String, Map<String, Map<Integer, Integer>>> getBootsAffixes(){
+        return this.bootsAffixes;
     }
 
     public String getRandomName(Tiers tier){
