@@ -112,8 +112,6 @@ public class ItemGenerator {
                         }
                     }
                 }
-                if (blankItem instanceof Weapon){((Weapon) blankItem).updateBaseDamageFromModifiers();}
-
                 return blankItem;
             }
             case UNIQUE -> {

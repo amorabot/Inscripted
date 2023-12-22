@@ -63,10 +63,9 @@ public class ArmorEquipListener implements Listener {
                 case ARMOR_UNEQUIP -> {
                     if (event.isValid()){
                         Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
-                        if (playerProfile.getStats().setArmorPiece(null, event.getArmorSlot())){
+
+                        if (playerProfile.updateEquipmentSlot(event.getArmorSlot(), null)){
                             player.playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 0.5f, 1.7f);
-                            //Call for a stat recompilation
-                            playerProfile.updateArmorSlot();
                             player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
                             return;
                         }
@@ -82,10 +81,9 @@ public class ArmorEquipListener implements Listener {
                 case ARMOR_SWAP -> {
                     if (event.isValid()){
                         Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
-                        if (playerProfile.getStats().setArmorPiece(event.getArmorData(), event.getArmorSlot())){
+
+                        if (playerProfile.updateEquipmentSlot(event.getArmorSlot(), null)){
                             player.playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 1.0f, 0.2f);
-                            //Call for a stat recompilation
-                            playerProfile.updateArmorSlot();
                             player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
                             return;
                         }
@@ -118,9 +116,8 @@ public class ArmorEquipListener implements Listener {
         //Slot is free and the item is equipable
         rootEvent.setCancelled(true);
         inventory.remove(armorToEquip); //Removing from inventory. Adding it again in the correct spot is decided later
-//        inventory.setHelmet(armorToEquip);
         Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
-        Armor[] playerArmorSet = playerProfile.getStats().getArmorSet();
+        Armor[] playerArmorSet = playerProfile.getEquipmentComponent().getArmorSet();
         ItemTypes armorSlot = event.getArmorSlot();
         Utils.log("clickEquip call");
         switch (armorSlot){
@@ -155,15 +152,8 @@ public class ArmorEquipListener implements Listener {
             }
         }
         Armor armorData = event.getArmorData();
-        playerProfile.getStats().setArmorPiece(armorData, armorSlot);
+        playerProfile.updateEquipmentSlot(armorSlot, armorData);
         player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_NETHERITE, 0.5f, 1.3f);
-
-        //Call for a stat recompilation
-        playerProfile.updateArmorSlot();
         player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
-    }
-
-    private boolean equipArmor(ArmorEquipEvent event, Player player, float volume, float pitch){
-        return true;
     }
 }

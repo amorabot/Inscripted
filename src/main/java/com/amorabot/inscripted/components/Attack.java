@@ -29,7 +29,7 @@ public class Attack implements EntityComponent {
             reset();
             return;
         }
-        hitDamage = weaponData.getBaseDamage();
+        hitDamage = weaponData.getLocalDamage();
         setDps();
     }
 

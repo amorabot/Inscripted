@@ -3,7 +3,9 @@ package com.amorabot.inscripted.components.Player;
 import com.amorabot.inscripted.components.DamageComponent;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
-import com.amorabot.inscripted.components.Items.Weapon.Weapon;
+import com.amorabot.inscripted.components.Items.Abstract.Item;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
+import com.amorabot.inscripted.utils.Utils;
 
 
 public class Profile {
@@ -12,40 +14,28 @@ public class Profile {
     private DamageComponent damage;
     private Attributes attributes;
     private Miscellaneous miscellaneous;
-    private Stats stats;
-    public Profile(Attributes attributes, Stats stats){
+    private PlayerEquipment equipment;
+    public Profile(Attributes attributes, PlayerEquipment equipment){
         this.attributes = attributes;
-        this.stats = stats;
+        this.equipment = equipment;
     }
-    public Profile(HealthComponent hp, DefenceComponent def, DamageComponent dmg, Attributes att, Stats stats){
+    public Profile(HealthComponent hp, DefenceComponent def, DamageComponent dmg, Attributes att, PlayerEquipment equipment){
         this.health = hp;
         this.defences = def;
         this.damage = dmg;
         this.attributes = att;
         this.miscellaneous = new Miscellaneous();
-        this.stats = stats;
+        this.equipment = equipment;
     }
     public Attributes getAttributes(){
         return this.attributes;
     }
-    public void setAttributes(Attributes attributes){
-        this.attributes = attributes;
-    }
-
     public Miscellaneous getMiscellaneous() {
         return miscellaneous;
     }
-    public void setMiscellaneous(Miscellaneous miscellaneous) {
-        this.miscellaneous = miscellaneous;
+    public PlayerEquipment getEquipmentComponent() {
+        return this.equipment;
     }
-
-    public Stats getStats() {
-        return this.stats;
-    }
-    public void setStats(Stats stats) {
-        this.stats = stats;
-    }
-
     public HealthComponent getHealthComponent(){
         return this.health;
     }
@@ -56,19 +46,25 @@ public class Profile {
         return this.damage;
     }
     private void updateProfile(){
+        //Todo: on every profile update, re-map the players hp
+        //player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
+        //and remove other occurences (make it a static method with player/living entity arg on HealthComponent
+
         StatCompiler compiler = new StatCompiler(this);
         compiler.updateProfile();
     }
 
-    public void updateMainHand(Weapon weapon){
-        getStats().setWeaponSlot(weapon);
-        updateProfile();
+    public boolean updateEquipmentSlot(ItemTypes targetSlot, Item itemData){
+        boolean success = getEquipmentComponent().setSlot(targetSlot, itemData);
+        if (success){
+            //Only call for profile updates after successful calls
+            updateProfile();
+        } else {
+            Utils.error("Unsuccessful slot equipment call (at Profile class)");
+        }
+        return success;
     }
-    public void updateArmorSlot(){
-        updateProfile();
-    }
-
     public boolean hasWeaponEquipped(){
-        return this.stats.getWeaponSlot() != null;
+        return getEquipmentComponent().getWeaponData() != null;
     }
 }

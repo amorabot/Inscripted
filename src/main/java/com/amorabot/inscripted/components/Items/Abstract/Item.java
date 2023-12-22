@@ -8,10 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class Item implements Serializable {
 
@@ -171,5 +168,10 @@ public abstract class Item implements Serializable {
             return (percentileSum/ getModifierList().size());
         }
         return 0;
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(ilvl, category, name, modifiers);
     }
 }

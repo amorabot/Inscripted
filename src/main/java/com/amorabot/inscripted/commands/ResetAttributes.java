@@ -23,11 +23,8 @@ public class ResetAttributes implements CommandExecutor {
             return false;
         }
         Player player = (Player) sender;
-        //TODO: implementar reset de perfis
         Profile profile = JSONProfileManager.getProfile(player.getUniqueId());
-        profile.getStats().setArmorSet(null,null,null,null);
-        profile.updateArmorSlot();
-//        profile.getHealthComponent().resetCurrentHealth();
+        profile.getEquipmentComponent().setArmorSet(null, null, null, null);
         profile.getHealthComponent().replenishLife();
         return true;
     }

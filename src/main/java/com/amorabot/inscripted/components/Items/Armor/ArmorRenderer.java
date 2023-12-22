@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static com.amorabot.inscripted.utils.Utils.color;
 
-public class BasicArmorRenderer implements ItemRenderer {
+public class ArmorRenderer implements ItemRenderer {
     @Override
     public void renderMainStat(Item itemData, List<String> itemLore) {
         Armor armorData = (Armor) itemData;
@@ -119,17 +119,17 @@ public class BasicArmorRenderer implements ItemRenderer {
     public <subType extends Enum<subType> & AffixTableSelector> void renderDescription(Item itemData, List<String> itemLore, subType itemSubtype) {
         Armor armorData = (Armor) itemData;
         itemLore.add("");
-        itemLore.add(color("&7 Item Level: " + "&f&l" + armorData.getIlvl()));
+        itemLore.add(color(Utils.convertToPrettyString(" &7Item Level: ") + "&f&l" + armorData.getIlvl()));
         Implicits armorImplicit = armorData.getImplicit();
         String implicitString = armorImplicit.getDisplayName();
         if (!armorImplicit.isHybrid()){
-            String passiveString = " &7Passive: " + implicitString;
+            String passiveString = Utils.convertToPrettyString(" &7Passive: ") + implicitString;
             itemLore.add(ColorUtils.translateColorCodes(passiveString));
             itemLore.add("");
             return;
         }
         String[] implicitSegments = implicitString.split("-brk-");
-        String passiveString1 = " &7Passive: " + implicitSegments[0];
+        String passiveString1 = Utils.convertToPrettyString(" &7Passive: ") + implicitSegments[0];
         itemLore.add(ColorUtils.translateColorCodes(passiveString1));
         String passiveString2 = implicitSegments[1];
         itemLore.add(ColorUtils.translateColorCodes(passiveString2.indent(12)));
