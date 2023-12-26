@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.handlers.Inventory;
 
+import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
@@ -10,7 +11,6 @@ import com.amorabot.inscripted.events.ItemUsage;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -65,7 +65,7 @@ public class ArmorEquipListener implements Listener {
                         Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
 
                         if (playerProfile.updateEquipmentSlot(event.getArmorSlot(), null)){
-                            player.playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 0.5f, 1.7f);
+                            SoundAPI.playArmorUnequipFor(player);
                             player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
                             return;
                         }
@@ -83,7 +83,7 @@ public class ArmorEquipListener implements Listener {
                         Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
 
                         if (playerProfile.updateEquipmentSlot(event.getArmorSlot(), null)){
-                            player.playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 1.0f, 0.2f);
+                            SoundAPI.playArmorEquipFor(player);
                             player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
                             return;
                         }
@@ -153,7 +153,7 @@ public class ArmorEquipListener implements Listener {
         }
         Armor armorData = event.getArmorData();
         playerProfile.updateEquipmentSlot(armorSlot, armorData);
-        player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_NETHERITE, 0.5f, 1.3f);
+        SoundAPI.playArmorEquipFor(player);
         player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
     }
 }

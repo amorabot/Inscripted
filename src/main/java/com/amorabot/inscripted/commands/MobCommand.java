@@ -64,7 +64,7 @@ public class MobCommand implements TabExecutor {
                     equipment.setArmorContents(armorSet);
                     equipment.setItemInMainHand(null);
 
-                    skeleton.setMaximumNoDamageTicks(10);
+                    skeleton.setMaximumNoDamageTicks(5);
                     skeleton.setHealth(1);
                     MobStats mobStats = new MobStats(
                             155,

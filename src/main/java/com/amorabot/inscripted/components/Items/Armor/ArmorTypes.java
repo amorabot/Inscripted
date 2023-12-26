@@ -217,36 +217,36 @@ public enum ArmorTypes implements AffixTableSelector {
                     return defineTierBaseHealth(tier
                             , 50,  10
                             , 150, 30
-                            , 400, 100
-                            , 900, 120
-                            , 1500,200);
+                            , 350, 70
+                            , 600, 100
+                            , 1100,150);
                 }
                 case CHESTPLATE -> {
                     //Chestplate base health definition
                     return defineTierBaseHealth(tier
                             , 80,  15
                             , 190, 40
-                            , 450, 150
-                            , 1100,220
-                            , 1800,260);
+                            , 450, 100
+                            , 1100,160
+                            , 1600,220);
                 }
                 case LEGGINGS -> {
                     //Leggings base health definition
                     return defineTierBaseHealth(tier
                             , 70,  15
                             , 200, 40
-                            , 500, 120
+                            , 500, 80
                             , 1000, 140
-                            , 1700,240);
+                            , 1400,200);
                 }
                 case BOOTS -> {
                     //Boots base health definition
                     return defineTierBaseHealth(tier
                             , 60,  10
                             , 150, 30
-                            , 400, 100
-                            , 900, 120
-                            , 1600,200);
+                            , 350, 70
+                            , 600, 100
+                            , 1100,150);
                 }
                 default -> {
                     Utils.log("No such armor base: " + armorBase);
@@ -374,42 +374,43 @@ public enum ArmorTypes implements AffixTableSelector {
         }
         @Override
         public int mapBaseHealth(Tiers tier, ItemTypes armorBase) {
+            //Variance -> 10% of base value per tier
             switch (armorBase){
                 case HELMET -> {
                     //Helmet base health definition
                     return defineTierBaseHealth(tier
-                            , 25,  10
-                            , 75, 15
-                            , 200, 50
-                            , 450, 60
-                            , 750,100);
+                            , 25,  5
+                            , 75, 10
+                            , 150, 20
+                            , 350, 30
+                            , 550,50);
                 }
                 case CHESTPLATE -> {
                     //Chestplate base health definition
                     return defineTierBaseHealth(tier
-                            , 80,  15
-                            , 190, 40
-                            , 450, 150
-                            , 1100,220
-                            , 1800,260);
+                            , 60,  15
+                            , 130, 40
+                            , 350, 80
+                            , 700,150
+                            , 1000,200);
                 }
                 case LEGGINGS -> {
                     //Leggings base health definition
                     return defineTierBaseHealth(tier
                             , 35,  15
-                            , 100, 20
-                            , 250, 60
-                            , 500, 70
-                            , 850,120);
+                            , 80, 20
+                            , 190, 60
+                            , 300, 70
+                            , 650,120);
                 }
                 case BOOTS -> {
                     //Boots base health definition
                     return defineTierBaseHealth(tier
-                            , 30,  10
-                            , 75, 15
-                            , 200, 50
-                            , 450, 60
-                            , 800,100);
+                            , 30,  5
+                            , 70, 10
+                            , 150, 20
+                            , 300, 30
+                            , 420,60);
                 }
                 default -> {
                     Utils.log("No such armor base: " + armorBase);

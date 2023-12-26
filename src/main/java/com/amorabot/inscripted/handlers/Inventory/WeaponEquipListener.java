@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.handlers.Inventory;
 
+import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
@@ -50,7 +51,6 @@ public class WeaponEquipListener implements Listener {
                 if (!playerProfile.hasWeaponEquipped()){
                     return;
                 }
-//                playerProfile.updateMainHand(null);
                 playerProfile.updateEquipmentSlot(ItemTypes.WEAPON, null);
                 return;
             }
@@ -63,7 +63,7 @@ public class WeaponEquipListener implements Listener {
             Weapon weapon = deserializeWeapon(weaponDataContainer);
             if (weapon != null){
                 Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
-//                playerProfile.updateMainHand(weapon);
+                SoundAPI.playBreakSoundFor(player);
                 playerProfile.updateEquipmentSlot(ItemTypes.WEAPON, weapon);
                 renderWeaponEquipToPlayer(player,heldItem,weapon);
             } else {
@@ -95,7 +95,7 @@ public class WeaponEquipListener implements Listener {
             Weapon weapon = deserializeWeapon(weaponDataContainer);
             if (weapon != null){
                 Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
-//                playerProfile.updateMainHand(weapon);
+                SoundAPI.playBreakSoundFor(player);
                 playerProfile.updateEquipmentSlot(ItemTypes.WEAPON, weapon);
                 renderWeaponEquipToPlayer(player,eventWeaponItem,weapon);
             } else {

@@ -11,7 +11,7 @@ import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.tasks.CombatLogger;
-import com.amorabot.inscripted.tasks.DamageHologramDepleter;
+import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.NamespacedKey;
@@ -26,13 +26,15 @@ import org.bukkit.persistence.PersistentDataContainer;
 import java.util.Map;
 
 public class DamageAPI {
+    //                                              calcs, lucky     ele pen / negation    no misses, ..       ...                  ...
+    //TODO: Fragmentar a DMG API em: DamageHandler, CritCalculator, DefenceCalculator, AccuracyCalculator, Dodge/ArmorCalculator, AttackProcessor,...
     private static final NamespacedKey mobKey = new NamespacedKey(Inscripted.getPlugin(), "INSCRIPTED_MOB");
 
 
     public static int[] processAttack(DefenceComponent defenderDefence, Attack attackerDamage){
         int[] incomingHit = rollDamages(attackerDamage.getDamages());
         //Incoming hit processing...
-        Utils.log("processing attack");
+//        Utils.log("processing attack");
         return applyDefences(incomingHit, attackerDamage, defenderDefence);
     }
     public static boolean attackResult(Attack attackerDamage, DefenceComponent defenderDefence){
@@ -40,16 +42,43 @@ public class DamageAPI {
         final float scalingFactor = 300F;
         float dodgeChance = 100 * ( 1 - ( scalingFactor / (scalingFactor + defenderDefence.getDodge()) ) );
 
-        //TODO: Accuracy factoring
-        float attackerHitChance = attackerDamage.getAccuracy();
-        // Will work similar to shred, Accuracy scales to a certain value and negates dodge
-
-        float finalDodgeChance = Math.min(dodgeChance, 70F);
-        Utils.log("" + (int)(dodgeChance));
+        float defenderDodgeChance = getDefenderDodgeChance(attackerDamage, dodgeChance);
+        //DEBUG LINE -------------------###########------------------------------------------------------------##################
+//        Utils.log("" + (int)(dodgeChance));
+//        Utils.log("" + (int)(defenderDodgeChance));
         int dodgeRoll = CraftingUtils.getRandomNumber(0, 100);
         //If the roll is higher than the dodge chance, true (hit lands)
-        return dodgeRoll > finalDodgeChance;
+        return dodgeRoll > defenderDodgeChance;
     }
+
+    private static float getDefenderDodgeChance(Attack attackerDamage, float dodgeChance) {
+        /*
+
+        Attack miss algorithm
+
+        get base miss chance
+        get attack cooldown -> map to the new value
+
+        see if its a miss (never more than 10%, even if not charged at all)
+
+        if its not, calculate the enemies dodge chance, capped at 70%
+
+        calculate the attackers precision (capped at 30% for now)
+
+        defenderDodgeChance = dodgeChance - precision,   capped at 0%
+
+        roll for a hit
+         */
+
+
+        float precision = attackerDamage.getAccuracy() / 10; //Precision is "dodge pen", its as simples as 10 acc -> 1 precision
+        //the final dodge value for the defender is deduced by this value, capping (down) at 0%
+        // Will work similar to shred, Accuracy scales to a certain value and negates dodge
+        float defenderDodgeChance = Math.min(dodgeChance, 70F); //Caps at 70
+
+        return Math.max(defenderDodgeChance - precision, 0);
+    }
+
     private static int[] rollDamages(Map<DamageTypes, int[]> rawDamages){
         /*
         0: Physical
@@ -119,6 +148,7 @@ public class DamageAPI {
         /*
         Entity -> Entity
         Player -> Player
+
         Player -> Entity
         Entity -> Player
         * */
@@ -146,7 +176,6 @@ public class DamageAPI {
                 if (event.getEntity() instanceof LivingEntity){
                     LivingEntity livingEntity = (LivingEntity) event.getEntity();
                     if (livingEntity.isDead()){
-//                        Utils.log("The hit killed the entity previously, cancelling any damage caused by the root event");
                         event.setCancelled(true);
                         return;
                     }
@@ -158,7 +187,63 @@ public class DamageAPI {
             return;
         } else {
             // Player x Player  OR  Entity X Entity
+
+            if (isPlayerAttacker){ //Player is attacking a LivingEntity/Entity  (Check for mobs and normal living entities and normal entities
+                Player attacker = (Player) event.getDamager();
+                Player defender = (Player) event.getEntity();
+                //Damaging the defending player
+                missed = playerVsPlayerDamage(attacker, defender);
+
+                if (!missed){
+
+                    if (defender.isDead()){
+                        Utils.log("he ded");
+                        event.setCancelled(true);
+                    }
+//                    attacker.sendMessage("PK :D");
+
+                } else {
+                    event.setCancelled(true);
+                }
+            } else {
+                Utils.log("Entity X Entity not handled yet");
+            }
         }
+    }
+
+    public static boolean playerVsPlayerDamage(Player attacker, Player defender){
+        boolean hitLanded;
+
+        Profile attackerProfile = JSONProfileManager.getProfile(attacker.getUniqueId());
+        Profile defenderProfile = JSONProfileManager.getProfile(defender.getUniqueId());
+
+        Attack atk = attackerProfile.getDamageComponent().getHitData();
+        DefenceComponent def = defenderProfile.getDefenceComponent();
+
+        hitLanded = attackResult(atk, def);
+
+        if (!hitLanded){
+            playDodgeEffectsAt(defender, attacker);
+            return true;
+        }
+        int[] incomingHit = processAttack(def, atk);
+        String damageHoloString = Attack.getDamageString(incomingHit);
+
+        CombatHologramsDepleter.getInstance().instantiateDamageHologramAt(defender.getLocation(), incomingHit);
+
+        //DMG DEBUG FOR DEFdr ---------------------------------------------
+        Utils.msgPlayer(defender ,"&c&l<- " + damageHoloString  + " &ffrom " + attacker.getName());
+        //Adds defender to combat
+        playerDamaged(defender, incomingHit);
+
+        //DMG DEBUG FOR ATKr ---------------------------------------------
+        Utils.msgPlayer(attacker, damageHoloString + "&a&l -> &f" + defender.getName() +
+                " &c&l[" + ( int )(defenderProfile.getHealthComponent().getCurrentHealth()) + "]");
+        //Adds attacker to combat
+        CombatLogger.addToPvPCombat(attacker, defender);
+//        CombatLogger.addToCombat(attacker);
+
+        return false;
     }
 
     public static boolean playerVsEntityDamage(Player player, Entity entity, boolean playerAttacking){
@@ -171,20 +256,17 @@ public class DamageAPI {
                 Profile playerData = JSONProfileManager.getProfile(player.getUniqueId());
                 MobStats mobData = entityDataContainer.get(mobKey, new MobStatsContainer());
 
-                //TODO: make a miss function (play particles and all of that)
                 assert mobData != null;
                 hitLanded = attackResult(playerData.getDamageComponent().getHitData(), mobData.getMobDefence());
                 if (!hitLanded){
-                    //Play some particles...
-//                    Utils.log(":NO TIENE DIRETCHOS");
-                    entityDodge(entity);
+                    playDodgeEffectsAt(entity, player);
                     //If the hit missed, the event that caused it should be cancelled (return value is used outside the function)
                     return true;
                 }
                 CombatLogger.addToCombat(player);
                 int[] incomingHit = processAttack(mobData.getMobDefence(), playerData.getDamageComponent().getHitData());
-                String damageDebug = DamageHologramDepleter.getDamageString(incomingHit);
-                DamageHologramDepleter.getInstance().createDamageHologram(incomingHit, entity);
+                String damageDebug = Attack.getDamageString(incomingHit);
+                CombatHologramsDepleter.getInstance().instantiateDamageHologramAt(entity.getLocation(), incomingHit);
 
                 HealthComponent mobHP = mobData.getMobHealth();
                 mobHP.damage(incomingHit);
@@ -225,39 +307,44 @@ public class DamageAPI {
             assert mobStats != null;
             hitLanded = attackResult(mobStats.getMobHit(), playerProfile.getDefenceComponent());
             if (!hitLanded){
-                //Play some particles...
-//                Utils.log(":ESKIVO");
-                entityDodge(player);
+                playDodgeEffectsAt(player, entity);
                 //If the hit missed, the event that caused it should be cancelled (return value is used outside the function)
                 return true;
             }
 
             int[] incomingHit = DamageAPI.processAttack(playerProfile.getDefenceComponent(), mobStats.getMobHit());
-            String damageDebug = DamageHologramDepleter.getDamageString(incomingHit);
-            DamageHologramDepleter.getInstance().createDamageHologram(incomingHit, player);
+            //TODO: Substitute for HologramAPI usage
+            String damageDebug = Attack.getDamageString(incomingHit);
+            CombatHologramsDepleter.getInstance().instantiateDamageHologramAt(player.getLocation(), incomingHit);
 
-            HealthComponent HPComponent = playerProfile.getHealthComponent();
             Utils.msgPlayer(player ,"&a&l<- " + damageDebug + " " + entity.getName());
 
-            HPComponent.damage(incomingHit);
-            playerDamaged(player);
+            playerDamaged(player, incomingHit);
             return false;
         }
         //Player is defending against a common mob, just miss all attacks
         return true;
     }
 
-    public static void playerDamaged(Player player){
+    //Handles the effects of a player being hit
+    public static void playerDamaged(Player player, int[] incomingHit){
         HealthComponent HPComponent = JSONProfileManager.getProfile(player.getUniqueId()).getHealthComponent();
+
+        HPComponent.damage(incomingHit);
+
         double mappedHealth = HPComponent.getMappedHealth(20);
         player.setHealth(mappedHealth); //If the player dies here, any posterior damage will kill it too (since current life is 0)
-        PlayerRegenManager.playerHit(player.getUniqueId());
+        PlayerRegenManager.startWardRegenCooldownFor(player.getUniqueId());
         CombatLogger.addToCombat(player);
     }
 
-    private static void entityDodge(Entity entity){
-        Utils.log("Dodge!");
-        entity.getWorld().spawnParticle(Particle.END_ROD, entity.getLocation().clone().toBlockLocation(), 20);
+    private static void playDodgeEffectsAt(Entity dodgeEntity, Entity targetAudience){
+        CombatHologramsDepleter.getInstance().instantiateDodgeHologramAt(dodgeEntity.getLocation());
+        dodgeEntity.getWorld().spawnParticle(Particle.END_ROD, dodgeEntity.getLocation().clone(), 3, 0, -1, 0, 0);
+        if (!(targetAudience instanceof Player)){
+            return;
+        }
+        SoundAPI.playDodgeFor(targetAudience, dodgeEntity.getLocation().clone());
     }
 
 }

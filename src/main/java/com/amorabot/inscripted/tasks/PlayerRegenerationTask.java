@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.tasks;
 
 import com.amorabot.inscripted.components.HealthComponent;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
@@ -21,28 +22,56 @@ public class PlayerRegenerationTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (this.isCancelled()){
-            Utils.log("??????");
+        Player player = Bukkit.getPlayer(playerID);
+
+        if (player == null) {
+            Utils.error("Invalid player regen call, cancelling task for  (@Regen task)");
+            this.cancel();
+            return;
         }
 
-        Player player = Bukkit.getPlayer(playerID);
         Profile playerProfile = JSONProfileManager.getProfile(playerID);
         HealthComponent HPComponent = playerProfile.getHealthComponent();
-        if (HPComponent.getCurrentHealth() != HPComponent.getMaxHealth()){
+
+        //If the player is pvp tagged, dont regen life
+        boolean isPvPTagged = player.hasMetadata(CombatLogger.getPvpTag());
+
+        StringBuilder regenString = new StringBuilder();
+
+
+        if (HPComponent.getCurrentHealth() != HPComponent.getMaxHealth() && !isPvPTagged){
             int HPS = HPComponent.getHealthRegen();
 
+
+            //TODO: Make a specific logger for player debug messages
+            if (player.hasMetadata(CombatLogger.getCombatTag())){
+                HPS = HPS/2;
+                regenString.append("&e&l+");
+            } else {
+                regenString.append("&a&l+");
+            }
+            regenString.append(HPS);
+
             double mappedHealth = HPComponent.getMappedHealth(20);
-            if ((mappedHealth - player.getHealth())>=0.5D){
+            if ((mappedHealth - player.getHealth()) >= 0.5D){
                 player.setHealth(mappedHealth);
             }
-            player.sendMessage(Utils.color("&a&l+" + HPS));
             HPComponent.regenHealth(HPS);
         }
 
         if (HPComponent.getCurrentWard() != HPComponent.getMaxWard() && (PlayerRegenManager.canRegenWard(playerID))){
-            HPComponent.regenWard();
-            player.sendMessage(Utils.color("&3&l+" + HPComponent.getWardRegenTick()));
-            return;
+            float wardRegen = HPComponent.getWardRegenTick();
+
+            if (isPvPTagged){
+                wardRegen = wardRegen/2;
+            }
+            HPComponent.regenWard(wardRegen);
+
+            regenString.append(" ").append(DefenceTypes.WARD.getTextColor()).append("&l+").append((int) (wardRegen));
+        }
+
+        if (!regenString.isEmpty()){
+            CombatHologramsDepleter.getInstance().instantiateRegenHologram(player.getLocation(), regenString.toString());
         }
     }
 }

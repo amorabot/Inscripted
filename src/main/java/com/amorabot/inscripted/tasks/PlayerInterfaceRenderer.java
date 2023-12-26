@@ -4,7 +4,11 @@ import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
+import me.neznamy.tab.api.TabAPI;
+import me.neznamy.tab.api.TabPlayer;
+import me.neznamy.tab.api.nametag.UnlimitedNameTagManager;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
@@ -67,6 +71,22 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
                     .build();
 
             Component mainText = playerStatComponent.append(healthText).append(wardText);
+
+            if (TabAPI.getInstance().getNameTagManager() instanceof UnlimitedNameTagManager){
+                UnlimitedNameTagManager unm = (UnlimitedNameTagManager) TabAPI.getInstance().getNameTagManager();
+
+                String healthString = ColorUtils.translateColorCodes(DefenceTypes.HEALTH.getTextColor() + (int) curHealth + DefenceTypes.HEALTH.getSpecialChar());
+                String wardString = ColorUtils.translateColorCodes(DefenceTypes.WARD.getTextColor() + (int) curWard + DefenceTypes.WARD.getSpecialChar());
+                String finalString;
+                if (curWard == 0){
+                    finalString = healthString;
+                } else {
+                    finalString = healthString + " " + wardString;
+                }
+
+                TabPlayer tabPlayer = TabAPI.getInstance().getPlayer(currentPlayer.getUniqueId());
+                unm.setLine(tabPlayer, "abovename", finalString);
+            }
 
             BossBar HPBossbar = PlayerInterfaceRenderer.getHPBossbar(currentPlayer);
             if (HPBossbar != null){

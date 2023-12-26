@@ -170,8 +170,8 @@ public class HealthComponent implements EntityComponent {
         return healthRegen;
     }
     //------------WARD METHODS-------------
-    public void regenWard(){
-        float wardRegenTick = getWardRegenTick();
+    public void regenWard(float wardRegenTick){ //Standard ward regen call
+//        float wardRegenTick = getWardRegenTick();
         //In the specific case its already been capped out, ignore
         if (currentWard == maxWard){
             return;

@@ -23,13 +23,19 @@ public class DamageHandler implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event){
+        //new way to handle damage:
+        /*
+        player.attack();
+        player.setKiller();
+        any custom routines are made, any needed damage is done within it, and after all, the event damage is cancelled
+         */
         DamageAPI.handleDamageEntityDamageEvents(event);
     }
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event){
         if (event.getEntity() instanceof Player){
-            HealthComponent playerHealth = JSONProfileManager.getProfile(((Player) event.getEntity()).getUniqueId()).getHealthComponent();
+            HealthComponent playerHealth = JSONProfileManager.getProfile((event.getEntity()).getUniqueId()).getHealthComponent();
             playerHealth.replenishLife();
         }
     }

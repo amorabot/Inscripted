@@ -4,7 +4,9 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Player.Profile;
+import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -152,5 +154,24 @@ public class Attack implements EntityComponent {
 
     public void addBaseBleedChance(float bleedChance) {
         this.bleedChance += bleedChance;
+    }
+
+    public static @NotNull String getDamageString(int[] damagesArray){
+        StringBuilder dmgString = new StringBuilder();
+        addDamageToString(dmgString, damagesArray[0], DamageTypes.PHYSICAL);
+        addDamageToString(dmgString, damagesArray[1], DamageTypes.FIRE);
+        addDamageToString(dmgString, damagesArray[2], DamageTypes.LIGHTNING);
+        addDamageToString(dmgString, damagesArray[3], DamageTypes.COLD);
+        addDamageToString(dmgString, damagesArray[4], DamageTypes.ABYSSAL);
+        return dmgString.toString().trim();
+    }
+
+    private static void addDamageToString(StringBuilder builder, int damage, DamageTypes damageType){
+        if (damage > 0){
+            String damageIcon = damageType.getCharacter();
+            String damageColor = damageType.getColor();
+            builder.append(ColorUtils.translateColorCodes(damageColor + damage + damageIcon))
+                    .append(" ");
+        }
     }
 }
