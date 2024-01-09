@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Attack implements EntityComponent {
 
@@ -104,7 +105,7 @@ public class Attack implements EntityComponent {
     }
 
     @Override
-    public void update(Profile profileData) {
+    public void update(UUID profileID) {
         //No update() routine for HitComponent yet
     }
 

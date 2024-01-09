@@ -1,20 +1,24 @@
 package com.amorabot.inscripted.components.Player;
 
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public class Miscellaneous implements EntityComponent {
 
     //Unique modifier list
 
-    private int stamina; //100 base
+    private int stamina;
     private int percentStamina;
-    private float staminaRegen; //5 base
+    private float staminaRegen;
     private int percentStaminaRegen;
     //Not implemented
     private int extraProjectiles;
     private int projectileSpeed;
     private int extraArea;
-    private float walkSpeed; //100 base
+    private float walkSpeed;
     private int percentWalkSpeed;
     //inc. Healing
     //thorns
@@ -25,13 +29,13 @@ public class Miscellaneous implements EntityComponent {
     }
 
     public void reset(){
-        walkSpeed = 100;
+        walkSpeed = BaseStats.WALK_SPEED.getValue();
         percentWalkSpeed = 0;
 
-        stamina = 100;
+        stamina = BaseStats.STAMINA.getValue();
         percentStamina = 0;
 
-        staminaRegen = 5;
+        staminaRegen = BaseStats.STAMINA_REGEN.getValue();
         percentStaminaRegen =0;
 
         extraProjectiles = 0;
@@ -39,10 +43,25 @@ public class Miscellaneous implements EntityComponent {
         extraArea = 0;
     }
     @Override
-    public void update(Profile profileData) {
+    public void update(UUID profileID) {
+//        Profile profileData = JSONProfileManager.getProfile(profileID);
+
         setFinalStamina(getStamina(), getPercentStamina());
         setFinalStaminaRegen(getStaminaRegen(), getPercentStaminaRegen());
         setFinalWalkSpeed(getWalkSpeed(), getPercentWalkSpeed());
+
+        Player player = Bukkit.getPlayer(profileID);
+        assert player != null;
+        /*
+        The final walkSpeed stat reflects the % multiplier that is applied to the base player's movement speed
+        Ex:  100 (Base) MS = 0.2  player speed
+             169 (100 + 54) * 1.1 => 169% base MS,   1,69 multiplier overall to the base 0.2 MS => 0.3388
+         */
+        float mappedWS = ( walkSpeed ) * 0.002F;
+        // input ->  min -1 |  max 1
+        player.setWalkSpeed(mappedWS);
+        //DEX can give 1% inc MS per 10
+        //Default speed value for players: 0.2 (EMPIRIC FUCKING VALUE)  (https://minecraft.wiki/w/Attribute)
     }
 
     public int getStamina(){

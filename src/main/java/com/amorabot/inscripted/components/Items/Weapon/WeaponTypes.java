@@ -247,8 +247,6 @@ public enum WeaponTypes implements AffixTableSelector {
     private final String color;
 
     private Map<String, Map<String, Map<Integer, Integer>>> affixes;
-//    private Map<String, Map<Integer, int[]>> basicPrefixes;
-//    private Map<String, Map<Integer, int[]>> basicSuffixes;
     WeaponTypes(String defaultColor, List<String> t1, List<String> t2, List<String> t3, List<String> t4, List<String> t5){
         this.tier1Names = t1;
         this.tier2Names = t2;

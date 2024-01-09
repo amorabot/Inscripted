@@ -19,6 +19,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import java.util.UUID;
+
 public class ArmorEquipListener implements Listener {
 
     public ArmorEquipListener(){
@@ -62,9 +64,10 @@ public class ArmorEquipListener implements Listener {
             switch (usage){
                 case ARMOR_UNEQUIP -> {
                     if (event.isValid()){
-                        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
+                        UUID playerID = player.getUniqueId();
+                        Profile playerProfile = JSONProfileManager.getProfile(playerID);
 
-                        if (playerProfile.updateEquipmentSlot(event.getArmorSlot(), null)){
+                        if (playerProfile.updateEquipmentSlot(event.getArmorSlot(), null, playerID)){
                             SoundAPI.playArmorUnequipFor(player);
                             player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
                             return;
@@ -80,9 +83,10 @@ public class ArmorEquipListener implements Listener {
 //                case ARMOR_SWAP -> equipArmor(event, player, 0.9f,1.0f);
                 case ARMOR_SWAP -> {
                     if (event.isValid()){
-                        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
+                        UUID playerID = player.getUniqueId();
+                        Profile playerProfile = JSONProfileManager.getProfile(playerID);
 
-                        if (playerProfile.updateEquipmentSlot(event.getArmorSlot(), null)){
+                        if (playerProfile.updateEquipmentSlot(event.getArmorSlot(), null, playerID)){
                             SoundAPI.playArmorEquipFor(player);
                             player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
                             return;
@@ -116,7 +120,8 @@ public class ArmorEquipListener implements Listener {
         //Slot is free and the item is equipable
         rootEvent.setCancelled(true);
         inventory.remove(armorToEquip); //Removing from inventory. Adding it again in the correct spot is decided later
-        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
+        UUID playerID = player.getUniqueId();
+        Profile playerProfile = JSONProfileManager.getProfile(playerID);
         Armor[] playerArmorSet = playerProfile.getEquipmentComponent().getArmorSet();
         ItemTypes armorSlot = event.getArmorSlot();
         Utils.log("clickEquip call");
@@ -152,7 +157,7 @@ public class ArmorEquipListener implements Listener {
             }
         }
         Armor armorData = event.getArmorData();
-        playerProfile.updateEquipmentSlot(armorSlot, armorData);
+        playerProfile.updateEquipmentSlot(armorSlot, armorData, playerID);
         SoundAPI.playArmorEquipFor(player);
         player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
     }

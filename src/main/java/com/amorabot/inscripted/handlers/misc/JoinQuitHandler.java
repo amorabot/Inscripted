@@ -48,9 +48,7 @@ public class JoinQuitHandler implements Listener {
         JSONProfileManager.loadProfileFromJSON(player.getUniqueId()); //Loads specific profile into memory
 
         showTitleTo(player, "<Welcome back, " + player.getName() + "!>", "Enjoy the alpha!");
-        //                                                          min 0  |  max 1
-        Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE)).setBaseValue(0.3);
-        player.setMaximumNoDamageTicks(5);
+        initializePlayer(player);
     }
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event){
@@ -60,13 +58,15 @@ public class JoinQuitHandler implements Listener {
         JSONProfileManager.saveProfileOnQuitToJSON(playerUUID, JSONProfileManager.getProfile(playerUUID));
 
         destroyPlayerData(player);
-//        //Un-instantiate bossbars
-//        PlayerInterfaceRenderer.deleteBossBars(player);
     }
 
     private void initializePlayer(Player player){
         PlayerRegenManager.addPlayer(player.getUniqueId());
         startupBossBars(player);
+
+        //                                                          min 0  |  max 1
+        Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE)).setBaseValue(1);
+        player.setMaximumNoDamageTicks(5);
     }
     private void destroyPlayerData(Player player){
         //Un-instantiate bossbars
@@ -91,7 +91,5 @@ public class JoinQuitHandler implements Listener {
                 mainTitleText, subtitleText,
                 Title.Times.times(Duration.ofMillis(1500), Duration.ofMillis(3000), Duration.ofMillis(200)) );
         player.showTitle(title);
-
-        initializePlayer(player);
     }
 }

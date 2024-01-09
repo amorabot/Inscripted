@@ -18,6 +18,7 @@ public abstract class Item implements Serializable {
     private ItemRarities rarity;
     private Tiers tier;
     private Implicits implicit;
+    //TODO: Factory / Separate class for handling rendering
     protected RendererTypes renderer;
 
     protected String name;

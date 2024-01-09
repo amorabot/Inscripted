@@ -10,21 +10,21 @@ import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierManager;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
+import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.utils.Utils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class StatCompiler {
 
     private final Profile targetProfile;
+    private final UUID playerID;
 
-    public StatCompiler(Profile playerProfile){
-        targetProfile = playerProfile;
+    public StatCompiler(UUID playerProfileID){
+        targetProfile = JSONProfileManager.getProfile(playerProfileID);
+        playerID = playerProfileID;
     }
 
     private void resetProfile(){
@@ -45,11 +45,11 @@ public class StatCompiler {
         DamageComponent damage = targetProfile.getDamageComponent();
 
         //The update order is defined here
-        attributes.update(targetProfile);
-        defences.update(targetProfile);
-        health.update(targetProfile);
-        miscellaneous.update(targetProfile);
-        damage.update(targetProfile);
+        attributes.update(playerID);
+        defences.update(playerID);
+        health.update(playerID);
+        miscellaneous.update(playerID);
+        damage.update(playerID);
     }
 
 
@@ -67,7 +67,6 @@ public class StatCompiler {
         int armorSum = 0;
         int dodgeSum = 0;
         //Compiling Armor data
-        //TODO: refactor armor compiling to use new EquipmentSlot functionality
         Armor[] equippedArmorSet = equipment.getArmorSet();
         for (Armor equippedArmor : equippedArmorSet){
             if (equippedArmor == null){
@@ -122,7 +121,7 @@ public class StatCompiler {
                 Utils.log("Value2: "+values[2] + " / " + values[3]);
             }
         }
-        Utils.log("----------------------");
+        Utils.log("--------------------------");
 
         //Lets see what stats were compiled through the compiledStats map's keySet:
         for (String modKey : compiledStats.keySet()){
@@ -161,7 +160,6 @@ public class StatCompiler {
                         Method method1 = this.getClass().getDeclaredMethod(method1Key, String.class,int[].class);
                         Method method2 = this.getClass().getDeclaredMethod(method2Key, String.class,int[].class);
 
-//                        Utils.log("Temos o método set " + mod1Token + " e " + mod2Token + "!!!");
                         //The hybrid mod structure assumes a mod like:
                         //DEX_INT_FLAT -> [13, 15]. That is, a single int for each value
                         //In this example, 13 FLAT DEX and 15 FLAT INT

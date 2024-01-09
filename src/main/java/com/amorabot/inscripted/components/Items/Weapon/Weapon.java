@@ -51,7 +51,7 @@ public class Weapon extends Item {
 
     @Override
     protected void mapBase(){
-        //Add atk speed mapping, min base stats required...
+        //TODO: Add atk speed mapping, min base stats required...
         vanillaMaterial = type.mapWeaponBase(getTier());
     }
 

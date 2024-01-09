@@ -71,7 +71,7 @@ public class MobCommand implements TabExecutor {
                             new Attack(
                                     new int[]{100,120}, new int[]{20,60}, new int[2], new int[2], new int[2],
                                     10F, 0, 0, 0, 0),
-                            new HealthComponent(1000, 150, 0, 0, 10),
+                            new HealthComponent(1000, 150, 0, 0),
                             DefensePresets.PHYSICAL_RESISTANT);
 
                     skeleton.getPersistentDataContainer().set(mobKey, new MobStatsContainer(), mobStats);
@@ -96,7 +96,7 @@ public class MobCommand implements TabExecutor {
                             new Attack(
                                     new int[]{100,120}, new int[]{10,20}, new int[2], new int[2], new int[]{70,70},
                                     10F, 0, 0, 0, 0),
-                            new HealthComponent(1000, 150, 0, 0, 10),
+                            new HealthComponent(1000, 150, 0, 0),
                             DefensePresets.BASIC_EVASIVE);
 
                     zombieVillager.getPersistentDataContainer().set(mobKey, new MobStatsContainer(), zombieStats);
@@ -119,7 +119,7 @@ public class MobCommand implements TabExecutor {
                             new Attack(
                                     new int[]{100,120}, new int[2], new int[2], new int[2], new int[]{200,250},
                                     10F, 0, 0, 0, 0),
-                            new HealthComponent(5000, 20, 0, 0, 10),
+                            new HealthComponent(5000, 20, 0, 0),
                             DefensePresets.ABYSS_RESISTANT);
 
                     nengue.getPersistentDataContainer().set(mobKey, new MobStatsContainer(), nengueStats);

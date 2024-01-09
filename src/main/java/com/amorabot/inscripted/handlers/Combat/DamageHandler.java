@@ -1,6 +1,5 @@
 package com.amorabot.inscripted.handlers.Combat;
 
-import com.amorabot.inscripted.APIs.DamageAPI;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.managers.JSONProfileManager;
@@ -29,7 +28,7 @@ public class DamageHandler implements Listener {
         player.setKiller();
         any custom routines are made, any needed damage is done within it, and after all, the event damage is cancelled
          */
-        DamageAPI.handleDamageEntityDamageEvents(event);
+        com.amorabot.inscripted.APIs.damageAPI.DamageHandler.handleDamageEntityDamageEvents(event);
     }
 
     @EventHandler

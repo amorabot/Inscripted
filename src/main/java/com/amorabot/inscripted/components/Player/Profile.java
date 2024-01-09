@@ -7,6 +7,8 @@ import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.utils.Utils;
 
+import java.util.UUID;
+
 
 public class Profile {
     private HealthComponent health;
@@ -45,20 +47,20 @@ public class Profile {
     public DamageComponent getDamageComponent(){
         return this.damage;
     }
-    private void updateProfile(){
+    private void updateProfile(UUID profileID){
         //Todo: on every profile update, re-map the players hp
         //player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
         //and remove other occurences (make it a static method with player/living entity arg on HealthComponent
 
-        StatCompiler compiler = new StatCompiler(this);
+        StatCompiler compiler = new StatCompiler(profileID);
         compiler.updateProfile();
     }
 
-    public boolean updateEquipmentSlot(ItemTypes targetSlot, Item itemData){
+    public boolean updateEquipmentSlot(ItemTypes targetSlot, Item itemData, UUID profileID){
         boolean success = getEquipmentComponent().setSlot(targetSlot, itemData);
         if (success){
             //Only call for profile updates after successful calls
-            updateProfile();
+            updateProfile(profileID);
         } else {
             Utils.error("Unsuccessful slot equipment call (at Profile class)");
         }

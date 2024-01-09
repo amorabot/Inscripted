@@ -6,6 +6,8 @@ import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.utils.Utils;
 
+import java.util.UUID;
+
 public class DamageComponent implements EntityComponent {
 
     private Attack hitData;
@@ -57,7 +59,7 @@ public class DamageComponent implements EntityComponent {
 
 
     @Override
-    public void update(Profile profileData) {
+    public void update(UUID profileID) {
         //Different protocol when considering areaDamage, proj DMG, ...
         hitData.applyPercentDamage(DamageTypes.PHYSICAL, increasedPhysicalDamage);
         hitData.applyPercentDamage(DamageTypes.FIRE, increasedFireDamage + increasedElementalDamage);
