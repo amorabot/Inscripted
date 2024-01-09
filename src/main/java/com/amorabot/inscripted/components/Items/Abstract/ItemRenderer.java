@@ -5,14 +5,8 @@ import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -86,7 +80,6 @@ public interface ItemRenderer extends Serializable {
         for (String line : itemLore){
             String decoloredLine = Utils.decolor(line);
             String strippedLine = decoloredLine.strip();
-            Utils.log(strippedLine);
             int lineLength = strippedLine.length();
             longestLineLength = Math.max(lineLength, longestLineLength);
         }

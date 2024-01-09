@@ -16,11 +16,11 @@ import java.util.Map;
 
 import static com.amorabot.inscripted.utils.Utils.color;
 
-public class BasicRunicWeaponRenderer implements ItemRenderer {
+public class WeaponRenderer implements ItemRenderer {
     @Override
     public void renderMainStat(Item itemData, List<String> itemLore) {
         Weapon weaponData = (Weapon) itemData;
-        Map<DamageTypes, int[]> damages = weaponData.getBaseDamage();
+        Map<DamageTypes, int[]> damages = weaponData.getLocalDamage();
         int indent = 1;
 
         itemLore.add("");

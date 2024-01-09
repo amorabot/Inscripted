@@ -20,7 +20,7 @@ public class PlayerRegenManager {
 
 
 
-    public static void playerHit(UUID playerID){
+    public static void startWardRegenCooldownFor(UUID playerID){
         wardRegenCooldown.put(playerID, System.currentTimeMillis());
     }
 
@@ -54,7 +54,6 @@ public class PlayerRegenManager {
         if (!activeRegenTasks.containsKey(playerID)){return;}
         BukkitRunnable regenTask = activeRegenTasks.remove(playerID);
         regenTask.cancel();
-//        Bukkit.getScheduler().cancelTask(regenTask.getTaskId()); //Alternative way
         wardRegenCooldown.remove(playerID);
     }
 

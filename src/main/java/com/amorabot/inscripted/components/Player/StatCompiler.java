@@ -5,29 +5,26 @@ import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.Implicits;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierManager;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
+import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.utils.Utils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class StatCompiler {
 
     private final Profile targetProfile;
+    private final UUID playerID;
 
-    public StatCompiler(Profile playerProfile){
-        targetProfile = playerProfile;
+    public StatCompiler(UUID playerProfileID){
+        targetProfile = JSONProfileManager.getProfile(playerProfileID);
+        playerID = playerProfileID;
     }
 
     private void resetProfile(){
@@ -36,7 +33,7 @@ public class StatCompiler {
         targetProfile.getHealthComponent().reset();
         targetProfile.getMiscellaneous().reset();
         //No problem if null
-        Weapon weaponSlot = targetProfile.getStats().getWeaponSlot();
+        Weapon weaponSlot = targetProfile.getEquipmentComponent().getWeaponData();
         targetProfile.getDamageComponent().reset(weaponSlot);
     }
 
@@ -48,16 +45,17 @@ public class StatCompiler {
         DamageComponent damage = targetProfile.getDamageComponent();
 
         //The update order is defined here
-        attributes.update(targetProfile);
-        defences.update(targetProfile);
-        health.update(targetProfile);
-        miscellaneous.update(targetProfile);
-        damage.update(targetProfile);
+        attributes.update(playerID);
+        defences.update(playerID);
+        health.update(playerID);
+        miscellaneous.update(playerID);
+        damage.update(playerID);
     }
 
 
     public void updateProfile(){
-        Stats stats = targetProfile.getStats();
+        Utils.log("-----STARTING COMPILATION FOR-----");
+        PlayerEquipment equipment = targetProfile.getEquipmentComponent();
 
         resetProfile();
 
@@ -69,7 +67,7 @@ public class StatCompiler {
         int armorSum = 0;
         int dodgeSum = 0;
         //Compiling Armor data
-        Armor[] equippedArmorSet = stats.getArmorSet();
+        Armor[] equippedArmorSet = equipment.getArmorSet();
         for (Armor equippedArmor : equippedArmorSet){
             if (equippedArmor == null){
                 continue;
@@ -101,15 +99,16 @@ public class StatCompiler {
         updateModValue(compiledStats, ModifierIDs.DODGE.getModifierKey(), new int[]{dodgeSum});
 
         //Compiling Weapon data
-        if (targetProfile.hasWeaponEquipped()){
-            Weapon equippedWeapon = stats.getWeaponSlot();
+        EquipmentSlot weaponSlot = equipment.getSlot(ItemTypes.WEAPON);
+        if (!weaponSlot.isIgnorable()){ //If the weapon data is not ignorable:
+            Weapon equippedWeapon = equipment.getWeaponData();
 
             Utils.log(equippedWeapon.getName());
 
             compileItem(compiledStats, equippedWeapon);
         }
 
-        Utils.log("-----START-----");
+        Utils.log("-----COMPILED STATS-----");
         for (Map.Entry<String, int[]> stat : compiledStats.entrySet()){
             int[] values = stat.getValue();
             Utils.log(stat.getKey());
@@ -122,7 +121,7 @@ public class StatCompiler {
                 Utils.log("Value2: "+values[2] + " / " + values[3]);
             }
         }
-        Utils.log("----------------------");
+        Utils.log("--------------------------");
 
         //Lets see what stats were compiled through the compiledStats map's keySet:
         for (String modKey : compiledStats.keySet()){
@@ -161,7 +160,6 @@ public class StatCompiler {
                         Method method1 = this.getClass().getDeclaredMethod(method1Key, String.class,int[].class);
                         Method method2 = this.getClass().getDeclaredMethod(method2Key, String.class,int[].class);
 
-                        Utils.log("Temos o método set " + mod1Token + " e " + mod2Token + "!!!");
                         //The hybrid mod structure assumes a mod like:
                         //DEX_INT_FLAT -> [13, 15]. That is, a single int for each value
                         //In this example, 13 FLAT DEX and 15 FLAT INT
@@ -186,7 +184,6 @@ public class StatCompiler {
         //Compiling mods
         List<Modifier> itemMods = equippedItem.getModifierList();
         for (Modifier mod : itemMods){
-//            if ((equippedItem instanceof Weapon) && (ignoredWeaponMods.contains(mod.getModifierID())) ){continue;}
 
             if (equippedItem instanceof Weapon){
                 //Ignore local damage mods for weapons

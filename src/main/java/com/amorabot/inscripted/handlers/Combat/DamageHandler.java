@@ -1,6 +1,5 @@
 package com.amorabot.inscripted.handlers.Combat;
 
-import com.amorabot.inscripted.APIs.DamageAPI;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.managers.JSONProfileManager;
@@ -23,13 +22,19 @@ public class DamageHandler implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event){
-        DamageAPI.handleDamageEntityDamageEvents(event);
+        //new way to handle damage:
+        /*
+        player.attack();
+        player.setKiller();
+        any custom routines are made, any needed damage is done within it, and after all, the event damage is cancelled
+         */
+        com.amorabot.inscripted.APIs.damageAPI.DamageHandler.handleDamageEntityDamageEvents(event);
     }
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event){
         if (event.getEntity() instanceof Player){
-            HealthComponent playerHealth = JSONProfileManager.getProfile(((Player) event.getEntity()).getUniqueId()).getHealthComponent();
+            HealthComponent playerHealth = JSONProfileManager.getProfile((event.getEntity()).getUniqueId()).getHealthComponent();
             playerHealth.replenishLife();
         }
     }

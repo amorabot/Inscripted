@@ -147,7 +147,7 @@ public class Armor extends Item {
                 return new UnidentifiedRenderer();
             }
             case BASIC -> {
-                return new BasicArmorRenderer();
+                return new ArmorRenderer();
             }
             case CORRUPTED -> {
                 Utils.log("No corruptedArmorRenderer");

@@ -1,6 +1,8 @@
 package com.amorabot.inscripted.handlers.Inventory;
 
+import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.events.WeaponEquipEvent;
@@ -16,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import static com.amorabot.inscripted.events.FunctionalItemAccessInterface.deserializeWeapon;
 
@@ -45,11 +48,12 @@ public class WeaponEquipListener implements Listener {
 
             Player player = rootEvent.getPlayer();
             if (event.isUnequip()){
-                Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId()); // Get profile from cache
+                UUID playerID = player.getUniqueId();
+                Profile playerProfile = JSONProfileManager.getProfile(playerID); // Get profile from cache
                 if (!playerProfile.hasWeaponEquipped()){
                     return;
                 }
-                playerProfile.updateMainHand(null);
+                playerProfile.updateEquipmentSlot(ItemTypes.WEAPON, null, playerID);
                 return;
             }
 
@@ -60,8 +64,10 @@ public class WeaponEquipListener implements Listener {
 
             Weapon weapon = deserializeWeapon(weaponDataContainer);
             if (weapon != null){
-                Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
-                playerProfile.updateMainHand(weapon);
+                UUID playerID = player.getUniqueId();
+                Profile playerProfile = JSONProfileManager.getProfile(playerID);
+                SoundAPI.playBreakSoundFor(player);
+                playerProfile.updateEquipmentSlot(ItemTypes.WEAPON, weapon, playerID);
                 renderWeaponEquipToPlayer(player,heldItem,weapon);
             } else {
                 Utils.log("Null weapon (WeaponEquipEvent)");
@@ -75,11 +81,13 @@ public class WeaponEquipListener implements Listener {
             Player player = (Player) rootEvent.getWhoClicked();
 
             if (event.isUnequip()){
-                Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId()); // Get profile from cache
+                UUID playerID = player.getUniqueId();
+                Profile playerProfile = JSONProfileManager.getProfile(playerID); // Get profile from cache
                 if (!playerProfile.hasWeaponEquipped()){
                     return;
                 }
-                playerProfile.updateMainHand(null);
+//                playerProfile.updateMainHand(null);
+                playerProfile.updateEquipmentSlot(ItemTypes.WEAPON, null, playerID);
                 return;
             }
 
@@ -90,8 +98,10 @@ public class WeaponEquipListener implements Listener {
 
             Weapon weapon = deserializeWeapon(weaponDataContainer);
             if (weapon != null){
-                Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
-                playerProfile.updateMainHand(weapon);
+                UUID playerID = player.getUniqueId();
+                Profile playerProfile = JSONProfileManager.getProfile(playerID);
+                SoundAPI.playBreakSoundFor(player);
+                playerProfile.updateEquipmentSlot(ItemTypes.WEAPON, weapon, playerID);
                 renderWeaponEquipToPlayer(player,eventWeaponItem,weapon);
             } else {
                 Utils.log("Null weapon (WeaponEquipEvent)");

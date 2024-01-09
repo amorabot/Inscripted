@@ -2,6 +2,9 @@ package com.amorabot.inscripted.components.Player;
 
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
+import com.amorabot.inscripted.managers.JSONProfileManager;
+
+import java.util.UUID;
 
 public class Attributes implements EntityComponent {
     private int intelligence;
@@ -99,7 +102,8 @@ public class Attributes implements EntityComponent {
     }
 
     @Override
-    public void update(Profile profileData) {
+    public void update(UUID profileID) {
+        Profile profileData = JSONProfileManager.getProfile(profileID);
         applyMultipliers();
         HealthComponent playerHP = profileData.getHealthComponent();
 

@@ -3,6 +3,8 @@ package com.amorabot.inscripted.components;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
 import com.amorabot.inscripted.components.Player.Profile;
 
+import java.util.UUID;
+
 public class DefenceComponent implements EntityComponent {
     private final int baseElementalCap;
     private int fireResistance;
@@ -161,7 +163,7 @@ public class DefenceComponent implements EntityComponent {
     }
 
     @Override
-    public void update(Profile profileData) {
+    public void update(UUID profileID) {
         //When more complex math needs to be done for defence stat calcs,
         //It should be done here
 

@@ -24,8 +24,8 @@ import java.util.*;
 //TODO: Use multiple event priorities to order eventlisteners listening to the same event
 public class Weapon extends Item {
     private final WeaponTypes type;
-    private Map<DamageTypes, int[]> baseDmg = new HashMap<>();
     //Define stat requirement for weapons
+    //Atk speed
 
     public Weapon(int ilvl, WeaponTypes type, ItemRarities rarity, boolean identified, boolean corrupted){
         super(ilvl, rarity, identified, corrupted, ItemTypes.WEAPON);
@@ -51,12 +51,15 @@ public class Weapon extends Item {
 
     @Override
     protected void mapBase(){
-        baseDmg.put(DamageTypes.PHYSICAL, type.mapDamage(getIlvl()));
+        //TODO: Add atk speed mapping, min base stats required...
         vanillaMaterial = type.mapWeaponBase(getTier());
     }
 
     //-------------------------------------------------------------------------
-    public void updateBaseDamageFromModifiers(){ //Once a weapon is created, the damage map needs to be updated to contain any possible new damages
+    public Map<DamageTypes, int[]> getLocalDamage(){ //Once a weapon is created, the damage map needs to be updated to contain any possible new damages
+        Map<DamageTypes, int[]> baseDmg = new HashMap<>();
+        baseDmg.put(DamageTypes.PHYSICAL, type.mapDamage(getIlvl()));
+
         for (Modifier mod : getModifierList()){
             ModifierIDs weaponModifier = mod.getModifierID();
             if (weaponModifier.equals(ModifierIDs.ADDED_PHYSICAL)){
@@ -92,9 +95,8 @@ public class Weapon extends Item {
                 baseDmg.put(DamageTypes.PHYSICAL, physDmg);
             }
         }
-    }
-    public Map<DamageTypes, int[]> getBaseDamage(){
-        return this.baseDmg;
+
+        return baseDmg;
     }
     public WeaponTypes getType() {
         return type;
@@ -105,7 +107,6 @@ public class Weapon extends Item {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
         List<String> lore = new ArrayList<>();
-        //TODO: renderer should be inferred
         ItemRenderer currentRenderer = getRenderer();
 
         currentRenderer.renderAllCustomLore(this, lore, type);
@@ -153,7 +154,7 @@ public class Weapon extends Item {
                 return new UnidentifiedRenderer();
             }
             case BASIC -> {
-                return new BasicRunicWeaponRenderer();
+                return new WeaponRenderer();
             }
             case CORRUPTED -> {
                 Utils.log("No corruptedWeaponRenderer");

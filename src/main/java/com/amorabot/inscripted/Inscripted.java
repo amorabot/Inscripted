@@ -13,13 +13,15 @@ import com.amorabot.inscripted.handlers.misc.SunlightBurnHandler;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.tasks.CombatLogger;
-import com.amorabot.inscripted.tasks.DamageHologramDepleter;
+import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
 //import com.amorabot.inscripted.tasks.PlayerRegen;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -37,6 +39,8 @@ public final class Inscripted extends JavaPlugin {
     private static BukkitTask combatLogger;
     private static BukkitTask playerInterfaceRenderer;
     private World world;
+
+    private MetadataValue metadataTag = new FixedMetadataValue(this, 0);
 
     @Override
     public void onEnable() {
@@ -70,7 +74,6 @@ public final class Inscripted extends JavaPlugin {
 
         getCommand("updatenbt").setExecutor(new UpdateNBT(this));
         getCommand("stats").setExecutor(new StatsCommand(this));
-//        getCommand("generateweapon").setExecutor(new GenerateWeapon(this));
         getCommand("generateitem").setExecutor(new GenerateItem(this));
         getCommand("identify").setExecutor(new Identify(this));
         getCommand("recolor").setExecutor(new Recolor(this));
@@ -96,7 +99,7 @@ public final class Inscripted extends JavaPlugin {
         new WeaponEquipListener();
 
         //Damage hologram depleter
-        holoDepleterTask = DamageHologramDepleter.getInstance().runTaskTimer(this,0, 1L);
+        holoDepleterTask = CombatHologramsDepleter.getInstance().runTaskTimer(this,0, 1L);
         //Combat logger
         combatLogger = CombatLogger.getInstance().runTaskTimer(this, 0, 20L);
         //Interface renderer
@@ -120,6 +123,7 @@ public final class Inscripted extends JavaPlugin {
         }
         PlayerInterfaceRenderer.shutdownAllBars();
         PlayerRegenManager.shutdown();
+        CombatHologramsDepleter.getInstance().shutdown();
 
         try {
             JSONProfileManager.saveAllToJSON();
@@ -142,5 +146,9 @@ public final class Inscripted extends JavaPlugin {
         PlayerRegenManager.reloadOnlinePlayers();
 
         ItemModifiersConfig.setup();
+    }
+
+    public MetadataValue getMetadataTag(){
+        return this.metadataTag;
     }
 }
