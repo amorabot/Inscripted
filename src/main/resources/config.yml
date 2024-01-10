@@ -1,0 +1,247 @@
+ArmorTypes:
+  HEAVY_PLATING:
+    DefenceTypes:
+      - ARMOR
+    T1:
+      NAME: Compound leather
+      ARMOR: 10
+      HELMET: 50
+      CHESTPLATE: 80
+      LEGGINGS: 70
+      BOOTS: 60
+    T2:
+      NAME: Heavy mail
+      ARMOR: 25
+      HELMET: 150
+      CHESTPLATE: 190
+      LEGGINGS: 170
+      BOOTS: 150
+    T3:
+      NAME: Steel War-Vest
+      ARMOR: 40
+      HELMET: 340
+      CHESTPLATE: 450
+      LEGGINGS: 400
+      BOOTS: 340
+    T4:
+      NAME: Heavy crystal
+      ARMOR: 60
+      HELMET: 900
+      CHESTPLATE: 1100
+      LEGGINGS: 1000
+      BOOTS: 900
+    T5:
+      NAME: Warmonger
+      ARMOR: 90
+      HELMET: 1500
+      CHESTPLATE: 1800
+      LEGGINGS: 1700
+      BOOTS: 1600
+  CARVED_PLATING:
+    DefenceTypes:
+      - ARMOR
+      - DODGE
+    T1:
+      NAME: Fancy leather
+      ARMOR: 3
+      DODGE: 2
+      HELMET: 50
+      CHESTPLATE: 80
+      LEGGINGS: 70
+      BOOTS: 60
+    T2:
+      NAME: Exotic chainmail
+      ARMOR: 6
+      DODGE: 4
+      HELMET: 120
+      CHESTPLATE: 190
+      LEGGINGS: 170
+      BOOTS: 120
+    T3:
+      NAME: Arena plate
+      ARMOR: 12
+      DODGE: 8
+      HELMET: 300
+      CHESTPLATE: 380
+      LEGGINGS: 340
+      BOOTS: 300
+    T4:
+      NAME: Opal-Engraved
+      ARMOR: 17
+      DODGE: 12
+      HELMET: 800
+      CHESTPLATE: 1000
+      LEGGINGS: 900
+      BOOTS: 800
+    T5:
+      NAME: Carved plating
+      ARMOR: 30
+      DODGE: 20
+      HELMET: 1200
+      CHESTPLATE: 1600
+      LEGGINGS: 1450
+      BOOTS: 1200
+  LIGHT_CLOTH:
+    DefenceTypes:
+      - DODGE
+    T1:
+      NAME: Light cloth
+      DODGE: 7
+      HELMET: 50
+      CHESTPLATE: 80
+      LEGGINGS: 70
+      BOOTS: 50
+    T2:
+      NAME: Leatherbound mail
+      DODGE: 15
+      HELMET: 150
+      CHESTPLATE: 190
+      LEGGINGS: 180
+      BOOTS: 160
+    T3:
+      NAME: Light plate
+      DODGE: 30
+      HELMET: 350
+      CHESTPLATE: 450
+      LEGGINGS: 420
+      BOOTS: 350
+    T4:
+      NAME: Ancient strapping
+      DODGE: 55
+      HELMET: 700
+      CHESTPLATE: 1000
+      LEGGINGS: 900
+      BOOTS: 700
+    T5:
+      NAME: Runic cloth
+      DODGE: 80
+      HELMET: 1100
+      CHESTPLATE: 1600
+      LEGGINGS: 1400
+      BOOTS: 1100
+  RUNIC_LEATHER:
+    DefenceTypes:
+      - WARD
+      - DODGE
+    T1:
+      NAME: Magic leather
+      WARD: 60
+      DODGE: 2
+      HELMET: 50
+      CHESTPLATE: 80
+      LEGGINGS: 70
+      BOOTS: 50
+    T2:
+      NAME: Infused ringmail
+      WARD: 100
+      DODGE: 4
+      HELMET: 150
+      CHESTPLATE: 190
+      LEGGINGS: 180
+      BOOTS: 160
+    T3:
+      NAME: Magic plated
+      WARD: 200
+      DODGE: 8
+      HELMET: 350
+      CHESTPLATE: 450
+      LEGGINGS: 420
+      BOOTS: 350
+    T4:
+      NAME: Ancient strapped leather
+      WARD: 350
+      DODGE: 12
+      HELMET: 700
+      CHESTPLATE: 1000
+      LEGGINGS: 900
+      BOOTS: 700
+    T5:
+      NAME: Obscure leatherbound
+      WARD: 450
+      DODGE: 20
+      HELMET: 1100
+      CHESTPLATE: 1600
+      LEGGINGS: 1400
+      BOOTS: 1100
+  ENCHANTED_SILK:
+    DefenceTypes:
+      - WARD
+    T1:
+      NAME: Silken
+      WARD: 69
+      HELMET: 25
+      CHESTPLATE: 60
+      LEGGINGS: 35
+      BOOTS: 30
+    T2:
+      NAME: Arcane ringmail
+      WARD: 120
+      HELMET: 75
+      CHESTPLATE: 130
+      LEGGINGS: 80
+      BOOTS: 70
+    T3:
+      NAME: Iron-plated silk
+      WARD: 200
+      HELMET: 150
+      CHESTPLATE: 350
+      LEGGINGS: 190
+      BOOTS: 150
+    T4:
+      NAME: Shining ancient silk
+      WARD: 400
+      HELMET: 350
+      CHESTPLATE: 700
+      LEGGINGS: 520
+      BOOTS: 300
+    T5:
+      NAME: Archmage wrappings
+      WARD: 650
+      HELMET: 550
+      CHESTPLATE: 1000
+      LEGGINGS: 650
+      BOOTS: 420
+  RUNIC_STEEL:
+    DefenceTypes:
+      - WARD
+      - ARMOR
+    T1:
+      NAME: Simple Battleplate
+      WARD: 30
+      ARMOR: 5
+      HELMET: 50
+      CHESTPLATE: 80
+      LEGGINGS: 70
+      BOOTS: 60
+    T2:
+      NAME: Battlemage ringmail
+      WARD: 50
+      ARMOR: 10
+      HELMET: 150
+      CHESTPLATE: 190
+      LEGGINGS: 180
+      BOOTS: 150
+    T3:
+      NAME: Enhanced magic steel
+      WARD: 90
+      ARMOR: 15
+      HELMET: 350
+      CHESTPLATE: 500
+      LEGGINGS: 450
+      BOOTS: 350
+    T4:
+      NAME: Ancient arcane steel
+      WARD: 180
+      ARMOR: 25
+      HELMET: 700
+      CHESTPLATE: 1100
+      LEGGINGS: 900
+      BOOTS: 700
+    T5:
+      NAME: Gilded runic steel
+      WARD: 250
+      ARMOR: 40
+      HELMET: 1500
+      CHESTPLATE: 1800
+      LEGGINGS: 1700
+      BOOTS: 1600

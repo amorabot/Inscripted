@@ -43,7 +43,7 @@ public class Weapon extends Item {
 
     @Override
     protected void setup() {
-        mapTier();
+        setTier(Tiers.mapItemLevel(getIlvl()));
         setImplicit(defineImplicit(getType().toString()));
         this.name = getType().getRandomName(getTier());
         mapBase();
