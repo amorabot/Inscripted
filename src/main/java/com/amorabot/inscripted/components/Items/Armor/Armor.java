@@ -33,7 +33,7 @@ public class Armor extends Item {
         super(ilvl, rarity, identified, corrupted, armorSlot);
         this.type = type;
         setup();
-        this.baseHealth = getType().mapBaseHealth(getTier(), getCategory());
+        this.baseHealth = getType().mapBaseStats(this);
     }
     public Armor(ItemTypes armorPiece, int ilvl, ItemRarities rarity, boolean identified, boolean corrupted) { //Random generation constructor
         super(ilvl, rarity, identified, corrupted, armorPiece);
@@ -41,12 +41,12 @@ public class Armor extends Item {
         int typeIndex = CraftingUtils.getRandomNumber(0, armorTypes.length-1);
         this.type = armorTypes[typeIndex];
         setup();
-        this.baseHealth = getType().mapBaseHealth(getTier(), getCategory());
+        this.baseHealth = getType().mapBaseStats(this);
     }
     @Override
     protected void setup(){
-        mapTier();
-        setName(getType().getRandomName(getTier()) + " " + getCategory().toString().toLowerCase());
+        setTier(Tiers.mapItemLevel(getIlvl()));
+        setName(getType().getTierName(getTier()) + " " + getCategory().toString().toLowerCase());
         setImplicit(defineImplicit(getType().toString()));
         mapBase();
     }
@@ -54,7 +54,6 @@ public class Armor extends Item {
     @Override
     protected void mapBase(){
         this.vanillaMaterial = getType().mapArmorBase(getTier(), getCategory());
-        getType().mapBaseDefences(getIlvl(), getCategory(), getDefencesMap());
     }
 
     public ArmorTypes getType() {

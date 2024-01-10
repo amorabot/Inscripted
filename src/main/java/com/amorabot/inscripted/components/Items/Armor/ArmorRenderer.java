@@ -61,7 +61,7 @@ public class ArmorRenderer implements ItemRenderer {
             case 0:
                 itemLore.add(ColorUtils.translateColorCodes(HPcomponent.indent(indentation)));
                 if (HP == 1){
-                    itemLore.add(firstLine.indent(indentation));
+                    itemLore.add(ColorUtils.translateColorCodes(firstLine.indent(indentation)));
                 } else {
                     itemLore.add(ColorUtils.translateColorCodes(firstLine.indent(indentation)));
                     itemLore.add(ColorUtils.translateColorCodes(wardLine.indent(indentation)));

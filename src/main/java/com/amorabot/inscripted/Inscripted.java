@@ -1,6 +1,10 @@
 package com.amorabot.inscripted;
 
 import com.amorabot.inscripted.commands.*;
+import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
 import com.amorabot.inscripted.components.Items.Files.ItemModifiersConfig;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
@@ -20,6 +24,7 @@ import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,6 +32,8 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -45,32 +52,16 @@ public final class Inscripted extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        logger = getLogger(); //pega o logger desse plugin, que dá acesso ao console do servidor
+        logger = getLogger();
         inscriptedPlugin = this;
         this.world = Bukkit.getWorld("world");
-        log("O novo hello world!");
 
-        //TODO: encapsulate
-        if (!new File(this.getDataFolder().getAbsolutePath() + "/profiles.json").exists()){
-            try {
-                String uuid = UUID.randomUUID().toString();
-                JSONProfileManager.createProfile(uuid);
-                log("creating dummy profile: " + uuid);
-                log("attempting to do the save operation");
-                JSONProfileManager.saveAllToJSON(); //vai criar o arquivo se ele não existe
-                log("initial JSON saving complete.");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        initializeProfileJSON();
         reloadRoutine();
         ModifierIDs.loadModifiers();
         Utils.populatePrettyAlphabet();
         Utils.populateRomanChars();
-
 //        getWorld().getLivingEntities()
-
-        //Todo: color interpolation for corrupted items
 
         getCommand("updatenbt").setExecutor(new UpdateNBT(this));
         getCommand("stats").setExecutor(new StatsCommand(this));
@@ -146,6 +137,62 @@ public final class Inscripted extends JavaPlugin {
         PlayerRegenManager.reloadOnlinePlayers();
 
         ItemModifiersConfig.setup();
+    }
+
+    private void initializeProfileJSON(){
+        if (!new File(this.getDataFolder().getAbsolutePath() + "/profiles.json").exists()){
+            try {
+                String uuid = UUID.randomUUID().toString();
+                JSONProfileManager.createProfile(uuid);
+                log("creating dummy profile: " + uuid);
+                log("attempting to do the save operation");
+                JSONProfileManager.saveAllToJSON(); //vai criar o arquivo se ele não existe
+                log("initial JSON saving complete.");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private static void populateConfigFile(){
+
+        FileConfiguration config = inscriptedPlugin.getConfig();
+
+        String armorRoot = ArmorTypes.class.getSimpleName();
+        String defString = DefenceTypes.class.getSimpleName();
+        for (ArmorTypes armorType : ArmorTypes.values()){
+            String currTypeStringPath = armorRoot+"."+armorType.toString();
+
+            String defencePath = currTypeStringPath+"."+defString;
+            List<String> defList = new ArrayList<>();
+            defList.add(DefenceTypes.WARD.toString());
+            defList.add(DefenceTypes.ARMOR.toString());
+            defList.add(DefenceTypes.DODGE.toString());
+            config.set(defencePath, defList);
+
+            for (Tiers tier : Tiers.values()){
+
+                String currTierStringPath = currTypeStringPath+"."+tier.toString()+".";
+
+                String namePath = currTierStringPath+"NAME";
+                config.set(namePath, "TEMPLATE");
+
+                List<String> mappedDefs = config.getStringList(defencePath);
+                for (String def : mappedDefs){
+                    String slotDefenceStringPath = currTierStringPath + def;
+                    config.set(slotDefenceStringPath, 69);
+                }
+
+                for (ItemTypes armorSlot : ItemTypes.values()){
+                    if (armorSlot.equals(ItemTypes.WEAPON)){continue;}
+
+                    String slotHealthPath = currTierStringPath + armorSlot;
+                    config.set(slotHealthPath, 99);
+                }
+            }
+        }
+
+        inscriptedPlugin.saveConfig();
     }
 
     public MetadataValue getMetadataTag(){

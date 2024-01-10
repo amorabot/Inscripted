@@ -1,510 +1,28 @@
 package com.amorabot.inscripted.components.Items.Armor;
 
+import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.inscripted.components.Items.Files.ResourcesJSONReader;
 import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
-import com.amorabot.inscripted.utils.CraftingUtils;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public enum ArmorTypes implements AffixTableSelector {
 
-    HEAVY_PLATING(
-            List.of("Thickwood", "Compound leather"),
-            List.of("Compound chainmail", "Heavy mail"),
-            List.of("Steel War-Vest", "Heavy plate"),
-            List.of("Heavy crystal", "Reinforced opal"),
-            List.of("Juggernault", "Warmonger", "Heavy runic-gold")
-    ){
-        @Override
-        public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
-            float maxItemLevel = 120;
-            int meanArmorPerPiece = 80;
-            //Base item defences definition
-            switch (armorBase){
-                case HELMET -> {
-                    int maximumHelmetArmor = (int)( meanArmorPerPiece*HELMET_MAIN_STAT_WEIGHT);
-                    putArmor(ilvl, maxItemLevel, maximumHelmetArmor, defences);
-                }
-                case CHESTPLATE -> {
-                    int maximumChestplateArmor = (int)( meanArmorPerPiece*CHESTPLATE_MAIN_STAT_WEIGHT);
-                    putArmor(ilvl, maxItemLevel, maximumChestplateArmor, defences);
-                }
-                case LEGGINGS -> {
-                    int maximumLeggingsArmor = (int)( meanArmorPerPiece*LEGGINGS_MAIN_STAT_WEIGHT);
-                    putArmor(ilvl, maxItemLevel, maximumLeggingsArmor, defences);
-                }
-                case BOOTS -> {
-                    int maximumBootsArmor = (int)( meanArmorPerPiece*BOOTS_MAIN_STAT_WEIGHT);
-                    putArmor(ilvl, maxItemLevel, maximumBootsArmor, defences);
-                }
-                default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
-            }
-        }
-        @Override
-        public int mapBaseHealth(Tiers tier, ItemTypes armorBase) {
-            switch (armorBase){
-                case HELMET -> {
-                    //Helmet base health definition
-                    return defineTierBaseHealth(tier
-                            , 50,  10
-                            , 150, 30
-                            , 400, 100
-                            , 900, 120
-                            , 1500,200);
-                }
-                case CHESTPLATE -> {
-                    //Chestplate base health definition
-                    return defineTierBaseHealth(tier
-                            , 80,  15
-                            , 190, 40
-                            , 450, 150
-                            , 1100,220
-                            , 1800,260);
-                }
-                case LEGGINGS -> {
-                    //Leggings base health definition
-                    return defineTierBaseHealth(tier
-                            , 70,  15
-                            , 200, 40
-                            , 500, 120
-                            , 1000, 140
-                            , 1700,240);
-                }
-                case BOOTS -> {
-                    //Boots base health definition
-                    return defineTierBaseHealth(tier
-                            , 60,  10
-                            , 150, 30
-                            , 400, 100
-                            , 900, 120
-                            , 1600,200);
-                }
-                default -> {
-                    Utils.log("No such armor base: " + armorBase);
-                    return 0;
-                }
-            }
-        }
-    },
-    CARVED_PLATING(
-            List.of("Light plating", "Fancy leather"),
-            List.of("Exotic chainmail", "Battle-chainmail"),
-            List.of("War-Plate", "Arena plate"),
-            List.of("Opal-Engraved", "Majestic plate"),
-            List.of("Shiny runic-gold", "Gladiator", "Carved plating")
-    ) {
-        @Override
-        public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
-            float maxItemLevel = 120;
-            int meanArmorPerPiece = 50; // Half of full STR armor + 1/8
-            int meanDodgePerPiece = 50;
-            switch (armorBase){
-                case HELMET -> {
-                    int maximumHelmetArmor = (int) ( meanArmorPerPiece * HELMET_MAIN_STAT_WEIGHT );
-                    int maxDodge = (int) ( meanDodgePerPiece * HELMET_MAIN_STAT_WEIGHT );
-                    putArmor(ilvl, maxItemLevel, maximumHelmetArmor, defences);
-                    putDodge(ilvl, maxItemLevel, maxDodge, defences);
-                }
-                case CHESTPLATE -> {
-                    int maximumChestplateArmor = (int) ( meanArmorPerPiece * CHESTPLATE_MAIN_STAT_WEIGHT );
-                    int maxDodge = (int) ( meanDodgePerPiece * CHESTPLATE_MAIN_STAT_WEIGHT );
-                    putArmor(ilvl, maxItemLevel, maximumChestplateArmor, defences);
-                    putDodge(ilvl, maxItemLevel, maxDodge, defences);
-                }
-                case LEGGINGS -> {
-                    int maximumLeggingsArmor = (int) ( meanArmorPerPiece * LEGGINGS_MAIN_STAT_WEIGHT );
-                    int maxDodge = (int) ( meanDodgePerPiece * LEGGINGS_MAIN_STAT_WEIGHT );
-                    putArmor(ilvl, maxItemLevel, maximumLeggingsArmor, defences);
-                    putDodge(ilvl, maxItemLevel, maxDodge, defences);
-                }
-                case BOOTS -> {
-                    int maximumBootsArmor = (int) ( meanArmorPerPiece * BOOTS_MAIN_STAT_WEIGHT );
-                    int maxDodge = (int) ( meanDodgePerPiece * BOOTS_MAIN_STAT_WEIGHT );
-                    putArmor(ilvl, maxItemLevel, maximumBootsArmor, defences);
-                    putDodge(ilvl, maxItemLevel, maxDodge, defences);
-                }
-                default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
-            }
-        }
-        @Override
-        public int mapBaseHealth(Tiers tier, ItemTypes armorBase) {
-            switch (armorBase){
-                case HELMET -> {
-                    //Helmet base health definition
-                    return defineTierBaseHealth(tier
-                            , 50,  10
-                            , 150, 30
-                            , 400, 100
-                            , 900, 120
-                            , 1500,200);
-                }
-                case CHESTPLATE -> {
-                    //Chestplate base health definition
-                    return defineTierBaseHealth(tier
-                            , 80,  15
-                            , 190, 40
-                            , 450, 150
-                            , 1100,220
-                            , 1800,260);
-                }
-                case LEGGINGS -> {
-                    //Leggings base health definition
-                    return defineTierBaseHealth(tier
-                            , 70,  15
-                            , 200, 40
-                            , 500, 120
-                            , 1000, 140
-                            , 1700,240);
-                }
-                case BOOTS -> {
-                    //Boots base health definition
-                    return defineTierBaseHealth(tier
-                            , 60,  10
-                            , 150, 30
-                            , 400, 100
-                            , 900, 120
-                            , 1600,200);
-                }
-                default -> {
-                    Utils.log("No such armor base: " + armorBase);
-                    return 0;
-                }
-            }
-        }
-    },
-    LIGHT_CLOTH(
-            List.of("Light cloth", "Wild leather"),
-            List.of("Light chainmail", "Leatherbound mail"),
-            List.of("Reinforced light", "Mercenary"),
-            List.of("Opal-engraved cloth", "Ancient strappings"),
-            List.of("Ranger leather", "Exquisite leather", "Runic light cloth")
-    ) {
-        @Override
-        public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
-            float maxItemLevel = 120;
-            int meanDodgePerPiece = 100;
-            switch (armorBase){
-                case HELMET -> {
-                    int maxDodge = (int) (meanDodgePerPiece * HELMET_MAIN_STAT_WEIGHT);
-                    putDodge(ilvl, maxItemLevel, maxDodge, defences);
-                }
-                case CHESTPLATE -> {
-                    int maxDodge = (int) (meanDodgePerPiece * CHESTPLATE_MAIN_STAT_WEIGHT);
-                    putDodge(ilvl, maxItemLevel, maxDodge, defences);
-                }
-                case LEGGINGS -> {
-                    int maxDodge = (int) (meanDodgePerPiece * LEGGINGS_MAIN_STAT_WEIGHT);
-                    putDodge(ilvl, maxItemLevel, maxDodge, defences);
-                }
-                case BOOTS -> {
-                    int maxDodge = (int) (meanDodgePerPiece * BOOTS_MAIN_STAT_WEIGHT);
-                    putDodge(ilvl, maxItemLevel, maxDodge, defences);
-                }
-                default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
-            }
-        }
-        @Override
-        public int mapBaseHealth(Tiers tier, ItemTypes armorBase) {
-            switch (armorBase){
-                case HELMET -> {
-                    //Helmet base health definition
-                    return defineTierBaseHealth(tier
-                            , 50,  10
-                            , 150, 30
-                            , 350, 70
-                            , 600, 100
-                            , 1100,150);
-                }
-                case CHESTPLATE -> {
-                    //Chestplate base health definition
-                    return defineTierBaseHealth(tier
-                            , 80,  15
-                            , 190, 40
-                            , 450, 100
-                            , 1100,160
-                            , 1600,220);
-                }
-                case LEGGINGS -> {
-                    //Leggings base health definition
-                    return defineTierBaseHealth(tier
-                            , 70,  15
-                            , 200, 40
-                            , 500, 80
-                            , 1000, 140
-                            , 1400,200);
-                }
-                case BOOTS -> {
-                    //Boots base health definition
-                    return defineTierBaseHealth(tier
-                            , 60,  10
-                            , 150, 30
-                            , 350, 70
-                            , 600, 100
-                            , 1100,150);
-                }
-                default -> {
-                    Utils.log("No such armor base: " + armorBase);
-                    return 0;
-                }
-            }
-        }
-    },
-    RUNIC_LEATHER(
-            List.of("Magic leather"),
-            List.of("Infused ringmail"),
-            List.of("Reinforced magic leather"),
-            List.of("Ancient strapped leather", "Crystal-infused cloth"),
-            List.of("Assassin", "Runic-gold leather", "Rogue")
-    ) {
-        @Override
-        public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
-            float maxItemLevel = 120;
-            int meanWardPerPiece = 150;
-            int meanDodgePerPiece = 50;
-            switch (armorBase){
-                case HELMET -> {
-                    int maximumWard = (int) ( meanWardPerPiece * HELMET_MAIN_STAT_WEIGHT);
-                    int maxDodge = (int) ( meanDodgePerPiece * HELMET_MAIN_STAT_WEIGHT);
-                    putWard(ilvl, maxItemLevel, maximumWard, defences);
-                    putDodge(ilvl, maxItemLevel, maxDodge, defences);
-                }
-                case CHESTPLATE -> {
-                    int maximumWard = (int) ( meanWardPerPiece * CHESTPLATE_MAIN_STAT_WEIGHT);
-                    int maxDodge = (int) ( meanDodgePerPiece * CHESTPLATE_MAIN_STAT_WEIGHT);
-                    putWard(ilvl, maxItemLevel, maximumWard, defences);
-                    putDodge(ilvl, maxItemLevel, maxDodge, defences);
-                }
-                case LEGGINGS -> {
-                    int maximumWard = (int) ( meanWardPerPiece * LEGGINGS_MAIN_STAT_WEIGHT);
-                    int maxDodge = (int) ( meanDodgePerPiece * LEGGINGS_MAIN_STAT_WEIGHT);
-                    putWard(ilvl, maxItemLevel, maximumWard, defences);
-                    putDodge(ilvl, maxItemLevel, maxDodge, defences);
-                }
-                case BOOTS -> {
-                    int maximumWard = (int) ( meanWardPerPiece * BOOTS_MAIN_STAT_WEIGHT);
-                    int maxDodge = (int) ( meanDodgePerPiece * BOOTS_MAIN_STAT_WEIGHT);
-                    putWard(ilvl, maxItemLevel, maximumWard, defences);
-                    putDodge(ilvl, maxItemLevel, maxDodge, defences);
-                }
-                default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
-            }
-        }
-        @Override
-        public int mapBaseHealth(Tiers tier, ItemTypes armorBase) {
-            switch (armorBase){
-                case HELMET -> {
-                    //Helmet base health definition
-                    return defineTierBaseHealth(tier
-                            , 50,  10
-                            , 150, 30
-                            , 400, 100
-                            , 900, 120
-                            , 1500,200);
-                }
-                case CHESTPLATE -> {
-                    //Chestplate base health definition
-                    return defineTierBaseHealth(tier
-                            , 80,  15
-                            , 190, 40
-                            , 450, 150
-                            , 1100,220
-                            , 1800,260);
-                }
-                case LEGGINGS -> {
-                    //Leggings base health definition
-                    return defineTierBaseHealth(tier
-                            , 70,  15
-                            , 200, 40
-                            , 500, 120
-                            , 1000, 140
-                            , 1700,240);
-                }
-                case BOOTS -> {
-                    //Boots base health definition
-                    return defineTierBaseHealth(tier
-                            , 60,  10
-                            , 150, 30
-                            , 400, 100
-                            , 900, 120
-                            , 1600,200);
-                }
-                default -> {
-                    Utils.log("No such armor base: " + armorBase);
-                    return 0;
-                }
-            }
-        }
-    },
-    ENCHANTED_SILK(
-            List.of("Silken"),
-            List.of("Arcane ringmail"),
-            List.of("Iron-plated silk"),
-            List.of("Shining ancient silk"),
-            List.of("Mage", "Woven runic silk", "Arcane silk")
-    ) {
-        @Override
-        public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
-            float maxItemLevel = 120;
-            int meanWardPerPiece = 500;
-            switch (armorBase){
-                case HELMET -> {
-                    int maxWard = (int) ( meanWardPerPiece * HELMET_MAIN_STAT_WEIGHT );
-                    putWard(ilvl, maxItemLevel, maxWard, defences);
-                }
-                case CHESTPLATE -> {
-                    int maxWard = (int) ( meanWardPerPiece * CHESTPLATE_MAIN_STAT_WEIGHT );
-                    putWard(ilvl, maxItemLevel, maxWard, defences);
-                }
-                case LEGGINGS -> {
-                    int maxWard = (int) ( meanWardPerPiece * LEGGINGS_MAIN_STAT_WEIGHT );
-                    putWard(ilvl, maxItemLevel, maxWard, defences);
-                }
-                case BOOTS -> {
-                    int maxWard = (int) ( meanWardPerPiece * BOOTS_MAIN_STAT_WEIGHT );
-                    putWard(ilvl, maxItemLevel, maxWard, defences);
-                }
-                default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
-            }
-        }
-        @Override
-        public int mapBaseHealth(Tiers tier, ItemTypes armorBase) {
-            //Variance -> 10% of base value per tier
-            switch (armorBase){
-                case HELMET -> {
-                    //Helmet base health definition
-                    return defineTierBaseHealth(tier
-                            , 25,  5
-                            , 75, 10
-                            , 150, 20
-                            , 350, 30
-                            , 550,50);
-                }
-                case CHESTPLATE -> {
-                    //Chestplate base health definition
-                    return defineTierBaseHealth(tier
-                            , 60,  15
-                            , 130, 40
-                            , 350, 80
-                            , 700,150
-                            , 1000,200);
-                }
-                case LEGGINGS -> {
-                    //Leggings base health definition
-                    return defineTierBaseHealth(tier
-                            , 35,  15
-                            , 80, 20
-                            , 190, 60
-                            , 300, 70
-                            , 650,120);
-                }
-                case BOOTS -> {
-                    //Boots base health definition
-                    return defineTierBaseHealth(tier
-                            , 30,  5
-                            , 70, 10
-                            , 150, 20
-                            , 300, 30
-                            , 420,60);
-                }
-                default -> {
-                    Utils.log("No such armor base: " + armorBase);
-                    return 0;
-                }
-            }
-        }
-    },
-    RUNIC_STEEL(
-            List.of("Magic battleplate"),
-            List.of("Battlemage ringmail"),
-            List.of("Enhanced magic steel"),
-            List.of("Shining Opal ", "Ancient arcane steel"),
-            List.of("Templar", "Gilded runic steel")
-    ) {
-        @Override
-        public void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences) {
-            float maxItemLevel = 120;
-            int meanArmorPerPiece = 60;
-            int meanWardPerPiece = 150;
-            switch (armorBase){
-                case HELMET -> {
-                    int maximumHelmetArmor = (int) (meanArmorPerPiece * HELMET_MAIN_STAT_WEIGHT);
-                    int maximumWard = (int) (meanWardPerPiece * HELMET_MAIN_STAT_WEIGHT);
-                    putArmor(ilvl, maxItemLevel, maximumHelmetArmor, defences);
-                    putWard(ilvl, maxItemLevel, maximumWard, defences);
-                }
-                case CHESTPLATE -> {
-                    int maximumChestplateArmor = (int) (meanArmorPerPiece * CHESTPLATE_MAIN_STAT_WEIGHT);
-                    int maximumWard = (int) (meanWardPerPiece * CHESTPLATE_MAIN_STAT_WEIGHT);
-                    putArmor(ilvl, maxItemLevel, maximumChestplateArmor, defences);
-                    putWard(ilvl, maxItemLevel, maximumWard, defences);
-                }
-                case LEGGINGS -> {
-                    int maximumLeggingsArmor = (int) (meanArmorPerPiece * LEGGINGS_MAIN_STAT_WEIGHT);
-                    int maximumWard = (int) (meanWardPerPiece * LEGGINGS_MAIN_STAT_WEIGHT);
-                    putArmor(ilvl, maxItemLevel, maximumLeggingsArmor, defences);
-                    putWard(ilvl, maxItemLevel, maximumWard, defences);
-                }
-                case BOOTS -> {
-                    int maximumBootsArmor = (int) (meanArmorPerPiece * BOOTS_MAIN_STAT_WEIGHT);
-                    int maximumWard = (int) (meanWardPerPiece * BOOTS_MAIN_STAT_WEIGHT);
-                    putArmor(ilvl, maxItemLevel, maximumBootsArmor, defences);
-                    putWard(ilvl, maxItemLevel, maximumWard, defences);
-                }
-                default -> Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
-            }
-        }
-        @Override
-        public int mapBaseHealth(Tiers tier, ItemTypes armorBase) {
-            switch (armorBase){
-                case HELMET -> {
-                    //Helmet base health definition
-                    return defineTierBaseHealth(tier
-                            , 50,  10
-                            , 150, 30
-                            , 400, 100
-                            , 900, 120
-                            , 1500,200);
-                }
-                case CHESTPLATE -> {
-                    //Chestplate base health definition
-                    return defineTierBaseHealth(tier
-                            , 80,  15
-                            , 190, 40
-                            , 450, 150
-                            , 1100,220
-                            , 1800,260);
-                }
-                case LEGGINGS -> {
-                    //Leggings base health definition
-                    return defineTierBaseHealth(tier
-                            , 70,  15
-                            , 200, 40
-                            , 500, 120
-                            , 1000, 140
-                            , 1700,240);
-                }
-                case BOOTS -> {
-                    //Boots base health definition
-                    return defineTierBaseHealth(tier
-                            , 60,  10
-                            , 150, 30
-                            , 400, 100
-                            , 900, 120
-                            , 1600,200);
-                }
-                default -> {
-                    Utils.log("No such armor base: " + armorBase);
-                    return 0;
-                }
-            }
-        }
-    };
+    HEAVY_PLATING,
+    CARVED_PLATING,
+    LIGHT_CLOTH,
+    RUNIC_LEATHER,
+    ENCHANTED_SILK,
+    RUNIC_STEEL;
 
     private Map<String, Map<String, Map<Integer, Integer>>> helmetAffixes;
     private Map<String, Map<String, Map<Integer, Integer>>> chestplateAffixes;
@@ -517,74 +35,23 @@ public enum ArmorTypes implements AffixTableSelector {
     private static final double LEGGINGS_MAIN_STAT_WEIGHT = 1.2;
     private static final double BOOTS_MAIN_STAT_WEIGHT = 0.7;
 
-    //TODO: Move these stats to Tiers enum, specify names for each tier of itemType, for example
-    private final List<String> tier1Names;
-    private final List<String> tier2Names;
-    private final List<String> tier3Names;
-    private final List<String> tier4Names;
-    private final List<String> tier5Names;
+    //TODO: Make a map: Tier -> Name
+    private final String tier1Name;
+    private final String tier2Name;
+    private final String tier3Name;
+    private final String tier4Name;
+    private final String tier5Name;
 
-    ArmorTypes(List<String> t1, List<String> t2, List<String> t3, List<String> t4, List<String> t5){
-        this.tier1Names = t1;
-        this.tier2Names = t2;
-        this.tier3Names = t3;
-        this.tier4Names = t4;
-        this.tier5Names = t5;
+    ArmorTypes(){
+        this.tier1Name = loadTierName(Tiers.T1);
+        this.tier2Name = loadTierName(Tiers.T2);
+        this.tier3Name = loadTierName(Tiers.T3);
+        this.tier4Name = loadTierName(Tiers.T4);
+        this.tier5Name = loadTierName(Tiers.T5);
+
         loadAllAffixes();
     }
-    protected abstract void mapBaseDefences(int ilvl, ItemTypes armorBase, Map<DefenceTypes, Integer> defences);
-    /*
-    * @return mapped base health value, based on tier and armor piece. Every armor material defines a different health map
-    * */
-    public abstract int mapBaseHealth(Tiers tier, ItemTypes armorBase);
-    private Integer linearScaleStat(int givenItemLevel, float maxItemLevel, int maximumBaseStat){
-        float itemLevelPercentile = givenItemLevel / maxItemLevel; // ilvl->ilvlRange normalization
-        return (int) (maximumBaseStat * itemLevelPercentile);
-    }
-    protected void putArmor(int givenItemLevel, float maxItemLevel, int maximumBaseStat, Map<DefenceTypes, Integer> defences){
-        if (givenItemLevel > 0 && givenItemLevel <= maxItemLevel){
-            int armorValue = linearScaleStat(givenItemLevel, maxItemLevel, maximumBaseStat);
-            if (armorValue == 0){ return; }
-            defences.put(DefenceTypes.ARMOR, armorValue);
-        } else if (givenItemLevel > maxItemLevel){
-            defences.put(DefenceTypes.ARMOR, maximumBaseStat);
-        } else {
-            defences.put(DefenceTypes.ARMOR, 0);
-        }
-    }
-    protected void putWard(int givenItemLevel, float maxItemLevel, int maximumBaseStat, Map<DefenceTypes, Integer> defences){
-        if (givenItemLevel > 0 && givenItemLevel <= maxItemLevel){
-            int wardValue = linearScaleStat(givenItemLevel, maxItemLevel, maximumBaseStat);
-            if (wardValue == 0){ return; }
-            defences.put(DefenceTypes.WARD, wardValue);
-        } else if (givenItemLevel > maxItemLevel){
-            defences.put(DefenceTypes.WARD, maximumBaseStat);
-        } else {
-            defences.put(DefenceTypes.WARD, 0);
-        }
-    }
-    protected void putDodge(int givenItemLevel, float maxItemLevel, int maximumBaseStat, Map<DefenceTypes, Integer> defences){
-        //Will put -1 if invalid maxIlvl is given
-        //Dodge will cap below the max item level given
-        //Dodge will be a int value to represent a percentage (100x)  1% = 100, 56% = 5600
-        int softCapOffset = 20;
-        int softLevelCap = (int) (maxItemLevel)-softCapOffset;
-        if (maxItemLevel <= softCapOffset){
-            defences.put(DefenceTypes.DODGE, -1);
-            return;
-        }
-        //If the givenItemLevel is valid (between 1 and levelCap) map it accordingly
-        if (givenItemLevel > 0 && givenItemLevel <= softLevelCap){
-            int dodgeValue = linearScaleStat(givenItemLevel, softLevelCap, maximumBaseStat);
-            //Dodge wont be a percentage by itself, convert when displaying or doing percentage math
-            defences.put(DefenceTypes.DODGE,dodgeValue);
-        } else if(givenItemLevel>softLevelCap && givenItemLevel<=maxItemLevel){ //If ilvl is greater than softCap and lower than maxIlvl allowed, put the maximum value for Dodge
-            defences.put(DefenceTypes.DODGE, maximumBaseStat);
-        } else { //If the given Ilvl was higher than the max allowed, put 0
-            defences.put(DefenceTypes.DODGE, 0);
-        }
-    }
-    protected Material mapArmorBase(Tiers tier, ItemTypes armorBase){
+    public Material mapArmorBase(Tiers tier, ItemTypes armorBase){
         switch (armorBase){
             case HELMET -> {
                 return mapHelmetMaterial(tier);
@@ -603,32 +70,6 @@ public enum ArmorTypes implements AffixTableSelector {
                 return null;
             }
         }
-    }
-    protected int defineTierBaseHealth(Tiers tier,
-                                       int T1MaxHealth, int T1Variance,
-                                       int T2MaxHealth, int T2Variance,
-                                       int T3MaxHealth, int T3Variance,
-                                       int T4MaxHealth, int T4Variance,
-                                       int T5MaxHealth, int T5Variance){
-        switch (tier){
-            case T1 -> {
-                return T1MaxHealth + CraftingUtils.getRandomNumber(0, T1Variance);
-            }
-            case T2 -> {
-                return T2MaxHealth + CraftingUtils.getRandomNumber(0, T2Variance);
-            }
-            case T3 -> {
-                return T3MaxHealth + CraftingUtils.getRandomNumber(0, T3Variance);
-            }
-            case T4 -> {
-                return T4MaxHealth + CraftingUtils.getRandomNumber(0, T4Variance);
-            }
-            case T5 -> {
-                return T5MaxHealth + CraftingUtils.getRandomNumber(0, T5Variance);
-            }
-        }
-        //If none returns, set to 1
-        return 1;
     }
     private Material mapHelmetMaterial(Tiers tier){
         switch (tier){
@@ -744,31 +185,127 @@ public enum ArmorTypes implements AffixTableSelector {
         return this.bootsAffixes;
     }
 
-    public String getRandomName(Tiers tier){
+    public String loadTierName(Tiers tier){
+        String namePath = ArmorTypes.class.getSimpleName() + "." + this + "." + tier + "." + "NAME";
+        return Inscripted.getPlugin().getConfig().getString(namePath);
+    }
+
+    public String getTierName(Tiers tier){
         switch (tier){
             case T1 -> {
-                int rand = CraftingUtils.getRandomNumber(0, this.tier1Names.size()-1);
-                return tier1Names.get(rand);
+                return tier1Name;
             }
             case T2 -> {
-                int rand = CraftingUtils.getRandomNumber(0, this.tier2Names.size()-1);
-                return tier2Names.get(rand);
+                return tier2Name;
             }
             case T3 -> {
-                int rand = CraftingUtils.getRandomNumber(0, this.tier3Names.size()-1);
-                return tier3Names.get(rand);
+                return tier3Name;
             }
             case T4 -> {
-                int rand = CraftingUtils.getRandomNumber(0, this.tier4Names.size()-1);
-                return tier4Names.get(rand);
+                return tier4Name;
             }
             case T5 -> {
-                int rand = CraftingUtils.getRandomNumber(0, this.tier5Names.size()-1);
-                return tier5Names.get(rand);
-            }
-            default -> {
-                return "";
+                return tier5Name;
             }
         }
+        return "INVALID NAME :(";
+    }
+
+/*
+This functions maps all the defences for a item, given its item level, category and subtype
+Since the life value can be retrieved from this call, the return value reflects final health value chosen
+for this item. The map-stats and map-health functions were previously called one after the other, always together.
+This way, one entire routine can be skipped altogether.
+
+@Params
+    armorData - a Armor object that has its internal data already mapped (at least the ones used in this routine)
+    returns: the health value associated with armorData parameters
+*/
+    public int mapBaseStats(Armor armorData){
+        //This routine is called everytime a armor generated -> TODO: Rework with a cache solution
+        FileConfiguration config = Inscripted.getPlugin().getConfig();
+        Map<DefenceTypes, Integer> defenceMap = armorData.getDefencesMap();
+
+        ItemTypes slot = armorData.getCategory();
+        ArmorTypes subtype = this;
+        Tiers tier = armorData.getTier();
+
+        String subtypePath = ArmorTypes.class.getSimpleName() + "." + subtype + ".";
+
+        List<String> subtypeDefences = config.getStringList(subtypePath+DefenceTypes.class.getSimpleName());
+        List<DefenceTypes> mappedSubtypeDefences = new ArrayList<>();
+        for (String defString : subtypeDefences){
+            Utils.log(defString);
+            try {
+                DefenceTypes mappedDef = DefenceTypes.valueOf(defString);
+                mappedSubtypeDefences.add(mappedDef);
+            } catch (IllegalArgumentException exception){
+                Utils.error("Invalid argument for armor mapping.");
+                return 0;
+            }
+        }
+
+        for (DefenceTypes def : mappedSubtypeDefences){
+            String currDefencePath = subtypePath + "." + tier + "." + def;
+
+            int ilvl = armorData.getIlvl();
+            int tierMaxLevel = tier.getMaxLevel();
+            Optional<Tiers> prevTier = tier.getPreviousTier();
+
+            if (ilvl <= 0){
+                defenceMap.put(def, 0);
+                return 1;
+            }
+
+            int mappedDefenceValue;
+
+            if (prevTier.isPresent()){
+                Tiers previousTier = prevTier.get();
+                int prevTierMaxLvl = previousTier.getMaxLevel();
+
+                int v1 = ilvl - prevTierMaxLvl;
+                int v2 = tierMaxLevel - prevTierMaxLvl;
+                float t = ((float) (v1)) /v2;
+
+                String prevTierDefencePath = subtypePath + "." + previousTier + "." + def;
+
+                int currMaxDef = config.getInt(currDefencePath);
+                int prevMaxDef = config.getInt(prevTierDefencePath);
+
+                mappedDefenceValue = ( int ) Utils.getParametricValue(prevMaxDef, currMaxDef, t);
+            } else {//Means its a T1 (has no previous tier)
+                float t = ((float)(ilvl)) / tierMaxLevel ;
+
+                int currMaxDef = config.getInt(currDefencePath);
+
+                mappedDefenceValue = ( int ) Utils.getParametricValue(0, currMaxDef, t);
+            }
+
+            //Scale the base value based on the armor piece
+            switch (slot){
+                case HELMET -> mappedDefenceValue = (int) (mappedDefenceValue * HELMET_MAIN_STAT_WEIGHT);
+                case CHESTPLATE -> mappedDefenceValue = (int) (mappedDefenceValue * CHESTPLATE_MAIN_STAT_WEIGHT);
+                case LEGGINGS -> mappedDefenceValue = (int) (mappedDefenceValue * LEGGINGS_MAIN_STAT_WEIGHT);
+                case BOOTS -> mappedDefenceValue = (int) (mappedDefenceValue * BOOTS_MAIN_STAT_WEIGHT);
+                default -> {
+                    mappedDefenceValue = 0;
+                    Utils.error("Cant map base armor stats for " + slot);
+                }
+            }
+
+            if (mappedDefenceValue != 0){
+                //Actually putting the mapped value in the item's defence map
+                defenceMap.put(def, mappedDefenceValue);
+            }
+        }
+
+        String healthPath = subtypePath + tier + "." + slot;
+        return getMappedHealth(healthPath);
+    }
+    private int getMappedHealth(String path){
+        int baseHealth = Inscripted.getPlugin().getConfig().getInt(path);
+        float hpVariance = 0.1F; //10% more or less
+        int HPOffset = (int) (Utils.getRandomOffset()*(hpVariance*baseHealth));
+        return baseHealth + HPOffset;
     }
 }

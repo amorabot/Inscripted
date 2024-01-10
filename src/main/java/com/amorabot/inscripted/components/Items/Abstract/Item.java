@@ -126,27 +126,6 @@ public abstract class Item implements Serializable {
         }
     }
     protected abstract void mapBase();
-    protected void mapTier(){
-        //Substitute for for-loop
-        if (getIlvl()<=Tiers.T1.getMaxLevel()){
-            setTier(Tiers.T1);
-            return;
-        } else if (getIlvl()<=Tiers.T2.getMaxLevel()){
-            setTier(Tiers.T2);
-            return;
-        } else if (getIlvl()<=Tiers.T3.getMaxLevel()){
-            setTier(Tiers.T3);
-            return;
-        } else if (getIlvl()<=Tiers.T4.getMaxLevel()){
-            setTier(Tiers.T4);
-            return;
-        } else if (getIlvl()<=Tiers.T5.getMaxLevel()) {
-            setTier(Tiers.T5);
-            return;
-        }
-        //If ilvl is greater than T5 threshold, return t5
-        setTier(Tiers.T5);
-    }
     public List<Modifier> getModifierList(){
         return this.modifiers;
     }
