@@ -4,8 +4,11 @@ import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
+import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.Serializable;
 import java.util.*;
@@ -43,7 +46,26 @@ public abstract class Item implements Serializable {
     }
     protected abstract void setup();
     //-------------------------------------------------------------------------
-    public abstract void imprint(ItemStack item);
+    public <subType extends Enum<subType> & ItemSubtype> void imprint(ItemStack item, subType subType){
+        ItemMeta itemMeta = item.getItemMeta();
+        assert itemMeta != null;
+        List<String> lore = new ArrayList<>();
+        ItemRenderer currentRenderer = getRenderer();
+
+        currentRenderer.renderAllCustomLore(this, lore, subType);
+
+        itemMeta.setLore(lore);
+        itemMeta.setUnbreakable(true);
+        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        item.setItemMeta(itemMeta);
+
+        if (isIdentified()){
+            currentRenderer.setDisplayName(getRarity().getColor()+getName(), item);
+            return;
+        }
+        currentRenderer.setDisplayName("Unidentified " + subType.toString().toLowerCase(), item);
+    }
     public abstract ItemStack getItemForm(Inscripted plugin);
     protected abstract void serializeContainers(Inscripted plugin, Item itemData, ItemStack item);
     public ItemTypes getCategory(){

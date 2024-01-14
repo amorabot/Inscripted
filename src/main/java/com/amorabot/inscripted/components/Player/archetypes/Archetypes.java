@@ -21,4 +21,14 @@ public enum Archetypes {
         this.weaponType = weaponType;
         this.armorType = armorMaterial;
     }
+
+    public String getColor() {
+        return color;
+    }
+    public WeaponTypes getWeaponType() {
+        return weaponType;
+    }
+    public ArmorTypes getArmorType() {
+        return armorType;
+    }
 }

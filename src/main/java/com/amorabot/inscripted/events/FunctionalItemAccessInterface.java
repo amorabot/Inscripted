@@ -99,6 +99,7 @@ public class FunctionalItemAccessInterface {
     public static void identifyItem(ItemStack item){
         ItemMeta itemMeta = item.getItemMeta();
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
+        //TODO: Realocate sub-routines and make them sub-type specific
         if (isWeapon(dataContainer)){
             Weapon weapon = FunctionalItemAccessInterface.deserializeWeapon(dataContainer);
             assert weapon != null;
@@ -106,7 +107,7 @@ public class FunctionalItemAccessInterface {
             identifyWeapon(dataContainer);
             FunctionalItemAccessInterface.serializeWeapon(weapon, dataContainer);
             item.setItemMeta(itemMeta);
-            weapon.imprint(item);
+            weapon.imprint(item, weapon.getType());
             return;
         }
         if (isArmor(dataContainer)){
@@ -116,7 +117,7 @@ public class FunctionalItemAccessInterface {
             identifyArmor(dataContainer);
             FunctionalItemAccessInterface.serializeArmor(armor, dataContainer);
             item.setItemMeta(itemMeta);
-            armor.imprint(item);
+            armor.imprint(item,armor.getType());
             return;
         }
     }

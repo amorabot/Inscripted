@@ -1,17 +1,23 @@
 package com.amorabot.inscripted.components.Items.DataStructures.Enums;
 
 public enum ItemRarities {
-    COMMON(0),
-    MAGIC(2),
-    RARE(6),
-    UNIQUE(10);
+    //TODO: Store rarity colors here
+    COMMON(0, "&f"),
+    MAGIC(2, "&9"),
+    RARE(6, "&e"),
+    UNIQUE(10, "&c");
 
     final int maxMods;
-    ItemRarities(int maxMods){
+    final String color;
+    ItemRarities(int maxMods, String rarityColor){
         this.maxMods = maxMods;
+        this.color = rarityColor;
     }
 
     public int getMaxMods() {
         return maxMods;
+    }
+    public String getColor() {
+        return color;
     }
 }

@@ -1,50 +1,51 @@
 package com.amorabot.inscripted.components.Items.DataStructures.Enums;
 
-import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 
 public enum Implicits {
-    AXE_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.AXE.getDefaulNameColor()+"@value1@** SHRED",
+    //TODO: Change implicits to be tier-based and recieve a archetype parameter
+    AXE_STANDARD(ImplicitType.STANDARD,"&"+ Archetypes.MARAUDER.getColor() +"@value1@** SHRED",
             TargetStats.SHRED, new int[]{5}, ValueTypes.PERCENT, false),
     AXE_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
             null, new int[]{0}, ValueTypes.PERCENT, false),
-    SWORD_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.SWORD.getDefaulNameColor()+"@value1@** ACC",
+    SWORD_STANDARD(ImplicitType.STANDARD,"&"+ Archetypes.GLADIATOR.getColor() +"@value1@** ACC",
             TargetStats.ACCURACY, new int[]{30}, ValueTypes.ADDED, false),
     SWORD_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
             null, new int[]{0}, ValueTypes.PERCENT, false),
-    BOW_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.BOW.getDefaulNameColor()+"@value1@** DODGE",
+    BOW_STANDARD(ImplicitType.STANDARD,"&"+ Archetypes.MERCENARY.getColor() +"@value1@** DODGE",
             TargetStats.DODGE, new int[]{10}, ValueTypes.FLAT, false),
     BOW_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
             null, new int[]{0}, ValueTypes.PERCENT, false),
-    DAGGER_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.DAGGER.getDefaulNameColor()+"@value1@** CRIT DMG",
+    DAGGER_STANDARD(ImplicitType.STANDARD,"&"+ Archetypes.ROGUE.getColor() +"@value1@** CRIT DMG",
             TargetStats.CRITICAL_DAMAGE, new int[]{10}, ValueTypes.ADDED, false),
     DAGGER_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
             null, new int[]{0}, ValueTypes.PERCENT, false),
-    WAND_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.WAND.getDefaulNameColor()+"@value1@** MAELSTROM",
+    WAND_STANDARD(ImplicitType.STANDARD,"&"+ Archetypes.SORCERER.getColor() +"@value1@** MAELSTROM",
             TargetStats.MAELSTROM, new int[]{5}, ValueTypes.PERCENT, false),
     WAND_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
             null, new int[]{0}, ValueTypes.PERCENT, false),
-    SCEPTRE_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.SCEPTRE.getDefaulNameColor()+"@value1@** ELE DMG",
+    SCEPTRE_STANDARD(ImplicitType.STANDARD,"&"+ Archetypes.TEMPLAR.getColor() +"@value1@** ELE DMG",
             TargetStats.ELEMENTAL_DAMAGE, new int[]{10}, ValueTypes.ADDED, false),
     SCEPTRE_CORRUPTED(ImplicitType.CORRUPTED,"&l"+"@value1@% LOREM IPSUM",
             null, new int[]{0}, ValueTypes.PERCENT, false),
 
-    HEAVY_PLATING_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.AXE.getDefaulNameColor()+"**@value1@ STR",
+    HEAVY_PLATING_STANDARD(ImplicitType.STANDARD,"&"+ Archetypes.MARAUDER.getColor() +"**@value1@ STR",
             TargetStats.STRENGTH, new int[]{25}, ValueTypes.FLAT, false),
-    CARVED_PLATING_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.SWORD.getDefaulNameColor()+"**@value1@ STR"+
+    CARVED_PLATING_STANDARD(ImplicitType.STANDARD,"&"+ Archetypes.GLADIATOR.getColor() +"**@value1@ STR"+
             "-brk-"+
-            "&"+WeaponTypes.SWORD.getDefaulNameColor()+"**@value2@ DEX",
+            "&"+ Archetypes.GLADIATOR.getColor() +"**@value2@ DEX",
             TargetStats.STRENGTH_DEXTERITY, new int[]{15, 15}, ValueTypes.FLAT, true),
-    LIGHT_CLOTH_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.BOW.getDefaulNameColor()+"**@value1@ DEX",
+    LIGHT_CLOTH_STANDARD(ImplicitType.STANDARD,"&"+ Archetypes.MERCENARY.getColor() +"**@value1@ DEX",
             TargetStats.DEXTERITY, new int[]{25}, ValueTypes.FLAT, false),
-    RUNIC_LEATHER_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.DAGGER.getDefaulNameColor()+"**@value1@ DEX"+
+    RUNIC_LEATHER_STANDARD(ImplicitType.STANDARD,"&"+ Archetypes.ROGUE.getColor() +"**@value1@ DEX"+
             "-brk-"+
-            "&"+WeaponTypes.DAGGER.getDefaulNameColor()+"**@value2@ INT",
+            "&"+ Archetypes.ROGUE.getColor() +"**@value2@ INT",
             TargetStats.DEXTERITY_INTELLIGENCE, new int[]{15, 15}, ValueTypes.FLAT, true),
-    ENCHANTED_SILK_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.WAND.getDefaulNameColor()+"**@value1@ INT",
+    ENCHANTED_SILK_STANDARD(ImplicitType.STANDARD,"&"+ Archetypes.SORCERER.getColor() +"**@value1@ INT",
             TargetStats.INTELLIGENCE, new int[]{25}, ValueTypes.FLAT, false),
-    RUNIC_STEEL_STANDARD(ImplicitType.STANDARD,"&"+WeaponTypes.SCEPTRE.getDefaulNameColor()+"**@value1@ INT"+
+    RUNIC_STEEL_STANDARD(ImplicitType.STANDARD,"&"+ Archetypes.TEMPLAR.getColor() +"**@value1@ INT"+
             "-brk-"+
-            "&"+WeaponTypes.SCEPTRE.getDefaulNameColor()+"**@value2@ STR",
+            "&"+ Archetypes.TEMPLAR.getColor() +"**@value2@ STR",
             TargetStats.INTELLIGENCE_STRENGTH, new int[]{15, 15}, ValueTypes.FLAT, true);
 
     private final ImplicitType implicitType;

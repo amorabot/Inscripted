@@ -9,7 +9,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
 import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierManager;
-import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
+import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.utils.CraftingUtils;
@@ -18,7 +18,7 @@ import java.util.*;
 
 public class ItemGenerator {
 
-    public static <SubType extends Enum<SubType> & AffixTableSelector> Item randomItem(ItemTypes type, SubType subType, int itemLevel, ItemRarities rarity, boolean identified, boolean corrupted){
+    public static <SubType extends Enum<SubType> & ItemSubtype> Item randomItem(ItemTypes type, SubType subType, int itemLevel, ItemRarities rarity, boolean identified, boolean corrupted){
         //Initial item setup
         Item blankItem;
 

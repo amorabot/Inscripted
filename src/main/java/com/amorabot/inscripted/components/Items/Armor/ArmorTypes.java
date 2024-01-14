@@ -5,17 +5,14 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceType
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.inscripted.components.Items.Files.ResourcesJSONReader;
-import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
+import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-public enum ArmorTypes implements AffixTableSelector {
+public enum ArmorTypes implements ItemSubtype {
 
     HEAVY_PLATING,
     CARVED_PLATING,
@@ -35,20 +32,12 @@ public enum ArmorTypes implements AffixTableSelector {
     private static final double LEGGINGS_MAIN_STAT_WEIGHT = 1.2;
     private static final double BOOTS_MAIN_STAT_WEIGHT = 0.7;
 
-    //TODO: Make a map: Tier -> Name
-    private final String tier1Name;
-    private final String tier2Name;
-    private final String tier3Name;
-    private final String tier4Name;
-    private final String tier5Name;
+    private final Map<Tiers, String> names = new HashMap<>();
 
     ArmorTypes(){
-        this.tier1Name = loadTierName(Tiers.T1);
-        this.tier2Name = loadTierName(Tiers.T2);
-        this.tier3Name = loadTierName(Tiers.T3);
-        this.tier4Name = loadTierName(Tiers.T4);
-        this.tier5Name = loadTierName(Tiers.T5);
-
+        for (Tiers tier : Tiers.values()){
+            this.names.put(tier, loadTierName(tier));
+        }
         loadAllAffixes();
     }
     public Material mapArmorBase(Tiers tier, ItemTypes armorBase){
@@ -185,30 +174,14 @@ public enum ArmorTypes implements AffixTableSelector {
         return this.bootsAffixes;
     }
 
-    public String loadTierName(Tiers tier){
+    @Override
+    public String loadTierName(Tiers tier) {
         String namePath = ArmorTypes.class.getSimpleName() + "." + this + "." + tier + "." + "NAME";
         return Inscripted.getPlugin().getConfig().getString(namePath);
     }
-
+    @Override
     public String getTierName(Tiers tier){
-        switch (tier){
-            case T1 -> {
-                return tier1Name;
-            }
-            case T2 -> {
-                return tier2Name;
-            }
-            case T3 -> {
-                return tier3Name;
-            }
-            case T4 -> {
-                return tier4Name;
-            }
-            case T5 -> {
-                return tier5Name;
-            }
-        }
-        return "INVALID NAME :(";
+        return this.names.getOrDefault(tier, "INVALID ARMOR");
     }
 
 /*
@@ -235,7 +208,6 @@ This way, one entire routine can be skipped altogether.
         List<String> subtypeDefences = config.getStringList(subtypePath+DefenceTypes.class.getSimpleName());
         List<DefenceTypes> mappedSubtypeDefences = new ArrayList<>();
         for (String defString : subtypeDefences){
-            Utils.log(defString);
             try {
                 DefenceTypes mappedDef = DefenceTypes.valueOf(defString);
                 mappedSubtypeDefences.add(mappedDef);

@@ -1,5 +1,7 @@
 package com.amorabot.inscripted.components.Items.Interfaces;
 
+import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
 import com.amorabot.inscripted.utils.Utils;
 
@@ -7,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public interface AffixTableSelector {
+public interface ItemSubtype {
 
     default Map<ModifierIDs, Map<Integer, Integer>> castModMap(Map<String, Map<Integer, Integer>> rawAffixMap){
         Map<ModifierIDs, Map<Integer, Integer>> castedMap = new HashMap<>();
@@ -24,4 +26,6 @@ public interface AffixTableSelector {
         return castedMap;
     }
 
+    String loadTierName(Tiers tier);
+    String getTierName(Tiers tier);
 }

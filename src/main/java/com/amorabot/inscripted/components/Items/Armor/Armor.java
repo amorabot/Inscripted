@@ -87,38 +87,9 @@ public class Armor extends Item {
         return new ArmorTrim(material, pattern);
     }
     @Override
-    public void imprint(ItemStack item) {
-        ItemMeta itemMeta = item.getItemMeta();
-        assert itemMeta != null;
-        List<String> lore = new ArrayList<>();
-        ItemRenderer itemRenderer = getRenderer();
-
-        itemRenderer.renderAllCustomLore(this, lore, type);
-
-        itemMeta.setLore(lore);
-        itemMeta.setUnbreakable(true);
-        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        item.setItemMeta(itemMeta);
-
-        String displayName = "";
-        switch (getRarity()){
-            case COMMON -> displayName = "&f";
-            case MAGIC -> displayName = "&9";
-            case RARE -> displayName = "&e";
-        }
-        if (isIdentified()){
-            displayName += getName();
-        } else {
-            displayName += "Unidentified " + getCategory().toString().toLowerCase();
-        }
-        itemRenderer.setDisplayName(displayName, item);
-    }
-
-    @Override
     public ItemStack getItemForm(Inscripted plugin) {
         ItemStack armorItem = new ItemStack(this.vanillaMaterial);
-        imprint(armorItem);
+        imprint(armorItem, type);
 
         //Assuming its always a valid item (A set can be created for all possible armortypes and support custom ones)
         ArmorMeta armorMeta = (ArmorMeta) armorItem.getItemMeta();

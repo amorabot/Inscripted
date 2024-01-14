@@ -2,7 +2,7 @@ package com.amorabot.inscripted.components.Items.Files;
 
 import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
+import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.utils.Utils;
 import com.google.gson.Gson;
@@ -15,7 +15,7 @@ import java.io.Reader;
 import java.util.Map;
 
 public class ResourcesJSONReader {
-    public static <SubType extends Enum<SubType> & AffixTableSelector> Map<String, Map<String, Map<Integer, Integer>>> getModifierTableFor(ItemTypes itemType, SubType category){
+    public static <SubType extends Enum<SubType> & ItemSubtype> Map<String, Map<String, Map<Integer, Integer>>> getModifierTableFor(ItemTypes itemType, SubType category){
         String path;
         if (itemType.equals(ItemTypes.WEAPON)){
             if (!(category instanceof WeaponTypes)){return null;}
