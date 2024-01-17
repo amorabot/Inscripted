@@ -20,7 +20,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.amorabot.inscripted.events.FunctionalItemAccessInterface.deserializeWeapon;
+import static com.amorabot.inscripted.events.FunctionalItemAccessInterface.deserializeWeaponData;
 
 public class WeaponEquipListener implements Listener {
 
@@ -62,7 +62,7 @@ public class WeaponEquipListener implements Listener {
             PersistentDataContainer weaponDataContainer =
                     Objects.requireNonNull(heldItem.getItemMeta()).getPersistentDataContainer();
 
-            Weapon weapon = deserializeWeapon(weaponDataContainer);
+            Weapon weapon = deserializeWeaponData(weaponDataContainer);
             if (weapon != null){
                 UUID playerID = player.getUniqueId();
                 Profile playerProfile = JSONProfileManager.getProfile(playerID);
@@ -96,7 +96,7 @@ public class WeaponEquipListener implements Listener {
             PersistentDataContainer weaponDataContainer =
                     Objects.requireNonNull(eventWeaponItem.getItemMeta()).getPersistentDataContainer();
 
-            Weapon weapon = deserializeWeapon(weaponDataContainer);
+            Weapon weapon = deserializeWeaponData(weaponDataContainer);
             if (weapon != null){
                 UUID playerID = player.getUniqueId();
                 Profile playerProfile = JSONProfileManager.getProfile(playerID);

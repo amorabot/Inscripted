@@ -15,14 +15,6 @@ import static com.amorabot.inscripted.utils.Utils.color;
 
 public class UnidentifiedRenderer implements ItemRenderer {
     @Override
-    public void setDisplayName(String name, ItemStack item) {
-        ItemMeta itemMeta = item.getItemMeta();
-        assert itemMeta != null;
-        itemMeta.setDisplayName(color(name));
-        item.setItemMeta(itemMeta);
-    }
-
-    @Override
     public void renderMainStat(Item itemData, List<String> itemLore) {
     }
 

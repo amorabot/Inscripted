@@ -3,7 +3,7 @@ package com.amorabot.inscripted.commands;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
-import com.amorabot.inscripted.components.Items.ItemGenerator;
+import com.amorabot.inscripted.components.Items.ItemBuilder;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
@@ -47,7 +47,7 @@ public class GenerateItem implements TabExecutor {
         Archetypes archetype = Archetypes.valueOf(args[2]);
 
         if (args[3].equals(ItemTypes.WEAPON.toString())){
-            Weapon weapon = ( Weapon ) ItemGenerator.randomItem(ItemTypes.WEAPON, archetype.getWeaponType(), ilvl, rarity,  true, false);
+            Weapon weapon = ( Weapon ) ItemBuilder.randomItem(ItemTypes.WEAPON, archetype.getWeaponType(), ilvl, rarity,  false, false);
             if (weapon == null){
                 Utils.msgPlayer(player, "Invalid weapon stats...");
                 return false;
@@ -55,7 +55,7 @@ public class GenerateItem implements TabExecutor {
             giveGeneratedItem(weapon, player);
         } else {
             ItemTypes armorPiece = ItemTypes.valueOf(args[3]);
-            Armor armor = ( Armor ) ItemGenerator.randomItem(armorPiece,archetype.getArmorType(), ilvl, rarity, true, false);
+            Armor armor = ( Armor ) ItemBuilder.randomItem(armorPiece,archetype.getArmorType(), ilvl, rarity, true, false);
             if (armor == null){
                 Utils.msgPlayer(player, "Invalid armor stats...");
                 return false;

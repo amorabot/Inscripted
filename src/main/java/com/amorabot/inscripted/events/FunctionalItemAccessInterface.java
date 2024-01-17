@@ -1,50 +1,72 @@
 package com.amorabot.inscripted.events;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
 import com.amorabot.inscripted.components.Items.DataStructures.GenericItemContainerDataType;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 public class FunctionalItemAccessInterface {
 
     private static final Inscripted INSCRIPTED_PLUGIN = Inscripted.getPlugin();
-    private static final NamespacedKey WEAPON_TAG = new NamespacedKey(INSCRIPTED_PLUGIN, "IS_WEAPON");
-    private static final NamespacedKey WEAPON_DATA_KEY = new NamespacedKey(INSCRIPTED_PLUGIN, "WEAPON-DATA");
-    private static final NamespacedKey ARMOR_TAG = new NamespacedKey(INSCRIPTED_PLUGIN, "IS_ARMOR");
-    private static final NamespacedKey ARMOR_DATA_KEY = new NamespacedKey(INSCRIPTED_PLUGIN, "ARMOR_DATA");
+    public static final NamespacedKey CORRUPTED_TAG = new NamespacedKey(INSCRIPTED_PLUGIN, "CORRUPTED");
+    public static final NamespacedKey WEAPON_TAG = new NamespacedKey(INSCRIPTED_PLUGIN, "IS_WEAPON");
+    public static final NamespacedKey WEAPON_DATA_KEY = new NamespacedKey(INSCRIPTED_PLUGIN, "WEAPON-DATA");
+    public static final NamespacedKey ARMOR_TAG = new NamespacedKey(INSCRIPTED_PLUGIN, "IS_ARMOR");
+    public static final NamespacedKey ARMOR_DATA_KEY = new NamespacedKey(INSCRIPTED_PLUGIN, "ARMOR_DATA");
     private FunctionalItemAccessInterface(){
 
     }
-    //Checks if the item's container has a weapon tag
-    public static boolean isWeapon(PersistentDataContainer dataContainer){
-        if (dataContainer==null){return false;}
-        return dataContainer.has(WEAPON_TAG, new PersistentDataType.BooleanPersistentDataType()); //If its a weapon, it has this container
-    }
 
-    //Checks wether this item has a weapon tag and if it's identified
-    public static boolean isEquipableWeapon(PersistentDataContainer dataContainer){
-        if (isWeapon(dataContainer)) {
-            return Boolean.TRUE.equals(dataContainer.get(WEAPON_TAG, new PersistentDataType.BooleanPersistentDataType()));
+    //Checks for a specific item-type key within the item's PDC
+    public static boolean isItemType(NamespacedKey typeKey, PersistentDataContainer dataContainer){
+        if (dataContainer==null){return false;}
+        return dataContainer.has(typeKey, new PersistentDataType.BooleanPersistentDataType());
+    }
+    //Checks for the value associated with the item-type key inside the PDC (This value represents the identified flag inside the Item class, for easy access)
+    public static boolean isIdentified(NamespacedKey typeKey, PersistentDataContainer dataContainer){
+        if (isItemType(typeKey, dataContainer)){//
+            return Boolean.TRUE.equals(dataContainer.get(typeKey, new PersistentDataType.BooleanPersistentDataType()));
         }
         return false;
     }
-
-    //Both containers are serialized at once. "weapon-data" contains the Weapon class data and "weapon" is the quick-access container for equipability checks
-    public static void serializeWeapon(Weapon weaponData, PersistentDataContainer dataContainer){
-        dataContainer.set(WEAPON_DATA_KEY, new GenericItemContainerDataType<>(Weapon.class), weaponData);
-        dataContainer.set(WEAPON_TAG, new PersistentDataType.BooleanPersistentDataType(), weaponData.isIdentified());
+    public static boolean isCorrupted(PersistentDataContainer dataContainer){
+        if (!dataContainer.has(CORRUPTED_TAG, new PersistentDataType.BooleanPersistentDataType())){
+            return false;
+        }
+        return Boolean.TRUE.equals(dataContainer.get(CORRUPTED_TAG, new PersistentDataType.BooleanPersistentDataType()));
+    }
+    public static void serializeItem(Item itemData, PersistentDataContainer dataContainer){
+        if (itemData instanceof Weapon){
+            dataContainer.set(WEAPON_DATA_KEY, new GenericItemContainerDataType<>(Weapon.class), (Weapon) itemData);
+            dataContainer.set(WEAPON_TAG, new PersistentDataType.BooleanPersistentDataType(), itemData.isIdentified());
+        } else if (itemData instanceof Armor) {
+            dataContainer.set(ARMOR_DATA_KEY, new GenericItemContainerDataType<>(Armor.class), (Armor) itemData);
+            dataContainer.set(ARMOR_TAG, new PersistentDataType.BooleanPersistentDataType(), itemData.isIdentified());
+        }
+        dataContainer.set(CORRUPTED_TAG, new PersistentDataType.BooleanPersistentDataType(), itemData.isCorrupted());
     }
 
+    //Should only be used when the needed item's data doesnt depend on their subtype
+    public static Item deserializeGenericItemData(PersistentDataContainer dataContainer){
+        if (isItemType(WEAPON_TAG, dataContainer)){
+            return deserializeWeaponData(dataContainer);
+        } else if (isItemType(ARMOR_TAG, dataContainer)) {
+            return deserializeArmorData(dataContainer);
+        } else {
+            Utils.error("Generic item deserialization error (FunctionalItemAccessInterface)");
+            return null;
+        }
+    }
+//==================================================OLD METHODS=================================================================
     //Gets weapon class data from the item's container
-    public static Weapon deserializeWeapon(PersistentDataContainer dataContainer){ // Optional
-        if (isWeapon(dataContainer)){
+    public static Weapon deserializeWeaponData(PersistentDataContainer dataContainer){ // Optional
+        if (isItemType(WEAPON_TAG,dataContainer)){
             Weapon weaponData = dataContainer.get(WEAPON_DATA_KEY, new GenericItemContainerDataType<>(Weapon.class));
             if (weaponData == null){ Utils.error("FunctionalItemHandler error: Null weapon deserialization"); }
             return weaponData;
@@ -52,13 +74,6 @@ public class FunctionalItemAccessInterface {
         Utils.error("FunctionalItemHandler error: Not a weapon");
         return null;
     }
-    //When identifying weapons, this method should be called
-    private static void identifyWeapon(PersistentDataContainer dataContainer){
-        if (isWeapon(dataContainer)){
-            dataContainer.set(WEAPON_TAG, new PersistentDataType.BooleanPersistentDataType(), true);
-        }
-    }
-
 
     //Armor methods are analog to weapon's
     public static boolean isArmor(PersistentDataContainer dataContainer){
@@ -75,11 +90,7 @@ public class FunctionalItemAccessInterface {
         //Todo: implement level requirement for player to equip
         return true;
     }
-    public static void serializeArmor(Armor armorData, PersistentDataContainer dataContainer){
-        dataContainer.set(ARMOR_DATA_KEY, new GenericItemContainerDataType<>(Armor.class), armorData);
-        dataContainer.set(ARMOR_TAG, new PersistentDataType.BooleanPersistentDataType(), armorData.isIdentified());
-    }
-    public static Armor deserializeArmor(PersistentDataContainer dataContainer){
+    public static Armor deserializeArmorData(PersistentDataContainer dataContainer){
         if (isArmor(dataContainer)){
             Armor armorData = dataContainer.get(ARMOR_DATA_KEY, new GenericItemContainerDataType<>(Armor.class));
             if (armorData == null){ Utils.error("FunctionalItemHandler error: Null weapon deserialization"); }
@@ -87,38 +98,5 @@ public class FunctionalItemAccessInterface {
         }
         Utils.error("FunctionalItemHandler error: Not a weapon");
         return null;
-    }
-    private static void identifyArmor(PersistentDataContainer dataContainer){
-        if (isWeapon(dataContainer)){
-            dataContainer.set(ARMOR_TAG, new PersistentDataType.BooleanPersistentDataType(), true);
-        }
-    }
-
-
-
-    public static void identifyItem(ItemStack item){
-        ItemMeta itemMeta = item.getItemMeta();
-        PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-        //TODO: Realocate sub-routines and make them sub-type specific
-        if (isWeapon(dataContainer)){
-            Weapon weapon = FunctionalItemAccessInterface.deserializeWeapon(dataContainer);
-            assert weapon != null;
-            weapon.identify();
-            identifyWeapon(dataContainer);
-            FunctionalItemAccessInterface.serializeWeapon(weapon, dataContainer);
-            item.setItemMeta(itemMeta);
-            weapon.imprint(item, weapon.getType());
-            return;
-        }
-        if (isArmor(dataContainer)){
-            Armor armor = FunctionalItemAccessInterface.deserializeArmor(dataContainer);
-            assert armor != null;
-            armor.identify();
-            identifyArmor(dataContainer);
-            FunctionalItemAccessInterface.serializeArmor(armor, dataContainer);
-            item.setItemMeta(itemMeta);
-            armor.imprint(item,armor.getType());
-            return;
-        }
     }
 }

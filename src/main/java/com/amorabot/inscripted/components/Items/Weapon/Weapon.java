@@ -43,8 +43,8 @@ public class Weapon extends Item {
     @Override
     protected void setup() {
         setTier(Tiers.mapItemLevel(getIlvl()));
-        setImplicit(defineImplicit(getType().toString()));
-        this.name = getType().getTierName(getTier());
+        setImplicit(defineImplicit(getSubtype().toString()));
+        this.name = getSubtype().getTierName(getTier());
         mapBase();
     }
 
@@ -95,7 +95,7 @@ public class Weapon extends Item {
 
         return baseDmg;
     }
-    public WeaponTypes getType() {
+    public WeaponTypes getSubtype() {
         return type;
     }
     //-------------------------------------------------------------------------
@@ -112,7 +112,7 @@ public class Weapon extends Item {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-        FunctionalItemAccessInterface.serializeWeapon(this, dataContainer);
+        FunctionalItemAccessInterface.serializeItem(this, dataContainer);
         item.setItemMeta(itemMeta);
     }
 

@@ -64,7 +64,7 @@ public abstract class Item implements Serializable {
             currentRenderer.setDisplayName(getRarity().getColor()+getName(), item);
             return;
         }
-        currentRenderer.setDisplayName("Unidentified " + subType.toString().toLowerCase(), item);
+        currentRenderer.setDisplayName(getRarity().getColor() + "Unidentified " + subType.toString().toLowerCase(), item);
     }
     public abstract ItemStack getItemForm(Inscripted plugin);
     protected abstract void serializeContainers(Inscripted plugin, Item itemData, ItemStack item);

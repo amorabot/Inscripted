@@ -65,7 +65,7 @@ public class WeaponEquipEvent extends Event {
 
     public Weapon getWeaponData(){
         return FunctionalItemAccessInterface.
-                deserializeWeapon(
+                deserializeWeaponData(
                         Objects.requireNonNull(getWeaponItem().getItemMeta()).getPersistentDataContainer());
     }
 
