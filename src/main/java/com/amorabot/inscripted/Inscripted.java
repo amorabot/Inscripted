@@ -7,11 +7,10 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
 import com.amorabot.inscripted.components.Items.Files.ItemModifiersConfig;
+import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
 import com.amorabot.inscripted.handlers.GUI.GUIHandler;
-import com.amorabot.inscripted.handlers.Inventory.ArmorEquipListener;
-import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
-import com.amorabot.inscripted.handlers.Inventory.WeaponEquipListener;
+import com.amorabot.inscripted.handlers.Inventory.*;
 import com.amorabot.inscripted.handlers.misc.JoinQuitHandler;
 import com.amorabot.inscripted.handlers.misc.SunlightBurnHandler;
 import com.amorabot.inscripted.managers.JSONProfileManager;
@@ -79,6 +78,7 @@ public final class Inscripted extends JavaPlugin {
         //---------   LISTENERS   ------------
         new JoinQuitHandler(this);
         new PlayerEquipmentHandler(this);
+        new InventoryHandler();
         new DelayedTask(this);
         new GUIHandler(this);
         new DamageHandler(this);
@@ -88,6 +88,7 @@ public final class Inscripted extends JavaPlugin {
         //CUSTOM EVENT LISTENERS
         new ArmorEquipListener();
         new WeaponEquipListener();
+        new CurrencyUsageListener();
 
         //Damage hologram depleter
         holoDepleterTask = CombatHologramsDepleter.getInstance().runTaskTimer(this,0, 1L);
@@ -154,7 +155,7 @@ public final class Inscripted extends JavaPlugin {
         }
     }
 
-    private static void populateConfigFile(){
+    private static void populateArmorConfigSection(){
 
         FileConfiguration config = inscriptedPlugin.getConfig();
 
@@ -189,6 +190,27 @@ public final class Inscripted extends JavaPlugin {
                     String slotHealthPath = currTierStringPath + armorSlot;
                     config.set(slotHealthPath, 99);
                 }
+            }
+        }
+
+        inscriptedPlugin.saveConfig();
+    }
+
+    private static void populateWeaponConfigSection(){
+        FileConfiguration config = inscriptedPlugin.getConfig();
+
+        String weaponRoot = WeaponTypes.class.getSimpleName();
+        for (WeaponTypes weaponType : WeaponTypes.values()){
+            String currWeaponTypePath = weaponRoot + "." + weaponType + ".";
+            //Fields: Name, Base Damages
+            for (Tiers tier : Tiers.values()){
+                String currTierPath = currWeaponTypePath + tier + ".";
+
+                String namePath = currTierPath + "NAME";
+                String damagePath = currTierPath + "BASE_DAMAGE";
+
+                config.set(namePath, "TEMPREITO");
+                config.set(damagePath, new int[2]);
             }
         }
 

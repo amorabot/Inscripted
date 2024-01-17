@@ -80,7 +80,7 @@ public class PlayerEquipmentHandler implements Listener {
             return;
         }
         PersistentDataContainer heldItemDataContainer = heldItem.getItemMeta().getPersistentDataContainer();
-        if (isEquipableWeapon(heldItemDataContainer)){
+        if (isIdentified(WEAPON_TAG,heldItemDataContainer)){
             player.setCooldown(heldItem.getType(), 20*1);
             EventAPI.callWeaponEquipEvent(event, heldItem);
         } else {
@@ -100,12 +100,8 @@ public class PlayerEquipmentHandler implements Listener {
         ItemUsage itemUsage = mapPlayerInteractAction(usedItem.getItemMeta().getPersistentDataContainer(), event.getAction());
         switch (itemUsage){
             case NONE -> player.sendMessage("Non functional item usage");
-            case ARMOR_RIGHT_CLICK_AIR -> {
-                player.sendMessage("Equiping armor!!");
-            }
-            case ARMOR_LEFT_CLICK_AIR -> {
-                player.sendMessage("Punching with armor");
-            }
+            case ARMOR_RIGHT_CLICK_AIR -> player.sendMessage("Equiping armor!!");
+            case ARMOR_LEFT_CLICK_AIR -> player.sendMessage("Punching with armor");
             case WEAPON_LEFT_CLICK_AIR -> {
                 //This is triggered when dropping a equiped weapon from inv
                 if (player.hasCooldown(usedItem.getType())){
@@ -115,21 +111,17 @@ public class PlayerEquipmentHandler implements Listener {
                     player.setCooldown(usedItem.getType(), (int)(20*0.5));
                 }
             }
-            case WEAPON_RIGHT_CLICK_AIR -> {
-                player.sendMessage("Weapon special!");
-            }
-            case UNIDED_WEAPON -> {
-                player.sendMessage(Utils.color("&l&cThis weapon is not identified!"));
-            }
+            case WEAPON_RIGHT_CLICK_AIR -> player.sendMessage("Weapon special!");
+            case UNIDED_WEAPON -> player.sendMessage(Utils.color("&l&cThis weapon is not identified!"));
         }
     }
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onInventoryClick(InventoryClickEvent event){
+        if (event.isCancelled()){return;}
+
         if (!(event.getWhoClicked() instanceof Player)){return;}
         if (event.getClickedInventory() == null){return;}
         if (event.getCurrentItem() == null){return;}
-
-//        Set<Integer> armorSlotsSet = Set.of(39,38,37,36);
 
         InventoryAction attemptedAction = event.getAction();
         Player player = (Player) event.getWhoClicked();
@@ -168,7 +160,7 @@ public class PlayerEquipmentHandler implements Listener {
                         return;
                     }
                 }
-                if (isEquipableWeapon(clickedItemDataContainer) && event.getSlot() == player.getInventory().getHeldItemSlot()){
+                if (isIdentified(WEAPON_TAG,clickedItemDataContainer) && event.getSlot() == player.getInventory().getHeldItemSlot()){
                     //Main hand dropping with equiped weapon
                     //Todo: change this based on player preferences
                     player.sendMessage("No main hand dropping");
@@ -200,7 +192,7 @@ public class PlayerEquipmentHandler implements Listener {
                                 //Cursor item is valid:
                                 cursorDataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
                                 if (isEquipableArmor(cursorDataContainer)){
-                                    if (deserializeArmor(cursorDataContainer).getCategory() == ItemTypes.HELMET){
+                                    if (deserializeArmorData(cursorDataContainer).getCategory() == ItemTypes.HELMET){
                                         leftClickArmorSwapping(event, inventory.getHelmet(),ItemTypes.HELMET, cursorItem, clickedItem);
                                     } else {
                                         event.setCancelled(true);
@@ -218,7 +210,7 @@ public class PlayerEquipmentHandler implements Listener {
                                 //Cursor item is valid:
                                 cursorDataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
                                 if (isEquipableArmor(cursorDataContainer)){
-                                    if (deserializeArmor(cursorDataContainer).getCategory() == ItemTypes.CHESTPLATE){
+                                    if (deserializeArmorData(cursorDataContainer).getCategory() == ItemTypes.CHESTPLATE){
                                         leftClickArmorSwapping(event, inventory.getChestplate(),ItemTypes.CHESTPLATE, cursorItem, clickedItem);
                                     } else {
                                         event.setCancelled(true);
@@ -236,7 +228,7 @@ public class PlayerEquipmentHandler implements Listener {
                                 //Cursor item is valid:
                                 cursorDataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
                                 if (isEquipableArmor(cursorDataContainer)){
-                                    if (deserializeArmor(cursorDataContainer).getCategory() == ItemTypes.LEGGINGS){
+                                    if (deserializeArmorData(cursorDataContainer).getCategory() == ItemTypes.LEGGINGS){
                                         leftClickArmorSwapping(event, inventory.getLeggings(),ItemTypes.LEGGINGS, cursorItem, clickedItem);
                                     } else {
                                         event.setCancelled(true);
@@ -253,7 +245,7 @@ public class PlayerEquipmentHandler implements Listener {
                                 //Cursor item is valid:
                                 cursorDataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
                                 if (isEquipableArmor(cursorDataContainer)){
-                                    if (deserializeArmor(cursorDataContainer).getCategory() == ItemTypes.BOOTS){
+                                    if (deserializeArmorData(cursorDataContainer).getCategory() == ItemTypes.BOOTS){
                                         leftClickArmorSwapping(event, inventory.getBoots(),ItemTypes.BOOTS, cursorItem, clickedItem);
                                     } else {
                                         event.setCancelled(true);
@@ -279,7 +271,7 @@ public class PlayerEquipmentHandler implements Listener {
                 if (isNotFunctional(clickedItem)){
                     //clickedItem is not functional, cursorItem is
                     PersistentDataContainer dataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
-                    if (isEquipableWeapon(dataContainer)){
+                    if (isIdentified(WEAPON_TAG,dataContainer)){
                         EventAPI.callWeaponEquipEvent(event, cursorItem);
                         return;
                     }
@@ -290,7 +282,7 @@ public class PlayerEquipmentHandler implements Listener {
                     //cursorItem is not functional, clickedItem is
                     //If the clicked item (main hand) is functional, lets check if its a weapon
                     PersistentDataContainer dataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
-                    if (isEquipableWeapon(dataContainer)){
+                    if (isIdentified(WEAPON_TAG,dataContainer)){
                         EventAPI.callWeaponEquipEvent(event, null);
                         return;
                     }
@@ -301,13 +293,21 @@ public class PlayerEquipmentHandler implements Listener {
                 if (attemptedAction == InventoryAction.SWAP_WITH_CURSOR){ //Main hand swapping
                     player.sendMessage("swap!");
                     //TODO: orb usage events
+
+
+
+
+
+
+
+
                     PersistentDataContainer clickedDataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
                     PersistentDataContainer cursorDataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
-                    if (isEquipableWeapon(clickedDataContainer) && !isEquipableWeapon(cursorDataContainer)){
+                    if (isIdentified(WEAPON_TAG,clickedDataContainer) && !isIdentified(WEAPON_TAG,cursorDataContainer)){
                         EventAPI.callWeaponEquipEvent(event, null);
                         return;
                     }
-                    if (!isEquipableWeapon(clickedDataContainer) && isEquipableWeapon(cursorDataContainer)){
+                    if (!isIdentified(WEAPON_TAG,clickedDataContainer) && isIdentified(WEAPON_TAG,cursorDataContainer)){
                         EventAPI.callWeaponEquipEvent(event, cursorItem);
                         return;
                     }
@@ -374,7 +374,7 @@ public class PlayerEquipmentHandler implements Listener {
             PersistentDataContainer clickedDataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
             if (isEquipableArmor(clickedDataContainer)){
                 //TODO: check for invalid armor with nbt and move it as if there as was something equipped
-                ItemTypes armorPiece = Objects.requireNonNull(deserializeArmor(clickedDataContainer)).getCategory();
+                ItemTypes armorPiece = Objects.requireNonNull(deserializeArmorData(clickedDataContainer)).getCategory();
                 //Equipability by a specific player will be tested later (and may cause this event's cancel)
                 EventAPI.callArmorEquipEvent(event, clickedItem, armorPiece, ItemUsage.ARMOR_SHIFTING_FROM_INV);
                 return;
@@ -385,7 +385,7 @@ public class PlayerEquipmentHandler implements Listener {
             if (event.getSlot() == inventory.getHeldItemSlot()){
                 //It necessarily is a functional item, lets check if its a equipable weapon
                 PersistentDataContainer mainHandDataContainer = Objects.requireNonNull(inventory.getItemInMainHand().getItemMeta()).getPersistentDataContainer();
-                if (isEquipableWeapon(mainHandDataContainer)){
+                if (isIdentified(WEAPON_TAG,mainHandDataContainer)){
                     player.sendMessage(Utils.color("&cNo main hand shift-clicking"));
                     event.setCancelled(true);
                     return;
@@ -397,7 +397,7 @@ public class PlayerEquipmentHandler implements Listener {
 
             //From now on, the clicks are functional items not on the main hand
             //Lets check for a late-equip when shifting INTO main hand, not FROM like earlier
-            if (isEquipableWeapon(clickedDataContainer)){
+            if (isIdentified(WEAPON_TAG,clickedDataContainer)){
                 if (inventory.getItemInMainHand().getType().isAir()){
                     new DelayedTask(new BukkitRunnable() {
                         @Override
@@ -407,8 +407,7 @@ public class PlayerEquipmentHandler implements Listener {
                                 return;
                             }
                             PersistentDataContainer newMainHandDataContainer = Objects.requireNonNull(newlyCheckedMainHandItem.getItemMeta()).getPersistentDataContainer();
-                            if (isEquipableWeapon(newMainHandDataContainer)) {
-//                                equipWeapon(newMainHandDataContainer, player);
+                            if (isIdentified(WEAPON_TAG,newMainHandDataContainer)) {
                                 player.sendMessage("late-equip");
                                 EventAPI.callWeaponEquipEvent(event, newlyCheckedMainHandItem);
                             }
@@ -437,7 +436,7 @@ public class PlayerEquipmentHandler implements Listener {
             return ItemUsage.NONE;
         }
         boolean equipableArmor = isEquipableArmor(heldItemData);
-        boolean equipableWeapon = isEquipableWeapon(heldItemData);
+        boolean equipableWeapon = isIdentified(WEAPON_TAG,heldItemData);
 
         switch (interactionType){
             case LEFT_CLICK_AIR -> {
@@ -450,7 +449,7 @@ public class PlayerEquipmentHandler implements Listener {
                 }
 
                 if (isArmor(heldItemData)){ return ItemUsage.UNIDED_ARMOR; }//Both can be further specified
-                if (isWeapon(heldItemData)){ return ItemUsage.UNIDED_WEAPON;}
+                if (isItemType(WEAPON_TAG,heldItemData)){ return ItemUsage.UNIDED_WEAPON;}
                 return ItemUsage.NONE;
             }
             case LEFT_CLICK_BLOCK -> {
@@ -512,7 +511,7 @@ public class PlayerEquipmentHandler implements Listener {
         }
 
         //The helmet slot was clicked and it contains a armor piece, lets check if the cursor item is compatible (helmet-to-helmet swap)
-        ItemTypes cursorArmorCategory = Objects.requireNonNull(deserializeArmor(cursorDataContainer)).getCategory();
+        ItemTypes cursorArmorCategory = Objects.requireNonNull(deserializeArmorData(cursorDataContainer)).getCategory();
         if (cursorArmorCategory.equals(slotType)){
 //            Utils.log("armorswap!!!!");
             EventAPI.callArmorEquipEvent(event, cursorItem, slotType, ItemUsage.ARMOR_SWAP);

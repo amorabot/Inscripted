@@ -4,7 +4,7 @@ import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Abstract.ItemRenderer;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Implicits;
-import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
+import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 
@@ -116,7 +116,7 @@ public class ArmorRenderer implements ItemRenderer {
     }
 
     @Override
-    public <subType extends Enum<subType> & AffixTableSelector> void renderDescription(Item itemData, List<String> itemLore, subType itemSubtype) {
+    public <subType extends Enum<subType> & ItemSubtype> void renderDescription(Item itemData, List<String> itemLore, subType itemSubtype) {
         Armor armorData = (Armor) itemData;
         itemLore.add("");
         itemLore.add(color(Utils.convertToPrettyString(" &7Item Level: ") + "&f&l" + armorData.getIlvl()));

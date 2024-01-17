@@ -3,7 +3,7 @@ package com.amorabot.inscripted.components.Items.Weapon;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Abstract.ItemRenderer;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
-import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
+import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.text.Component;
@@ -30,7 +30,7 @@ public class WeaponRenderer implements ItemRenderer {
     }
 
     @Override
-    public <subType extends Enum<subType> & AffixTableSelector> void renderDescription(Item itemData, List<String> itemLore, subType itemSubtype) {
+    public <subType extends Enum<subType> & ItemSubtype> void renderDescription(Item itemData, List<String> itemLore, subType itemSubtype) {
         Weapon weaponData = (Weapon) itemData;
 
         itemLore.add("");

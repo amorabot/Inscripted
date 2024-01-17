@@ -245,3 +245,160 @@ ArmorTypes:
       CHESTPLATE: 1800
       LEGGINGS: 1700
       BOOTS: 1600
+WeaponTypes:
+  AXE:
+    T1:
+      NAME: Wooden hatchet
+      BASE_DAMAGE:
+        - 6
+        - 11
+    T2:
+      NAME: Stone axe
+      BASE_DAMAGE:
+        - 11
+        - 21
+    T3:
+      NAME: War-axe
+      BASE_DAMAGE:
+        - 27
+        - 50
+    T4:
+      NAME: Crystal axe
+      BASE_DAMAGE:
+        - 56
+        - 87
+    T5:
+      NAME: Runic-Gold axe
+      BASE_DAMAGE:
+        - 80
+        - 169
+  SWORD:
+    T1:
+      NAME: Dried spike foil
+      BASE_DAMAGE:
+        - 6
+        - 11
+    T2:
+      NAME: Whalebone rapier
+      BASE_DAMAGE:
+        - 11
+        - 21
+    T3:
+      NAME: Greatsword
+      BASE_DAMAGE:
+        - 27
+        - 50
+    T4:
+      NAME: Crystal sword
+      BASE_DAMAGE:
+        - 56
+        - 87
+    T5:
+      NAME: Ornate greatsword
+      BASE_DAMAGE:
+        - 80
+        - 169
+  BOW:
+    T1:
+      NAME: Twig shortbow
+      BASE_DAMAGE:
+        - 6
+        - 11
+    T2:
+      NAME: Whalebone shortbow
+      BASE_DAMAGE:
+        - 11
+        - 21
+    T3:
+      NAME: Compound bow
+      BASE_DAMAGE:
+        - 27
+        - 50
+    T4:
+      NAME: Crystalwood bow
+      BASE_DAMAGE:
+        - 56
+        - 87
+    T5:
+      NAME: Gilded crossbow
+      BASE_DAMAGE:
+        - 80
+        - 169
+  DAGGER:
+    T1:
+      NAME: Shrapnel stabber
+      BASE_DAMAGE:
+        - 6
+        - 11
+    T2:
+      NAME: Glass-tipped shank
+      BASE_DAMAGE:
+        - 11
+        - 21
+    T3:
+      NAME: Skinning knife
+      BASE_DAMAGE:
+        - 27
+        - 50
+    T4:
+      NAME: Crystal dagger
+      BASE_DAMAGE:
+        - 56
+        - 87
+    T5:
+      NAME: Runic-gold dagger
+      BASE_DAMAGE:
+        - 80
+        - 169
+  WAND:
+    T1:
+      NAME: Twig wand
+      BASE_DAMAGE:
+        - 6
+        - 11
+    T2:
+      NAME: Goat horn
+      BASE_DAMAGE:
+        - 11
+        - 21
+    T3:
+      NAME: Stable iron wand
+      BASE_DAMAGE:
+        - 27
+        - 50
+    T4:
+      NAME: Ancient wand
+      BASE_DAMAGE:
+        - 56
+        - 87
+    T5:
+      NAME: Demon horn
+      BASE_DAMAGE:
+        - 80
+        - 169
+  SCEPTRE:
+    T1:
+      NAME: Rudimentar sceptre
+      BASE_DAMAGE:
+        - 6
+        - 11
+    T2:
+      NAME: Pointy debris sceptre
+      BASE_DAMAGE:
+        - 11
+        - 21
+    T3:
+      NAME: War-sceptre
+      BASE_DAMAGE:
+        - 27
+        - 50
+    T4:
+      NAME: Shining opal sceptre
+      BASE_DAMAGE:
+        - 56
+        - 87
+    T5:
+      NAME: Runic-gold sceptre
+      BASE_DAMAGE:
+        - 80
+        - 169

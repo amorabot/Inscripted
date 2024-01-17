@@ -17,9 +17,7 @@ import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.bukkit.persistence.PersistentDataContainer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Armor extends Item {
@@ -33,7 +31,7 @@ public class Armor extends Item {
         super(ilvl, rarity, identified, corrupted, armorSlot);
         this.type = type;
         setup();
-        this.baseHealth = getType().mapBaseStats(this);
+        this.baseHealth = getSubype().mapBaseStats(this);
     }
     public Armor(ItemTypes armorPiece, int ilvl, ItemRarities rarity, boolean identified, boolean corrupted) { //Random generation constructor
         super(ilvl, rarity, identified, corrupted, armorPiece);
@@ -41,22 +39,22 @@ public class Armor extends Item {
         int typeIndex = CraftingUtils.getRandomNumber(0, armorTypes.length-1);
         this.type = armorTypes[typeIndex];
         setup();
-        this.baseHealth = getType().mapBaseStats(this);
+        this.baseHealth = getSubype().mapBaseStats(this);
     }
     @Override
     protected void setup(){
         setTier(Tiers.mapItemLevel(getIlvl()));
-        setName(getType().getTierName(getTier()) + " " + getCategory().toString().toLowerCase());
-        setImplicit(defineImplicit(getType().toString()));
+        setName(getSubype().getTierName(getTier()) + " " + getCategory().toString().toLowerCase());
+        setImplicit(defineImplicit(getSubype().toString()));
         mapBase();
     }
 
     @Override
     protected void mapBase(){
-        this.vanillaMaterial = getType().mapArmorBase(getTier(), getCategory());
+        this.vanillaMaterial = getSubype().mapArmorBase(getTier(), getCategory());
     }
 
-    public ArmorTypes getType() {
+    public ArmorTypes getSubype() {
         return type;
     }
     public Map<DefenceTypes, Integer> getDefencesMap() {
@@ -68,7 +66,7 @@ public class Armor extends Item {
     private ArmorTrim defineArmorTrim(){
         TrimPattern pattern;
         TrimMaterial material;
-        switch (getType()){
+        switch (getSubype()){
             case HEAVY_PLATING -> material = TrimMaterial.REDSTONE;
             case CARVED_PLATING -> material = TrimMaterial.GOLD;
             case LIGHT_CLOTH -> material = TrimMaterial.EMERALD;
@@ -87,38 +85,9 @@ public class Armor extends Item {
         return new ArmorTrim(material, pattern);
     }
     @Override
-    public void imprint(ItemStack item) {
-        ItemMeta itemMeta = item.getItemMeta();
-        assert itemMeta != null;
-        List<String> lore = new ArrayList<>();
-        ItemRenderer itemRenderer = getRenderer();
-
-        itemRenderer.renderAllCustomLore(this, lore, type);
-
-        itemMeta.setLore(lore);
-        itemMeta.setUnbreakable(true);
-        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        item.setItemMeta(itemMeta);
-
-        String displayName = "";
-        switch (getRarity()){
-            case COMMON -> displayName = "&f";
-            case MAGIC -> displayName = "&9";
-            case RARE -> displayName = "&e";
-        }
-        if (isIdentified()){
-            displayName += getName();
-        } else {
-            displayName += "Unidentified " + getCategory().toString().toLowerCase();
-        }
-        itemRenderer.setDisplayName(displayName, item);
-    }
-
-    @Override
     public ItemStack getItemForm(Inscripted plugin) {
         ItemStack armorItem = new ItemStack(this.vanillaMaterial);
-        imprint(armorItem);
+        imprint(armorItem, type);
 
         //Assuming its always a valid item (A set can be created for all possible armortypes and support custom ones)
         ArmorMeta armorMeta = (ArmorMeta) armorItem.getItemMeta();
@@ -135,7 +104,7 @@ public class Armor extends Item {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-        FunctionalItemAccessInterface.serializeArmor(this, dataContainer);
+        FunctionalItemAccessInterface.serializeItem(this, dataContainer);
         item.setItemMeta(itemMeta);
     }
 

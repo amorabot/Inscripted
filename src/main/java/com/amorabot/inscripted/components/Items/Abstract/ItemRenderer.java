@@ -2,7 +2,7 @@ package com.amorabot.inscripted.components.Items.Abstract;
 
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
-import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
+import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.inventory.ItemStack;
@@ -29,7 +29,6 @@ public interface ItemRenderer extends Serializable {
         List<Modifier> mods = itemData.getModifierList();
 
         Comparator<Modifier> modifierComparator = (o1, o2) -> {
-            //TODO: Unique priority
             if (o1.equals(o2)){
                 return 0;
             }
@@ -48,24 +47,22 @@ public interface ItemRenderer extends Serializable {
             itemLore.add(color("@FOOTER@"));
         }
     }
-    <subType extends Enum<subType> & AffixTableSelector> void renderDescription(Item itemData, List<String> itemLore, subType itemSubtype);
+    <subType extends Enum<subType> & ItemSubtype> void renderDescription(Item itemData, List<String> itemLore, subType itemSubtype);
     default void renderTag(Item itemData, List<String> itemLore) {
         ItemRarities rarity = itemData.getRarity();
         String tag = "";
-        switch (rarity){
-            case COMMON -> {
-                tag += ("&f&l"+rarity);
-                itemLore.add(color(tag));
-                return;
-            }
-            case MAGIC -> tag += ("&9&l"+rarity);
-            case RARE -> tag += ("&e&l"+rarity);
+        if (rarity.equals(ItemRarities.COMMON)){
+            tag += (rarity.getColor()+"&l"+rarity);
+            itemLore.add(color(tag));
+            return;
         }
+        tag += (rarity.getColor()+"&l"+rarity);
         double starRating = itemData.getStarRating();
         tag += mapStarRating(starRating);
+
         itemLore.add(color(tag));
     }
-    default <subType extends Enum<subType> & AffixTableSelector> void renderAllCustomLore(Item itemData, List<String> itemLore, subType itemSubtype){
+    default <subType extends Enum<subType> & ItemSubtype> void renderAllCustomLore(Item itemData, List<String> itemLore, subType itemSubtype){
         renderMainStat(itemData, itemLore);
         renderMods(itemData, itemLore);
         renderDescription(itemData, itemLore, itemSubtype);

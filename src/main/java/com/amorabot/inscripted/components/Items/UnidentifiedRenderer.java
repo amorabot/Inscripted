@@ -3,7 +3,7 @@ package com.amorabot.inscripted.components.Items;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Abstract.ItemRenderer;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRarities;
-import com.amorabot.inscripted.components.Items.Interfaces.AffixTableSelector;
+import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.inventory.ItemStack;
@@ -15,14 +15,6 @@ import static com.amorabot.inscripted.utils.Utils.color;
 
 public class UnidentifiedRenderer implements ItemRenderer {
     @Override
-    public void setDisplayName(String name, ItemStack item) {
-        ItemMeta itemMeta = item.getItemMeta();
-        assert itemMeta != null;
-        itemMeta.setDisplayName(color(name));
-        item.setItemMeta(itemMeta);
-    }
-
-    @Override
     public void renderMainStat(Item itemData, List<String> itemLore) {
     }
 
@@ -31,7 +23,7 @@ public class UnidentifiedRenderer implements ItemRenderer {
     }
 
     @Override
-    public <subType extends Enum<subType> & AffixTableSelector> void renderDescription(Item itemData, List<String> itemLore, subType itemSubtype) {
+    public <subType extends Enum<subType> & ItemSubtype> void renderDescription(Item itemData, List<String> itemLore, subType itemSubtype) {
         itemLore.add("");
         itemLore.add(ColorUtils.translateColorCodes("   &4&l- Hidden --   "));
         itemLore.add(Utils.color("   &8Use a Scroll"));

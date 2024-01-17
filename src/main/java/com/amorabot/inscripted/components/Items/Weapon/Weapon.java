@@ -11,7 +11,6 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 import com.amorabot.inscripted.components.Items.UnidentifiedRenderer;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import com.amorabot.inscripted.utils.Utils;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -44,8 +43,8 @@ public class Weapon extends Item {
     @Override
     protected void setup() {
         setTier(Tiers.mapItemLevel(getIlvl()));
-        setImplicit(defineImplicit(getType().toString()));
-        this.name = getType().getRandomName(getTier());
+        setImplicit(defineImplicit(getSubtype().toString()));
+        this.name = getSubtype().getTierName(getTier());
         mapBase();
     }
 
@@ -58,16 +57,15 @@ public class Weapon extends Item {
     //-------------------------------------------------------------------------
     public Map<DamageTypes, int[]> getLocalDamage(){ //Once a weapon is created, the damage map needs to be updated to contain any possible new damages
         Map<DamageTypes, int[]> baseDmg = new HashMap<>();
-        baseDmg.put(DamageTypes.PHYSICAL, type.mapDamage(getIlvl()));
 
+        int[] basePhys = type.mapDamage(getTier());
+//TODO: FIX MOD ORDER
         for (Modifier mod : getModifierList()){
             ModifierIDs weaponModifier = mod.getModifierID();
             if (weaponModifier.equals(ModifierIDs.ADDED_PHYSICAL)){
-                int[] physDmg = baseDmg.get(DamageTypes.PHYSICAL);
-                int[] localPhys = ModifierManager.getMappedFinalValueFor(mod);
-                physDmg[0] = physDmg[0] + localPhys[0];
-                physDmg[1] = physDmg[1] + localPhys[1];
-                baseDmg.put(DamageTypes.PHYSICAL, physDmg);
+                int[] addedLocalPhys = ModifierManager.getMappedFinalValueFor(mod);
+                basePhys[0] = basePhys[0] + addedLocalPhys[0];
+                basePhys[1] = basePhys[1] + addedLocalPhys[1];
             }
             if (weaponModifier.equals(ModifierIDs.ADDED_FIRE)){
                 baseDmg.put(DamageTypes.FIRE, ModifierManager.getMappedFinalValueFor(mod));
@@ -87,54 +85,24 @@ public class Weapon extends Item {
             }
             if (weaponModifier.equals(ModifierIDs.PERCENT_PHYSICAL)){
                 int percentPhys = ModifierManager.getMappedFinalValueFor(mod)[0];
-                int[] physDmg = baseDmg.get(DamageTypes.PHYSICAL);
-                float phys1 = physDmg[0] * (1 + (float) percentPhys/100);
-                float phys2 = physDmg[1] * (1 + (float) percentPhys/100);
-                physDmg[0] = (int)phys1;
-                physDmg[1] = (int)phys2;
-                baseDmg.put(DamageTypes.PHYSICAL, physDmg);
+                float phys1 = basePhys[0] * (1 + percentPhys/100F);
+                float phys2 = basePhys[1] * (1 + percentPhys/100F);
+                basePhys[0] = (int)phys1;
+                basePhys[1] = (int)phys2;
             }
         }
+        baseDmg.put(DamageTypes.PHYSICAL, basePhys);
 
         return baseDmg;
     }
-    public WeaponTypes getType() {
+    public WeaponTypes getSubtype() {
         return type;
     }
     //-------------------------------------------------------------------------
     @Override
-    public void imprint(ItemStack item) {
-        ItemMeta itemMeta = item.getItemMeta();
-        assert itemMeta != null;
-        List<String> lore = new ArrayList<>();
-        ItemRenderer currentRenderer = getRenderer();
-
-        currentRenderer.renderAllCustomLore(this, lore, type);
-
-        itemMeta.setLore(lore);
-        itemMeta.setUnbreakable(true);
-        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        item.setItemMeta(itemMeta);
-
-
-        String displayName = "";
-        switch (getRarity()){
-            case COMMON -> displayName = "&f";
-            case MAGIC -> displayName = "&9";
-            case RARE -> displayName = "&e";
-        }
-        if (isIdentified()){
-            displayName += getName();
-        } else {
-            displayName += "Unidentified " + this.type.toString().toLowerCase();
-        }
-        currentRenderer.setDisplayName(displayName, item);
-    }
-    @Override
     public ItemStack getItemForm(Inscripted plugin) {
         ItemStack weaponItem = new ItemStack(this.vanillaMaterial);
-        imprint(weaponItem);
+        imprint(weaponItem,type);
 
         serializeContainers(plugin, this, weaponItem);
         return weaponItem;
@@ -144,7 +112,7 @@ public class Weapon extends Item {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-        FunctionalItemAccessInterface.serializeWeapon(this, dataContainer);
+        FunctionalItemAccessInterface.serializeItem(this, dataContainer);
         item.setItemMeta(itemMeta);
     }
 
