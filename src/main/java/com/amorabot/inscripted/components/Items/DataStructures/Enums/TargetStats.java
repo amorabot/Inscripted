@@ -46,11 +46,14 @@ public enum TargetStats {
     ACCURACY,
     BLEED,
     CRITICAL_CHANCE,
-//    BASE_CRITICAL,
     CRITICAL_DAMAGE,
     LIFE_ON_HIT,
     LIFESTEAL,
     SHRED,
     MAELSTROM,
     WALK_SPEED,
+    AREA_DAMAGE,
+    AOE,
+    EXTRA_PROJECTILES,
+    HEALING_POWER
 }

@@ -62,33 +62,8 @@ public final class Inscripted extends JavaPlugin {
         Utils.populateRomanChars();
 //        getWorld().getLivingEntities()
 
-        getCommand("updatenbt").setExecutor(new UpdateNBT(this));
-        getCommand("stats").setExecutor(new StatsCommand(this));
-        getCommand("generateitem").setExecutor(new GenerateItem(this));
-        getCommand("identify").setExecutor(new Identify(this));
-        getCommand("recolor").setExecutor(new Recolor(this));
-        getCommand("resetattributes").setExecutor(new ResetAttributes(this));
-        getCommand("editmods").setExecutor(new EditMods(this));
-        getCommand("show").setExecutor(new Show());
-        getCommand("template").setExecutor(new TemplateCommand());
-
-        //Has tab executor functionality, if its all in MobCommand class, no need to setTabCompleter()
-        getCommand("mob").setExecutor(new MobCommand());
-
-        //---------   LISTENERS   ------------
-        new JoinQuitHandler(this);
-        new PlayerEquipmentHandler(this);
-        new InventoryHandler();
-        new DelayedTask(this);
-        new GUIHandler(this);
-        new DamageHandler(this);
-
-        new SunlightBurnHandler();
-
-        //CUSTOM EVENT LISTENERS
-        new ArmorEquipListener();
-        new WeaponEquipListener();
-        new CurrencyUsageListener();
+        commandsStartupRoutine();
+        eventListenersStartupRoutine();
 
         //Damage hologram depleter
         holoDepleterTask = CombatHologramsDepleter.getInstance().runTaskTimer(this,0, 1L);
@@ -215,6 +190,39 @@ public final class Inscripted extends JavaPlugin {
         }
 
         inscriptedPlugin.saveConfig();
+    }
+
+    private void commandsStartupRoutine(){
+        getCommand("updatenbt").setExecutor(new UpdateNBT(this));
+        getCommand("stats").setExecutor(new StatsCommand(this));
+        getCommand("generateitem").setExecutor(new GenerateItem(this));
+        getCommand("identify").setExecutor(new Identify(this));
+        getCommand("recolor").setExecutor(new Recolor(this));
+        getCommand("resetattributes").setExecutor(new ResetAttributes(this));
+        getCommand("editmods").setExecutor(new EditMods(this));
+        getCommand("show").setExecutor(new Show());
+        getCommand("template").setExecutor(new TemplateCommand());
+
+        //Has tab executor functionality, if its all in MobCommand class, no need to setTabCompleter()
+        getCommand("mob").setExecutor(new MobCommand());
+        getCommand("orb").setExecutor(new OrbCommand());
+    }
+    private void eventListenersStartupRoutine(){
+
+        //---------   LISTENERS   ------------
+        new JoinQuitHandler(this);
+        new PlayerEquipmentHandler(this);
+        new InventoryHandler();
+        new DelayedTask(this);
+        new GUIHandler(this);
+        new DamageHandler(this);
+
+        new SunlightBurnHandler();
+
+        //CUSTOM EVENT LISTENERS
+        new ArmorEquipListener();
+        new WeaponEquipListener();
+        new CurrencyUsageListener();
     }
 
     public MetadataValue getMetadataTag(){

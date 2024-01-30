@@ -9,6 +9,10 @@ public class EquipmentSlot {
 
 
     public EquipmentSlot(){
+        resetSlot();
+    }
+
+    public void resetSlot(){
         this.itemData = null;
         this.ignore = true;
     }

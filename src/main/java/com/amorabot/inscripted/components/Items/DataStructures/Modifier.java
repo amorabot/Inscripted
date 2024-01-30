@@ -9,17 +9,22 @@ public class Modifier implements Serializable {
 
     private ModifierIDs modifier;
     private int tier; //0-maxTier
+    private int maxTier;
     private double basePercentile; //0-1
     private boolean imbued = false; //mods are not fractured/imbued by default, but can be altered
 
-    public Modifier(ModifierIDs mod, int tier){
+    public Modifier(ModifierIDs mod, int tier, int highestTierAvailable){
         this.modifier = mod;
         //Capped to the mod's maximum tier
         this.tier = Math.min(tier, mod.getNumberOfTiers());
+        this.maxTier = highestTierAvailable; //its the mod's highest possible tier, given the item level that generated it
         this.basePercentile = Utils.getNormalizedValue();
     }
     public int getTier() {
         return tier;
+    }
+    public int getModsHighestTier(){
+        return maxTier;
     }
     public void setTier(byte tier) {
         this.tier = tier;
@@ -35,6 +40,9 @@ public class Modifier implements Serializable {
     }
     public double getBasePercentile() {
         return this.basePercentile;
+    }
+    public boolean isImbued(){
+        return imbued;
     }
     public void imbue(){
         this.imbued = true;
@@ -56,30 +64,58 @@ public class Modifier implements Serializable {
     }
 
     public String getModifierDisplayName(String valuesColor, int indent) {
-        String modCategoryRune;
-        switch (this.getModifierID().getAffixType()){
-            case PREFIX -> modCategoryRune = "ᚴ";
-            case SUFFIX -> modCategoryRune = "ᚭ";
-            case UNIQUE -> modCategoryRune = "ᛟ";
-            default -> modCategoryRune = "0";
+        StringBuilder modifierDisplayName;
+        if (isImbued()){
+            modifierDisplayName = new StringBuilder("&6");
+        } else {
+            modifierDisplayName = new StringBuilder("&7");
         }
-        String modifierDisplayName = "&7" + this.getModifierID().getDisplayName() + " &8" + modCategoryRune + " " + Utils.getRomanChar(this.tier) + " ".repeat(indent);
+        modifierDisplayName.append(this.getModifierID().getDisplayName());
+        modifierDisplayName.append(getModDetails(indent));
+        String dispName = modifierDisplayName.toString();
+
         int[] mappedValues = ModifierIDs.getModifierValuesFor(this);
         switch (this.getModifierID().getRangeType()){
             case SINGLE_VALUE -> {}
             case SINGLE_RANGE -> {
                 int value = Utils.getRoundedParametricValue(mappedValues[0], mappedValues[1], this.basePercentile);
-                modifierDisplayName = (modifierDisplayName
-                        .replace("@value1@", valuesColor + value +"&7")).indent(indent);
+                if (isImbued()){
+                    dispName = (dispName.replace("@value1@", ""+value)).indent(indent);
+                    return dispName;
+                }
+                dispName = (dispName.replace("@value1@", valuesColor + value +"&7"));
             }
             case DOUBLE_RANGE -> {
                 int value1 = Utils.getRoundedParametricValue(mappedValues[0], mappedValues[1], this.basePercentile);
                 int value2 = Utils.getRoundedParametricValue(mappedValues[2], mappedValues[3], this.basePercentile);
-                modifierDisplayName = (modifierDisplayName
+                if (isImbued()){
+                    dispName = (dispName
+                            .replace("@value1@", ""+value1)
+                            .replace("@value2@", ""+value2)).indent(indent);
+                    return dispName;
+                }
+                dispName = (dispName
                         .replace("@value1@", valuesColor+value1+"&7")
-                        .replace("@value2@", valuesColor+value2+"&7")).indent(indent);
+                        .replace("@value2@", valuesColor+value2+"&7"));
             }
         }
-        return modifierDisplayName;
+        return dispName.indent(indent);
+    }
+    private String getModDetails(int lineEndIndent){
+        StringBuilder modDetails = new StringBuilder();
+        modDetails.append(" &8");
+        switch (this.getModifierID().getAffixType()){
+            case PREFIX -> modDetails.append("ᚴ ");
+            case SUFFIX -> modDetails.append("ᚭ ");
+            case UNIQUE -> modDetails.append("ᛟ ");
+            default -> modDetails.append("0 ");
+        }
+        modDetails.append(Utils.getRomanChar(this.tier));
+        if (this.tier == this.maxTier){
+            modDetails.append("*");
+        }
+        modDetails.append(" ".repeat(lineEndIndent));
+
+        return modDetails.toString();
     }
 }

@@ -17,18 +17,20 @@ public class ArmorRenderer implements ItemRenderer {
     @Override
     public void renderMainStat(Item itemData, List<String> itemLore) {
         Armor armorData = (Armor) itemData;
-        Map<DefenceTypes, Integer> defencesMap = armorData.getDefencesMap();
-        int hp = armorData.getBaseHealth();
 
-        int ward = defencesMap.getOrDefault(DefenceTypes.WARD, 0);
+        Map<DefenceTypes, Integer> updatedArmorDefences = armorData.getLocalDefences();
 
-        int armor = defencesMap.getOrDefault(DefenceTypes.ARMOR, 0);
-        int dodge = defencesMap.getOrDefault(DefenceTypes.DODGE, 0);
+        int hp = updatedArmorDefences.get(DefenceTypes.HEALTH);
+
+        int ward = updatedArmorDefences.getOrDefault(DefenceTypes.WARD, 0);
+
+        int armor = updatedArmorDefences.getOrDefault(DefenceTypes.ARMOR, 0);
+        int dodge = updatedArmorDefences.getOrDefault(DefenceTypes.DODGE, 0);
 
         int indentation = 1;
         String margin = " ".repeat(2);
-        int HP = 1;
-        int DEF = 0;
+        int HPlines = 1;
+        int DEFlines = 0;
 
         itemLore.add("");
 
@@ -44,23 +46,23 @@ public class ArmorRenderer implements ItemRenderer {
 
         if (ward > 0){
             wardLine = DefenceTypes.WARD.getTextColor()+ DefenceTypes.WARD.getSpecialChar() + " +" + ward + " Ward" ;
-            HP++;
+            HPlines++;
         }
         if (armor > 0){
             armorLine = DefenceTypes.ARMOR.getStatColor()+ DefenceTypes.ARMOR.getSpecialChar() + " +" + armor + " Armor" ;
-            DEF++;
+            DEFlines++;
         }
         if (dodge > 0){
             dodgeLine = DefenceTypes.DODGE.getTextColor()+ DefenceTypes.DODGE.getSpecialChar() + " +" + dodge + " Dodge" ;
-            DEF++;
+            DEFlines++;
         }
 
         String firstLine = healthLine + margin;
         String DEFSpacing = " ".repeat(healthLength - 5) + margin + DEFcomponent;
-        switch (DEF){
+        switch (DEFlines){
             case 0:
                 itemLore.add(ColorUtils.translateColorCodes(HPcomponent.indent(indentation)));
-                if (HP == 1){
+                if (HPlines == 1){
                     itemLore.add(ColorUtils.translateColorCodes(firstLine.indent(indentation)));
                 } else {
                     itemLore.add(ColorUtils.translateColorCodes(firstLine.indent(indentation)));
@@ -73,7 +75,7 @@ public class ArmorRenderer implements ItemRenderer {
                 } else {
                     firstLine += "&8|" + margin + dodgeLine + " ";
                 }
-                if (HP == 1){
+                if (HPlines == 1){
 
                     HPcomponent += DEFSpacing;
 
@@ -107,7 +109,7 @@ public class ArmorRenderer implements ItemRenderer {
 
                 break;
             default:
-                Utils.log("Number of defense stats not handled: " + DEF);
+                Utils.log("Number of defense stats not handled: " + DEFlines);
                 break;
         }
 

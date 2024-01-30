@@ -46,6 +46,20 @@ public class GenerateItem implements TabExecutor {
         ItemRarities rarity = ItemRarities.valueOf(args[1]);
         Archetypes archetype = Archetypes.valueOf(args[2]);
 
+        if (args[3].equals("SET")){
+            Weapon weapon = ( Weapon ) ItemBuilder.randomItem(ItemTypes.WEAPON, archetype.getWeaponType(), ilvl, rarity,  true, false);
+            Armor helmet = ( Armor ) ItemBuilder.randomItem(ItemTypes.HELMET,archetype.getArmorType(), ilvl, rarity, true, false);
+            Armor chestplate = ( Armor ) ItemBuilder.randomItem(ItemTypes.CHESTPLATE,archetype.getArmorType(), ilvl, rarity, true, false);
+            Armor leggings = ( Armor ) ItemBuilder.randomItem(ItemTypes.LEGGINGS,archetype.getArmorType(), ilvl, rarity, true, false);
+            Armor boots = ( Armor ) ItemBuilder.randomItem(ItemTypes.BOOTS,archetype.getArmorType(), ilvl, rarity, true, false);
+            giveGeneratedItem(weapon, player);
+            giveGeneratedItem(helmet, player);
+            giveGeneratedItem(chestplate, player);
+            giveGeneratedItem(leggings, player);
+            giveGeneratedItem(boots, player);
+            return true;
+        }
+
         if (args[3].equals(ItemTypes.WEAPON.toString())){
             Weapon weapon = ( Weapon ) ItemBuilder.randomItem(ItemTypes.WEAPON, archetype.getWeaponType(), ilvl, rarity,  false, false);
             if (weapon == null){
@@ -87,6 +101,7 @@ public class GenerateItem implements TabExecutor {
             }
             return options;
         } else if (strings.length == 4) { //Equipment type (ItemTypes)
+            options.add("SET");
             for (ItemTypes type : ItemTypes.values()){
                 options.add(type.toString());
             }

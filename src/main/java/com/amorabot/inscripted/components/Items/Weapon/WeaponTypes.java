@@ -109,6 +109,7 @@ public enum WeaponTypes implements ItemSubtype {
         }
     };
 
+    public static final int weaponDamageVariance = 10;
     private final Map<Tiers, int[]> damages = new HashMap<>();
     private final Map<Tiers, String> names = new HashMap<>();
     private Map<String, Map<String, Map<Integer, Integer>>> affixes;
@@ -119,18 +120,15 @@ public enum WeaponTypes implements ItemSubtype {
             this.damages.put(tier, loadBaseDamages(tier));
             this.names.put(tier, loadTierName(tier));
         }
-        loadAllAffixes();
+        loadAffixes();
     }
 
 
-    public int[] mapDamage(Tiers tier){
+    public int[] mapBaseDamage(Tiers tier){
         return this.damages.getOrDefault(tier, new int[2]).clone();
     }
     public abstract Material mapWeaponBase(Tiers tier);
-    private void loadAllAffixes(){
-        loadBasicAffixes();
-    }
-    private void loadBasicAffixes(){
+    private void loadAffixes(){
         this.affixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.WEAPON, this);
 
         Utils.log("Modifiers loaded successfully!(" + this + ")");

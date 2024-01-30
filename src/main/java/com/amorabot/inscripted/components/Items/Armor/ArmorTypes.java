@@ -21,6 +21,7 @@ public enum ArmorTypes implements ItemSubtype {
     ENCHANTED_SILK,
     RUNIC_STEEL;
 
+
     private Map<String, Map<String, Map<Integer, Integer>>> helmetAffixes;
     private Map<String, Map<String, Map<Integer, Integer>>> chestplateAffixes;
     private Map<String, Map<String, Map<Integer, Integer>>> leggingsAffixes;
@@ -33,12 +34,15 @@ public enum ArmorTypes implements ItemSubtype {
     private static final double BOOTS_MAIN_STAT_WEIGHT = 0.7;
 
     private final Map<Tiers, String> names = new HashMap<>();
+    private final Map<Tiers, Map<ItemTypes, Map<DefenceTypes, Integer>>> baseStats = new HashMap<>();
+    public static final int percentHealthVariance = 10;
 
     ArmorTypes(){
         for (Tiers tier : Tiers.values()){
             this.names.put(tier, loadTierName(tier));
+            this.baseStats.put(tier, loadBaseStats(tier));
         }
-        loadAllAffixes();
+        loadAffixes();
     }
     public Material mapArmorBase(Tiers tier, ItemTypes armorBase){
         switch (armorBase){
@@ -148,10 +152,7 @@ public enum ArmorTypes implements ItemSubtype {
             }
         }
     }
-    private void loadAllAffixes(){
-        loadBasicAffixes();
-    }
-    private void loadBasicAffixes(){
+    private void loadAffixes(){
         this.helmetAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.HELMET, this);
         this.chestplateAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.CHESTPLATE, this);
         this.leggingsAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.LEGGINGS, this);
@@ -184,27 +185,67 @@ public enum ArmorTypes implements ItemSubtype {
         return this.names.getOrDefault(tier, "INVALID ARMOR");
     }
 
-/*
-This functions maps all the defences for a item, given its item level, category and subtype
-Since the life value can be retrieved from this call, the return value reflects final health value chosen
-for this item. The map-stats and map-health functions were previously called one after the other, always together.
-This way, one entire routine can be skipped altogether.
-
-@Params
-    armorData - a Armor object that has its internal data already mapped (at least the ones used in this routine)
-    returns: the health value associated with armorData parameters
-*/
-    public int mapBaseStats(Armor armorData){
-        //This routine is called everytime a armor generated -> TODO: Rework with a cache solution
+    public Map<ItemTypes, Map<DefenceTypes, Integer>> loadBaseStats(Tiers tier){
         FileConfiguration config = Inscripted.getPlugin().getConfig();
-        Map<DefenceTypes, Integer> defenceMap = armorData.getDefencesMap();
+        Map<ItemTypes, Map<DefenceTypes, Integer>> baseStatData = new HashMap<>();
+
+        for (ItemTypes armorSlot : ItemTypes.values()){
+            if (armorSlot.equals(ItemTypes.WEAPON)){continue;}
+
+            //Get to the armor subtype
+            String subtypePath = ArmorTypes.class.getSimpleName() + "." + this + ".";
+
+            //Get all the defence types that armor subtype has
+            List<String> subtypeDefences = config.getStringList(subtypePath+DefenceTypes.class.getSimpleName());
+            List<DefenceTypes> mappedSubtypeDefences = new ArrayList<>();
+            for (String defString : subtypeDefences){
+                try {
+                    DefenceTypes mappedDef = DefenceTypes.valueOf(defString);
+                    mappedSubtypeDefences.add(mappedDef);
+                } catch (IllegalArgumentException exception){
+                    Utils.error("Invalid argument for armor mapping.");
+                    return new HashMap<>();
+                }
+            }
+
+            Map<DefenceTypes, Integer> defMap = new HashMap<>();
+            //Once the def.Types are known, lets fetch them individually and build the defMap for that subtype
+            for (DefenceTypes def : mappedSubtypeDefences){
+                String currDefencePath = subtypePath + "." + tier + "." + def;
+
+                int mappedDefenceValue = config.getInt(currDefencePath);
+                //Scale the base value based on the armor piece
+                switch (armorSlot){
+                    case HELMET -> mappedDefenceValue = (int) (mappedDefenceValue * HELMET_MAIN_STAT_WEIGHT);
+                    case CHESTPLATE -> mappedDefenceValue = (int) (mappedDefenceValue * CHESTPLATE_MAIN_STAT_WEIGHT);
+                    case LEGGINGS -> mappedDefenceValue = (int) (mappedDefenceValue * LEGGINGS_MAIN_STAT_WEIGHT);
+                    case BOOTS -> mappedDefenceValue = (int) (mappedDefenceValue * BOOTS_MAIN_STAT_WEIGHT);
+                    default -> {
+                        mappedDefenceValue = 0;
+                        Utils.error("Cant map base armor stats for " + armorSlot);
+                    }
+                }
+                defMap.put(def, mappedDefenceValue);
+            }
+            //Adding the health value for that armor piece, for that given tier
+            String healthPath = subtypePath + tier + "." + armorSlot;
+            defMap.put(DefenceTypes.HEALTH, loadHealthValue(healthPath));
+
+            //Now, the defMap needs to be associated with its armorSlot
+            baseStatData.put(armorSlot,defMap);
+        }
+        return baseStatData;
+    }
+
+    public Map<DefenceTypes, Integer> mapBaseStats(Armor armorData){
+        FileConfiguration config = Inscripted.getPlugin().getConfig();
+        Map<DefenceTypes, Integer> defenceMap = new HashMap<>();
 
         ItemTypes slot = armorData.getCategory();
         ArmorTypes subtype = this;
         Tiers tier = armorData.getTier();
 
         String subtypePath = ArmorTypes.class.getSimpleName() + "." + subtype + ".";
-
         List<String> subtypeDefences = config.getStringList(subtypePath+DefenceTypes.class.getSimpleName());
         List<DefenceTypes> mappedSubtypeDefences = new ArrayList<>();
         for (String defString : subtypeDefences){
@@ -213,20 +254,18 @@ This way, one entire routine can be skipped altogether.
                 mappedSubtypeDefences.add(mappedDef);
             } catch (IllegalArgumentException exception){
                 Utils.error("Invalid argument for armor mapping.");
-                return 0;
+                return defenceMap;
             }
         }
 
         for (DefenceTypes def : mappedSubtypeDefences){
-            String currDefencePath = subtypePath + "." + tier + "." + def;
-
             int ilvl = armorData.getIlvl();
             int tierMaxLevel = tier.getMaxLevel();
             Optional<Tiers> prevTier = tier.getPreviousTier();
 
             if (ilvl <= 0){
                 defenceMap.put(def, 0);
-                return 1;
+                continue;
             }
 
             int mappedDefenceValue;
@@ -239,45 +278,29 @@ This way, one entire routine can be skipped altogether.
                 int v2 = tierMaxLevel - prevTierMaxLvl;
                 float t = ((float) (v1)) /v2;
 
-                String prevTierDefencePath = subtypePath + "." + previousTier + "." + def;
-
-                int currMaxDef = config.getInt(currDefencePath);
-                int prevMaxDef = config.getInt(prevTierDefencePath);
+                int currMaxDef = baseStats.get(tier).get(slot).get(def);
+                int prevMaxDef = baseStats.get(previousTier).get(slot).get(def);
 
                 mappedDefenceValue = ( int ) Utils.getParametricValue(prevMaxDef, currMaxDef, t);
             } else {//Means its a T1 (has no previous tier)
                 float t = ((float)(ilvl)) / tierMaxLevel ;
 
-                int currMaxDef = config.getInt(currDefencePath);
+                int currMaxDef = baseStats.get(tier).get(slot).get(def);
 
                 mappedDefenceValue = ( int ) Utils.getParametricValue(0, currMaxDef, t);
             }
-
-            //Scale the base value based on the armor piece
-            switch (slot){
-                case HELMET -> mappedDefenceValue = (int) (mappedDefenceValue * HELMET_MAIN_STAT_WEIGHT);
-                case CHESTPLATE -> mappedDefenceValue = (int) (mappedDefenceValue * CHESTPLATE_MAIN_STAT_WEIGHT);
-                case LEGGINGS -> mappedDefenceValue = (int) (mappedDefenceValue * LEGGINGS_MAIN_STAT_WEIGHT);
-                case BOOTS -> mappedDefenceValue = (int) (mappedDefenceValue * BOOTS_MAIN_STAT_WEIGHT);
-                default -> {
-                    mappedDefenceValue = 0;
-                    Utils.error("Cant map base armor stats for " + slot);
-                }
-            }
-
-            if (mappedDefenceValue != 0){
-                //Actually putting the mapped value in the item's defence map
-                defenceMap.put(def, mappedDefenceValue);
-            }
+            defenceMap.put(def, mappedDefenceValue);
         }
-
-        String healthPath = subtypePath + tier + "." + slot;
-        return getMappedHealth(healthPath);
+        defenceMap.put(DefenceTypes.HEALTH, armorData.getBaseHealth());
+        return defenceMap;
     }
-    private int getMappedHealth(String path){
-        int baseHealth = Inscripted.getPlugin().getConfig().getInt(path);
-        float hpVariance = 0.1F; //10% more or less
-        int HPOffset = (int) (Utils.getRandomOffset()*(hpVariance*baseHealth));
-        return baseHealth + HPOffset;
+    public int mapHealthValue(Armor armorData){
+        Map<DefenceTypes, Integer> cacheDefMap = baseStats.get(armorData.getTier()).get(armorData.getCategory());
+        return cacheDefMap.get(DefenceTypes.HEALTH);
+    }
+
+
+    private int loadHealthValue(String path){
+        return Inscripted.getPlugin().getConfig().getInt(path);
     }
 }

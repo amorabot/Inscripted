@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.components.Items.Weapon;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.components.Items.Abstract.ItemCategory;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
 import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierManager;
@@ -21,8 +22,10 @@ import java.util.*;
 //Similar ao sistema de potions, kills validas maiores que o ilvl do item, acumulam num contador interno //Milestones -> mobKill custom event!
 
 //TODO: Use multiple event priorities to order eventlisteners listening to the same event
-public class Weapon extends Item {
+public class Weapon extends Item implements ItemCategory {
     private final WeaponTypes type;
+    private final int[] baseDamage;
+    private final int percentDamageVariance;
     //Define stat requirement for weapons
     //Atk speed
 
@@ -30,6 +33,8 @@ public class Weapon extends Item {
         super(ilvl, rarity, identified, corrupted, ItemTypes.WEAPON);
         this.type = type;
         setup();
+        baseDamage = type.mapBaseDamage(getTier());
+        this.percentDamageVariance = CraftingUtils.getRandomNumber(-WeaponTypes.weaponDamageVariance, WeaponTypes.weaponDamageVariance);
     }
     public Weapon(int ilvl, ItemRarities rarity, boolean identified, boolean corrupted){ //Random generic weapon constructor
         super(ilvl, rarity, identified, corrupted, ItemTypes.WEAPON);
@@ -38,12 +43,14 @@ public class Weapon extends Item {
         int weaponIndex = CraftingUtils.getRandomNumber(0, weapons.length-1);
         this.type = weapons[weaponIndex];
         setup();
+        baseDamage = type.mapBaseDamage(getTier());
+        this.percentDamageVariance = CraftingUtils.getRandomNumber(-WeaponTypes.weaponDamageVariance, WeaponTypes.weaponDamageVariance);
     }
 
     @Override
     protected void setup() {
         setTier(Tiers.mapItemLevel(getIlvl()));
-        setImplicit(defineImplicit(getSubtype().toString()));
+        setImplicit(Implicits.getImplicitFor(getSubtype(), isCorrupted()));
         this.name = getSubtype().getTierName(getTier());
         mapBase();
     }
@@ -58,39 +65,46 @@ public class Weapon extends Item {
     public Map<DamageTypes, int[]> getLocalDamage(){ //Once a weapon is created, the damage map needs to be updated to contain any possible new damages
         Map<DamageTypes, int[]> baseDmg = new HashMap<>();
 
-        int[] basePhys = type.mapDamage(getTier());
-//TODO: FIX MOD ORDER
+        int[] basePhys = getBaseDamage();
+        int qualityIncrease = 5*getQuality();
+
+        boolean hasLocalIncPhys = false;
+        Modifier incPhys = null;
+
         for (Modifier mod : getModifierList()){
+            //Local mod mapping
             ModifierIDs weaponModifier = mod.getModifierID();
-            if (weaponModifier.equals(ModifierIDs.ADDED_PHYSICAL)){
-                int[] addedLocalPhys = ModifierManager.getMappedFinalValueFor(mod);
-                basePhys[0] = basePhys[0] + addedLocalPhys[0];
-                basePhys[1] = basePhys[1] + addedLocalPhys[1];
-            }
-            if (weaponModifier.equals(ModifierIDs.ADDED_FIRE)){
-                baseDmg.put(DamageTypes.FIRE, ModifierManager.getMappedFinalValueFor(mod));
-                continue;
-            }
-            if (weaponModifier.equals(ModifierIDs.ADDED_ABYSSAL)){
-                baseDmg.put(DamageTypes.ABYSSAL, ModifierManager.getMappedFinalValueFor(mod));
-                continue;
-            }
-            if (weaponModifier.equals(ModifierIDs.ADDED_LIGHTNING)){
-                baseDmg.put(DamageTypes.LIGHTNING, ModifierManager.getMappedFinalValueFor(mod));
-                continue;
-            }
-            if (weaponModifier.equals(ModifierIDs.ADDED_COLD)){
-                baseDmg.put(DamageTypes.COLD, ModifierManager.getMappedFinalValueFor(mod));
-                continue;
-            }
+            if (!weaponModifier.isLocal()){continue;}
             if (weaponModifier.equals(ModifierIDs.PERCENT_PHYSICAL)){
-                int percentPhys = ModifierManager.getMappedFinalValueFor(mod)[0];
-                float phys1 = basePhys[0] * (1 + percentPhys/100F);
-                float phys2 = basePhys[1] * (1 + percentPhys/100F);
-                basePhys[0] = (int)phys1;
-                basePhys[1] = (int)phys2;
+                hasLocalIncPhys = true;
+                incPhys = mod;
+            }
+
+            switch (weaponModifier){
+                case ADDED_PHYSICAL -> {
+                    int[] addedLocalPhys = ModifierManager.getMappedFinalValueFor(mod);
+                    basePhys[0] = basePhys[0] + addedLocalPhys[0];
+                    basePhys[1] = basePhys[1] + addedLocalPhys[1];
+                }
+                case ADDED_FIRE -> baseDmg.put(DamageTypes.FIRE, ModifierManager.getMappedFinalValueFor(mod));
+                case ADDED_LIGHTNING -> baseDmg.put(DamageTypes.LIGHTNING, ModifierManager.getMappedFinalValueFor(mod));
+                case ADDED_COLD -> baseDmg.put(DamageTypes.COLD, ModifierManager.getMappedFinalValueFor(mod));
+                case ADDED_ABYSSAL -> baseDmg.put(DamageTypes.ABYSSAL, ModifierManager.getMappedFinalValueFor(mod));
             }
         }
+        if (hasLocalIncPhys){
+            int percentPhys = ModifierManager.getMappedFinalValueFor(incPhys)[0];
+            float phys1 = Utils.applyPercentageTo(basePhys[0], percentPhys + qualityIncrease);
+            float phys2 = Utils.applyPercentageTo(basePhys[1], percentPhys + qualityIncrease);
+            basePhys[0] = (int)phys1;
+            basePhys[1] = (int)phys2;
+        } else {
+            float phys1 = Utils.applyPercentageTo(basePhys[0], qualityIncrease);
+            float phys2 = Utils.applyPercentageTo(basePhys[1], qualityIncrease);
+            basePhys[0] = (int)phys1;
+            basePhys[1] = (int)phys2;
+        }
+
         baseDmg.put(DamageTypes.PHYSICAL, basePhys);
 
         return baseDmg;
@@ -104,16 +118,12 @@ public class Weapon extends Item {
         ItemStack weaponItem = new ItemStack(this.vanillaMaterial);
         imprint(weaponItem,type);
 
-        serializeContainers(plugin, this, weaponItem);
+        serializeContainers(this, weaponItem);
         return weaponItem;
     }
-    @Override //Remove plugin instance parameter
-    public void serializeContainers(Inscripted plugin, Item itemData, ItemStack item) {
-        ItemMeta itemMeta = item.getItemMeta();
-        assert itemMeta != null;
-        PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-        FunctionalItemAccessInterface.serializeItem(this, dataContainer);
-        item.setItemMeta(itemMeta);
+    @Override
+    public void serializeContainers(Item itemData, ItemStack item) {
+        FunctionalItemAccessInterface.serializeItem(item, this);
     }
 
     public ItemRenderer getRenderer(){
@@ -133,5 +143,24 @@ public class Weapon extends Item {
                 return null;
             }
         }
+    }
+
+    public int[] getBaseDamage() {
+        int[] basePhys = baseDamage;
+        int[] finalDmg = new int[2];
+        for (int i = 0; i< basePhys.length; i++){
+            finalDmg[i] = (int) ((1+((float)percentDamageVariance/100))*basePhys[i]);
+        }
+        return finalDmg;
+    }
+
+    @Override
+    public void applyQuality() {
+        Utils.log("applying weapon quality");
+    }
+
+    @Override
+    public void getCorruptedImplicit() {
+
     }
 }
