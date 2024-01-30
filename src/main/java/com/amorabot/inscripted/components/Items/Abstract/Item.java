@@ -20,6 +20,7 @@ public abstract class Item implements Serializable {
     private boolean identified;
     private ItemRarities rarity;
     private Tiers tier;
+    private int quality; //Caps at +10
     private Implicits implicit;
     //TODO: Factory / Separate class for handling rendering
     protected RendererTypes renderer;
@@ -61,13 +62,13 @@ public abstract class Item implements Serializable {
         item.setItemMeta(itemMeta);
 
         if (isIdentified()){
-            currentRenderer.setDisplayName(getRarity().getColor()+getName(), item);
+            currentRenderer.setDisplayName(getRarity(), getName(), item, isCorrupted(), this.quality);
             return;
         }
-        currentRenderer.setDisplayName(getRarity().getColor() + "Unidentified " + subType.toString().toLowerCase(), item);
+        currentRenderer.setDisplayName(getRarity(), "Unidentified " + subType.toString().toLowerCase(), item, false, 0);
     }
     public abstract ItemStack getItemForm(Inscripted plugin);
-    protected abstract void serializeContainers(Inscripted plugin, Item itemData, ItemStack item);
+    protected abstract void serializeContainers(Item itemData, ItemStack item);
     public ItemTypes getCategory(){
         return this.category;
     }
@@ -109,24 +110,8 @@ public abstract class Item implements Serializable {
     public Implicits getImplicit() {
         return implicit;
     }
-    protected void setImplicit(Implicits implicit) {
+    public void setImplicit(Implicits implicit) {
         this.implicit = implicit;
-    }
-    protected Implicits defineImplicit(String subTypeString){
-        Implicits itemImplicit;
-        try {
-            if (isCorrupted()){
-                //...
-                itemImplicit = Implicits.valueOf(subTypeString+"_"+ ImplicitType.CORRUPTED);
-                //Or alternate corrupted...
-            } else {
-                itemImplicit = Implicits.valueOf(subTypeString+"_"+ImplicitType.STANDARD);
-            }
-        } catch (IllegalArgumentException exception){
-            exception.printStackTrace();
-            itemImplicit = Implicits.AXE_STANDARD;
-        }
-        return itemImplicit;
     }
     public Tiers getTier() {
         return tier;
@@ -171,9 +156,21 @@ public abstract class Item implements Serializable {
         }
         return 0;
     }
+    public int getQuality() {
+        return quality;
+    }
+    public void setQuality(int newQuality){
+        this.quality = newQuality;
+    }
+    //-1, 0, 1 Return values (Fail, neutral, success)
+    public int improveQuality(){
+        if (getQuality() >=10){return -1;}
+        setQuality(getQuality() + 1);
+        return 0;
+    }
 
     @Override
     public int hashCode(){
-        return Objects.hash(ilvl, category, name, modifiers);
+        return Objects.hash(ilvl, category, name, modifiers, implicit, corrupted, quality);
     }
 }

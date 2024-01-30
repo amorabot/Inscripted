@@ -5,21 +5,55 @@ import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import static com.amorabot.inscripted.utils.Utils.color;
 
 public interface ItemRenderer extends Serializable {
 
-    default void setDisplayName(String name, ItemStack item) {
+    default void setDisplayName(ItemRarities rarity, String name, ItemStack item, boolean isCorrupted, int quality) {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
-        itemMeta.setDisplayName(color(name));
+        String qualitySuffix;
+        if (quality > 0){
+            qualitySuffix = " &f[&b+" + quality + "&f]";
+        } else {
+            qualitySuffix = "";
+        }
+
+        if (isCorrupted){
+            String originalHex;
+            String corruptedHex = NamedTextColor.DARK_RED.asHexString();
+            switch (rarity){
+                case COMMON -> originalHex = NamedTextColor.WHITE.asHexString();
+                case MAGIC -> originalHex = NamedTextColor.BLUE.asHexString();
+                case RARE -> originalHex = NamedTextColor.YELLOW.asHexString();
+                default -> originalHex = "#FFFFFF";
+            }
+            String openTag = "<gradient:@Hex1@:@Hex2@>";
+            String closeTag = "</gradient>";
+            String finalOpenTag = openTag.replace("@Hex1@",corruptedHex).replace("@Hex2@", originalHex);
+            MiniMessage serializer = MiniMessage.builder().build();
+            Component component = serializer.deserialize(finalOpenTag+name+closeTag);
+            String legacyDispName = LegacyComponentSerializer.legacyAmpersand().serialize(component);
+            itemMeta.setDisplayName(ColorUtils.translateColorCodes(legacyDispName+qualitySuffix));
+
+        } else {
+            itemMeta.setDisplayName(color(rarity.getColor() + name + qualitySuffix));
+        }
         item.setItemMeta(itemMeta);
     }
     void renderMainStat(Item itemData, List<String> itemLore);
@@ -29,6 +63,9 @@ public interface ItemRenderer extends Serializable {
         List<Modifier> mods = itemData.getModifierList();
 
         Comparator<Modifier> modifierComparator = (o1, o2) -> {
+            if (o2.isImbued()){
+                return 1;
+            }
             if (o1.equals(o2)){
                 return 0;
             }
@@ -50,13 +87,17 @@ public interface ItemRenderer extends Serializable {
     <subType extends Enum<subType> & ItemSubtype> void renderDescription(Item itemData, List<String> itemLore, subType itemSubtype);
     default void renderTag(Item itemData, List<String> itemLore) {
         ItemRarities rarity = itemData.getRarity();
-        String tag = "";
+        String tag = rarity.getColor()+"&l"+rarity;
         if (rarity.equals(ItemRarities.COMMON)){
-            tag += (rarity.getColor()+"&l"+rarity);
+            if (itemData.isCorrupted()){
+                tag += " &4☠";
+            }
             itemLore.add(color(tag));
             return;
         }
-        tag += (rarity.getColor()+"&l"+rarity);
+        if (itemData.isCorrupted()){
+            tag += " &4☠";
+        }
         double starRating = itemData.getStarRating();
         tag += mapStarRating(starRating);
 

@@ -5,7 +5,6 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceType
 import com.amorabot.inscripted.components.Items.currency.Currencies;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.utils.ColorUtils;
-import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,10 +32,6 @@ public class Identify implements CommandExecutor {
         }
         Player player = (Player) sender;
         if (player.getInventory().getItemInMainHand().getType() == Material.AIR){
-            player.getInventory().addItem(Currencies.AUGMENT.get(2));
-            player.getInventory().addItem(Currencies.REGAL.get(2));
-            player.getInventory().addItem(Currencies.ALTERATION.get(10));
-            player.getInventory().addItem(Currencies.CHAOS.get(10));
             return true; // Se o player não estiver segurando nada
         }
         ItemStack heldItem = player.getInventory().getItemInMainHand();
@@ -53,7 +48,7 @@ public class Identify implements CommandExecutor {
             player.sendMessage(ColorUtils.translateColorCodes(DefenceTypes.DODGE.getTextColor()+ "&lThis armor is already identified!"));
         }
 
-        Currencies.SCROLL_OF_WISDOM.apply(heldItem);
+        Currencies.SCROLL_OF_WISDOM.apply(heldItem, FunctionalItemAccessInterface.deserializeGenericItemData(dataContainer), player);
         player.getInventory().addItem(Currencies.SCROLL_OF_WISDOM.get(7));
 
         return true;

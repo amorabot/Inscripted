@@ -194,4 +194,8 @@ public class Utils {
         //nextDown(1) é o valor máximo de Math.random(), que não inclui 1.
         //Com isso, o valor é devidamente mapeado de 0-1
     }
+
+    public static float applyPercentageTo(int baseValue, int percentMod){
+        return baseValue * (1 + (percentMod)/100F);
+    }
 }

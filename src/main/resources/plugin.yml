@@ -5,6 +5,9 @@ api-version: 1.19
 permissions:
 
 commands:
+  orb:
+    description: Command for easy currency access.
+    usage: /orb
   updatenbt:
     description: Updates a item's item level NBT data.
     usage: /updatenbt

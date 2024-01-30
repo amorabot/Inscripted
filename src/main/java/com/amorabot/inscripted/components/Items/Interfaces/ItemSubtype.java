@@ -1,6 +1,5 @@
 package com.amorabot.inscripted.components.Items.Interfaces;
 
-import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
 import com.amorabot.inscripted.utils.Utils;

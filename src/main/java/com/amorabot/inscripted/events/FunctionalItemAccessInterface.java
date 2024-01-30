@@ -8,6 +8,8 @@ import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -41,7 +43,9 @@ public class FunctionalItemAccessInterface {
         }
         return Boolean.TRUE.equals(dataContainer.get(CORRUPTED_TAG, new PersistentDataType.BooleanPersistentDataType()));
     }
-    public static void serializeItem(Item itemData, PersistentDataContainer dataContainer){
+    public static void serializeItem(ItemStack itemStack, Item itemData){
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
         if (itemData instanceof Weapon){
             dataContainer.set(WEAPON_DATA_KEY, new GenericItemContainerDataType<>(Weapon.class), (Weapon) itemData);
             dataContainer.set(WEAPON_TAG, new PersistentDataType.BooleanPersistentDataType(), itemData.isIdentified());
@@ -50,6 +54,8 @@ public class FunctionalItemAccessInterface {
             dataContainer.set(ARMOR_TAG, new PersistentDataType.BooleanPersistentDataType(), itemData.isIdentified());
         }
         dataContainer.set(CORRUPTED_TAG, new PersistentDataType.BooleanPersistentDataType(), itemData.isCorrupted());
+
+        itemStack.setItemMeta(itemMeta);
     }
 
     //Should only be used when the needed item's data doesnt depend on their subtype

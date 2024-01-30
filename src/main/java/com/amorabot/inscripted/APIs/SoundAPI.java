@@ -4,15 +4,11 @@ import com.amorabot.inscripted.utils.CraftingUtils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Location;
-import org.bukkit.Sound;
+import net.kyori.adventure.sound.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class SoundAPI {
-
-    /*
-    item.axe.scrape -> sound for whetstones
-     */
 
     public static void playDodgeFor(Audience audience, Location dodgeLocation){
         playGenericSoundAtLocation(audience,
@@ -27,12 +23,12 @@ public class SoundAPI {
 
         if (entity instanceof Player){
             Player p = (Player) entity;
-            p.playSound(p.getLocation(), Sound.ITEM_SHIELD_BREAK, baseVol, basePitch);
+            p.playSound(p.getLocation(), org.bukkit.Sound.ITEM_SHIELD_BREAK, baseVol, basePitch);
             return;
         }
         entity.playSound(net.kyori.adventure.sound.Sound.sound(
                 Key.key("item.shield.break"),
-                net.kyori.adventure.sound.Sound.Source.AMBIENT,
+                Sound.Source.AMBIENT,
                 baseVol, basePitch));
     }
     public static void playArmorUnequipFor(Entity entity){
@@ -41,12 +37,12 @@ public class SoundAPI {
 
         if (entity instanceof Player){
             Player p = (Player) entity;
-            p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_NETHERITE, baseVol, basePitch);
+            p.playSound(p.getLocation(), org.bukkit.Sound.ITEM_ARMOR_EQUIP_NETHERITE, baseVol, basePitch);
             return;
         }
-        entity.playSound(net.kyori.adventure.sound.Sound.sound(
+        entity.playSound(Sound.sound(
                 Key.key("item.armor.equip_netherite"),
-                net.kyori.adventure.sound.Sound.Source.AMBIENT,
+                Sound.Source.AMBIENT,
                 baseVol, basePitch));
     }
     public static void playArmorEquipFor(Entity entity){
@@ -55,21 +51,29 @@ public class SoundAPI {
 
         if (entity instanceof Player){
             Player p = (Player) entity;
-            p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_IRON, baseVol, basePitch);
+            p.playSound(p.getLocation(), org.bukkit.Sound.ITEM_ARMOR_EQUIP_IRON, baseVol, basePitch);
             return;
         }
-        entity.playSound(net.kyori.adventure.sound.Sound.sound(
-                Key.key("item.armor.equip_iron"),
-                net.kyori.adventure.sound.Sound.Source.AMBIENT,
-                baseVol, basePitch));
+        playGenericSoundAtLocation(entity, entity.getLocation(), "item.armor.equip_iron", baseVol, basePitch);
     }
 
-    private static void playGenericSoundAtLocation(Audience audience, Location loc, String soundName, float baseVolume, float basePitch){
-        net.kyori.adventure.sound.Sound sound = net.kyori.adventure.sound.Sound.sound(
+    public static void playGenericSoundAtLocation(Audience audience, Location loc, String soundName, float baseVolume, float basePitch){
+        Sound sound = Sound.sound(
                 Key.key(soundName),
-                net.kyori.adventure.sound.Sound.Source.AMBIENT,
+                Sound.Source.AMBIENT,
                 baseVolume, basePitch);
 
         audience.playSound(sound, loc.x(), loc.y(), loc.z());
+    }
+
+    public static void playEnchantingSoundFor(Audience audience, Location loc, boolean success){
+        if (success){
+            playGenericSoundAtLocation(audience, loc, "block.enchantment_table.use", 0.5f, 0.7f);
+        } else {
+            playGenericSoundAtLocation(audience, loc, "block.enchantment_table.use", 0.6f, 1.3f);
+        }
+    }
+    public static void playInvalidActionFor(Audience audience, Location loc){
+        playGenericSoundAtLocation(audience, loc, "block.note_block.basedrum", 0.5f, 1.0f);
     }
 }

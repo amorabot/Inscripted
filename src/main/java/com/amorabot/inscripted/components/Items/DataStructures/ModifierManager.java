@@ -29,7 +29,7 @@ public class ModifierManager {
         int bracket = levelBrackets.get(chosenTierBracket);
         int finalTier = availableAffixPool.get(chosenMod).get(bracket);
 
-        return new Modifier(chosenMod, finalTier);
+        return new Modifier(chosenMod, finalTier, highestTierAvailable);
     }
 
     @NotNull

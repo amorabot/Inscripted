@@ -136,7 +136,21 @@ public class ItemBuilder {
                                          Map<ModifierIDs, Map<Integer, Integer>> suffixes,
                                          Set<ModifierIDs> illegalMods)
     {
+        boolean hasImbuedMod = false;
+        Modifier imbuedMod = null;
+        for (Modifier mod : item.getModifierList()){
+            if (mod.isImbued()){
+                hasImbuedMod = true;
+                imbuedMod = mod;
+            }
+        }
+        List<Modifier> modList = item.getModifierList();
+        modList.clear();
         int numberOfMods = CraftingUtils.getRandomNumber(1, ItemRarities.MAGIC.getMaxMods());
+        if (hasImbuedMod){
+            modList.add(imbuedMod);
+            numberOfMods = 1;
+        }
         for (int i = 0; i<numberOfMods; i++){
             if (isPrefix()){
                 addModTo(item, prefixes, illegalMods);
@@ -150,11 +164,33 @@ public class ItemBuilder {
                                          Map<ModifierIDs, Map<Integer, Integer>> suffixes,
                                          Set<ModifierIDs> illegalMods)
     {
+        boolean hasImbuedMod = false;
+        Modifier imbuedMod = null;
+        for (Modifier mod : item.getModifierList()){
+            if (mod.isImbued()){
+                hasImbuedMod = true;
+                imbuedMod = mod;
+            }
+        }
+        List<Modifier> modList = item.getModifierList();
+        modList.clear();
+
         int numberOfMods = CraftingUtils.getRandomNumber(3, ItemRarities.RARE.getMaxMods());
         int maxPrefixes = 3;
         int currPrefixes = 0;
         int maxSuffixes = 3;
         int currSuffixes = 0;
+
+        if (hasImbuedMod){
+            modList.add(imbuedMod);
+            numberOfMods--;
+            if (imbuedMod.getModifierID().getAffixType().equals(Affix.PREFIX)){
+                currPrefixes++;
+            } else {
+                currSuffixes++;
+            }
+        }
+
         for (int i = 0; i<numberOfMods; i++){
             if (isPrefix()){
                 if (currPrefixes < maxPrefixes){ //Open prefix
