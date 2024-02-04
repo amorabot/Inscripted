@@ -52,11 +52,13 @@ public class PlayerRegenerationTask extends BukkitRunnable {
             }
             regenString.append(HPS);
 
+            HPComponent.regenHealth(HPS);
+
             double mappedHealth = HPComponent.getMappedHealth(20);
             if ((mappedHealth - player.getHealth()) >= 0.5D){
                 player.setHealth(mappedHealth);
             }
-            HPComponent.regenHealth(HPS);
+//            HPComponent.regenHealth(HPS);
         }
 
         if (HPComponent.getCurrentWard() != HPComponent.getMaxWard() && (PlayerRegenManager.canRegenWard(playerID))){
@@ -66,6 +68,10 @@ public class PlayerRegenerationTask extends BukkitRunnable {
                 wardRegen = wardRegen/2;
             }
             HPComponent.regenWard(wardRegen);
+            double mappedWard = HPComponent.getMappedWard(20);
+            if ((mappedWard - player.getAbsorptionAmount()) >= 0.5D){
+                player.setAbsorptionAmount(mappedWard);
+            }
 
             regenString.append(" ").append(DefenceTypes.WARD.getTextColor()).append("&l+").append((int) (wardRegen));
         }

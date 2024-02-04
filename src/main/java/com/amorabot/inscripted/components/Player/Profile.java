@@ -6,6 +6,8 @@ import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.utils.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -48,12 +50,12 @@ public class Profile {
         return this.damage;
     }
     private void updateProfile(UUID profileID){
-        //Todo: on every profile update, re-map the players hp
-        //player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
-        //and remove other occurences (make it a static method with player/living entity arg on HealthComponent
-
         StatCompiler compiler = new StatCompiler(profileID);
         compiler.updateProfile();
+
+        Player player = Bukkit.getPlayer(profileID);
+        assert player != null;
+        mapPlayerHearts(player);
     }
 
     public boolean updateEquipmentSlot(ItemTypes targetSlot, Item itemData, UUID profileID){
@@ -68,5 +70,13 @@ public class Profile {
     }
     public boolean hasWeaponEquipped(){
         return getEquipmentComponent().getWeaponData() != null;
+    }
+
+    public boolean mapPlayerHearts(Player player){
+        assert player != null;
+        player.setAbsorptionAmount(getHealthComponent().getMappedWard(20));
+        double updatedHearts = getHealthComponent().getMappedHealth(20);
+        player.setHealth(updatedHearts);
+        return updatedHearts == 0;
     }
 }

@@ -1,8 +1,11 @@
 package com.amorabot.inscripted.handlers.Inventory;
 
 import com.amorabot.inscripted.APIs.EventAPI;
+import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
+import com.amorabot.inscripted.components.Items.Weapon.Weapon;
+import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.events.ItemUsage;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
@@ -97,7 +100,8 @@ public class PlayerEquipmentHandler implements Listener {
             return;
         }
         ItemStack usedItem = usedItemOptional.get();
-        ItemUsage itemUsage = mapPlayerInteractAction(usedItem.getItemMeta().getPersistentDataContainer(), event.getAction());
+        PersistentDataContainer dataContainer = usedItem.getItemMeta().getPersistentDataContainer();
+        ItemUsage itemUsage = mapPlayerInteractAction(dataContainer, event.getAction());
         switch (itemUsage){
             case NONE -> player.sendMessage("Non functional item usage");
             case ARMOR_RIGHT_CLICK_AIR -> player.sendMessage("Equiping armor!!");
@@ -105,9 +109,14 @@ public class PlayerEquipmentHandler implements Listener {
             case WEAPON_LEFT_CLICK_AIR -> {
                 //This is triggered when dropping a equiped weapon from inv
                 if (player.hasCooldown(usedItem.getType())){
-                    player.sendMessage(Utils.color("&c&lYou cannot attack right now!"));
+                    player.sendMessage(Utils.color("&c&lYour basic attack is on cooldown..."));
                 } else {
-                    player.sendMessage(Utils.color("&c&lAttack!"));
+                    Weapon weaponData = FunctionalItemAccessInterface.deserializeWeaponData(dataContainer);
+                    if (weaponData == null){
+                        player.sendMessage("Invalid weapon attack...");
+                        return;
+                    }
+                    SoundAPI.playAttackSoundFor(player, player.getLocation(), weaponData.getSubtype());
                     player.setCooldown(usedItem.getType(), (int)(20*0.5));
                 }
             }

@@ -20,6 +20,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 
+import java.util.UUID;
+
 public class DamageHandler {
     private static final NamespacedKey mobKey = new NamespacedKey(Inscripted.getPlugin(), "INSCRIPTED_MOB");
 
@@ -72,18 +74,11 @@ public class DamageHandler {
                 Player attacker = (Player) event.getDamager();
                 Player defender = (Player) event.getEntity();
                 //Damaging the defending player
-                //TODO: Add specific damage mapping for pvp (mainly changing armor and dodge scaling)
-                missed = playerVsPlayerDamage(attacker, defender);
+                event.setDamage(0.01);
+                playerVsPlayerDamage(attacker, defender); //Can kill the player too (Setting their health to 0 -> Gives a no-cause death message)
 
-                if (!missed){
-
-                    if (defender.isDead()){
-                        Utils.log("he ded");
-                        event.setCancelled(true);
-                    }
-//                    attacker.sendMessage("PK :D");
-
-                } else {
+                if (defender.isDead()){
+                    Utils.log("he ded :(");
                     event.setCancelled(true);
                 }
             } else {
@@ -92,7 +87,7 @@ public class DamageHandler {
         }
     }
 
-    public static boolean playerVsPlayerDamage(Player attacker, Player defender){
+    public static void playerVsPlayerDamage(Player attacker, Player defender){
         boolean hitLanded;
 
         Profile attackerProfile = JSONProfileManager.getProfile(attacker.getUniqueId());
@@ -102,12 +97,12 @@ public class DamageHandler {
         DefenceComponent def = defenderProfile.getDefenceComponent();
 
         hitLanded = AttackProcessor.attackResult(atk, def);
+        int[] incomingHit = AttackProcessor.processAttack(def, atk);
 
         if (!hitLanded){
             CombatEffects.playDodgeEffectsAt(defender, attacker);
-            return true;
+            AttackProcessor.dodgeAttack(incomingHit, 70);
         }
-        int[] incomingHit = AttackProcessor.processAttack(def, atk);
         String damageHoloString = Attack.getDamageString(incomingHit);
 
         CombatHologramsDepleter.getInstance().instantiateDamageHologramAt(defender.getLocation(), incomingHit);
@@ -115,7 +110,11 @@ public class DamageHandler {
         //DMG DEBUG FOR DEFdr ---------------------------------------------
         Utils.msgPlayer(defender ,"&c&l<- " + damageHoloString  + " &ffrom " + attacker.getName());
         //Adds defender to combat
-        playerDamaged(defender, incomingHit);
+        boolean died = playerDamaged(defender, incomingHit);
+        if (died){
+            CombatLogger.addToPvPCombat(attacker, defender);
+            return;
+        }
 
         //DMG DEBUG FOR ATKr ---------------------------------------------
         Utils.msgPlayer(attacker, damageHoloString + "&a&l -> &f" + defender.getName() +
@@ -123,7 +122,7 @@ public class DamageHandler {
         //Adds attacker to combat
         CombatLogger.addToPvPCombat(attacker, defender);
 
-        return false;
+//        return false;
     }
 
     public static boolean playerVsEntityDamage(Player player, Entity entity, boolean playerAttacking){
@@ -206,15 +205,16 @@ public class DamageHandler {
     }
 
     //Handles the effects of a player being hit
-    public static void playerDamaged(Player player, int[] incomingHit){
+    public static boolean playerDamaged(Player player, int[] incomingHit){
         HealthComponent HPComponent = JSONProfileManager.getProfile(player.getUniqueId()).getHealthComponent();
 
         HPComponent.damage(incomingHit);
 
-        double mappedHealth = HPComponent.getMappedHealth(20);
-        player.setHealth(mappedHealth); //If the player dies here, any posterior damage will kill it too (since current life is 0)
+        UUID playerID = player.getUniqueId();
+        boolean died = JSONProfileManager.getProfile(playerID).mapPlayerHearts(player);
         PlayerRegenManager.startWardRegenCooldownFor(player.getUniqueId());
         CombatLogger.addToCombat(player);
+        return died;
     }
 
 }

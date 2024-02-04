@@ -20,7 +20,7 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.amorabot.inscripted.tasks.PlayerInterfaceRenderer.startupBossBars;
+//import static com.amorabot.inscripted.tasks.PlayerInterfaceRenderer.startupBossBars;
 
 public class JoinQuitHandler implements Listener {
 
@@ -62,7 +62,7 @@ public class JoinQuitHandler implements Listener {
 
     private void initializePlayer(Player player){
         PlayerRegenManager.addPlayer(player.getUniqueId());
-        startupBossBars(player);
+//        startupBossBars(player);
 
         //                                                          min 0  |  max 1
         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE)).setBaseValue(1);
@@ -71,7 +71,7 @@ public class JoinQuitHandler implements Listener {
     private void destroyPlayerData(Player player){
         //Un-instantiate bossbars
         PlayerRegenManager.removePlayer(player.getUniqueId());
-        PlayerInterfaceRenderer.deleteBossBars(player);
+//        PlayerInterfaceRenderer.deleteBossBars(player);
         if (CombatLogger.isInCombat(player)) {
             if (player.hasMetadata(CombatLogger.getPvpTag())){
                 Utils.error(player.getName() + " logged out during PVP... crack his skull");

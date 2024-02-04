@@ -18,7 +18,6 @@ import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.tasks.CombatLogger;
 import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
-//import com.amorabot.inscripted.tasks.PlayerRegen;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
@@ -88,7 +87,6 @@ public final class Inscripted extends JavaPlugin {
         if (playerInterfaceRenderer != null && !playerInterfaceRenderer.isCancelled()){
             playerInterfaceRenderer.cancel();
         }
-        PlayerInterfaceRenderer.shutdownAllBars();
         PlayerRegenManager.shutdown();
         CombatHologramsDepleter.getInstance().shutdown();
 
