@@ -82,11 +82,12 @@ public class SoundAPI {
             case AXE -> playGenericSoundAtLocation(audience, loc, "entity.player.attack.strong", 0.5f, 0.7f);
             case SWORD -> playGenericSoundAtLocation(audience, loc, "entity.player.attack.sweep", 0.8f, 1f);
             case BOW -> playGenericSoundAtLocation(audience, loc, "item.crossbow.shoot", 0.8f, 1f);
-            case DAGGER -> playGenericSoundAtLocation(audience, loc, "block.beehive.shear", 0.8f, 1.5f);
+            case DAGGER -> playGenericSoundAtLocation(audience, loc, "entity.player.attack.sweep", 0.6f, 1.9f);
             case WAND -> playGenericSoundAtLocation(audience, loc, "entity.drowned.shoot", 0.8f, 1f);
             case SCEPTRE -> {
-                playGenericSoundAtLocation(audience, loc, "block.gravel.break", 1.1f, 0.6f);
-                playGenericSoundAtLocation(audience, loc, "item.axe.scrape", 0.8f, 0.6f);
+                playGenericSoundAtLocation(audience, loc, "block.gravel.break", 0.7f, 0.6f);
+//                playGenericSoundAtLocation(audience, loc, "block.basalt.break", 0.8f, 0.5f);
+//                playGenericSoundAtLocation(audience, loc, "entity.zombie.break_wooden_door", 0.1f, 0.2f);
             }
         }
     }

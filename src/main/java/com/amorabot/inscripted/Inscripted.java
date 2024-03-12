@@ -15,6 +15,7 @@ import com.amorabot.inscripted.handlers.misc.JoinQuitHandler;
 import com.amorabot.inscripted.handlers.misc.SunlightBurnHandler;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
+import com.amorabot.inscripted.skills.GlobalCooldownManager;
 import com.amorabot.inscripted.tasks.CombatLogger;
 import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
@@ -59,6 +60,7 @@ public final class Inscripted extends JavaPlugin {
         ModifierIDs.loadModifiers();
         Utils.populatePrettyAlphabet();
         Utils.populateRomanChars();
+        GlobalCooldownManager.setup();
 //        getWorld().getLivingEntities()
 
         commandsStartupRoutine();

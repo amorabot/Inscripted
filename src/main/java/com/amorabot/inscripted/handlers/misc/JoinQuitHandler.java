@@ -15,6 +15,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -35,6 +37,7 @@ public class JoinQuitHandler implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event){
 
         Player player = event.getPlayer();
+        player.setMaximumNoDamageTicks(5);
         UUID playerID = player.getUniqueId();
         if (JSONProfileManager.isNewPlayer(playerID)){ //If new player:
             JSONProfileManager.createProfile(playerID.toString()); //Creates and instantiates the profile.
@@ -62,11 +65,9 @@ public class JoinQuitHandler implements Listener {
 
     private void initializePlayer(Player player){
         PlayerRegenManager.addPlayer(player.getUniqueId());
-//        startupBossBars(player);
-
         //                                                          min 0  |  max 1
         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE)).setBaseValue(1);
-        player.setMaximumNoDamageTicks(5);
+
     }
     private void destroyPlayerData(Player player){
         //Un-instantiate bossbars
