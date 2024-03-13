@@ -1,17 +1,22 @@
-# RPG-Elements
-![image](https://github.com/amorabot/RPG-Elements/assets/16783145/5415ffb7-3bcb-4c5f-b3fb-aa49c1a55fe9)
-![image](https://github.com/amorabot/RPG-Elements/assets/16783145/3d2e378f-a1b8-4a35-8b1a-2b091cc5572e)
-![image](https://github.com/amorabot/RPG-Elements/assets/16783145/16527ccb-52c4-43f2-8184-7a6fcc490a36)
+# Inscripted
+
+![logo-beeg](https://github.com/amorabot/Inscripted/assets/16783145/7a0b5918-e269-4e26-a5c1-4479d8bed8e9)
+
+![Archetypes](https://github.com/amorabot/Inscripted/assets/16783145/eaa49118-0b6f-42bf-abdd-87c69b76f8cf)
+-----------------------------------------------------------------------------------------------------------------
 
 
-![image](https://github.com/amorabot/RPG-Elements/assets/16783145/d6596c7a-16f6-4a8d-8b94-c50e18884af3)
-![image](https://github.com/amorabot/RPG-Elements/assets/16783145/ab0ba85e-62d7-4a1e-a559-f6a8ef3cf12a)
-
-
-![image](https://github.com/amorabot/RPG-Elements/assets/16783145/b0b7273e-03df-4b9e-94b9-7ddc90c743c1)
- 
-### Abaixo estão algumas screenshots das features implementadas até o momento 
-(Usando funções nativas do jogo por meio da API):
+![marauderLogoColored](https://github.com/amorabot/Inscripted/assets/16783145/847efa3d-9c72-40db-867d-26facb9f0eb7)
+<br/><br/>
+![gladLogoColored](https://github.com/amorabot/Inscripted/assets/16783145/2b2bdce4-4e39-4928-a77b-ed826d4f0fd1)
+<br/><br/>
+![mercLogoColored](https://github.com/amorabot/Inscripted/assets/16783145/8b406f3f-c479-477c-a7f0-0d6f3b5875cb)
+<br/><br/>
+![rogueLogoColored](https://github.com/amorabot/Inscripted/assets/16783145/91577227-b5e5-436d-bf74-a3c46ee5b289)
+<br/><br/>
+![sorcLogoColored](https://github.com/amorabot/Inscripted/assets/16783145/d9fcf757-806c-4386-8c70-571f91ed0ac6)
+<br/><br/>
+![templarLogoColored](https://github.com/amorabot/Inscripted/assets/16783145/623f998c-b214-48bb-bbe9-c51f53b2a322)
 
 -----------------------------------------------------------------------------------------------------------------
 <details>
