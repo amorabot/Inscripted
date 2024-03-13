@@ -4,9 +4,24 @@
 
 ![Archetypes](https://github.com/amorabot/Inscripted/assets/16783145/eaa49118-0b6f-42bf-abdd-87c69b76f8cf)
 -----------------------------------------------------------------------------------------------------------------
+Inscripted doesn't feature typical classes. Items are the main way for players to express themselves! Items are one of the cores of a player's build, and there are many item archetypes that can help the player achieve their ideal build! Each archetype reinforces a particular playstyle and they can be mixed and matched together to fit one's needs!
 
+
+Next will be the descriptions and general characteristics of all current archetypes: 
 
 ![marauderLogoColored](https://github.com/amorabot/Inscripted/assets/16783145/847efa3d-9c72-40db-867d-26facb9f0eb7)
+A warrior that wears heavy and protective armor and specilizes in strong, physical, blows, shredding through enemies defences.
+
+
+Defences:
+
+
+Heavy phisical mitigation
+
+
+Offenses:
+
+Physical Damage and penetration
 <br/><br/>
 ![gladLogoColored](https://github.com/amorabot/Inscripted/assets/16783145/2b2bdce4-4e39-4928-a77b-ed826d4f0fd1)
 <br/><br/>
