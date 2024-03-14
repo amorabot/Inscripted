@@ -2,7 +2,47 @@
 
 ![logo-beeg](https://github.com/amorabot/Inscripted/assets/16783145/7a0b5918-e269-4e26-a5c1-4479d8bed8e9)
 
+-----------------------------------------------------------------------------------------------------------------
+
+![ItemSystem](https://github.com/amorabot/Inscripted/assets/16783145/27e9172e-762a-4f3b-98c1-a1524b7c4bc1)
+
+Item System demo text
+
+<details>
+
+<summary>Weapons</summary>
+  
+![Screenshot from 2024-03-13 21-05-37](https://github.com/amorabot/Inscripted/assets/16783145/cccdbe2d-5c3e-4fd0-9150-e694fad11966)
+
+
+![Screenshot from 2024-03-13 21-07-57](https://github.com/amorabot/Inscripted/assets/16783145/6b2ce24b-2998-4101-be3a-2b32c0bf56b4)
+
+
+![Screenshot from 2024-03-14 11-43-52](https://github.com/amorabot/Inscripted/assets/16783145/9d3ae1fa-5f7b-4c7b-b5a1-afe4551a3644)
+
+</details>
+
+<details>
+
+<summary>Armors</summary>
+
+![Screenshot from 2024-03-13 21-11-22](https://github.com/amorabot/Inscripted/assets/16783145/a250b68b-53d2-4d84-8827-f6229eef33fa)
+
+![Screenshot from 2024-03-13 21-11-04](https://github.com/amorabot/Inscripted/assets/16783145/d0f5d121-a204-4730-9eef-3c25195c3d6f)
+
+![Screenshot from 2024-03-13 21-10-47](https://github.com/amorabot/Inscripted/assets/16783145/be60ae81-b21b-4041-8a1c-e15081a94c4a)
+
+</details>
+
+-----------------------------------------------------------------------------------------------------------------
+
 ![Archetypes](https://github.com/amorabot/Inscripted/assets/16783145/eaa49118-0b6f-42bf-abdd-87c69b76f8cf)
+
+![STRFull](https://github.com/amorabot/Inscripted/assets/16783145/052387ab-f8eb-40d0-828f-9c2f67587f60)
+![DEXFull](https://github.com/amorabot/Inscripted/assets/16783145/3aaf35ab-386e-421e-9c3c-a1ad0d25c0cb)
+![INTFull](https://github.com/amorabot/Inscripted/assets/16783145/a94547b7-265d-4ac7-bc04-2c91eb45e51f)
+
+
 -----------------------------------------------------------------------------------------------------------------
 Inscripted doesn't feature typical classes. Items are the main way for players to express themselves! Items are one of the cores of a player's build, and there are many item archetypes that can help the player achieve their ideal build! Each archetype reinforces a particular playstyle and they can be mixed and matched together to fit one's needs!
 
