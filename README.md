@@ -16,14 +16,13 @@ and typically fit a Archetype that reinforces certain gameplay, strategic and cl
 
 The collapsable sections below are a showcase of what some Inscripted items look like!
 
+
+![Weapons](https://github.com/amorabot/Inscripted/assets/16783145/b6835343-d477-480b-9882-df5a667b71bd)
+
+
 <details>
 
-<summary>
-  Click here to see the weapon showcase!
-    
-  ![Weapons](https://github.com/amorabot/Inscripted/assets/16783145/b6835343-d477-480b-9882-df5a667b71bd)
-
-</summary>
+<summary>Click here to see the weapon showcase!</summary>
   
 ![Screenshot from 2024-03-13 21-05-37](https://github.com/amorabot/Inscripted/assets/16783145/cccdbe2d-5c3e-4fd0-9150-e694fad11966)
 
@@ -36,14 +35,12 @@ The collapsable sections below are a showcase of what some Inscripted items look
 </details>
 
 
-<details>
-
-<summary>
-  Click here to see the armors showcase!
-  
 ![Armors](https://github.com/amorabot/Inscripted/assets/16783145/d245a6d7-d985-4db4-965d-50d9c834dd5d)
 
-</summary>
+
+<details>
+
+<summary>Click here to see the armors showcase!</summary>
 
 ![Screenshot from 2024-03-13 21-11-22](https://github.com/amorabot/Inscripted/assets/16783145/a250b68b-53d2-4d84-8827-f6229eef33fa)
 
