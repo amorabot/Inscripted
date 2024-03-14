@@ -57,7 +57,6 @@ public class ArmorEquipListener implements Listener {
             Player player = (Player) rootEvent.getWhoClicked();
             PlayerInventory inventory = player.getInventory();
 
-//            ItemStack[] playerArmorSet = inventory.getArmorContents();
             ItemStack armorToEquip = event.getArmorItem();
 
             ItemUsage usage = event.getArmorUsage();
@@ -69,7 +68,6 @@ public class ArmorEquipListener implements Listener {
 
                         if (playerProfile.updateEquipmentSlot(event.getArmorSlot(), null, playerID)){
                             SoundAPI.playArmorUnequipFor(player);
-                            player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
                             return;
                         }
                         //If the armor couldn't be set
@@ -88,7 +86,6 @@ public class ArmorEquipListener implements Listener {
 
                         if (playerProfile.updateEquipmentSlot(event.getArmorSlot(), null, playerID)){
                             SoundAPI.playArmorEquipFor(player);
-                            player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
                             return;
                         }
                         //If the armor couldn't be set
@@ -159,6 +156,5 @@ public class ArmorEquipListener implements Listener {
         Armor armorData = event.getArmorData();
         playerProfile.updateEquipmentSlot(armorSlot, armorData, playerID);
         SoundAPI.playArmorEquipFor(player);
-        player.setHealth(playerProfile.getHealthComponent().getMappedHealth(20));
     }
 }

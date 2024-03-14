@@ -18,6 +18,13 @@ public class AttackProcessor {
         float dodgeChance = DefenceCalculator.getDefenderDodgeChance(defenderDefence);
         return DefenceCalculator.dodgeResult(attackerDamage, dodgeChance);
     }
+    public static void dodgeAttack(int[] dmgArray, int mitigation){
+        //Mitigate mitigation % amount of dmg
+        float resultingDamagePercent = (100-mitigation)/100F;
+        for (int i = 0; i < dmgArray.length; i++){
+            dmgArray[i] = (int) (dmgArray[i] * resultingDamagePercent);
+        }
+    }
 
     private static int[] rollDamages(Map<DamageTypes, int[]> rawDamages){
         /*

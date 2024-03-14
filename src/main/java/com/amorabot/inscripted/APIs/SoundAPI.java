@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.APIs;
 
+import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
@@ -75,5 +76,23 @@ public class SoundAPI {
     }
     public static void playInvalidActionFor(Audience audience, Location loc){
         playGenericSoundAtLocation(audience, loc, "block.note_block.basedrum", 0.5f, 1.0f);
+    }
+    public static void playAttackSoundFor(Audience audience, Location loc, WeaponTypes weaponType){
+        switch (weaponType){
+            case AXE -> playGenericSoundAtLocation(audience, loc, "entity.player.attack.strong", 0.5f, 0.7f);
+            case SWORD -> playGenericSoundAtLocation(audience, loc, "entity.player.attack.sweep", 0.8f, 1f);
+            case BOW -> playGenericSoundAtLocation(audience, loc, "item.crossbow.shoot", 0.8f, 1f);
+            case DAGGER -> playGenericSoundAtLocation(audience, loc, "entity.player.attack.sweep", 0.6f, 1.9f);
+            case WAND -> playGenericSoundAtLocation(audience, loc, "entity.drowned.shoot", 0.8f, 1f);
+            case SCEPTRE -> {
+                playGenericSoundAtLocation(audience, loc, "block.gravel.break", 0.7f, 0.6f);
+//                playGenericSoundAtLocation(audience, loc, "block.basalt.break", 0.8f, 0.5f);
+//                playGenericSoundAtLocation(audience, loc, "entity.zombie.break_wooden_door", 0.1f, 0.2f);
+            }
+        }
+    }
+    public static void playDeathSoundFor(Audience audience, Location loc){
+        playGenericSoundAtLocation(audience, loc, "entity.player.death", 1f, 0.6f);
+        playGenericSoundAtLocation(audience, loc, "entity.wither.hurt", 0.4f, 0.6f);
     }
 }

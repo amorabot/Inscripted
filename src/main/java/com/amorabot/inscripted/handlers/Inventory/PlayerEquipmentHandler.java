@@ -1,9 +1,15 @@
 package com.amorabot.inscripted.handlers.Inventory;
 
 import com.amorabot.inscripted.APIs.EventAPI;
+import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
+import com.amorabot.inscripted.components.Items.Weapon.Weapon;
+import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.events.ItemUsage;
+import com.amorabot.inscripted.skills.SkillTypes;
+import com.amorabot.inscripted.skills.Skills;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
@@ -28,6 +34,7 @@ import java.util.Optional;
 
 import static com.amorabot.inscripted.events.FunctionalItemAccessInterface.*;
 
+//TODO: fragment this class in multiple event handlers
 public class PlayerEquipmentHandler implements Listener {
 //    private static final Set<InventoryAction> CHECKED_CLICKS = Set.of(
 //            InventoryAction.SWAP_WITH_CURSOR,
@@ -97,21 +104,29 @@ public class PlayerEquipmentHandler implements Listener {
             return;
         }
         ItemStack usedItem = usedItemOptional.get();
-        ItemUsage itemUsage = mapPlayerInteractAction(usedItem.getItemMeta().getPersistentDataContainer(), event.getAction());
+        PersistentDataContainer dataContainer = usedItem.getItemMeta().getPersistentDataContainer();
+        ItemUsage itemUsage = mapPlayerInteractAction(dataContainer, event.getAction());
         switch (itemUsage){
             case NONE -> player.sendMessage("Non functional item usage");
             case ARMOR_RIGHT_CLICK_AIR -> player.sendMessage("Equiping armor!!");
             case ARMOR_LEFT_CLICK_AIR -> player.sendMessage("Punching with armor");
-            case WEAPON_LEFT_CLICK_AIR -> {
-                //This is triggered when dropping a equiped weapon from inv
-                if (player.hasCooldown(usedItem.getType())){
-                    player.sendMessage(Utils.color("&c&lYou cannot attack right now!"));
-                } else {
-                    player.sendMessage(Utils.color("&c&lAttack!"));
-                    player.setCooldown(usedItem.getType(), (int)(20*0.5));
+            case WEAPON_LEFT_CLICK_AIR, WEAPON_LEFT_CLICK_BLOCK -> {
+                Weapon weaponData = FunctionalItemAccessInterface.deserializeWeaponData(dataContainer);
+                if (weaponData == null){
+                    player.sendMessage("Invalid weapon attack...");
+                    return;
                 }
+                basicAttackBy(player, usedItem, weaponData.getSubtype());
             }
-            case WEAPON_RIGHT_CLICK_AIR -> player.sendMessage("Weapon special!");
+            case WEAPON_RIGHT_CLICK_AIR, WEAPON_RIGHT_CLICK_BLOCK -> {
+                player.sendMessage("Mobility skill!");
+                Weapon weaponData = FunctionalItemAccessInterface.deserializeWeaponData(dataContainer);
+                if (weaponData == null){
+                    player.sendMessage("Invalid weapon attack...");
+                    return;
+                }
+                Skills.playerAbility(player, SkillTypes.MOVEMENT, weaponData.getSubtype());
+            }
             case UNIDED_WEAPON -> player.sendMessage(Utils.color("&l&cThis weapon is not identified!"));
         }
     }
@@ -519,5 +534,15 @@ public class PlayerEquipmentHandler implements Listener {
         }
         //The cursor item is not a helmet, cancel the equip attempt
         event.setCancelled(true);
+    }
+
+    public static void basicAttackBy(Player player, ItemStack usedItem, WeaponTypes weaponType){
+
+        //This is triggered when dropping a equiped weapon from inv
+        if (!player.hasCooldown(usedItem.getType())){
+            Skills.playerAbility(player, SkillTypes.BASIC_ATTACK, weaponType);
+            SoundAPI.playAttackSoundFor(player, player.getLocation(), weaponType);
+            player.setCooldown(usedItem.getType(), (int)(20*0.5));
+        }
     }
 }

@@ -2,8 +2,6 @@ package com.amorabot.inscripted.components;
 
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
 import com.amorabot.inscripted.components.Player.BaseStats;
-import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.utils.Utils;
 
 import java.util.UUID;
@@ -58,7 +56,7 @@ public class HealthComponent implements EntityComponent {
     }
 
     //------------LIFE METHODS-------------
-    public void replenishLife(){
+    public void replenishHitPoints(){
         currentHealth = maxHealth;
         currentWard = maxWard;
         Utils.log("Reseting player's life");
@@ -223,10 +221,13 @@ public class HealthComponent implements EntityComponent {
     public float getNormalizedWard(){
         return Math.min(currentWard/maxWard, 1F);
     }
+    public double getMappedWard(int basePlayerHearts){
+        if (currentWard == 0){return 0;}
+        return Math.max(0.5, getNormalizedWard()*basePlayerHearts);
+    }
 
     @Override
     public void update(UUID profileID) {
-//        Profile profileData = JSONProfileManager.getProfile(profileID);
         setMaxHealth(getAddedHealth(), getIncreasedHealth());
         setMaxWard(getExtraWard(), getIncreasedWard());
 

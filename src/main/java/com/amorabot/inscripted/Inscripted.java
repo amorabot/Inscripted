@@ -15,10 +15,10 @@ import com.amorabot.inscripted.handlers.misc.JoinQuitHandler;
 import com.amorabot.inscripted.handlers.misc.SunlightBurnHandler;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
+import com.amorabot.inscripted.skills.GlobalCooldownManager;
 import com.amorabot.inscripted.tasks.CombatLogger;
 import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
-//import com.amorabot.inscripted.tasks.PlayerRegen;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
@@ -60,6 +60,7 @@ public final class Inscripted extends JavaPlugin {
         ModifierIDs.loadModifiers();
         Utils.populatePrettyAlphabet();
         Utils.populateRomanChars();
+        GlobalCooldownManager.setup();
 //        getWorld().getLivingEntities()
 
         commandsStartupRoutine();
@@ -88,7 +89,6 @@ public final class Inscripted extends JavaPlugin {
         if (playerInterfaceRenderer != null && !playerInterfaceRenderer.isCancelled()){
             playerInterfaceRenderer.cancel();
         }
-        PlayerInterfaceRenderer.shutdownAllBars();
         PlayerRegenManager.shutdown();
         CombatHologramsDepleter.getInstance().shutdown();
 

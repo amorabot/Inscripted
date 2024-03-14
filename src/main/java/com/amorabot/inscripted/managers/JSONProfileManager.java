@@ -158,7 +158,7 @@ public class JSONProfileManager {
                     if (!containsProfile(playerId)){ //If profile is not loaded, load
                         profiles.put(playerId, profileMap.get(playerId));
                         log("Profile reloaded: " + player.getDisplayName());
-                        PlayerInterfaceRenderer.startupBossBars(player);
+//                        PlayerInterfaceRenderer.startupBossBars(player);
                     }
                 }
             } catch (FileNotFoundException e) {
