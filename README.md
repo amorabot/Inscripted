@@ -10,7 +10,16 @@ Item System demo text
 
 <details>
 
-<summary>Weapons</summary>
+<summary>
+  Click here to see the weapon showcase!
+  
+  <figure>
+    
+  ![Weapons](https://github.com/amorabot/Inscripted/assets/16783145/b6835343-d477-480b-9882-df5a667b71bd)
+
+  
+  </figure>
+</summary>
   
 ![Screenshot from 2024-03-13 21-05-37](https://github.com/amorabot/Inscripted/assets/16783145/cccdbe2d-5c3e-4fd0-9150-e694fad11966)
 
@@ -24,7 +33,14 @@ Item System demo text
 
 <details>
 
-<summary>Armors</summary>
+Click here to see the armors showcase!
+  
+  <figure>
+    
+  ![Armors](https://github.com/amorabot/Inscripted/assets/16783145/f28295a0-851f-4f65-a1ff-0c0a0eb148bd)
+
+  
+  </figure>
 
 ![Screenshot from 2024-03-13 21-11-22](https://github.com/amorabot/Inscripted/assets/16783145/a250b68b-53d2-4d84-8827-f6229eef33fa)
 
