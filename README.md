@@ -6,7 +6,15 @@
 
 ![ItemSystem](https://github.com/amorabot/Inscripted/assets/16783145/27e9172e-762a-4f3b-98c1-a1524b7c4bc1)
 
-Item System demo text
+The item system is meant to allow for expressive build creation, mixing and matching all the different items and their stats to fit your preferred style! It also offers procedural item generation and customization, where most items will have a unique modifier pool that will offer unique stat combinations that can only be found on certain items. The exception are the so-called Relic items (Pre-defined and rarer), that will bend some of the game mechanics and subvert the use of some stats, allowing for even quirkier builds!
+
+One of the core principles of the item system is that obtaining a desired item is pretty much a deterministic process. Not easy. Deterministic. Through Orbs (And later on NPCs), you can manipulate procedural items to achieve a desired combination of Inscriptions (Modifiers that grant stats for your character, basically). Do you NEED a specific Relic item to bring your dream build to life? There will be a way to grind to it.
+
+The itemization was designed around the concepts of item archetypes and attribute-alignment (Strength, Dexterity and Intelligence alignments), meaning items are meant to be representative of the
+attribute they're aligned and their general characteristics aswell as their general archetype roles. That means, for instance, that Strength-Aligned items will have a set of characteristics in common
+and typically fit a Archetype that reinforces certain gameplay, strategic and class-fantasy aspects of the gameplay! There's a entire section dedicated to showcasing Archetype roles and attribute-alignment, go check it out!
+
+The collapsable sections below are a showcase of what some Inscripted items look like!
 
 <details>
 
@@ -31,16 +39,18 @@ Item System demo text
 
 </details>
 
+
 <details>
 
-Click here to see the armors showcase!
+<summary>
+  Click here to see the armors showcase!
   
   <figure>
     
-  ![Armors](https://github.com/amorabot/Inscripted/assets/16783145/f28295a0-851f-4f65-a1ff-0c0a0eb148bd)
+![Armors](https://github.com/amorabot/Inscripted/assets/16783145/d245a6d7-d985-4db4-965d-50d9c834dd5d)
 
-  
   </figure>
+</summary>
 
 ![Screenshot from 2024-03-13 21-11-22](https://github.com/amorabot/Inscripted/assets/16783145/a250b68b-53d2-4d84-8827-f6229eef33fa)
 
@@ -62,111 +72,155 @@ Click here to see the armors showcase!
 -----------------------------------------------------------------------------------------------------------------
 Inscripted doesn't feature typical classes. Items are the main way for players to express themselves! Items are one of the cores of a player's build, and there are many item archetypes that can help the player achieve their ideal build! Each archetype reinforces a particular playstyle and they can be mixed and matched together to fit one's needs!
 
+![STR](https://github.com/amorabot/Inscripted/assets/16783145/d3ac961a-b556-4d9e-b672-b25967463820)
+The strength attribute will typically represent physical stats (damage, mitigation) and it's associated element is Fire.
+
+![DEX](https://github.com/amorabot/Inscripted/assets/16783145/c67f9dcd-c9c3-4956-b1fa-3e7e78c6be5c)
+The dexterity attribute will typically represent evasiveness and movement speed stats. It's associated element is Lightning.
+
+![INT](https://github.com/amorabot/Inscripted/assets/16783145/85a0fec7-05a0-4065-9d50-01beb940a423)
+The intelligence attribute will typically represent elemental stats and stamina. It's associated element is Cold.
+
+Some archetypes will represent a mixture of the main 3 attribute's characteristics. For example, the Gladiator is a hybrid class that taps both into Strength and Dexterity.
+
+--------------------------------------------------
+
+## Example:
+
+### A typical axe will be a strength-aligned weapon that fits the Marauder archetype. A more specialized and unique axe, such as Relic Axes, can bend those rules and still be alligned withthe strength attribute but offer tradeoffs for being able to tap into other achetype's typical charachteristics, allowing for more fun and diverse builds. 
+--------------------------------------------------
 
 Next will be the descriptions and general characteristics of all current archetypes: 
 
+-----------------------------------------------------------------------------------------------------------------
+
 ![marauderLogoColored](https://github.com/amorabot/Inscripted/assets/16783145/847efa3d-9c72-40db-867d-26facb9f0eb7)
+![STR](https://github.com/amorabot/Inscripted/assets/16783145/d3ac961a-b556-4d9e-b672-b25967463820)
 
 
 The Marauder is a warrior that wears heavy and protective armor and specilizes in strong, physical, blows, shredding through enemies defences.
 
 
-Defences:
+![Shield](https://github.com/amorabot/Inscripted/assets/16783145/000e65c4-7794-4120-8662-b1741e6dbd31)
+*Defences:*
 
 
-Heavy phisical mitigation
+Heavy phisical mitigation.
 
+![Sword](https://github.com/amorabot/Inscripted/assets/16783145/f1f7c4bd-9f27-4827-837b-2eb10d271a86)
+*Offences:*
 
-Offences:
+Physical Damage and penetration.
 
-Physical Damage and penetration
 <br/><br/>
+-----------------------------------------------------------------------------------------------------------------
+
 ![gladLogoColored](https://github.com/amorabot/Inscripted/assets/16783145/2b2bdce4-4e39-4928-a77b-ed826d4f0fd1)
+![STR](https://github.com/amorabot/Inscripted/assets/16783145/d3ac961a-b556-4d9e-b672-b25967463820)
+![DEX](https://github.com/amorabot/Inscripted/assets/16783145/c67f9dcd-c9c3-4956-b1fa-3e7e78c6be5c)
 
 A fierce duelist that excels at battle. the Gladiator prefers quicker and wider blows to finish their enemies, and of course, all of that
 while wearing the fanciest of armor and showing off some of their agility in combat.
 
-Defences:
+![Shield](https://github.com/amorabot/Inscripted/assets/16783145/000e65c4-7794-4120-8662-b1741e6dbd31)
+*Defences:*
 
 
-Moderate physical mitigation and evasion
+Moderate physical mitigation and evasion.
 
 
-Offences:
+![Sword](https://github.com/amorabot/Inscripted/assets/16783145/f1f7c4bd-9f27-4827-837b-2eb10d271a86)
+*Offences:*
 
 
 Damage variety, Stamina and Critical strikes.
+
 <br/><br/>
+-----------------------------------------------------------------------------------------------------------------
+
 ![mercLogoColored](https://github.com/amorabot/Inscripted/assets/16783145/8b406f3f-c479-477c-a7f0-0d6f3b5875cb)
+![DEX](https://github.com/amorabot/Inscripted/assets/16783145/c67f9dcd-c9c3-4956-b1fa-3e7e78c6be5c)
 
 The Mercenary is agile and decisive, having long range and high mobility to dictate the pace of battle.
 
-Defences:
+![Shield](https://github.com/amorabot/Inscripted/assets/16783145/000e65c4-7794-4120-8662-b1741e6dbd31)
+*Defences:*
 
 
-Highly evasive and mobile
+Highly evasive and mobile.
 
 
-Offences:
+![Sword](https://github.com/amorabot/Inscripted/assets/16783145/f1f7c4bd-9f27-4827-837b-2eb10d271a86)
+*Offences:*
 
 Long-range physical damage, penetration and ailments.
+
 <br/><br/>
+-----------------------------------------------------------------------------------------------------------------
+
 ![rogueLogoColored](https://github.com/amorabot/Inscripted/assets/16783145/91577227-b5e5-436d-bf74-a3c46ee5b289)
+![DEX](https://github.com/amorabot/Inscripted/assets/16783145/c67f9dcd-c9c3-4956-b1fa-3e7e78c6be5c)
+![INT](https://github.com/amorabot/Inscripted/assets/16783145/85a0fec7-05a0-4065-9d50-01beb940a423)
 
 Although The Rogue has shorter range than average, they're elusive and sneaky. They can vanish before your eyes and strike a deadly backstab in a instant!
 
-Defences:
+![Shield](https://github.com/amorabot/Inscripted/assets/16783145/000e65c4-7794-4120-8662-b1741e6dbd31)
+*Defences:*
 
 
-Moderate evasion and ward
+Moderate evasion and ward.
 
 
-Offences:
+![Sword](https://github.com/amorabot/Inscripted/assets/16783145/f1f7c4bd-9f27-4827-837b-2eb10d271a86)
+*Offences:*
 
 Backstab damage multiplier, critical strikes and multipliers.
+
 <br/><br/>
+-----------------------------------------------------------------------------------------------------------------
+
 ![sorcLogoColored](https://github.com/amorabot/Inscripted/assets/16783145/d9fcf757-806c-4386-8c70-571f91ed0ac6)
+![INT](https://github.com/amorabot/Inscripted/assets/16783145/85a0fec7-05a0-4065-9d50-01beb940a423)
 
 The Sorcerer conjures the arcane in combat to cast powerful projectiles and spells. Although not as mobile as the Mercenary, they're very adaptable and a force to be reckoned with.
 
-Defences:
+![Shield](https://github.com/amorabot/Inscripted/assets/16783145/000e65c4-7794-4120-8662-b1741e6dbd31)
+*Defences:*
 
 
-Massive ward pool
+Massive ward pool.
 
 
-Offences:
+![Sword](https://github.com/amorabot/Inscripted/assets/16783145/f1f7c4bd-9f27-4827-837b-2eb10d271a86)
+*Offences:*
 
 Elemental damage and penetration.
+
 <br/><br/>
+-----------------------------------------------------------------------------------------------------------------
+
 ![templarLogoColored](https://github.com/amorabot/Inscripted/assets/16783145/623f998c-b214-48bb-bbe9-c51f53b2a322)
+![INT](https://github.com/amorabot/Inscripted/assets/16783145/85a0fec7-05a0-4065-9d50-01beb940a423)
+![STR](https://github.com/amorabot/Inscripted/assets/16783145/d3ac961a-b556-4d9e-b672-b25967463820)
 
 The Templar is a righteous warrior that has the might and the faith to overcome their foes. They specialize in area effects and buffs with their prayers, being a bastion for those in need
 
-Defences:
+![Shield](https://github.com/amorabot/Inscripted/assets/16783145/000e65c4-7794-4120-8662-b1741e6dbd31)
+*Defences:*
 
 
-Moderate physical mitigation and ward
+Moderate physical mitigation and ward.
 
 
-Offences:
+![Sword](https://github.com/amorabot/Inscripted/assets/16783145/f1f7c4bd-9f27-4827-837b-2eb10d271a86)
+*Offences:*
 
 Heavy elemental damage, area damage.
 
 -----------------------------------------------------------------------------------------------------------------
-<details>
 
-<summary>Item system</summary>
-
-# Generic item generation (Swords and axes shown)
-![image](https://github.com/amorabot/RPG-Elements/assets/16783145/691cb89a-0687-47bc-aefb-d0d5e0a8df3b)
-
-
-![image](https://github.com/amorabot/RPG-Elements/assets/16783145/57d26f35-8dfa-40fa-9e4b-0b31bb8d4844)
-</details>
 
 <br/><br/>
------------------------------------------------------------------------------------------------------------------
 <details>
 <summary>Mob system</summary>
 
