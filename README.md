@@ -77,7 +77,7 @@ Some archetypes will represent a mixture of the main 3 attribute's characteristi
 
 ## Example:
 
-### A typical axe will be a strength-aligned weapon that fits the Marauder archetype. A more specialized and unique axe, such as Relic Axes, can bend those rules and still be alligned withthe strength attribute but offer tradeoffs for being able to tap into other achetype's typical charachteristics, allowing for more fun and diverse builds. 
+### A typical axe will be a strength-aligned weapon that fits the Marauder archetype. A more specialized and unique axe, such as Relic Axes, can bend those rules and still be alligned with the strength attribute but offer tradeoffs for being able to tap into other achetype's typical characteristics, allowing for more fun and diverse builds. 
 --------------------------------------------------
 
 Next will be the descriptions and general characteristics of all current archetypes: 
