@@ -119,7 +119,7 @@ public class PlayerEquipmentHandler implements Listener {
                 basicAttackBy(player, usedItem, weaponData.getSubtype());
             }
             case WEAPON_RIGHT_CLICK_AIR, WEAPON_RIGHT_CLICK_BLOCK -> {
-                player.sendMessage("Mobility skill!");
+//                player.sendMessage("Mobility skill!");
                 Weapon weaponData = FunctionalItemAccessInterface.deserializeWeaponData(dataContainer);
                 if (weaponData == null){
                     player.sendMessage("Invalid weapon attack...");
@@ -537,12 +537,21 @@ public class PlayerEquipmentHandler implements Listener {
     }
 
     public static void basicAttackBy(Player player, ItemStack usedItem, WeaponTypes weaponType){
-
         //This is triggered when dropping a equiped weapon from inv
         if (!player.hasCooldown(usedItem.getType())){
             Skills.playerAbility(player, SkillTypes.BASIC_ATTACK, weaponType);
             SoundAPI.playAttackSoundFor(player, player.getLocation(), weaponType);
-            player.setCooldown(usedItem.getType(), (int)(20*0.5));
+            switch (weaponType){
+                case SWORD -> {
+                    player.setCooldown(usedItem.getType(), (int)(20*0.3));
+                }
+                case AXE -> {
+                    player.setCooldown(usedItem.getType(), (int)(20*0.4));
+                }
+                default -> {
+                    player.setCooldown(usedItem.getType(), (int)(20*0.5));
+                }
+            }
         }
     }
 }
