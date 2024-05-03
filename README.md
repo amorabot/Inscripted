@@ -4,6 +4,10 @@
 
 -----------------------------------------------------------------------------------------------------------------
 
+## Gameplay Demo: https://www.youtube.com/watch?v=7vwqPahws5U
+
+![thumb3](https://github.com/amorabot/Inscripted/assets/16783145/62c548db-68b1-4624-84ad-13975ebba863)
+
 ![ItemSystem](https://github.com/amorabot/Inscripted/assets/16783145/27e9172e-762a-4f3b-98c1-a1524b7c4bc1)
 
 The item system is meant to allow for expressive build creation, mixing and matching all the different items and their stats to fit your preferred style! It also offers procedural item generation and customization, where most items will have a unique modifier pool that will offer unique stat combinations that can only be found on certain items. The exception are the so-called Relic items (Pre-defined and rarer), that will bend some of the game mechanics and subvert the use of some stats, allowing for even quirkier builds!
@@ -11,8 +15,8 @@ The item system is meant to allow for expressive build creation, mixing and matc
 One of the core principles of the item system is that obtaining a desired item is pretty much a deterministic process. Not easy. Deterministic. Through Orbs (And later on NPCs), you can manipulate procedural items to achieve a desired combination of Inscriptions (Modifiers that grant stats for your character, basically). Do you NEED a specific Relic item to bring your dream build to life? There will be a way to grind to it.
 
 The itemization was designed around the concepts of item archetypes and attribute-alignment (Strength, Dexterity and Intelligence alignments), meaning items are meant to be representative of the
-attribute they're aligned and their general characteristics aswell as their general archetype roles. That means, for instance, that Strength-Aligned items will have a set of characteristics in common
-and typically fit a Archetype that reinforces certain gameplay, strategic and class-fantasy aspects of the gameplay! There's a entire section dedicated to showcasing Archetype roles and attribute-alignment, go check it out!
+attribute they're aligned with and their general characteristics aswell as their general archetype roles. That means, for instance, that Strength-Aligned items will have a set of characteristics in common
+and typically fit a Archetype that reinforces certain mehcanical, strategic and class-fantasy aspects of play! There's a entire section dedicated to showcasing Archetype roles and attribute-alignment, go check it out!
 
 The collapsable sections below are a showcase of what some Inscripted items look like!
 
@@ -60,7 +64,7 @@ The collapsable sections below are a showcase of what some Inscripted items look
 
 
 -----------------------------------------------------------------------------------------------------------------
-Inscripted doesn't feature typical classes. Items are the main way for players to express themselves! Items are one of the cores of a player's build, and there are many item archetypes that can help the player achieve their ideal build! Each archetype reinforces a particular playstyle and they can be mixed and matched together to fit one's needs!
+Inscripted doesn't feature typical classes. Items are the main way for players to express themselves! Items are one of the cores of a player's build, and there are many item archetypes that can help one achieve their ideal build! Each archetype reinforces a particular playstyle and they can be mixed and matched together to fit one's needs!
 
 ![STR](https://github.com/amorabot/Inscripted/assets/16783145/d3ac961a-b556-4d9e-b672-b25967463820)
 The strength attribute will typically represent physical stats (damage, mitigation) and it's associated element is Fire.
@@ -77,7 +81,7 @@ Some archetypes will represent a mixture of the main 3 attribute's characteristi
 
 ## Example:
 
-### A typical axe will be a strength-aligned weapon that fits the Marauder archetype. A more specialized and unique axe, such as Relic Axes, can bend those rules and still be alligned with the strength attribute but offer tradeoffs for being able to tap into other achetype's typical characteristics, allowing for more fun and diverse builds. 
+### A typical axe will be a strength-aligned weapon that fits the Marauder archetype. A more specialized and rarer axe, like Relic Axes, can bend those rules and still be alligned with the strength attribute but offer tradeoffs for being able to tap into other achetype's typical characteristics, allowing for more fun and diverse builds(A axe could convert a fraction of your fire damage into cold, but increase your cold damage taken, leaning into Intelligence but giving tradeoffs). 
 --------------------------------------------------
 
 Next will be the descriptions and general characteristics of all current archetypes: 
@@ -88,7 +92,7 @@ Next will be the descriptions and general characteristics of all current archety
 ![STR](https://github.com/amorabot/Inscripted/assets/16783145/d3ac961a-b556-4d9e-b672-b25967463820)
 
 
-The Marauder is a warrior that wears heavy and protective armor and specilizes in strong, physical, blows, shredding through enemies defences.
+The Marauder is a warrior that wears heavy and protective armor and specilizes in strong physical blows, shredding through enemies defences.
 
 
 ![Shield](https://github.com/amorabot/Inscripted/assets/16783145/000e65c4-7794-4120-8662-b1741e6dbd31)
