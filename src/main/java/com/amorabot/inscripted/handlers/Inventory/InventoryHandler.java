@@ -21,6 +21,9 @@ public class InventoryHandler implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onInventoryClick(InventoryClickEvent event) {
+        if(event.isCancelled()){
+            return;
+        }
         if (!(event.getWhoClicked() instanceof Player)) {
             return;
         }
@@ -31,15 +34,20 @@ public class InventoryHandler implements Listener {
             return;
         }
 
+
         InventoryAction attemptedAction = event.getAction();
         Player player = (Player) event.getWhoClicked();
-        PlayerInventory inventory = player.getInventory();
+        PlayerInventory playerInventory = player.getInventory();
 
+//        if (event.getInventory() != playerInventory){
+//            player.sendMessage("Negating out-of-inventory clicks @" + this.getClass().getSimpleName());
+//            return;
+//        }
         ItemStack clickedItem = event.getCurrentItem();
         ItemStack cursorItem = event.getCursor();
 
         if (attemptedAction == InventoryAction.SWAP_WITH_CURSOR){
-            if (event.getSlot() == inventory.getHeldItemSlot()){
+            if (event.getSlot() == playerInventory.getHeldItemSlot()){
                 player.sendMessage("No currency usage on main hand....");
                 event.setCancelled(true);
                 return;

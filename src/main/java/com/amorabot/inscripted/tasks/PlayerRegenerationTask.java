@@ -7,9 +7,11 @@ import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class PlayerRegenerationTask extends BukkitRunnable {
@@ -33,6 +35,10 @@ public class PlayerRegenerationTask extends BukkitRunnable {
         Profile playerProfile = JSONProfileManager.getProfile(playerID);
         HealthComponent HPComponent = playerProfile.getHealthComponent();
 
+        //Reset food levels (TEMPORARY)!!!!!!!!!!!!!
+        player.setFoodLevel(19);
+        player.setSaturation(0);
+
         //If the player is pvp tagged, dont regen life
         boolean isPvPTagged = player.hasMetadata(CombatLogger.getPvpTag());
 
@@ -54,11 +60,11 @@ public class PlayerRegenerationTask extends BukkitRunnable {
 
             HPComponent.regenHealth(HPS);
 
+            //TODO: Encapsulate Health and Ward mapping
             double mappedHealth = HPComponent.getMappedHealth(20);
             if ((mappedHealth - player.getHealth()) >= 0.5D){
                 player.setHealth(mappedHealth);
             }
-//            HPComponent.regenHealth(HPS);
         }
 
         if (HPComponent.getCurrentWard() != HPComponent.getMaxWard() && (PlayerRegenManager.canRegenWard(playerID))){

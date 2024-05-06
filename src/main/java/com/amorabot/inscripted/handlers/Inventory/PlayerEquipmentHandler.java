@@ -143,10 +143,12 @@ public class PlayerEquipmentHandler implements Listener {
         PlayerInventory inventory = player.getInventory();
         //InventoryHandler should handle all inventory interactions that are not happening exclusively on the players inventory alone
         //Lets assume it from now on
-        if (event.getClickedInventory() != player.getInventory()){
-            player.sendMessage("Ignoring external invs");//                    # DEBUG MESSAGE
-            return;
-        }
+
+
+//        if (event.getClickedInventory() != player.getInventory()){
+//            player.sendMessage("Ignoring external invs");//                    # DEBUG MESSAGE
+//            return;
+//        }
 
         ClickType clickType = event.getClick();
         ItemStack clickedItem = event.getCurrentItem();
