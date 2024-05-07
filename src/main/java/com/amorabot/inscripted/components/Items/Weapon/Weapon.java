@@ -25,6 +25,8 @@ import java.util.*;
 public class Weapon extends Item implements ItemCategory {
     private final WeaponTypes type;
     private final int[] baseDamage;
+    private final WeaponAttackSpeeds atkSpeed;
+    private final RangeCategory range;
     private final int percentDamageVariance;
     //Define stat requirement for weapons
     //Atk speed
@@ -35,6 +37,8 @@ public class Weapon extends Item implements ItemCategory {
         setup();
         baseDamage = type.mapBaseDamage(getTier());
         this.percentDamageVariance = CraftingUtils.getRandomNumber(-WeaponTypes.weaponDamageVariance, WeaponTypes.weaponDamageVariance);
+        this.atkSpeed = getSubtype().getBaseAttackSpeed();
+        this.range = getSubtype().getRange();
     }
     public Weapon(int ilvl, ItemRarities rarity, boolean identified, boolean corrupted){ //Random generic weapon constructor
         super(ilvl, rarity, identified, corrupted, ItemTypes.WEAPON);
@@ -45,6 +49,8 @@ public class Weapon extends Item implements ItemCategory {
         setup();
         baseDamage = type.mapBaseDamage(getTier());
         this.percentDamageVariance = CraftingUtils.getRandomNumber(-WeaponTypes.weaponDamageVariance, WeaponTypes.weaponDamageVariance);
+        this.atkSpeed = getSubtype().getBaseAttackSpeed();
+        this.range = getSubtype().getRange();
     }
 
     @Override
@@ -58,7 +64,8 @@ public class Weapon extends Item implements ItemCategory {
     @Override
     protected void mapBase(){
         //TODO: Add atk speed mapping, min base stats required...
-        vanillaMaterial = type.mapWeaponBase(getTier());
+        vanillaMaterial = type.mapWeaponBase();
+//        vanillaMaterial = type.mapWeaponBase(getTier());
     }
 
     //-------------------------------------------------------------------------
@@ -119,12 +126,30 @@ public class Weapon extends Item implements ItemCategory {
         imprint(weaponItem,type);
 
         serializeContainers(this, weaponItem);
+
+        setWeaponModel(weaponItem);
         return weaponItem;
     }
     @Override
     public void serializeContainers(Item itemData, ItemStack item) {
         FunctionalItemAccessInterface.serializeItem(item, this);
     }
+
+    private void setWeaponModel(ItemStack item){
+        int modelID = getSubtype().mapWeaponTierModel(getTier());
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.setCustomModelData(modelID);
+        item.setItemMeta(itemMeta);
+    }
+    public RangeCategory getRange() {
+        return this.range;
+    }
+    public WeaponAttackSpeeds getAtkSpeed() {
+        return this.atkSpeed;
+    }
+//    public void setAtkSpeed(WeaponAttackSpeeds atkSpeed){
+//        this.atkSpeed = atkSpeed;
+//    } //USABE IF THERE ARE PLANS TO MODIFY IT SOMEHOW VIA ORBS/ETC
 
     public ItemRenderer getRenderer(){
         switch (this.renderer){

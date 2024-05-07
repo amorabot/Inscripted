@@ -29,7 +29,7 @@ public class Skills {
             case AXE -> {
                 switch (skillType){
                     case BASIC_ATTACK -> {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 300, 5));
+//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 300, 5));
 
                         axeBasicAttackBy(player);
                     }
@@ -45,7 +45,7 @@ public class Skills {
             case SWORD -> {
                 switch (skillType){
                     case BASIC_ATTACK -> {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 300, 2));
+//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 300, 2));
                         swordBasicAttackBy(player);
                     }
                     case MOVEMENT -> {
@@ -60,7 +60,7 @@ public class Skills {
             case BOW -> {
                 switch (skillType){
                     case BASIC_ATTACK -> {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 3));
+//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 3));
                         bowBasicAttackBy(player);
                     }
                     case MOVEMENT -> {
@@ -75,7 +75,7 @@ public class Skills {
             case DAGGER -> {
                 switch (skillType){
                     case BASIC_ATTACK -> {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 3));
+//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 3));
                         daggerBasicAttackBy(player);
                     }
                     case MOVEMENT -> {
@@ -90,7 +90,7 @@ public class Skills {
             case WAND -> {
                 switch (skillType){
                     case BASIC_ATTACK -> {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 3));
+//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 3));
                         wandBasicAttackBy(player);
                     }
                     case MOVEMENT -> {
@@ -105,7 +105,7 @@ public class Skills {
             case SCEPTRE -> {
                 switch (skillType){
                     case BASIC_ATTACK -> {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 4));
+//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 4));
                         sceptreBasicAttackBy(player);
                     }
                     case MOVEMENT -> {
