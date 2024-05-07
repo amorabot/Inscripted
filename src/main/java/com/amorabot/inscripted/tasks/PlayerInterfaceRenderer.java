@@ -39,7 +39,7 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             String wardHex = DefenceTypes.WARD.getTextColor().replace("&", "");
             float dps = playerProfile.getDamageComponent().getHitData().getDPS();
             int staminaValue = playerProfile.getMiscellaneous().getStamina();
-            char facing = currentPlayer.getFacing().toString().charAt(0);
+//            char facing = currentPlayer.getFacing().toString().charAt(0);
 
             Audience playerAudience = Audience.audience(currentPlayer);
 
@@ -56,9 +56,12 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
                     .color(TextColor.fromHexString(wardHex));
 
 
-            String infoSection = "&7&l " + facing + "  &7" + dps + " ";
+            String infoSection = "&7&l Lv19[&6&l|||&8|||||||&7&l] ";
             TextComponent infoComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(infoSection);
-            String cooldownSection = "&7\uD83E\uDDEA12/47 ";
+            String cooldownSection = "";
+            if (dps > 1){
+                cooldownSection+= "&a\uD83D\uDDE1 ";
+            }
             Long remainingMovementCD = GlobalCooldownManager.fetchRemainingCooldownFor(currentPlayer.getUniqueId(), SkillTypes.MOVEMENT);
             if (remainingMovementCD > 0){
                 if (remainingMovementCD<4000){
@@ -69,6 +72,7 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             } else {
                 cooldownSection += "&a⏳M ";
             }
+            cooldownSection += " &7\uD83E\uDDEA12";
             TextComponent cooldownCoomponent = LegacyComponentSerializer.legacyAmpersand().deserialize(cooldownSection);
 
             TextComponent ABComponent;

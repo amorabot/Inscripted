@@ -1,10 +1,6 @@
 package com.amorabot.inscripted.commands;
 
-import com.amorabot.inscripted.APIs.MessageAPI;
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.skills.*;
-import com.amorabot.inscripted.utils.Utils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,10 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 public class TemplateCommand implements CommandExecutor {
@@ -43,12 +35,13 @@ public class TemplateCommand implements CommandExecutor {
             String action = strings[0];
             switch (action){
                 case "atk":
-//                    Skills.axeBasicAttackBy(player);
-//                    Skills.bowBasicAttackBy(player);
-//                    Skills.wandBasicAttackBy(player);
-//                    Skills.sceptreBasicAttackBy(player);
                     break;
-                case "death":
+                case "food":
+                    player.sendMessage("FL " + player.getFoodLevel());
+                    player.sendMessage("SAT " + player.getSaturation());
+                    player.sendMessage("EXHA " + player.getExhaustion());
+                    player.sendMessage("STARV " + player.getStarvationRate());
+                    player.setFoodLevel(10);
                     break;
                 case "toggle":
                     //Not persistent (ideal for temporary tags/ownership/toggles that are not essential in combat) -> if persistance is needed: scoreboard tags

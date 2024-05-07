@@ -24,7 +24,9 @@ public class WeaponRenderer implements ItemRenderer {
         int indent = 1;
 
         itemLore.add("");
-        serializeDamageLineComponent(damages, itemLore, indent);
+        serializeDamageLineComponent(damages, itemLore, indent, weaponData);
+        itemLore.add("");
+        addAtkSpeedLine(weaponData, itemLore);
         itemLore.add("");
         itemLore.add("@HEADER@");
     }
@@ -48,21 +50,28 @@ public class WeaponRenderer implements ItemRenderer {
         return Component.text("ᴅᴍɢ: ").color(NamedTextColor.GRAY);
     }
 
-    private void serializeDamageLineComponent(Map<DamageTypes, int[]> damages, List<String> itemLore, int indent){
+    private void serializeDamageLineComponent(Map<DamageTypes, int[]> damages, List<String> itemLore, int indent, Weapon weaponData){
         for (DamageTypes dmgType : DamageTypes.values()){
+            String dmgIcon = dmgType.getCharacter();
+            if (dmgType.equals(DamageTypes.PHYSICAL)){
+                dmgIcon = dmgType.getPhysicalDamageIcon(weaponData.getRange());
+            }
 
             if (damages.containsKey(dmgType)){
                 int[] extraDmg = damages.get(dmgType);
                 TextComponent extraDmgComponent =
-                        Component.text(dmgType.getCharacter()+ " " + extraDmg[0] + " - " + extraDmg[1])
-                                .color(dmgType.getColorComponent());
+                        Component.text(dmgIcon+ " " + extraDmg[0] + " - " + extraDmg[1])
+                                .color(dmgType.getTextColor());
 
-                if (dmgType.equals(DamageTypes.PHYSICAL)){
+                if (dmgType.equals(DamageTypes.PHYSICAL)){ //When it's the first line, append the "dmg: " prefix
                     serializeTextComponent(itemLore, getDmgPrefixComponent().append(extraDmgComponent), indent);
                     continue;
                 }
                 serializeTextComponent(itemLore, extraDmgComponent, indent+6);
             }
         }
+    }
+    private void addAtkSpeedLine(Weapon weaponData, List<String> itemLore){
+        itemLore.add(color(Utils.convertToPrettyString(" &7Atk Speed: ") + "&8&l" + weaponData.getAtkSpeed()));
     }
 }

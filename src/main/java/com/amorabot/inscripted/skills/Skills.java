@@ -1,12 +1,10 @@
 package com.amorabot.inscripted.skills;
 
-import com.amorabot.inscripted.APIs.MessageAPI;
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.utils.Utils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -31,10 +29,9 @@ public class Skills {
             case AXE -> {
                 switch (skillType){
                     case BASIC_ATTACK -> {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 300, 5));
+//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 300, 5));
 
-                        secondAxeBasicAttackBy(player);
-//                        axeBasicAttackBy(player);
+                        axeBasicAttackBy(player);
                     }
                     case MOVEMENT -> {
                         if (GlobalCooldownManager.skillcastBy(player.getUniqueId(),skillType,10)){
@@ -48,7 +45,7 @@ public class Skills {
             case SWORD -> {
                 switch (skillType){
                     case BASIC_ATTACK -> {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 300, 2));
+//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 300, 2));
                         swordBasicAttackBy(player);
                     }
                     case MOVEMENT -> {
@@ -63,7 +60,7 @@ public class Skills {
             case BOW -> {
                 switch (skillType){
                     case BASIC_ATTACK -> {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 3));
+//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 3));
                         bowBasicAttackBy(player);
                     }
                     case MOVEMENT -> {
@@ -78,7 +75,7 @@ public class Skills {
             case DAGGER -> {
                 switch (skillType){
                     case BASIC_ATTACK -> {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 3));
+//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 3));
                         daggerBasicAttackBy(player);
                     }
                     case MOVEMENT -> {
@@ -93,7 +90,7 @@ public class Skills {
             case WAND -> {
                 switch (skillType){
                     case BASIC_ATTACK -> {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 3));
+//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 3));
                         wandBasicAttackBy(player);
                     }
                     case MOVEMENT -> {
@@ -108,7 +105,7 @@ public class Skills {
             case SCEPTRE -> {
                 switch (skillType){
                     case BASIC_ATTACK -> {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 4));
+//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 4));
                         sceptreBasicAttackBy(player);
                     }
                     case MOVEMENT -> {
@@ -122,71 +119,86 @@ public class Skills {
             }
         }
     }
-
     private static void swordBasicAttackBy(Player player){
+
         World playerWorld = player.getWorld();
-
-        //Get player location -> Access to direction vector later
         Location playerLocation = player.getLocation();
+        final Vector playerPos = playerLocation.toVector().clone().add(new Vector(0, 1.4, 0));
 
-        //Slash setup variables
-        double arc = 60;
-        int steps = 10;
-        int duration = 10; //In ticks
-        int durationPerStep = Math.max(Math.round((float) duration /steps), 1);
-        int animationSpeed = 4; //Each runnable iteration equates to "animationSpeed" number of frames
-        double angleStep = (arc/steps)/180*Math.PI;
-        double initialAngleOffset = (arc/2)/180*Math.PI;
-        if (Math.random() > 0.5){
-            angleStep = -angleStep;
-            initialAngleOffset = -initialAngleOffset;
+        final Vector initialDirection = playerLocation.clone().getDirection().normalize();
+        final Vector horizontalVec = new Vector(initialDirection.getX(), 0, initialDirection.getZ());
+
+        //Slash randomization when view angle is low
+        Vector perpendicularAxis = initialDirection.clone().crossProduct(horizontalVec).normalize();
+        if (playerLocation.getPitch() <=15 && playerLocation.getPitch() >= -15){ //30deg cone, the effect activates
+            double randomAngle = Utils.getRandomInclusiveValue(10,40); //10-40deg
+            perpendicularAxis = LinalgMath.rotateAroundGenericAxis(initialDirection.clone(),perpendicularAxis, randomAngle/180*Math.PI);
         }
+        Vector finalPerpendicularAxis = perpendicularAxis;
 
-        double offset = 0.6;
-        double length = 1.6;
+        double arc = 120;
 
-        double finalAngleStep = angleStep;
-        double finalInitialAngleOffset = initialAngleOffset;
+        int steps = 16;
+        double angleStep = (arc/steps)/180*Math.PI;
 
-        final Vector playerPos = playerLocation.toVector().clone().add(new Vector(0, 0.8, 0));
+        int duration = 4; //In ticks
+        int animationSpeed = (int) Math.max(Math.ceil((double) steps /duration), 1D);
+
+        double offset = 0.3;
         if (player.isSprinting()){
-            playerPos.add(playerLocation.clone().getDirection().setY(0).normalize().multiply(2.6));
+            offset+=1.4;
+        }
+        double finalOffset = offset;
+        double handleRadius = 0.8;
+        double tipRadius = 2.2;
+
+        if (Math.abs(playerLocation.getPitch()+90) <= 2){ //2 degree "facing up" threshold
+            return;
         }
         int taskID = new BukkitRunnable(){
 
             int frameCount = 0;
-            Vector dir = LinalgMath.rotateAroundY(playerLocation.clone().getDirection().setY(0).normalize(), finalInitialAngleOffset);
+            double t = (arc/2)/180*Math.PI;
 
             final Set<Player> hitPlayers = new HashSet<>();
-            final List<Player> nearbyPlayers = (List<Player>) playerPos.toLocation(playerWorld).getNearbyPlayers(offset+length+3);
+            final List<Player> nearbyPlayers = (List<Player>) playerPos.toLocation(playerWorld).getNearbyPlayers(finalOffset+tipRadius+3);
+
             @Override
             public void run() {
-                if (frameCount >= duration){
+                if (frameCount>=duration){
                     this.cancel();
-                }
-                if (frameCount > steps){
-                    frameCount++;
                     return;
                 }
                 nearbyPlayers.remove(player);
 
+                Vector attackCenter = playerPos.clone().add(initialDirection.clone().multiply(finalOffset)); //Moving the circle's center slightly forward
+                Vector tipCenter = playerPos.clone().add(initialDirection.clone().multiply(finalOffset -1.1));
+
                 for (int i = 0; i < animationSpeed; i++){
-                    dir = LinalgMath.rotateAroundY(dir, -finalAngleStep);
+                    Vector handlePoint =
+                            attackCenter.clone()
+                            .add( initialDirection.clone().multiply(handleRadius*Math.cos(t)) )
+                            .add( finalPerpendicularAxis.clone().multiply( handleRadius*Math.sin(t)) );
+                    Vector tipPoint =
+                            tipCenter.clone()
+                            .add( initialDirection.clone().multiply(tipRadius*Math.cos(t)*1.5D) )
+                            .add( finalPerpendicularAxis.clone().multiply( tipRadius*Math.sin(t)) );
 
-                    double t = ((double) frameCount /steps); //If framecount goes beyond steps, ignore
-                    t = t*t;
-                    double endHeight = Utils.getParametricValue(1.3, -0.8, t);
-                    double handleHeight = endHeight*offset / (offset + length);
-                    Vector begin = dir.clone().multiply(offset).add(playerPos).add(new Vector(0, handleHeight, 0));
-                    Vector end = dir.clone().multiply(offset+length).add(playerPos).add(new Vector(0, endHeight, 0));
-                    ParticlePlotter.lerpParticlesBetween(begin, end, 0.25F, Particle.CRIT, playerWorld);
+                    t -= angleStep;
+                    //Particle plotting
+                    ParticlePlotter.coloredParticleLerp(handlePoint, tipPoint,0.3f,playerWorld,173, 143, 130, 1f);
+                    Vector swingMidpoint = handlePoint.clone().add(tipPoint.clone().subtract(handlePoint).multiply(0.65));
+                    ParticlePlotter.coloredParticleLerp(swingMidpoint, tipPoint,0.1f,playerWorld,247, 242, 198, 1.2f);
+                    ParticlePlotter.spawnParticleAt(swingMidpoint,playerWorld, Particle.ELECTRIC_SPARK);
 
+                    //Collision detec.
                     for (Player p : nearbyPlayers){
                         if (!hitPlayers.contains(p)){
 
                             BoundingBox playerAABB = getLargeHitbox(p);
 
-                            RayTraceResult collisionResult = playerAABB.rayTrace(begin, dir.clone(), length);
+                            Vector dir = tipPoint.clone().subtract(handlePoint);
+                            RayTraceResult collisionResult = playerAABB.rayTrace(handlePoint.clone(), dir.clone().normalize(), dir.length()+0.1);
                             if (collisionResult != null){
                                 DamageRouter.playerAttack(player, p);
                                 hitPlayers.add(p);
@@ -194,89 +206,71 @@ public class Skills {
                         }
                     }
 
-                    frameCount++;
                 }
+                frameCount++;
             }
-        }.runTaskTimer(Inscripted.getPlugin(), 0, durationPerStep).getTaskId();
+        }.runTaskTimer(Inscripted.getPlugin(),0, 1).getTaskId();
+
     }
-
-    private static void axeBasicAttackBy(Player player){
+    private static void newSwordBasicAttackBy(Player player){
+        //Experiment attack
         World playerWorld = player.getWorld();
-
-        //Get player location -> Access to direction vector later
         Location playerLocation = player.getLocation();
+
         //Slash setup variables
-        double arc = 100;
-        int steps = 14;
-        int duration = 10; //In ticks
-        int durationPerStep = Math.max(Math.round((float) duration /steps), 1);
-        int animationSpeed = 4; //Each runnable iteration equates to "animationSpeed" number of frames
+        double arc = 70;
+        int steps = 12;
+        int duration = 4; //In ticks
+        int animationSpeed = (int) Math.max(Math.ceil((double) steps /duration), 1D);
         double angleStep = (arc/steps)/180*Math.PI;
         double initialAngleOffset = (arc/2)/180*Math.PI;
 
-        double offset = 3.1;
-        double length = 0.9;
+        double offset = 0.8;
+        double sprintOffset = 2.6;
+        double length = 1.6;
 
-        final Vector startingHandPos = playerLocation.toVector().clone().add(new Vector(0, 1.1, 0));
-
+        final Vector playerPos = playerLocation.toVector().clone().add(new Vector(0, 1.4, 0));
         if (player.isSprinting()){
-            startingHandPos.add(playerLocation.clone().getDirection().setY(0).normalize().multiply(2.6));
+            playerPos.add(playerLocation.clone().getDirection().setY(0).normalize().multiply(sprintOffset));
         }
+
+
+        final Vector initialDirection = playerLocation.clone().getDirection().normalize();
+        final Vector horizontalVec = new Vector(initialDirection.getX(), 0, initialDirection.getZ());
+
+        Vector perpendicularAxis = initialDirection.clone().crossProduct(horizontalVec).normalize();
+        if (playerLocation.getPitch() >= 0){
+            perpendicularAxis.multiply(-1);
+        }
+        final Vector planeNormal = initialDirection.clone().getCrossProduct(perpendicularAxis).normalize();
+
 
         int taskID = new BukkitRunnable(){
 
             int frameCount = 0;
-            final Vector facing = playerLocation.clone().getDirection().setY(0).normalize();
-            final Vector rightVec = facing.getCrossProduct(new Vector(0, 1, 0)).normalize();
-            Vector dir = LinalgMath.rotateAroundGenericAxis(rightVec.clone(), (LinalgMath.rotateAroundGenericAxis(rightVec.clone(), facing.clone(), initialAngleOffset)), Math.PI/6);
-
-            final Set<Player> hitPlayers = new HashSet<>();
-            final List<Player> nearbyPlayers = (List<Player>) startingHandPos.toLocation(playerWorld).getNearbyPlayers(offset+length+3);
-
+            int stepsConcluded = 0;
             @Override
             public void run() {
-                if (frameCount >= duration){
+                if (frameCount>=duration){
                     this.cancel();
-                }
-                if (frameCount > steps){
-                    frameCount++;
                     return;
                 }
-                //Removes multiple times -> Needs optimizations that take care of runnable structure
-                nearbyPlayers.remove(player);
 
                 for (int i = 0; i < animationSpeed; i++){
-                    dir = LinalgMath.rotateAroundGenericAxis(rightVec.clone(), dir, -angleStep);
+                    double currentAngle = initialAngleOffset - (stepsConcluded*angleStep);
+                    Vector dir = LinalgMath.rotateAroundGenericAxis(planeNormal.clone(), initialDirection.clone(), currentAngle);
+                    Vector handle = playerPos.clone().add(dir.clone().multiply(offset));
+                    Vector tip = playerPos.clone().add(dir.clone().multiply(offset+length));
 
-                    Vector handleEnd = dir.clone().multiply(offset).add(startingHandPos);
-                    Vector bladeTip = dir.clone().multiply(offset+length).add(startingHandPos);
-                    ParticlePlotter.lerpParticlesBetween(handleEnd, bladeTip, 0.25F, Particle.CRIT, playerWorld);
-
-                    for (Player p : nearbyPlayers){
-                        if (!hitPlayers.contains(p)){
-                            BoundingBox playerAABB = p.getBoundingBox();
-                            RayTraceResult collisionResult = playerAABB.rayTrace(handleEnd, dir.clone(), length);
-                            if (collisionResult != null){
-                                DamageRouter.playerAttack(player, p);
-                                hitPlayers.add(p);
-                            }
-                        }
-                    }
-
-                    frameCount++;
-                    if (bladeTip.getY()<playerLocation.y()){
-                        Location bladeTipLoc = bladeTip.toLocation(playerWorld);
-                        if (bladeTipLoc.getBlock().isSolid()){
-                            this.cancel();
-                            return;
-                        }
-                    }
+                    ParticlePlotter.lerpParticlesBetween(handle, tip,0.5f,Particle.END_ROD, playerWorld);
+                    stepsConcluded++;
                 }
+                frameCount++;
             }
-        }.runTaskTimer(Inscripted.getPlugin(), 0, durationPerStep).getTaskId();
+        }.runTaskTimer(Inscripted.getPlugin(), 0, 1).getTaskId();
     }
 
-    private static void secondAxeBasicAttackBy(Player player){
+    private static void axeBasicAttackBy(Player player){
 
         World playerWorld = player.getWorld();
 
@@ -363,12 +357,11 @@ public class Skills {
 //        int shootConeAngle = 90;
 //        int projectiles = player.getProj
         int arrowRange = 25;
-//        double projSpeed = 65; //Blocks/s (Scales with proj speed stat)
         double projSpeed = 50; //Blocks/s (Scales with proj speed stat)
         double collisionDetectionRadius = 0.8;
         int delta = 1; //In ticks (1/20s)
         double distStep = projSpeed * ((double) delta /20);
-        int substeps = 3;
+        int substeps = 3; //TODO: substitute this metric with minDist, implement the shoot cone
         Vector initialPosition = playerLocation.toVector().clone();
         Vector targetPosition;
         Vector currentPosition = initialPosition.clone();
@@ -396,7 +389,7 @@ public class Skills {
                     ParticlePlotter.spawnColoredParticleAt(currentPosition, playerWorld, 91, 245, 56, 1.2F,1);
                     ParticlePlotter.spawnParticleAt(currentPosition, playerWorld, Particle.CRIT);
 
-                    //Add shotgunning and collision for multiple proj
+                    //TODO: Add shotgunning and collision for multiple proj
                     List<Player> nearbyPlayers = (List<Player>) currentPosition.toLocation(playerWorld).getNearbyPlayers(collisionDetectionRadius);
                     nearbyPlayers.remove(player);
 
@@ -412,7 +405,7 @@ public class Skills {
                             if (playerAABB.overlaps(arrowAABB)){
                                 DamageRouter.playerAttack(player, p);
                                 this.cancel();
-                                break;
+                                return;
                             }
                         }
 

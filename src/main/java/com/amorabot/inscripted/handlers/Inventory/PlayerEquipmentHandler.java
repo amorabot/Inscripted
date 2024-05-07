@@ -5,6 +5,7 @@ import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
+import com.amorabot.inscripted.components.Items.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.events.ItemUsage;
@@ -27,6 +28,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
@@ -143,10 +145,12 @@ public class PlayerEquipmentHandler implements Listener {
         PlayerInventory inventory = player.getInventory();
         //InventoryHandler should handle all inventory interactions that are not happening exclusively on the players inventory alone
         //Lets assume it from now on
-        if (event.getClickedInventory() != player.getInventory()){
-            player.sendMessage("Ignoring external invs");//                    # DEBUG MESSAGE
-            return;
-        }
+
+
+//        if (event.getClickedInventory() != player.getInventory()){
+//            player.sendMessage("Ignoring external invs");//                    # DEBUG MESSAGE
+//            return;
+//        }
 
         ClickType clickType = event.getClick();
         ItemStack clickedItem = event.getCurrentItem();
@@ -308,13 +312,6 @@ public class PlayerEquipmentHandler implements Listener {
                 if (attemptedAction == InventoryAction.SWAP_WITH_CURSOR){ //Main hand swapping
                     player.sendMessage("swap!");
                     //TODO: orb usage events
-
-
-
-
-
-
-
 
                     PersistentDataContainer clickedDataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
                     PersistentDataContainer cursorDataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
@@ -538,20 +535,37 @@ public class PlayerEquipmentHandler implements Listener {
 
     public static void basicAttackBy(Player player, ItemStack usedItem, WeaponTypes weaponType){
         //This is triggered when dropping a equiped weapon from inv
+
         if (!player.hasCooldown(usedItem.getType())){
+            WeaponAttackSpeeds atkSpeed = weaponType.getBaseAttackSpeed();
+
+            //Apply the swing speed modifier
+            PotionEffect swingSpeedModifier = atkSpeed.getSwingAnimationBuff();
+            if (swingSpeedModifier!= null){
+                player.addPotionEffect(swingSpeedModifier);
+            }
+
+            //Cast attack
             Skills.playerAbility(player, SkillTypes.BASIC_ATTACK, weaponType);
             SoundAPI.playAttackSoundFor(player, player.getLocation(), weaponType);
-            switch (weaponType){
-                case SWORD -> {
-                    player.setCooldown(usedItem.getType(), (int)(20*0.3));
-                }
-                case AXE -> {
-                    player.setCooldown(usedItem.getType(), (int)(20*0.4));
-                }
-                default -> {
-                    player.setCooldown(usedItem.getType(), (int)(20*0.5));
-                }
-            }
+
+            //Apply the item usage cooldown
+            player.setCooldown(weaponType.getRange().getItem(), (int) (weaponType.getBaseAttackSpeed().getItemUsageCooldown()*20));
         }
+//        if (!player.hasCooldown(usedItem.getType())){
+//            Skills.playerAbility(player, SkillTypes.BASIC_ATTACK, weaponType);
+//            SoundAPI.playAttackSoundFor(player, player.getLocation(), weaponType);
+//            switch (weaponType){
+//                case SWORD -> {
+//                    player.setCooldown(usedItem.getType(), (int)(20*0.3));
+//                }
+//                case AXE -> {
+//                    player.setCooldown(usedItem.getType(), (int)(20*0.4));
+//                }
+//                default -> {
+//                    player.setCooldown(usedItem.getType(), (int)(20*0.5));
+//                }
+//            }
+//        }
     }
 }

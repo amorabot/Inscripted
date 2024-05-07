@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.components.Items.DataStructures.Enums;
 
+import com.amorabot.inscripted.components.Items.Weapon.RangeCategory;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 
@@ -51,8 +52,21 @@ public enum DamageTypes {
     public String getCharacter() {
         return character;
     }
+    public String getPhysicalDamageIcon(RangeCategory rangeCategory){
+        switch (rangeCategory){
+            case MELEE -> {
+                return getCharacter();
+            }
+            case RANGED -> {
+                return "\uD83C\uDFF9";
+            }
+            default -> {
+                return "X";
+            }
+        }
+    }
     abstract void setColorComponent();
-    public TextColor getColorComponent(){
+    public TextColor getTextColor(){
         return colorComponent;
     }
 }

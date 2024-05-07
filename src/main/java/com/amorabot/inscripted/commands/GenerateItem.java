@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.commands;
 
+import com.amorabot.inscripted.GUIs.ItemCommandGUI;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
@@ -14,6 +15,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,15 +38,21 @@ public class GenerateItem implements TabExecutor {
         Player player = (Player) sender;
 
         if (args.length == 0){
-            player.sendMessage("Usage: /item ItemLevel Rarity Archetype EquipmentSlot");
+            player.sendMessage("Usage: /item ItemLevel Rarity Archetype");
             player.sendMessage("Example: " +
-                    Utils.color("&c&l/item" + " 120" + " " + ItemRarities.MAGIC + " " + Archetypes.MERCENARY + " " + ItemTypes.HELMET));
+                    Utils.color("&c&l/item" + " 120" + " " + ItemRarities.MAGIC + " " + Archetypes.MERCENARY));
             return true;
         }
 
         int ilvl = Integer.parseInt(args[0]);
         ItemRarities rarity = ItemRarities.valueOf(args[1]);
         Archetypes archetype = Archetypes.valueOf(args[2]);
+
+        if (args.length == 3){
+            ItemCommandGUI itemGUI = new ItemCommandGUI(player, archetype, ilvl, rarity, 6, false, true);
+            player.openInventory(itemGUI.getInventory());
+            return true;
+        }
 
         if (args[3].equals("SET")){
             Weapon weapon = ( Weapon ) ItemBuilder.randomItem(ItemTypes.WEAPON, archetype.getWeaponType(), ilvl, rarity,  true, false);
@@ -58,23 +66,6 @@ public class GenerateItem implements TabExecutor {
             giveGeneratedItem(leggings, player);
             giveGeneratedItem(boots, player);
             return true;
-        }
-
-        if (args[3].equals(ItemTypes.WEAPON.toString())){
-            Weapon weapon = ( Weapon ) ItemBuilder.randomItem(ItemTypes.WEAPON, archetype.getWeaponType(), ilvl, rarity,  false, false);
-            if (weapon == null){
-                Utils.msgPlayer(player, "Invalid weapon stats...");
-                return false;
-            }
-            giveGeneratedItem(weapon, player);
-        } else {
-            ItemTypes armorPiece = ItemTypes.valueOf(args[3]);
-            Armor armor = ( Armor ) ItemBuilder.randomItem(armorPiece,archetype.getArmorType(), ilvl, rarity, true, false);
-            if (armor == null){
-                Utils.msgPlayer(player, "Invalid armor stats...");
-                return false;
-            }
-            giveGeneratedItem(armor, player);
         }
         return true;
     }

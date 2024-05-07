@@ -15,107 +15,26 @@ import java.util.Map;
 
 public enum WeaponTypes implements ItemSubtype {
 
-    AXE{
-        @Override
-        public Material mapWeaponBase(Tiers tier) {
-            switch (tier){
-                case T1 -> {
-                    return Material.WOODEN_AXE;
-                }
-                case T2 -> {
-                    return Material.STONE_AXE;
-                }
-                case T3 -> {
-                    return Material.IRON_AXE;
-                }
-                case T4 -> {
-                    return Material.DIAMOND_AXE;
-                }
-                case T5 -> {
-                    return Material.GOLDEN_AXE;
-                }
-                default -> {
-                    return Material.NETHERITE_AXE;
-                }
-            }
-        }
-    },
-    SWORD {
-        @Override
-        public Material mapWeaponBase(Tiers tier) {
-            switch (tier){
-                case T1 -> {
-                    return Material.WOODEN_SWORD;
-                }
-                case T2 -> {
-                    return Material.STONE_SWORD;
-                }
-                case T3 -> {
-                    return Material.IRON_SWORD;
-                }
-                case T4 -> {
-                    return Material.DIAMOND_SWORD;
-                }
-                case T5 -> {
-                    return Material.GOLDEN_SWORD;
-                }
-                default -> {
-                    return Material.NETHERITE_SWORD;
-                }
-            }
-        }
-    },
-    BOW {
-        @Override
-        public Material mapWeaponBase(Tiers tier) {
-            return Material.BOW;
-        }
-    },
-    DAGGER {
-        @Override
-        public Material mapWeaponBase(Tiers tier) {
-            return Material.SHEARS;
-        }
-    },
-    WAND {
-        @Override
-        public Material mapWeaponBase(Tiers tier) {
-            return Material.STICK;
-        }
-    },
-    SCEPTRE {
-        @Override
-        public Material mapWeaponBase(Tiers tier) {
-            switch (tier){
-                case T1 -> {
-                    return Material.WOODEN_SHOVEL;
-                }
-                case T2 -> {
-                    return Material.STONE_SHOVEL;
-                }
-                case T3 -> {
-                    return Material.IRON_SHOVEL;
-                }
-                case T4 -> {
-                    return Material.DIAMOND_SHOVEL;
-                }
-                case T5 -> {
-                    return Material.GOLDEN_SHOVEL;
-                }
-                default -> {
-                    return Material.NETHERITE_SHOVEL;
-                }
-            }
-        }
-    };
+    AXE(RangeCategory.MELEE,WeaponAttackSpeeds.SLOW),
+    SWORD(RangeCategory.MELEE,WeaponAttackSpeeds.NORMAL),
+    BOW(RangeCategory.RANGED,WeaponAttackSpeeds.NORMAL),
+    DAGGER(RangeCategory.MELEE,WeaponAttackSpeeds.QUICK),
+    WAND(RangeCategory.RANGED,WeaponAttackSpeeds.SLOW),
+    SCEPTRE(RangeCategory.MELEE,WeaponAttackSpeeds.SLOW);
 
     public static final int weaponDamageVariance = 10;
+
+    private final RangeCategory range;
+    private final WeaponAttackSpeeds atkSpeed;
+
     private final Map<Tiers, int[]> damages = new HashMap<>();
     private final Map<Tiers, String> names = new HashMap<>();
     private Map<String, Map<String, Map<Integer, Integer>>> affixes;
 
 
-    WeaponTypes(){
+    WeaponTypes(RangeCategory range, WeaponAttackSpeeds atkSpeed){
+        this.range = range;
+        this.atkSpeed = atkSpeed;
         for (Tiers tier : Tiers.values()){
             this.damages.put(tier, loadBaseDamages(tier));
             this.names.put(tier, loadTierName(tier));
@@ -127,7 +46,21 @@ public enum WeaponTypes implements ItemSubtype {
     public int[] mapBaseDamage(Tiers tier){
         return this.damages.getOrDefault(tier, new int[2]).clone();
     }
-    public abstract Material mapWeaponBase(Tiers tier);
+//    public abstract Material mapWeaponBase(Tiers tier);
+    public int mapWeaponTierModel(Tiers tier){
+        int modelID = (this.ordinal()+1)+(WeaponTypes.values().length*tier.ordinal());
+        return modelID;
+    }
+    public WeaponAttackSpeeds getBaseAttackSpeed(){
+        return this.atkSpeed;
+    }
+    public Material mapWeaponBase(){
+        return getRange().getItem();
+    }
+    public RangeCategory getRange() {
+        return range;
+    }
+
     private void loadAffixes(){
         this.affixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.WEAPON, this);
 
