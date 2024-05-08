@@ -8,6 +8,11 @@
 
 ![thumb3](https://github.com/amorabot/Inscripted/assets/16783145/62c548db-68b1-4624-84ad-13975ebba863)
 
+![thumb4](https://github.com/amorabot/Inscripted/assets/16783145/8d6b0652-22f4-40e6-9aca-0090488b4a60)
+
+![2024-05-07_21 52 34](https://github.com/amorabot/Inscripted/assets/16783145/a5820915-be36-45b0-ac10-8bf4d91aedbd)
+
+
 ![ItemSystem](https://github.com/amorabot/Inscripted/assets/16783145/27e9172e-762a-4f3b-98c1-a1524b7c4bc1)
 
 The item system is meant to allow for expressive build creation, mixing and matching all the different items and their stats to fit your preferred style! It also offers procedural item generation and customization, where most items will have a unique modifier pool that will offer unique stat combinations that can only be found on certain items. The exception are the so-called Relic items (Pre-defined and rarer), that will bend some of the game mechanics and subvert the use of some stats, allowing for even quirkier builds!
