@@ -45,7 +45,7 @@ public class HologramAPI {
         TextDisplay dodgeHologram = createOffsetHologram(location, getRandomOffset(), 2.5 + getRandomOffset(), getRandomOffset());
         setupTextDisplayData(
                 dodgeHologram,
-                "Dodge☁",
+                "\uD83C\uDF0ADodge\uD83C\uDF0A",
                 (byte) 255
         );
         return dodgeHologram;
