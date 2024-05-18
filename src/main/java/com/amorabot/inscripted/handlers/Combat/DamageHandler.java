@@ -10,10 +10,13 @@ import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.skills.ParticlePlotter;
+import com.destroystokyo.paper.ParticleBuilder;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -89,11 +92,13 @@ public class DamageHandler implements Listener {
         World world = event.getEntity().getWorld();
         ItemStack itemCrackData = new ItemStack(Material.NETHER_WART_BLOCK);
         for (int i = 0; i < 20; i++){
-            world.spawnParticle(Particle.ITEM_CRACK, loc.x(),loc.y(),loc.z(), 2,
-                    0.5,
-                    0.5,
-                    0.5,
-                    itemCrackData);
+            ParticlePlotter.spawnBlockCrackPartileAt(loc.toVector(), world, itemCrackData.getType(),0,4.9);
+
+//            world.spawnParticle(Particle.BLOCK, loc.x(),loc.y(),loc.z(), 2,
+//                    0.5,
+//                    0.5,
+//                    0.5,
+//                    itemCrackData);
         }
     }
 }

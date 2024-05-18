@@ -376,29 +376,29 @@ WeaponTypes:
       BASE_DAMAGE:
         - 80
         - 169
-  SCEPTRE:
+  MACE:
     T1:
-      NAME: Rudimentar sceptre
+      NAME: Rudimentar mace
       BASE_DAMAGE:
         - 6
         - 11
     T2:
-      NAME: Pointy debris sceptre
+      NAME: Pointy stone mace
       BASE_DAMAGE:
         - 11
         - 21
     T3:
-      NAME: War-sceptre
+      NAME: War-mace
       BASE_DAMAGE:
         - 27
         - 50
     T4:
-      NAME: Shining opal sceptre
+      NAME: Shining crystal mace
       BASE_DAMAGE:
         - 56
         - 87
     T5:
-      NAME: Runic-gold sceptre
+      NAME: Runic-gold mace
       BASE_DAMAGE:
         - 80
         - 169

@@ -5,9 +5,10 @@ import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
-import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
+//import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
 import com.amorabot.inscripted.components.Items.Files.ItemModifiersConfig;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
 import com.amorabot.inscripted.handlers.GUI.GUIHandler;
 import com.amorabot.inscripted.handlers.Inventory.*;
@@ -57,7 +58,7 @@ public final class Inscripted extends JavaPlugin {
 
         initializeProfileJSON();
         reloadRoutine();
-        ModifierIDs.loadModifiers();
+        InscriptionID.loadModifiers();
         Utils.populatePrettyAlphabet();
         Utils.populateRomanChars();
         GlobalCooldownManager.setup();
@@ -199,7 +200,6 @@ public final class Inscripted extends JavaPlugin {
         getCommand("identify").setExecutor(new Identify(this));
         getCommand("recolor").setExecutor(new Recolor(this));
         getCommand("resetattributes").setExecutor(new ResetAttributes(this));
-        getCommand("editmods").setExecutor(new EditMods(this));
         getCommand("show").setExecutor(new Show());
         getCommand("template").setExecutor(new TemplateCommand());
 

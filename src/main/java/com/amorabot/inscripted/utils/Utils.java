@@ -130,7 +130,7 @@ public class Utils {
 
         if (enchanted){
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            meta.addEnchant(Enchantment.DURABILITY, 1, true);
+            meta.addEnchant(Enchantment.EFFICIENCY, 1, true);
         }
         if (unbreakable){
             meta.setUnbreakable(true);
@@ -197,5 +197,13 @@ public class Utils {
 
     public static float applyPercentageTo(int baseValue, int percentMod){
         return baseValue * (1 + (percentMod)/100F);
+    }
+    public static int[] vectorSum(int[] vec1, int[] vec2){
+        int[] updatedVec = new int[vec1.length];
+        if (vec1.length != vec2.length){return updatedVec;}
+        for (int f = 0; f < vec1.length; f++){
+            updatedVec[f] = (vec1[f] + vec2[f]);
+        }
+        return updatedVec;
     }
 }

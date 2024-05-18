@@ -23,7 +23,7 @@ public abstract class GUIButton implements Button {
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
         if (enchanted){
-            itemMeta.addEnchant(Enchantment.DURABILITY, 1, false);
+            itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, false);
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
         itemMeta.setDisplayName(buttonName);

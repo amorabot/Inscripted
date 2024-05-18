@@ -24,9 +24,6 @@ commands:
   recolor:
     description: recolors a item's display name.
     usage: /recolor
-  editmods:
-    description: modifiers JSON edit interface
-    usage: /editmods
   generateitem:
     description: generates a custom item.
     usage: /generateitem

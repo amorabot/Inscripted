@@ -6,12 +6,12 @@ import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
-import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierManager;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.components.Items.modifiers.Inscription;
+import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.utils.CraftingUtils;
 
 import java.util.*;
@@ -22,8 +22,8 @@ public class ItemBuilder {
         //Initial item setup
         Item blankItem;
 
-        Map<ModifierIDs, Map<Integer, Integer>> prefixes;
-        Map<ModifierIDs, Map<Integer, Integer>> suffixes;
+        Map<InscriptionID, Map<Integer, Integer>> prefixes;
+        Map<InscriptionID, Map<Integer, Integer>> suffixes;
 
         if (subType instanceof WeaponTypes){
             blankItem = new Weapon(itemLevel, (WeaponTypes) subType, rarity, identified, corrupted);
@@ -38,7 +38,7 @@ public class ItemBuilder {
         assert prefixes != null;
         assert suffixes != null;
 
-        Set<ModifierIDs> illegalMods = new HashSet<>();
+        Set<InscriptionID> illegalMods = new HashSet<>();
         //Lets add the mods blocked by the item's level
         illegalMods.addAll(ModifierManager.checkForIllegalMods(prefixes, itemLevel));
         illegalMods.addAll(ModifierManager.checkForIllegalMods(suffixes, itemLevel));
@@ -56,16 +56,16 @@ public class ItemBuilder {
         return random >= 0.5;
     }
 
-    public static void addModTo(Item item, Map<ModifierIDs, Map<Integer, Integer>> affixMap, Set<ModifierIDs> illegalMods){
+    public static void addModTo(Item item, Map<InscriptionID, Map<Integer, Integer>> affixMap, Set<InscriptionID> illegalMods){
         //Lets first block all the current mods already inside that item (Alternative: add the selected mod's ID to the illegal mods Set)
-        Set<ModifierIDs> blockedMods = item.getModIDs();
+        Set<InscriptionID> blockedMods = item.getInscriptions();
         blockedMods.addAll(illegalMods);
         //Blocked mods are: the item's previous mods and previously illegal mods
-        Modifier mod = ModifierManager.selectAvailableMod(item.getIlvl(), affixMap, blockedMods);
-        item.addModifier(mod);
+        Inscription mod = ModifierManager.selectAvailableMod(item.getIlvl(), affixMap, blockedMods);
+        item.addInscription(mod);
     }
 
-    public static void fillModsFor(Item item, Map<ModifierIDs, Map<Integer, Integer>> prefixes, Map<ModifierIDs, Map<Integer, Integer>> suffixes, Set<ModifierIDs> illegalMods){
+    public static void fillModsFor(Item item, Map<InscriptionID, Map<Integer, Integer>> prefixes, Map<InscriptionID, Map<Integer, Integer>> suffixes, Set<InscriptionID> illegalMods){
         //Generating the modifiers to fill the item
         ItemRarities rarity = item.getRarity();
         switch (rarity){
@@ -74,15 +74,15 @@ public class ItemBuilder {
             }
             case MAGIC -> addNewMagicModSet(item, prefixes, suffixes, illegalMods);
             case RARE -> addNewRareModSet(item, prefixes, suffixes, illegalMods);
-            case UNIQUE -> {
+            case RELIC -> {
             }
         }
     }
 
-    public static <SubType extends Enum<SubType> & ItemSubtype> Map<ModifierIDs, Map<Integer, Integer>> getAffixTableOf(Affix affix,
+    public static <SubType extends Enum<SubType> & ItemSubtype> Map<InscriptionID, Map<Integer, Integer>> getAffixTableOf(Affix affix,
                                                                                                                         ItemTypes type,
                                                                                                                         SubType subType){
-        Map<ModifierIDs, Map<Integer, Integer>> affixTable;
+        Map<InscriptionID, Map<Integer, Integer>> affixTable;
 
         if (subType instanceof WeaponTypes){
             Map<String, Map<String, Map<Integer, Integer>>> allWeaponAffixes = ((WeaponTypes)subType).getAffixes();
@@ -119,9 +119,9 @@ public class ItemBuilder {
     public static <SubType extends Enum<SubType> & ItemSubtype> void fillAllPrerequisiteTablesFor(ItemTypes type,
                                                                                                   SubType subType,
                                                                                                   int ilvl,
-                                                                                                  Map<ModifierIDs, Map<Integer, Integer>> prefixes,
-                                                                                                  Map<ModifierIDs, Map<Integer, Integer>> suffixes,
-                                                                                                  Set<ModifierIDs> illegalMods
+                                                                                                  Map<InscriptionID, Map<Integer, Integer>> prefixes,
+                                                                                                  Map<InscriptionID, Map<Integer, Integer>> suffixes,
+                                                                                                  Set<InscriptionID> illegalMods
     ){
         prefixes.putAll(ItemBuilder.getAffixTableOf(Affix.PREFIX, type, subType));
         suffixes.putAll(ItemBuilder.getAffixTableOf(Affix.SUFFIX, type, subType));
@@ -132,19 +132,19 @@ public class ItemBuilder {
 
 
     public static void addNewMagicModSet(Item item,
-                                         Map<ModifierIDs, Map<Integer, Integer>> prefixes,
-                                         Map<ModifierIDs, Map<Integer, Integer>> suffixes,
-                                         Set<ModifierIDs> illegalMods)
+                                         Map<InscriptionID, Map<Integer, Integer>> prefixes,
+                                         Map<InscriptionID, Map<Integer, Integer>> suffixes,
+                                         Set<InscriptionID> illegalMods)
     {
         boolean hasImbuedMod = false;
-        Modifier imbuedMod = null;
-        for (Modifier mod : item.getModifierList()){
+        Inscription imbuedMod = null;
+        for (Inscription mod : item.getInscriptionList()){
             if (mod.isImbued()){
                 hasImbuedMod = true;
                 imbuedMod = mod;
             }
         }
-        List<Modifier> modList = item.getModifierList();
+        List<Inscription> modList = item.getInscriptionList();
         modList.clear();
         int numberOfMods = CraftingUtils.getRandomNumber(1, ItemRarities.MAGIC.getMaxMods());
         if (hasImbuedMod){
@@ -160,19 +160,19 @@ public class ItemBuilder {
         }
     }
     public static void addNewRareModSet(Item item,
-                                         Map<ModifierIDs, Map<Integer, Integer>> prefixes,
-                                         Map<ModifierIDs, Map<Integer, Integer>> suffixes,
-                                         Set<ModifierIDs> illegalMods)
+                                         Map<InscriptionID, Map<Integer, Integer>> prefixes,
+                                         Map<InscriptionID, Map<Integer, Integer>> suffixes,
+                                         Set<InscriptionID> illegalMods)
     {
         boolean hasImbuedMod = false;
-        Modifier imbuedMod = null;
-        for (Modifier mod : item.getModifierList()){
+        Inscription imbuedMod = null;
+        for (Inscription mod : item.getInscriptionList()){
             if (mod.isImbued()){
                 hasImbuedMod = true;
                 imbuedMod = mod;
             }
         }
-        List<Modifier> modList = item.getModifierList();
+        List<Inscription> modList = item.getInscriptionList();
         modList.clear();
 
         int numberOfMods = CraftingUtils.getRandomNumber(3, ItemRarities.RARE.getMaxMods());
@@ -184,7 +184,7 @@ public class ItemBuilder {
         if (hasImbuedMod){
             modList.add(imbuedMod);
             numberOfMods--;
-            if (imbuedMod.getModifierID().getAffixType().equals(Affix.PREFIX)){
+            if (imbuedMod.getInscription().getData().getAffixType().equals(Affix.PREFIX)){
                 currPrefixes++;
             } else {
                 currSuffixes++;

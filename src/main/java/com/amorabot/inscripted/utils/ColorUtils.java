@@ -34,6 +34,28 @@ public class ColorUtils {
 
         return finalText.toString();
     }
+    public static String decolor(String text){
+
+        String[] texts = text.split(String.format(WITH_DELIMITER, "&"));
+
+        StringBuilder finalText = new StringBuilder();
+
+        for (int i = 0; i < texts.length; i++){
+            if (texts[i].equalsIgnoreCase("&")){
+                //get the next string
+                i++;
+                if (texts[i].charAt(0) == '#'){
+                    finalText.append(texts[i].substring(7));
+                }else{
+                    finalText.append(texts[i].substring(1));
+                }
+            }else{
+                finalText.append(texts[i]);
+            }
+        }
+
+        return finalText.toString();
+    }
 
     public static TextComponent translateColorCodesToTextComponent(String text){
 

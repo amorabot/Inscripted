@@ -542,7 +542,7 @@ public class PlayerEquipmentHandler implements Listener {
             //Apply the swing speed modifier
             PotionEffect swingSpeedModifier = atkSpeed.getSwingAnimationBuff();
             if (swingSpeedModifier!= null){
-                player.addPotionEffect(swingSpeedModifier);
+                swingSpeedModifier.apply(player);
             }
 
             //Cast attack
@@ -552,20 +552,5 @@ public class PlayerEquipmentHandler implements Listener {
             //Apply the item usage cooldown
             player.setCooldown(weaponType.getRange().getItem(), (int) (weaponType.getBaseAttackSpeed().getItemUsageCooldown()*20));
         }
-//        if (!player.hasCooldown(usedItem.getType())){
-//            Skills.playerAbility(player, SkillTypes.BASIC_ATTACK, weaponType);
-//            SoundAPI.playAttackSoundFor(player, player.getLocation(), weaponType);
-//            switch (weaponType){
-//                case SWORD -> {
-//                    player.setCooldown(usedItem.getType(), (int)(20*0.3));
-//                }
-//                case AXE -> {
-//                    player.setCooldown(usedItem.getType(), (int)(20*0.4));
-//                }
-//                default -> {
-//                    player.setCooldown(usedItem.getType(), (int)(20*0.5));
-//                }
-//            }
-//        }
     }
 }
