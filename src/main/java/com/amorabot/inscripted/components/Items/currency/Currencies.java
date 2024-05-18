@@ -7,16 +7,14 @@ import com.amorabot.inscripted.components.Items.Armor.Armor;
 import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.Implicits;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRarities;
-import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
-import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
 import com.amorabot.inscripted.components.Items.DataStructures.ModifierManager;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.components.Items.ItemBuilder;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
-import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
+import com.amorabot.inscripted.components.Items.modifiers.Inscription;
+import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import com.amorabot.inscripted.utils.Utils;
@@ -255,11 +253,11 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
 
             ItemRarities rarity = itemData.getRarity();
             if (!rarity.equals(ItemRarities.MAGIC) && !rarity.equals(ItemRarities.RARE)){return false;}
-            if (itemData.getModifierList().size() == 1 && itemData.getModifierList().get(0).isImbued()){return false;}
+            if (itemData.getInscriptionList().size() == 1 && itemData.getInscriptionList().get(0).isImbued()){return false;}
 
-            List<Modifier> modList = itemData.getModifierList();
-            Modifier imbuedMod = null;
-            for (Modifier mod : modList){
+            List<Inscription> modList = itemData.getInscriptionList();
+            Inscription imbuedMod = null;
+            for (Inscription mod : modList){
                 if (mod.isImbued()){
                     imbuedMod = mod;
                 }
@@ -270,7 +268,7 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
                 itemData.setRarity(ItemRarities.MAGIC);
             } else {
                 itemData.setRarity(ItemRarities.COMMON);
-                itemData.getModifierList().clear();
+                itemData.getInscriptionList().clear();
             }
             SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
             return true;
@@ -295,14 +293,14 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
 
             ItemRarities rarity = itemData.getRarity();
             if (!rarity.equals(ItemRarities.MAGIC) && !rarity.equals(ItemRarities.RARE)){return false;}
-            List<Modifier> modList = itemData.getModifierList();
-            for (Modifier mod : modList){//If theres a imbued mod already, invalid use
+            List<Inscription> modList = itemData.getInscriptionList();
+            for (Inscription mod : modList){//If theres a imbued mod already, invalid use
                 if (mod.isImbued()){
                     return false;
                 }
             }
             int chosenModIndex = CraftingUtils.getRandomNumber(0, modList.size()-1);
-            Modifier chosenMod = modList.get(chosenModIndex);
+            Inscription chosenMod = modList.get(chosenModIndex);
             chosenMod.imbue();
             SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
             return true;
@@ -349,17 +347,17 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
                     break;
             }
 
-            if (itemData instanceof Weapon weaponData){
-                if (outcome == 1){
-                    weaponData.setImplicit(Implicits.getImplicitFor(weaponData.getSubtype(), weaponData.isCorrupted()));
-                }
-            } else if (itemData instanceof Armor armorData) {
-                if (outcome == 1){
-                    armorData.setImplicit(Implicits.getImplicitFor(armorData.getSubype(), armorData.isCorrupted()));
-                }
-            } else {
-                return false;
-            }
+//            if (itemData instanceof Weapon weaponData){
+//                if (outcome == 1){
+//                    weaponData.setImplicit(Implicits.getImplicitFor(weaponData.getSubtype(), weaponData.isCorrupted()));
+//                }
+//            } else if (itemData instanceof Armor armorData) {
+//                if (outcome == 1){
+//                    armorData.setImplicit(Implicits.getImplicitFor(armorData.getSubype(), armorData.isCorrupted()));
+//                }
+//            } else {
+//                return false;
+//            }
             return true;
         }
     },
@@ -508,7 +506,7 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
         if (!itemData.getRarity().equals(from)){
             return false;
         }
-        Map<ModifierIDs, Map<Integer, Integer>> affixTable;
+        Map<InscriptionID, Map<Integer, Integer>> affixTable;
         itemData.setRarity(to);
         if (ItemBuilder.isPrefix()){ //Choose wether the new mod is a prefix or not
             //Load the respective mod table
@@ -517,15 +515,15 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             affixTable = ItemBuilder.getAffixTableOf(Affix.SUFFIX, itemData.getCategory(), itemSubtype);
         }
         //Lets add the mods blocked by the item's level
-        Set<ModifierIDs> illegalMods = new HashSet<>(ModifierManager.checkForIllegalMods(affixTable, itemData.getIlvl()));
+        Set<InscriptionID> illegalMods = new HashSet<>(ModifierManager.checkForIllegalMods(affixTable, itemData.getIlvl()));
         ItemBuilder.addModTo(itemData, affixTable, illegalMods);
         return true;
     }
 
     public <SubType extends Enum<SubType> & ItemSubtype> void reroll(Item itemData, SubType subType){
-        Map<ModifierIDs, Map<Integer, Integer>> prefixes = new HashMap<>();
-        Map<ModifierIDs, Map<Integer, Integer>> suffixes = new HashMap<>();
-        Set<ModifierIDs> illegalMods = new HashSet<>();
+        Map<InscriptionID, Map<Integer, Integer>> prefixes = new HashMap<>();
+        Map<InscriptionID, Map<Integer, Integer>> suffixes = new HashMap<>();
+        Set<InscriptionID> illegalMods = new HashSet<>();
         ItemBuilder.fillAllPrerequisiteTablesFor(itemData.getCategory(), subType, itemData.getIlvl(), prefixes, suffixes, illegalMods);
 
         switch (itemData.getRarity()){
@@ -535,12 +533,12 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
     }
 
     public <SubType extends Enum<SubType> & ItemSubtype> boolean addRandomInscriptionTo(Item itemData, SubType subType){
-        Map<ModifierIDs, Map<Integer, Integer>> prefixes = new HashMap<>();
-        Map<ModifierIDs, Map<Integer, Integer>> suffixes = new HashMap<>();
-        Set<ModifierIDs> illegalMods = new HashSet<>();
+        Map<InscriptionID, Map<Integer, Integer>> prefixes = new HashMap<>();
+        Map<InscriptionID, Map<Integer, Integer>> suffixes = new HashMap<>();
+        Set<InscriptionID> illegalMods = new HashSet<>();
         ItemBuilder.fillAllPrerequisiteTablesFor(itemData.getCategory(), subType, itemData.getIlvl(), prefixes, suffixes, illegalMods);
 
-        List<Modifier> itemMods = itemData.getModifierList();
+        List<Inscription> itemMods = itemData.getInscriptionList();
 
         switch (itemData.getRarity()){
             case MAGIC -> {
@@ -560,8 +558,8 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
                 }
                 int p = 0;
                 int s = 0;
-                for (Modifier mod : itemMods){
-                    if (mod.getModifierID().getAffixType().equals(Affix.PREFIX)){
+                for (Inscription mod : itemMods){
+                    if (mod.getInscription().getData().getAffixType().equals(Affix.PREFIX)){
                         p++;
                     } else {
                         s++;

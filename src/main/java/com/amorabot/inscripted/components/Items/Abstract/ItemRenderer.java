@@ -1,24 +1,20 @@
 package com.amorabot.inscripted.components.Items.Abstract;
 
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRarities;
-import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
+import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 import static com.amorabot.inscripted.utils.Utils.color;
 
@@ -27,11 +23,9 @@ public interface ItemRenderer extends Serializable {
     default void setDisplayName(ItemRarities rarity, String name, ItemStack item, boolean isCorrupted, int quality) {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
-        String qualitySuffix;
+        String qualitySuffix = "";
         if (quality > 0){
             qualitySuffix = " &f[&b+" + quality + "&f]";
-        } else {
-            qualitySuffix = "";
         }
 
         if (isCorrupted){
@@ -60,23 +54,23 @@ public interface ItemRenderer extends Serializable {
     default void renderMods(Item itemData, List<String> itemLore){
         String valuesColor = "&#95dbdb";
 
-        List<Modifier> mods = itemData.getModifierList();
+        List<Inscription> mods = itemData.getInscriptionList();
 
-        Comparator<Modifier> modifierComparator = (o1, o2) -> {
+        Comparator<Inscription> modifierComparator = (o1, o2) -> {
             if (o2.isImbued()){
                 return 1;
             }
             if (o1.equals(o2)){
                 return 0;
             }
-            if (o1.getModifierOrdinal() < o2.getModifierOrdinal()){
+            if (o1.getInscription().ordinal() < o2.getInscription().ordinal()){
                 return -1;
             }
             return 1;
         };
         mods.sort(modifierComparator);
 
-        for (Modifier mod : mods){
+        for (Inscription mod : mods){
             String modifierDisplayName = mod.getModifierDisplayName(valuesColor, 2);
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
@@ -109,14 +103,14 @@ public interface ItemRenderer extends Serializable {
         renderDescription(itemData, itemLore, itemSubtype);
         renderTag(itemData, itemLore);
 
-        int mods = itemData.getModifierList().size();
+        int mods = itemData.getInscriptionList().size();
         placeRunicDiv(itemData.getName().length(),itemLore,mods);
     }
 
     default void placeRunicDiv(int itemNameLength, List<String> itemLore, int numberOfMods){
         int longestLineLength = itemNameLength;
         for (String line : itemLore){
-            String decoloredLine = Utils.decolor(line);
+            String decoloredLine = ColorUtils.decolor(line);
             String strippedLine = decoloredLine.strip();
             int lineLength = strippedLine.length();
             longestLineLength = Math.max(lineLength, longestLineLength);
@@ -136,6 +130,7 @@ public interface ItemRenderer extends Serializable {
             offset += (longestLineLength/2);
         }
         offset -= headerBar.length();
+        offset = offset/2 - 4;
         String margin = " ".repeat(2);
 
 
@@ -156,7 +151,7 @@ public interface ItemRenderer extends Serializable {
         }
     }
 
-    //TODO: make it a config!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //TODO: turn into config
     default String mapStarRating(double starRating){
         if (starRating >= 0 && starRating<=0.5D){
             return "&8 " + "★";

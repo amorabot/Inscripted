@@ -4,6 +4,7 @@ import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Abstract.ItemRenderer;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
+import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.text.Component;
@@ -37,9 +38,14 @@ public class WeaponRenderer implements ItemRenderer {
 
         itemLore.add("");
         itemLore.add(color(Utils.convertToPrettyString(" &7Item Level: ") + "&f&l" + weaponData.getIlvl()));
-        String passiveString = Utils.convertToPrettyString(" &7Passive: ") + weaponData.getImplicit().getDisplayName() + " ";
-        itemLore.add(ColorUtils.translateColorCodes(passiveString));
+        itemLore.add(getPassiveLine(weaponData, (WeaponTypes) itemSubtype));
         itemLore.add("");
+    }
+    private String getPassiveLine(Weapon weaponData, WeaponTypes weaponType){
+        Archetypes weaponArchetype = Archetypes.mapArchetypeFor(weaponType);
+        assert weaponArchetype != null;
+        String passiveString = Utils.convertToPrettyString(" &7Passive: ") + weaponData.getImplicit().getImplicitDisplayName(weaponArchetype,2);
+        return ColorUtils.translateColorCodes(passiveString);
     }
 
     private void serializeTextComponent(List<String> lore, TextComponent textComponent, int indentation){
@@ -72,6 +78,6 @@ public class WeaponRenderer implements ItemRenderer {
         }
     }
     private void addAtkSpeedLine(Weapon weaponData, List<String> itemLore){
-        itemLore.add(color(Utils.convertToPrettyString(" &7Atk Speed: ") + "&8&l" + weaponData.getAtkSpeed()));
+        itemLore.add(color(Utils.convertToPrettyString(" &7Atk Speed: ") + "&8&l" + weaponData.getAtkSpeed().getBarIndicator()));
     }
 }

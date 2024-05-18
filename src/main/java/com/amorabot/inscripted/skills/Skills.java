@@ -102,7 +102,7 @@ public class Skills {
                     }
                 }
             }
-            case SCEPTRE -> {
+            case MACE -> {
                 switch (skillType){
                     case BASIC_ATTACK -> {
 //                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 4));
@@ -329,7 +329,7 @@ public class Skills {
                     Vector begin = dir.clone().multiply(offset).add(playerPos).add(new Vector(0, handleHeight, 0));
                     Vector end = dir.clone().multiply(offset+length).add(playerPos).add(new Vector(0, endHeight, 0));
                     ParticlePlotter.lerpParticlesBetween(begin, end, 0.25F, Particle.CRIT, playerWorld);
-                    ParticlePlotter.lerpParticlesBetween(begin, end, 0.6F, Particle.SMOKE_NORMAL, playerWorld);
+                    ParticlePlotter.lerpParticlesBetween(begin, end, 0.6F, Particle.SMOKE, playerWorld);
 
                     for (Player p : nearbyPlayers){
                         if (!hitPlayers.contains(p)){
@@ -387,7 +387,7 @@ public class Skills {
                 }
                 for (int i = 0; i < substeps; i++){
                     ParticlePlotter.spawnColoredParticleAt(currentPosition, playerWorld, 91, 245, 56, 1.2F,1);
-                    ParticlePlotter.spawnParticleAt(currentPosition, playerWorld, Particle.CRIT);
+                    ParticlePlotter.spawnDifuseParticleAt(currentPosition, playerWorld, Particle.CRIT, 0.3D);
 
                     //TODO: Add shotgunning and collision for multiple proj
                     List<Player> nearbyPlayers = (List<Player>) currentPosition.toLocation(playerWorld).getNearbyPlayers(collisionDetectionRadius);
@@ -612,11 +612,12 @@ public class Skills {
                     if (curPos.toLocation(playerWorld).getBlock().isSolid()){//Check for blocks or player collisions
                         Vector groundCollisionPos = curPos.clone().add(new Vector(0, 0.4, 0));
                         ParticlePlotter.spawnParticleAt(groundCollisionPos, playerWorld, Particle.SWEEP_ATTACK);
-                        ParticlePlotter.spawnParticleAt(groundCollisionPos, playerWorld, Particle.EXPLOSION_LARGE);
+                        ParticlePlotter.spawnParticleAt(groundCollisionPos, playerWorld, Particle.EXPLOSION);
                         ItemStack hitBlock = new ItemStack(curPos.toLocation(playerWorld).getBlock().getType());
-                        playerWorld.spawnParticle(Particle.ITEM_CRACK, groundCollisionPos.toLocation(playerWorld),
-                                20,
-                                hitBlock);
+//                        playerWorld.spawnParticle(Particle.BLOCK, groundCollisionPos.toLocation(playerWorld),
+//                                20,
+//                                hitBlock);
+                        ParticlePlotter.spawnBlockCrackPartileAt(groundCollisionPos, playerWorld, hitBlock.getType(),10,0.9D);
                         //Ring attack
                         for (double rads = 0; rads < 2*Math.PI; rads += Math.PI/10){
                             double curX = Math.cos(rads)*slamRadius;

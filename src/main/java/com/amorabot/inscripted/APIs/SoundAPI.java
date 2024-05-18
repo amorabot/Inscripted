@@ -84,7 +84,7 @@ public class SoundAPI {
             case BOW -> playGenericSoundAtLocation(audience, loc, "item.crossbow.shoot", 0.8f, 1f);
             case DAGGER -> playGenericSoundAtLocation(audience, loc, "entity.player.attack.sweep", 0.6f, 1.9f);
             case WAND -> playGenericSoundAtLocation(audience, loc, "entity.drowned.shoot", 0.8f, 1f);
-            case SCEPTRE -> {
+            case MACE -> {
                 playGenericSoundAtLocation(audience, loc, "block.gravel.break", 0.7f, 0.6f);
 //                playGenericSoundAtLocation(audience, loc, "block.basalt.break", 0.8f, 0.5f);
 //                playGenericSoundAtLocation(audience, loc, "entity.zombie.break_wooden_door", 0.1f, 0.2f);

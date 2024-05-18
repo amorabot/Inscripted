@@ -29,7 +29,7 @@ public enum DamageTypes {
             this.colorComponent = NamedTextColor.AQUA;
         }
     },
-    ABYSSAL("&#7734AA", "\uD83C\uDF19") {
+    ABYSSAL("&#7734AA", "☽") {
         @Override
         void setColorComponent() {
             this.colorComponent = TextColor.fromHexString("#7734AA");

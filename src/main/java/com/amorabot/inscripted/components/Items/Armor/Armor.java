@@ -2,9 +2,7 @@ package com.amorabot.inscripted.components.Items.Armor;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.Abstract.ItemCategory;
-import com.amorabot.inscripted.components.Items.DataStructures.Modifier;
-import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
-import com.amorabot.inscripted.components.Items.DataStructures.ModifierManager;
+import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Abstract.ItemRenderer;
@@ -21,14 +19,12 @@ import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class Armor extends Item implements ItemCategory {
 
     private final ArmorTypes type;
     private final int baseHealth;
     private final int baseHealthVariance;
-    //Define level limitations for armors
 
     public Armor(ItemTypes armorSlot, int ilvl, ArmorTypes type, ItemRarities rarity, boolean identified, boolean corrupted){
         super(ilvl, rarity, identified, corrupted, armorSlot);
@@ -36,7 +32,6 @@ public class Armor extends Item implements ItemCategory {
         setup();
         this.baseHealth = getSubype().mapHealthValue(this);
         this.baseHealthVariance = CraftingUtils.getRandomNumber(-ArmorTypes.percentHealthVariance, ArmorTypes.percentHealthVariance);
-//        getSubype().mapBaseStats(this); //Mutates the blank defenceMap based on the item's internal state, resetting it
     }
     public Armor(ItemTypes armorPiece, int ilvl, ItemRarities rarity, boolean identified, boolean corrupted) { //Random generation constructor
         super(ilvl, rarity, identified, corrupted, armorPiece);
@@ -46,13 +41,12 @@ public class Armor extends Item implements ItemCategory {
         setup();
         this.baseHealth = getSubype().mapHealthValue(this);
         this.baseHealthVariance = CraftingUtils.getRandomNumber(-ArmorTypes.percentHealthVariance, ArmorTypes.percentHealthVariance);
-//        getSubype().mapBaseStats(this);
     }
     @Override
     protected void setup(){
         setTier(Tiers.mapItemLevel(getIlvl()));
         setName(getSubype().getTierName(getTier()) + " " + getCategory().toString().toLowerCase());
-        setImplicit(Implicits.getImplicitFor(getSubype(), isCorrupted()));
+//        setImplicit(Implicits.getImplicitFor(getSubype(), isCorrupted()));
         mapBase();
     }
 
@@ -130,7 +124,7 @@ public class Armor extends Item implements ItemCategory {
     }
 
     public Map<DefenceTypes, Integer> getLocalDefences(){
-        List<Modifier> mods = getModifierList();
+        List<Inscription> mods = getInscriptionList();
         Map<DefenceTypes, Integer> defMap = getSubype().mapBaseStats(this); //Newly reset defMap
         int qualityBaseStatIncrease = 5 * getQuality();
         //All explicitly defined for clarity's sake
@@ -146,99 +140,100 @@ public class Armor extends Item implements ItemCategory {
         int dodgeSum = defMap.getOrDefault(DefenceTypes.DODGE, 0);
         int dodgePercentModifier = qualityBaseStatIncrease; //Not implemented yet via modifiers
 
-        for (DefenceTypes def : defMap.keySet()){
-            switch (def){
-                case HEALTH -> {
-                    Set<ModifierIDs> healthMods = ModifierIDs.getLocalModsFor(TargetStats.HEALTH);
-                    //Add all hybrid mods that target it
-                    healthMods.add(ModifierIDs.ARMOR_HEALTH);
-                    healthMods.add(ModifierIDs.DODGE_HEALTH);
-                    healthMods.add(ModifierIDs.WARD_HEALTH);
-                    for (Modifier mod : mods){
-                        if (!healthMods.contains(mod.getModifierID())){
-                            continue;
-                        }
-                        int[] hpValue = ModifierManager.getMappedFinalValueFor(mod);
-                        switch (mod.getModifierID()){
-                            case HEALTH -> healthSum += hpValue[0];
-                            case ARMOR_HEALTH, DODGE_HEALTH, WARD_HEALTH -> healthSum += hpValue[1];
-                            case HEALTH_PERCENT -> healthPercentModifier += hpValue[0];
-                        }
-                    }
-                }
-                case WARD -> {
-                    Set<ModifierIDs> wardMods = ModifierIDs.getLocalModsFor(TargetStats.WARD);
-                    //Add all hybrid mods that target it
-                    wardMods.add(ModifierIDs.WARD_HEALTH);
-                    wardMods.add(ModifierIDs.ARMOR_WARD);
-                    wardMods.add(ModifierIDs.DODGE_WARD);
-                    for (Modifier mod : mods){
-                        if (!wardMods.contains(mod.getModifierID())){
-                            continue;
-                        }
-                        int[] wardValue = ModifierManager.getMappedFinalValueFor(mod);
-                        switch (mod.getModifierID()){
-                            case WARD -> wardSum += wardValue[0];
-                            case ARMOR_WARD, DODGE_WARD -> wardSum += wardValue[1];
-                            case WARD_HEALTH -> wardSum += wardValue[0];
-                            case WARD_PERCENT -> wardPercentModifier += wardValue[0];
-                        }
-                    }
-                }
-                case ARMOR ->{
-                    Set<ModifierIDs> armorMods = ModifierIDs.getLocalModsFor(TargetStats.ARMOR);
-                    //Add all hybrid mods that target it
-                    armorMods.add(ModifierIDs.ARMOR_WARD);
-                    armorMods.add(ModifierIDs.ARMOR_DODGE);
-                    armorMods.add(ModifierIDs.ARMOR_HEALTH);
-                    for (Modifier mod : mods){
-                        if (!armorMods.contains(mod.getModifierID())){
-                            continue;
-                        }
-                        int[] armorValue = ModifierManager.getMappedFinalValueFor(mod);
-                        switch (mod.getModifierID()){
-                            case ARMOR -> armorSum += armorValue[0];
-                            case ARMOR_WARD, ARMOR_DODGE, ARMOR_HEALTH -> armorSum += armorValue[0];
-                            case ARMOR_PERCENT -> armorPercentModifier += armorValue[0];
-                        }
-                    }
-                }
-                case DODGE -> {
-                    Set<ModifierIDs> dodgeMods = ModifierIDs.getLocalModsFor(TargetStats.DODGE);
-                    //Add all hybrid mods that target it
-                    dodgeMods.add(ModifierIDs.DODGE_HEALTH);
-                    dodgeMods.add(ModifierIDs.DODGE_WARD);
-                    dodgeMods.add(ModifierIDs.ARMOR_DODGE);
-                    for (Modifier mod : mods){
-                        if (!dodgeMods.contains(mod.getModifierID())){
-                            continue;
-                        }
-                        int[] dodgeValue = ModifierManager.getMappedFinalValueFor(mod);
-                        switch (mod.getModifierID()){
-                            case DODGE -> dodgeSum += dodgeValue[0];
-                            case DODGE_HEALTH, DODGE_WARD -> dodgeSum += dodgeValue[0];
-                            case ARMOR_DODGE -> dodgeSum += dodgeValue[1];
-//                            case DODGE_PERCENT -> {
-//                                dodgePercentModifier += ModifierManager.getMappedFinalValueFor(mod)[0];
-//                            }
-                        }
-                    }
-                }
-                default -> Utils.error("Wrong local defence input (Stat compiler)");
-            }
-        }
-        float healthPercent = (float)(healthPercentModifier)/100;
-        float wardPercent = (float)(wardPercentModifier)/100;
-        float armorPercent = (float)(armorPercentModifier)/100;
-        float dodgePercent = (float)(dodgePercentModifier)/100;
-
-        //All local mods have been searched: Update all defence values
-        defMap.put(DefenceTypes.HEALTH, (int) (healthSum * ( 1f + healthPercent )));
-        defMap.put(DefenceTypes.WARD, (int) (wardSum * ( 1f + wardPercent )));
-        defMap.put(DefenceTypes.ARMOR, (int) (armorSum * ( 1f + armorPercent )));
-        defMap.put(DefenceTypes.DODGE, (int) (dodgeSum * ( 1f + dodgePercent )));
-
-        return defMap;
+//        for (DefenceTypes def : defMap.keySet()){
+//            switch (def){
+//                case HEALTH -> {
+//                    Set<ModifierIDs> healthMods = ModifierIDs.getLocalModsFor(PlayerStats.HEALTH);
+//                    //Add all hybrid mods that target it
+//                    healthMods.add(ModifierIDs.ARMOR_HEALTH);
+//                    healthMods.add(ModifierIDs.DODGE_HEALTH);
+//                    healthMods.add(ModifierIDs.WARD_HEALTH);
+//                    for (Modifier mod : mods){
+//                        if (!healthMods.contains(mod.getModifierID())){
+//                            continue;
+//                        }
+//                        int[] hpValue = ModifierManager.getMappedFinalValueFor(mod);
+//                        switch (mod.getModifierID()){
+//                            case HEALTH -> healthSum += hpValue[0];
+//                            case ARMOR_HEALTH, DODGE_HEALTH, WARD_HEALTH -> healthSum += hpValue[1];
+//                            case HEALTH_PERCENT -> healthPercentModifier += hpValue[0];
+//                        }
+//                    }
+//                }
+//                case WARD -> {
+//                    Set<ModifierIDs> wardMods = ModifierIDs.getLocalModsFor(PlayerStats.WARD);
+//                    //Add all hybrid mods that target it
+//                    wardMods.add(ModifierIDs.WARD_HEALTH);
+//                    wardMods.add(ModifierIDs.ARMOR_WARD);
+//                    wardMods.add(ModifierIDs.DODGE_WARD);
+//                    for (Modifier mod : mods){
+//                        if (!wardMods.contains(mod.getModifierID())){
+//                            continue;
+//                        }
+//                        int[] wardValue = ModifierManager.getMappedFinalValueFor(mod);
+//                        switch (mod.getModifierID()){
+//                            case WARD -> wardSum += wardValue[0];
+//                            case ARMOR_WARD, DODGE_WARD -> wardSum += wardValue[1];
+//                            case WARD_HEALTH -> wardSum += wardValue[0];
+//                            case WARD_PERCENT -> wardPercentModifier += wardValue[0];
+//                        }
+//                    }
+//                }
+//                case ARMOR ->{
+//                    Set<ModifierIDs> armorMods = ModifierIDs.getLocalModsFor(PlayerStats.ARMOR);
+//                    //Add all hybrid mods that target it
+//                    armorMods.add(ModifierIDs.ARMOR_WARD);
+//                    armorMods.add(ModifierIDs.ARMOR_DODGE);
+//                    armorMods.add(ModifierIDs.ARMOR_HEALTH);
+//                    for (Modifier mod : mods){
+//                        if (!armorMods.contains(mod.getModifierID())){
+//                            continue;
+//                        }
+//                        int[] armorValue = ModifierManager.getMappedFinalValueFor(mod);
+//                        switch (mod.getModifierID()){
+//                            case ARMOR -> armorSum += armorValue[0];
+//                            case ARMOR_WARD, ARMOR_DODGE, ARMOR_HEALTH -> armorSum += armorValue[0];
+//                            case ARMOR_PERCENT -> armorPercentModifier += armorValue[0];
+//                        }
+//                    }
+//                }
+//                case DODGE -> {
+//                    Set<ModifierIDs> dodgeMods = ModifierIDs.getLocalModsFor(PlayerStats.DODGE);
+//                    //Add all hybrid mods that target it
+//                    dodgeMods.add(ModifierIDs.DODGE_HEALTH);
+//                    dodgeMods.add(ModifierIDs.DODGE_WARD);
+//                    dodgeMods.add(ModifierIDs.ARMOR_DODGE);
+//                    for (Modifier mod : mods){
+//                        if (!dodgeMods.contains(mod.getModifierID())){
+//                            continue;
+//                        }
+//                        int[] dodgeValue = ModifierManager.getMappedFinalValueFor(mod);
+//                        switch (mod.getModifierID()){
+//                            case DODGE -> dodgeSum += dodgeValue[0];
+//                            case DODGE_HEALTH, DODGE_WARD -> dodgeSum += dodgeValue[0];
+//                            case ARMOR_DODGE -> dodgeSum += dodgeValue[1];
+////                            case DODGE_PERCENT -> {
+////                                dodgePercentModifier += ModifierManager.getMappedFinalValueFor(mod)[0];
+////                            }
+//                        }
+//                    }
+//                }
+//                default -> Utils.error("Wrong local defence input (Stat compiler)");
+//            }
+//        }
+//        float healthPercent = (float)(healthPercentModifier)/100;
+//        float wardPercent = (float)(wardPercentModifier)/100;
+//        float armorPercent = (float)(armorPercentModifier)/100;
+//        float dodgePercent = (float)(dodgePercentModifier)/100;
+//
+//        //All local mods have been searched: Update all defence values
+//        defMap.put(DefenceTypes.HEALTH, (int) (healthSum * ( 1f + healthPercent )));
+//        defMap.put(DefenceTypes.WARD, (int) (wardSum * ( 1f + wardPercent )));
+//        defMap.put(DefenceTypes.ARMOR, (int) (armorSum * ( 1f + armorPercent )));
+//        defMap.put(DefenceTypes.DODGE, (int) (dodgeSum * ( 1f + dodgePercent )));
+//
+//        return defMap;
+        return null;
     }
 
     @Override

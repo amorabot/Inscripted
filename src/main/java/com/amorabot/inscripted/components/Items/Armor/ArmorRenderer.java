@@ -3,7 +3,6 @@ package com.amorabot.inscripted.components.Items.Armor;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Abstract.ItemRenderer;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.Implicits;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
@@ -122,9 +121,11 @@ public class ArmorRenderer implements ItemRenderer {
         Armor armorData = (Armor) itemData;
         itemLore.add("");
         itemLore.add(color(Utils.convertToPrettyString(" &7Item Level: ") + "&f&l" + armorData.getIlvl()));
-        Implicits armorImplicit = armorData.getImplicit();
-        String implicitString = armorImplicit.getDisplayName();
-        if (!armorImplicit.isHybrid()){
+//        Implicits armorImplicit = armorData.getImplicit();
+//        Implicits armorImplicit = null;
+        String implicitString = "---placeholder---";
+        //TODO: FIX ARMOR RENDERING
+        if (!true){
             String passiveString = Utils.convertToPrettyString(" &7Passive: ") + implicitString;
             itemLore.add(ColorUtils.translateColorCodes(passiveString));
             itemLore.add("");

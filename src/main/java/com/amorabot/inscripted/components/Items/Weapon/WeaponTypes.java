@@ -6,6 +6,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.inscripted.components.Items.Files.ResourcesJSONReader;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.utils.Utils;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -20,15 +21,17 @@ public enum WeaponTypes implements ItemSubtype {
     BOW(RangeCategory.RANGED,WeaponAttackSpeeds.NORMAL),
     DAGGER(RangeCategory.MELEE,WeaponAttackSpeeds.QUICK),
     WAND(RangeCategory.RANGED,WeaponAttackSpeeds.SLOW),
-    SCEPTRE(RangeCategory.MELEE,WeaponAttackSpeeds.SLOW);
+    MACE(RangeCategory.MELEE,WeaponAttackSpeeds.SLOW);
 
     public static final int weaponDamageVariance = 10;
 
+    @Getter
     private final RangeCategory range;
     private final WeaponAttackSpeeds atkSpeed;
 
     private final Map<Tiers, int[]> damages = new HashMap<>();
     private final Map<Tiers, String> names = new HashMap<>();
+    @Getter
     private Map<String, Map<String, Map<Integer, Integer>>> affixes;
 
 
@@ -46,7 +49,6 @@ public enum WeaponTypes implements ItemSubtype {
     public int[] mapBaseDamage(Tiers tier){
         return this.damages.getOrDefault(tier, new int[2]).clone();
     }
-//    public abstract Material mapWeaponBase(Tiers tier);
     public int mapWeaponTierModel(Tiers tier){
         int modelID = (this.ordinal()+1)+(WeaponTypes.values().length*tier.ordinal());
         return modelID;
@@ -57,17 +59,11 @@ public enum WeaponTypes implements ItemSubtype {
     public Material mapWeaponBase(){
         return getRange().getItem();
     }
-    public RangeCategory getRange() {
-        return range;
-    }
 
     private void loadAffixes(){
         this.affixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.WEAPON, this);
 
         Utils.log("Modifiers loaded successfully!(" + this + ")");
-    }
-    public Map<String, Map<String, Map<Integer, Integer>>> getAffixes(){
-        return this.affixes;
     }
 
     @Override

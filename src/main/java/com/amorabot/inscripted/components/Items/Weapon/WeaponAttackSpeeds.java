@@ -1,8 +1,10 @@
 package com.amorabot.inscripted.components.Items.Weapon;
 
+import lombok.Getter;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+@Getter
 public enum WeaponAttackSpeeds {
 
     HEAVY(0.83, -2),
@@ -23,19 +25,25 @@ public enum WeaponAttackSpeeds {
         this.swingAnimationSpeed = swingSpeed;
     }
 
-    public double getAttacksPerSecond() {
-        return attacksPerSecond;
-    }
-    public double getItemUsageCooldown() {
-        return itemUsageCooldown;
-    }
     public PotionEffect getSwingAnimationBuff(){
         return switch (this.swingAnimationSpeed) {
-            case -2 -> new PotionEffect(PotionEffectType.SLOW_DIGGING, 30, 2);
-            case -1 -> new PotionEffect(PotionEffectType.SLOW_DIGGING, 30, 1);
-            case 1 -> new PotionEffect(PotionEffectType.FAST_DIGGING, 30, 1);
-            case 2 -> new PotionEffect(PotionEffectType.FAST_DIGGING, 30, 2);
+            case -2 -> new PotionEffect(PotionEffectType.MINING_FATIGUE, 30, 2, true, false, false);
+            case -1 -> new PotionEffect(PotionEffectType.MINING_FATIGUE, 30, 1,true, false, false);
+            case 1 -> new PotionEffect(PotionEffectType.HASTE, 30, 1,true, false, false);
+            case 2 -> new PotionEffect(PotionEffectType.HASTE, 30, 2,true, false, false);
             default -> null;
         };
+    }
+    public String getBarIndicator(){
+        String filledDot = "♦";
+        String emptyDot = "♢";
+        StringBuilder bar = new StringBuilder("&8[ ");
+        int filledDots = 3 + getSwingAnimationSpeed();
+        int emptyDots = 5 - filledDots;
+        String filled = "&f" + filledDot.repeat(filledDots);
+        String empty = "&8" + emptyDot.repeat(emptyDots);
+        bar.append(filled).append(empty).append(" ]  ");
+
+        return bar.toString();
     }
 }
