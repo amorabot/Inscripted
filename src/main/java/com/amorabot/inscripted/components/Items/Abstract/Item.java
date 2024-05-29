@@ -68,6 +68,7 @@ public abstract class Item implements Serializable {
 
         itemMeta.setLore(lore);
         itemMeta.setUnbreakable(true);
+        //TODO: add attributes so they can be hidden (mojank problem)
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
         item.setItemMeta(itemMeta);

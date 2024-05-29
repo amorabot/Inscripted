@@ -209,9 +209,4 @@ public class Weapon extends Item implements ItemCategory {
     public void applyQuality() {
         Utils.log("applying weapon quality");
     }
-
-    @Override
-    public void getCorruptedImplicit() {
-
-    }
 }

@@ -4,6 +4,8 @@ import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Abstract.ItemRenderer;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
+import com.amorabot.inscripted.components.Items.modifiers.Inscription;
+import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 
@@ -121,21 +123,13 @@ public class ArmorRenderer implements ItemRenderer {
         Armor armorData = (Armor) itemData;
         itemLore.add("");
         itemLore.add(color(Utils.convertToPrettyString(" &7Item Level: ") + "&f&l" + armorData.getIlvl()));
-//        Implicits armorImplicit = armorData.getImplicit();
-//        Implicits armorImplicit = null;
-        String implicitString = "---placeholder---";
-        //TODO: FIX ARMOR RENDERING
-        if (!true){
-            String passiveString = Utils.convertToPrettyString(" &7Passive: ") + implicitString;
-            itemLore.add(ColorUtils.translateColorCodes(passiveString));
-            itemLore.add("");
-            return;
-        }
-        String[] implicitSegments = implicitString.split("-brk-");
-        String passiveString1 = Utils.convertToPrettyString(" &7Passive: ") + implicitSegments[0];
-        itemLore.add(ColorUtils.translateColorCodes(passiveString1));
-        String passiveString2 = implicitSegments[1];
-        itemLore.add(ColorUtils.translateColorCodes(passiveString2.indent(12)));
+        Inscription armorImplicit = armorData.getImplicit();
+        assert armorImplicit != null;
+        Archetypes archetype = Archetypes.mapArchetypeFor(itemSubtype);
+        if (archetype == null){archetype = Archetypes.MARAUDER;} //Defaults to marauder in case of null
+        String implicitString = armorImplicit.getImplicitDisplayName(archetype, 2);
+        String passiveString = Utils.convertToPrettyString(" &7Passive: ") + implicitString;
+        itemLore.add(ColorUtils.translateColorCodes(passiveString));
         itemLore.add("");
     }
 }

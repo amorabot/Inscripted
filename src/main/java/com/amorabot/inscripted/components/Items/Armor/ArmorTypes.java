@@ -7,19 +7,21 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.inscripted.components.Items.Files.ResourcesJSONReader;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.utils.Utils;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
 
 import java.util.*;
 
 public enum ArmorTypes implements ItemSubtype {
 
-    HEAVY_PLATING,
-    CARVED_PLATING,
-    LIGHT_CLOTH,
-    RUNIC_LEATHER,
-    ENCHANTED_SILK,
-    RUNIC_STEEL;
+    HEAVY_PLATING(TrimMaterial.REDSTONE),
+    CARVED_PLATING(TrimMaterial.GOLD),
+    LIGHT_CLOTH(TrimMaterial.EMERALD),
+    RUNIC_LEATHER(TrimMaterial.NETHERITE),
+    ENCHANTED_SILK(TrimMaterial.LAPIS),
+    RUNIC_STEEL(TrimMaterial.AMETHYST);
 
 
     private Map<String, Map<String, Map<Integer, Integer>>> helmetAffixes;
@@ -33,11 +35,15 @@ public enum ArmorTypes implements ItemSubtype {
     private static final double LEGGINGS_MAIN_STAT_WEIGHT = 1.2;
     private static final double BOOTS_MAIN_STAT_WEIGHT = 0.7;
 
+    @Getter
+    private final TrimMaterial trimMaterial;
+
     private final Map<Tiers, String> names = new HashMap<>();
     private final Map<Tiers, Map<ItemTypes, Map<DefenceTypes, Integer>>> baseStats = new HashMap<>();
     public static final int percentHealthVariance = 10;
 
-    ArmorTypes(){
+    ArmorTypes(TrimMaterial trimMaterial){
+        this.trimMaterial = trimMaterial;
         for (Tiers tier : Tiers.values()){
             this.names.put(tier, loadTierName(tier));
             this.baseStats.put(tier, loadBaseStats(tier));
@@ -45,113 +51,19 @@ public enum ArmorTypes implements ItemSubtype {
         loadAffixes();
     }
     public Material mapArmorBase(Tiers tier, ItemTypes armorBase){
-        switch (armorBase){
-            case HELMET -> {
-                return mapHelmetMaterial(tier);
-            }
-            case CHESTPLATE -> {
-                return mapChestplateMaterial(tier);
-            }
-            case LEGGINGS -> {
-                return mapLeggingsMaterial(tier);
-            }
-            case BOOTS -> {
-                return mapBootsMaterial(tier);
-            }
-            default -> {
-                Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
-                return null;
-            }
+        if (armorBase.equals(ItemTypes.WEAPON)){
+            Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
+            return null;
         }
+        return getArmorMaterial(tier, armorBase);
     }
-    private Material mapHelmetMaterial(Tiers tier){
-        switch (tier){
-            case T1 -> {
-                return Material.LEATHER_HELMET;
-            }
-            case T2 -> {
-                return Material.CHAINMAIL_HELMET;
-            }
-            case T3 -> {
-                return Material.IRON_HELMET;
-            }
-            case T4 -> {
-                return Material.DIAMOND_HELMET;
-            }
-            case T5 -> {
-                return Material.GOLDEN_HELMET;
-            }
-            default -> {
-                return Material.NETHERITE_HELMET;
-            }
-        }
+    private Material getArmorMaterial(Tiers tier, ItemTypes armorBase){
+        String materialString = tier.getMaterial() + "_" + armorBase.toString();
+        return Material.valueOf(materialString);
     }
-    private Material mapChestplateMaterial(Tiers tier){
-        switch (tier){
-            case T1 -> {
-                return Material.LEATHER_CHESTPLATE;
-            }
-            case T2 -> {
-                return Material.CHAINMAIL_CHESTPLATE;
-            }
-            case T3 -> {
-                return Material.IRON_CHESTPLATE;
-            }
-            case T4 -> {
-                return Material.DIAMOND_CHESTPLATE;
-            }
-            case T5 -> {
-                return Material.GOLDEN_CHESTPLATE;
-            }
-            default -> {
-                return Material.NETHERITE_CHESTPLATE;
-            }
-        }
-    }
-    private Material mapLeggingsMaterial(Tiers tier){
-        switch (tier){
-            case T1 -> {
-                return Material.LEATHER_LEGGINGS;
-            }
-            case T2 -> {
-                return Material.CHAINMAIL_LEGGINGS;
-            }
-            case T3 -> {
-                return Material.IRON_LEGGINGS;
-            }
-            case T4 -> {
-                return Material.DIAMOND_LEGGINGS;
-            }
-            case T5 -> {
-                return Material.GOLDEN_LEGGINGS;
-            }
-            default -> {
-                return Material.NETHERITE_LEGGINGS;
-            }
-        }
-    }
-    private Material mapBootsMaterial(Tiers tier){
-        switch (tier){
-            case T1 -> {
-                return Material.LEATHER_BOOTS;
-            }
-            case T2 -> {
-                return Material.CHAINMAIL_BOOTS;
-            }
-            case T3 -> {
-                return Material.IRON_BOOTS;
-            }
-            case T4 -> {
-                return Material.DIAMOND_BOOTS;
-            }
-            case T5 -> {
-                return Material.GOLDEN_BOOTS;
-            }
-            default -> {
-                return Material.NETHERITE_BOOTS;
-            }
-        }
-    }
+
+
+
     private void loadAffixes(){
         this.helmetAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.HELMET, this);
         this.chestplateAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.CHESTPLATE, this);

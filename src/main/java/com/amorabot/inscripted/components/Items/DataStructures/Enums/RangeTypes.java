@@ -50,13 +50,13 @@ public enum RangeTypes {
                 return tableValues.clone();
             }
             case SINGLE_RANGE -> {
-                return new int[]{Utils.getRoundedParametricValue(tableValues[0], tableValues[1], basePercentile)};
+                return new int[]{Utils.getRoundedParametricValue(tableValues[0]-1, tableValues[1], basePercentile)};
             }
             case DOUBLE_RANGE -> {
                 return new int[]
                         {
-                        Utils.getRoundedParametricValue(tableValues[0], tableValues[1], basePercentile),
-                        Utils.getRoundedParametricValue(tableValues[2], tableValues[3], basePercentile)
+                                Utils.getRoundedParametricValue(tableValues[0]-1, tableValues[1], basePercentile),
+                                Utils.getRoundedParametricValue(tableValues[2]-1, tableValues[3], basePercentile)
                         };
             }
         }

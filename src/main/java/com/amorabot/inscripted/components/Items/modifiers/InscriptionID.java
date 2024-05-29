@@ -110,7 +110,14 @@ public enum InscriptionID {
     MERCENARY_BOW("1 IMPLICIT DODGE ++ x +", 5, true),
     ROGUE_DAGGER("1 IMPLICIT CRITICAL_DAMAGE %+ x +", 5, true),
     SORCERER_WAND("1 IMPLICIT MAELSTROM +% x +", 5, true),
-    TEMPLAR_MACE("1 IMPLICIT ELEMENTAL_DAMAGE %+ x +", 5, true);
+    TEMPLAR_MACE("1 IMPLICIT ELEMENTAL_DAMAGE %+ x +", 5, true),
+
+    MARAUDER_HEAVY_PLATING("1 IMPLICIT STRENGTH ++ - +", 5, true),
+    GLADIATOR_CARVED_PLATING("2 IMPLICIT STRENGTH&DEXTERITY ++&++ -&- +", 5, true),
+    MERCENARY_LIGHT_CLOTH("1 IMPLICIT DEXTERITY ++ - +", 5, true),
+    ROGUE_RUNIC_LEATHER("2 IMPLICIT DEXTERITY&INTELLIGENCE ++&++ -&- +", 5, true),
+    SORCERER_ENCHANTED_SILK("1 IMPLICIT INTELLIGENCE ++ - +", 5, true),
+    TEMPLAR_RUNIC_STEEL("2 IMPLICIT INTELLIGENCE&STRENGTH ++&++ -&- +", 5, true);
 
     private static final Map<Affix, Map<InscriptionID, Map<Integer, int[]>>> MODIFIER_TABLE = new HashMap<>();
     private static final Map<InscriptionID, Map<Integer, int[]>> IMPLICIT_TABLE = new HashMap<>();

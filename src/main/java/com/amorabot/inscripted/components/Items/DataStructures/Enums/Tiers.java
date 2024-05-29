@@ -1,20 +1,22 @@
 package com.amorabot.inscripted.components.Items.DataStructures.Enums;
 
+import lombok.Getter;
+
 import java.util.Optional;
 
+@Getter
 public enum Tiers {
-    T1(10),
-    T2(25),
-    T3(45),
-    T4(75),
-    T5(120);
+    T1(10, "LEATHER"),
+    T2(25, "CHAINMAIL"),
+    T3(45, "IRON"),
+    T4(75, "DIAMOND"),
+    T5(120, "GOLDEN");
 
     private final int maxLevel;
-    Tiers(int maxLevel){
+    private final String material;
+    Tiers(int maxLevel, String material){
         this.maxLevel = maxLevel;
-    }
-    public int getMaxLevel() {
-        return maxLevel;
+        this.material = material;
     }
 
     public Optional<Tiers> getPreviousTier(){
