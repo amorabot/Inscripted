@@ -18,7 +18,7 @@ public enum PlayerStats {
     COLD_RESISTANCE("Cold resistance"),
     LIGHTNING_RESISTANCE("Lightning resistance"),
     ABYSSAL_RESISTANCE("Abyssal resistance"),
-    //Add resistance cap targets and stats
+    //Add resistance cap stats
     PHYSICAL_DAMAGE("Physical DMG"),
     MELEE_DAMAGE("Melee DMG"),
     FIRE_DAMAGE("Fire DMG"),
@@ -38,7 +38,8 @@ public enum PlayerStats {
     AREA_DAMAGE("Area DMG"),
     AOE("Area of Effect"),
     EXTRA_PROJECTILES("Extra proj."),
-    HEALING_POWER("Healing power");
+    HEALING_POWER("Healing power"),
+    WARD_RECOVERY_RATE("Ward recovery rate");
 
     private final String alias;
 

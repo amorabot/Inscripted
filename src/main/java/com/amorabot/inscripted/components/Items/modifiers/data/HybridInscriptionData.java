@@ -13,7 +13,7 @@ import java.util.List;
 
 @Getter
 public class HybridInscriptionData implements Modifier, Serializable {
-    public static final String HYBRID_SEPARATOR = " /&/ ";
+    public static final String HYBRID_SEPARATOR = " & ";
 
     private final Affix affixType;
     private final StatDefinition[] statDefinitions;

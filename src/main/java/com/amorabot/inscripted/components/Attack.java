@@ -1,22 +1,27 @@
 package com.amorabot.inscripted.components;
 
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Player.Profile;
+import com.amorabot.inscripted.components.Player.Stats;
+import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@Getter
 public class Attack implements EntityComponent {
 
     private float DPS;
 
-    private Map<DamageTypes, int[]> hitDamage;
+    private Map<DamageTypes, int[]> hitDamage = new HashMap<>();
     private float accuracy;
     private final float baseCrit = 5; //Weapon-dependent, but will be standard for now
     private float critChance;
@@ -25,22 +30,12 @@ public class Attack implements EntityComponent {
     private int maelstrom;
     private float bleedChance;
 
+    //TODO: ON-ATTACK TRIGGERS/CHECKS
     //Special attack modifiers go here
 
-    public Attack(Weapon weaponData){
-        if (weaponData == null){
-            reset();
-            return;
-        }
-        hitDamage = weaponData.getLocalDamage();
-        setDps();
-    }
-
-    @Override
-    public void reset(){
-        hitDamage = new HashMap<>();
+    public Attack(){
         hitDamage.put(DamageTypes.PHYSICAL, new int[]{1,1});
-        DPS = 1;
+        setDps();
     }
 
     //For mobs
@@ -63,7 +58,7 @@ public class Attack implements EntityComponent {
     public Map<DamageTypes, int[]> getDamages() {
         return hitDamage;
     }
-    public float getDPS(){return DPS;}
+
     private void setDps(){
         int lowerDamageSum = 0;
         int upperDamageSum = 0;
@@ -84,77 +79,24 @@ public class Attack implements EntityComponent {
         DPS = avgDamage;
     }
 
-    public void applyPercentDamage(DamageTypes damageType, int genericPercentAdded){
-        if (hitDamage.containsKey(damageType)){
-            int[] damageValues = hitDamage.get(damageType).clone();
-            damageValues[0] = (int) (damageValues[0] * (1 + genericPercentAdded/100f ));
-            damageValues[1] = (int) (damageValues[1] * (1 + genericPercentAdded/100f ));
-
-            hitDamage.put(damageType, damageValues);
-        }
-    }
-    public void addFlatDamage(DamageTypes type, int[] damageSumVar){
-        if (hitDamage.containsKey(type)){
-            int[] weaponDmg = hitDamage.get(type);
-            damageSumVar[0] += weaponDmg[0];
-            damageSumVar[1] += weaponDmg[1];
-            hitDamage.put(type,damageSumVar);
-        } else {
-            hitDamage.put(type, damageSumVar);
-        }
-    }
-
     @Override
     public void update(UUID profileID) {
-        //No update() routine for HitComponent yet
-    }
+        Profile profile = JSONProfileManager.getProfile(profileID);
+        Stats playerStats = profile.getStats();
+        hitDamage.clear();
+        int[][] playerDamage = playerStats.getFinalDamages();
+        hitDamage.put(DamageTypes.PHYSICAL, playerDamage[0]);
+        hitDamage.put(DamageTypes.FIRE, playerDamage[1]);
+        hitDamage.put(DamageTypes.LIGHTNING, playerDamage[2]);
+        hitDamage.put(DamageTypes.COLD, playerDamage[3]);
+        hitDamage.put(DamageTypes.ABYSSAL, playerDamage[4]);
 
-    public float getAccuracy() {
-        return accuracy;
-    }
-    public void setFinalAccuracy(int percentAccuracy){
-        this.accuracy = (accuracy * (1 + (percentAccuracy/100F) ) );
-    }
-    public void addBaseAccuracy(float accuracy) {
-        this.accuracy += accuracy;
-    }
-
-    public float getCritChance() {
-        return critChance;
-    }
-    public void setFinalCritChance(int percentCritChance) {
-        this.critChance = (baseCrit * (1 + (percentCritChance/100F) ) );
-    }
-
-    public int getCritDamage() {
-        return critDamage;
-    }
-    public void addBaseCritDamage(int critDamage) {
-        this.critDamage += critDamage;
-    }
-
-    public int getShred() {
-        return shred;
-    }
-
-    public void addBaseShred(int shred) {
-        this.shred += shred;
-    }
-
-    public int getMaelstrom() {
-        return maelstrom;
-    }
-
-    public void addBaseMaelstrom(int maelstrom) {
-        this.maelstrom += maelstrom;
-    }
-
-    public float getBleedChance() {
-        return bleedChance;
-    }
-
-    public void addBaseBleedChance(float bleedChance) {
-        this.bleedChance += bleedChance;
+        this.accuracy = playerStats.getFinalFlatValueFor(PlayerStats.ACCURACY);
+        this.critChance = Utils.applyPercentageTo(baseCrit, playerStats.getPercentValueFor(PlayerStats.CRITICAL_CHANCE));
+        this.critDamage = playerStats.getPercentValueFor(PlayerStats.CRITICAL_DAMAGE);
+        this.shred = playerStats.getPercentValueFor(PlayerStats.SHRED);
+        this.maelstrom = playerStats.getPercentValueFor(PlayerStats.MAELSTROM);
+        this.bleedChance = playerStats.getPercentValueFor(PlayerStats.BLEED);
     }
 
     public static @NotNull String getDamageString(int[] damagesArray){

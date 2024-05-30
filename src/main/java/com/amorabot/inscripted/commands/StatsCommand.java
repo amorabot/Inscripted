@@ -59,8 +59,8 @@ public class StatsCommand implements CommandExecutor {
         String COLDRES = ColorUtils.translateColorCodes(defencesPrefixes[4] + " " + def.getColdResistance());
         String ABYSSRES = ColorUtils.translateColorCodes(defencesPrefixes[5] + " " + def.getAbyssalResistance());
 
-        String ARMOR = ColorUtils.translateColorCodes(defencesPrefixes[6] + " " + (int)(def.getFinalArmor()));
-        String DODGE = ColorUtils.translateColorCodes(defencesPrefixes[7] + " " + (int)(def.getDodge()));
+        String ARMOR = ColorUtils.translateColorCodes(defencesPrefixes[6] + " " + (int)(def.getArmor()));
+        String DODGE = ColorUtils.translateColorCodes(defencesPrefixes[7] + " " + (def.getDodge()));
 
 
         String atkHeader = Utils.color("&b&f-------- " + DamageTypes.PHYSICAL.getCharacter() + " Offence --------");

@@ -2,6 +2,7 @@ package com.amorabot.inscripted.tasks;
 
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.skills.GlobalCooldownManager;
@@ -38,7 +39,7 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             float curWard = healthComponent.getCurrentWard();
             String wardHex = DefenceTypes.WARD.getTextColor().replace("&", "");
             float dps = playerProfile.getDamageComponent().getHitData().getDPS();
-            int staminaValue = playerProfile.getMiscellaneous().getStamina();
+            int staminaValue = (int) playerProfile.getStats().getFinalFlatValueFor(PlayerStats.STAMINA); //TODO: put a cached value for this in some player profile component
 //            char facing = currentPlayer.getFacing().toString().charAt(0);
 
             Audience playerAudience = Audience.audience(currentPlayer);

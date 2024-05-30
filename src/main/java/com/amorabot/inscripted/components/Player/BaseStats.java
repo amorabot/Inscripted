@@ -2,9 +2,9 @@ package com.amorabot.inscripted.components.Player;
 
 public enum BaseStats {
     HEALTH(40),
-    HEALTH_PER_LEVEL(6),
+//    HEALTH_PER_LEVEL(6),
     HEALTH_REGEN(5),
-    WARD_RECOVERY(10),
+    WARD_RECOVERY_RATE(5),
     STAMINA(100),
     STAMINA_REGEN(5),
     WALK_SPEED(100);

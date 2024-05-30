@@ -2,16 +2,15 @@ package com.amorabot.inscripted.tasks;
 
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class PlayerRegenerationTask extends BukkitRunnable {
@@ -68,7 +67,7 @@ public class PlayerRegenerationTask extends BukkitRunnable {
         }
 
         if (HPComponent.getCurrentWard() != HPComponent.getMaxWard() && (PlayerRegenManager.canRegenWard(playerID))){
-            float wardRegen = HPComponent.getWardRegenTick();
+            float wardRegen = HPComponent.getMaxWard() * (playerProfile.getStats().getPercentValueFor(PlayerStats.WARD_RECOVERY_RATE)/100F);
 
             if (isPvPTagged){
                 wardRegen = wardRegen/2;

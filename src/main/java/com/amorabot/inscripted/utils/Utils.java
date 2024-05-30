@@ -198,6 +198,9 @@ public class Utils {
     public static float applyPercentageTo(int baseValue, int percentMod){
         return baseValue * (1 + (percentMod)/100F);
     }
+    public static float applyPercentageTo(float baseValue, int percentMod){
+        return baseValue * (1 + (percentMod)/100F);
+    }
     public static int[] vectorSum(int[] vec1, int[] vec2){
         int[] updatedVec = new int[vec1.length];
         if (vec1.length != vec2.length){return updatedVec;}

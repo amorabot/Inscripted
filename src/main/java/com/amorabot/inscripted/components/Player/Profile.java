@@ -6,18 +6,20 @@ import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.utils.Utils;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-
 public class Profile {
     private HealthComponent health;
     private DefenceComponent defences;
     private DamageComponent damage;
+    @Getter
     private Attributes attributes;
-    private Miscellaneous miscellaneous;
+    @Getter
+    private Stats stats;
     private PlayerEquipment equipment;
     public Profile(Attributes attributes, PlayerEquipment equipment){
         this.attributes = attributes;
@@ -28,14 +30,8 @@ public class Profile {
         this.defences = def;
         this.damage = dmg;
         this.attributes = att;
-        this.miscellaneous = new Miscellaneous();
+        this.stats = new Stats();
         this.equipment = equipment;
-    }
-    public Attributes getAttributes(){
-        return this.attributes;
-    }
-    public Miscellaneous getMiscellaneous() {
-        return miscellaneous;
     }
     public PlayerEquipment getEquipmentComponent() {
         return this.equipment;

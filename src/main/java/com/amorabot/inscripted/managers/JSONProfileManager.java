@@ -34,7 +34,7 @@ public class JSONProfileManager {
         Attributes attributes = new Attributes(0, 0,0);
         PlayerEquipment equipment = new PlayerEquipment();
         UUID id = UUID.fromString(uuid);
-        Profile createdProfile = new Profile(new HealthComponent(), new DefenceComponent(), new DamageComponent(), attributes, equipment);
+        Profile createdProfile = new Profile(new HealthComponent(), new DefenceComponent(75), new DamageComponent(), attributes, equipment);
         profiles.put(id, createdProfile);
 
         return createdProfile;

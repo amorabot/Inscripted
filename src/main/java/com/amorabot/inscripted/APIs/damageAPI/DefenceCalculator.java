@@ -18,8 +18,8 @@ public class DefenceCalculator {
     }
 
     public static int[] applyDefences(int[] incomingHit, Attack attackerDamage, DefenceComponent defenderDefences){
-        if (incomingHit[0] > 0 && defenderDefences.getFinalArmor()>0){ //Physical mitigation
-            incomingHit[0] = resultingPhysical(incomingHit[0], attackerDamage, defenderDefences.getFinalArmor());
+        if (incomingHit[0] > 0 && defenderDefences.getArmor()>0){ //Physical mitigation
+            incomingHit[0] = resultingPhysical(incomingHit[0], attackerDamage, defenderDefences.getArmor());
         }
         applyElementalDamageCalculations(incomingHit, attackerDamage, 1, defenderDefences.getFireResistance());
         applyElementalDamageCalculations(incomingHit, attackerDamage, 2, defenderDefences.getLightningResistance());
