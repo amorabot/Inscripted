@@ -5,10 +5,13 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
+import com.amorabot.inscripted.utils.Utils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -62,13 +65,14 @@ public abstract class Item implements Serializable {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
         List<String> lore = new ArrayList<>();
-        ItemRenderer currentRenderer = getRenderer();
+        ItemRenderer currentRenderer = getRenderer(); //TODO: should be based on subtype, not "renderType"
 
         currentRenderer.renderAllCustomLore(this, lore, subType);
 
         itemMeta.setLore(lore);
         itemMeta.setUnbreakable(true);
         //TODO: add attributes so they can be hidden (mojank problem)
+        itemMeta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier("tempArmor", 0.1D, AttributeModifier.Operation.ADD_NUMBER));
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
         item.setItemMeta(itemMeta);
@@ -125,11 +129,21 @@ public abstract class Item implements Serializable {
     }
     public double getStarRating() { //Voltar pra acesso protected, so pra uso interno
         double percentileSum = 0;
+        int invalidMods = 0;
         for (Inscription mod : getInscriptionList()){
-            percentileSum += mod.getBasePercentile();
+            InscriptionID inscID = mod.getInscription();
+            if (inscID.getData().isKeystone() || inscID.getData().isUniqueEffect()){
+                invalidMods++;
+                continue;
+            }
+            double inscBP = mod.getBasePercentile();
+            if (!inscID.isPositive()){inscBP = (1D-inscBP);}
+            percentileSum += inscBP;
         }
         if (!getInscriptionList().isEmpty()){
-            return (percentileSum/ getInscriptionList().size());
+            double percentileAvg = percentileSum/ (getInscriptionList().size()-invalidMods);
+            Utils.log("SR: " + percentileAvg);
+            return percentileAvg;
         }
         return 0;
     }

@@ -1,8 +1,12 @@
 package com.amorabot.inscripted.components.Items.Abstract;
 
+import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRarities;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
+import com.amorabot.inscripted.components.Items.modifiers.data.KeystoneData;
+import com.amorabot.inscripted.components.Items.modifiers.data.ModifierData;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.text.Component;
@@ -51,12 +55,9 @@ public interface ItemRenderer extends Serializable {
         item.setItemMeta(itemMeta);
     }
     void renderMainStat(Item itemData, List<String> itemLore);
-    default void renderMods(Item itemData, List<String> itemLore){
-        String valuesColor = "&#95dbdb";
 
-        List<Inscription> mods = itemData.getInscriptionList();
-
-        Comparator<Inscription> modifierComparator = (o1, o2) -> {
+    default Comparator<Inscription> getInscriptionComparator(){
+        return (o1, o2) -> {
             if (o2.isImbued()){
                 return 1;
             }
@@ -68,10 +69,51 @@ public interface ItemRenderer extends Serializable {
             }
             return 1;
         };
-        mods.sort(modifierComparator);
+    }
+
+    default void renderKeystonesAndEffects(Item itemData, List<String> itemLore){
+        if (!itemData.getRarity().equals(ItemRarities.RELIC)){return;}
+        List<Inscription> inscriptions = itemData.getInscriptionList();
+
+        inscriptions.sort(getInscriptionComparator());
+
+        //Keystones first
+        boolean hasKeystone = false;
+        for (Inscription insc : inscriptions){
+            ModifierData data = insc.getInscription().getData();
+            if (!data.isKeystone()){continue;}
+            hasKeystone = true;
+            Keystones keystone = ((KeystoneData) data).keystone();
+            int padding = 2;
+            String keystoneName = ColorUtils.translateColorCodes(("&c&l"+insc.getInscription().getDisplayName()).indent(padding));
+            itemLore.add(keystoneName);
+            for (String descriLine : keystone.getDescription()){
+                String keystoneDescLine = ColorUtils.translateColorCodes(("&8"+Utils.convertToPrettyString(descriLine)).indent(padding+2));
+                itemLore.add(keystoneDescLine);
+            }
+        }
+        //Then effects
+        //-----------
+        if (hasKeystone){
+            itemLore.add("");
+        }
+    }
+
+    default void renderMods(String valuesColor, Item itemData, List<String> itemLore){
+
+
+        List<Inscription> mods = itemData.getInscriptionList();
+        mods.sort(getInscriptionComparator());
 
         for (Inscription mod : mods){
-            String modifierDisplayName = mod.getModifierDisplayName(valuesColor, 2);
+            String modifierDisplayName;
+            if (mod.getInscription().getData().isUnique()){
+//                modifierDisplayName = mod.getModifierDisplayName("&4", 2);
+                modifierDisplayName = mod.getModifierDisplayName("&#ff7081", 2); //Hex color for unique mods
+            } else {
+                modifierDisplayName = mod.getModifierDisplayName(valuesColor, 2);
+            }
+            if (modifierDisplayName.isEmpty()){continue;}
             itemLore.add(ColorUtils.translateColorCodes(modifierDisplayName));
         }
         if (itemData.getRarity() != ItemRarities.COMMON){
@@ -79,29 +121,29 @@ public interface ItemRenderer extends Serializable {
         }
     }
     <subType extends Enum<subType> & ItemSubtype> void renderDescription(Item itemData, List<String> itemLore, subType itemSubtype);
-    default void renderTag(Item itemData, List<String> itemLore) {
+    default <subType extends Enum<subType> & ItemSubtype> void renderTag(Item itemData, List<String> itemLore,subType itemSubtype) {
         ItemRarities rarity = itemData.getRarity();
-        String tag = rarity.getColor()+"&l"+rarity;
+        StringBuilder tag = new StringBuilder(rarity.getColor()).append("&l").append(rarity);
+        if (itemSubtype instanceof ArmorTypes armorType){
+            tag.append(" ").append(itemData.getCategory());
+        } else {
+            tag.append(" ").append(itemSubtype);
+        }
         if (rarity.equals(ItemRarities.COMMON)){
-            if (itemData.isCorrupted()){
-                tag += " &4☠";
-            }
-            itemLore.add(color(tag));
+            if (itemData.isCorrupted()){tag.append(" &4☠");}
+            itemLore.add(color(tag.toString()));
             return;
         }
-        if (itemData.isCorrupted()){
-            tag += " &4☠";
-        }
-        double starRating = itemData.getStarRating();
-        tag += mapStarRating(starRating);
-
-        itemLore.add(color(tag));
+        if (itemData.isCorrupted()){ tag.append(" &4☠"); }
+        tag.append(mapStarRating(itemData.getStarRating()));
+        itemLore.add(color(tag.toString()));
     }
     default <subType extends Enum<subType> & ItemSubtype> void renderAllCustomLore(Item itemData, List<String> itemLore, subType itemSubtype){
         renderMainStat(itemData, itemLore);
-        renderMods(itemData, itemLore);
+        renderKeystonesAndEffects(itemData, itemLore);
+        renderMods("&#95dbdb", itemData, itemLore);
         renderDescription(itemData, itemLore, itemSubtype);
-        renderTag(itemData, itemLore);
+        renderTag(itemData, itemLore, itemSubtype);
 
         int mods = itemData.getInscriptionList().size();
         placeRunicDiv(itemData.getName().length(),itemLore,mods);

@@ -10,6 +10,7 @@ import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Getter
+@Setter
 public class Attack implements EntityComponent {
 
     private float DPS;

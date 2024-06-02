@@ -9,6 +9,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRaritie
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Relics;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.command.Command;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GenerateItem implements TabExecutor {
 
@@ -41,6 +43,16 @@ public class GenerateItem implements TabExecutor {
             player.sendMessage("Usage: /item ItemLevel Rarity Archetype");
             player.sendMessage("Example: " +
                     Utils.color("&c&l/item" + " 120" + " " + ItemRarities.MAGIC + " " + Archetypes.MERCENARY));
+            return true;
+        }
+        if (args.length == 1){//getting Relic
+            try{
+                Relics relic = Relics.valueOf(args[0]);
+                player.getInventory().addItem(relic.getItemForm());
+//                giveGeneratedItem(Objects.requireNonNull(relic.generate()), player);
+            } catch (IllegalArgumentException exception){
+                Utils.error("wrong relic name");
+            }
             return true;
         }
 

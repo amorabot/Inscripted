@@ -1,11 +1,17 @@
 package com.amorabot.inscripted.components;
 
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
-import com.amorabot.inscripted.components.Items.Weapon.Weapon;
-import com.amorabot.inscripted.utils.Utils;
+import com.amorabot.inscripted.components.Player.Profile;
+import com.amorabot.inscripted.components.Player.Stats;
+import com.amorabot.inscripted.managers.JSONProfileManager;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
+@Getter
+@Setter
 public class DamageComponent implements EntityComponent {
 
     private Attack hitData;
@@ -22,27 +28,17 @@ public class DamageComponent implements EntityComponent {
     public DamageComponent(){
         this.hitData = new Attack();
     }
-//    @Override
-//    public void reset(){
-//        Utils.error("Refrain from using no-arg DamageComponent reset() method, use reset(Weapon weaponData)");
-//    }
-
-//    public void reset(Weapon weaponData){
-//        this.hitData = new Attack(weaponData);
-//
-//        this.lifeOnHit = 0;
-//        this.lifeSteal = 0;
-//        this.areaDamage = 0;
-//    }
-
-    public Attack getHitData() {
-        return hitData;
-    }
-
 
     @Override
     public void update(UUID profileID) {
-
+        Profile profileData = JSONProfileManager.getProfile(profileID);
+        Stats playerStats = profileData.getStats();
+        setLifeOnHit((int) playerStats.getFinalFlatValueFor(PlayerStats.LIFE_ON_HIT));
+        setLifeSteal(playerStats.getPercentValueFor(PlayerStats.LIFESTEAL));
+        setExtraProjectiles((int) playerStats.getFinalFlatValueFor(PlayerStats.EXTRA_PROJECTILES));
+        setAreaDamage(playerStats.getPercentValueFor(PlayerStats.AREA_DAMAGE));
+        Attack hitData = getHitData();
+        hitData.update(profileID);
     }
 
 

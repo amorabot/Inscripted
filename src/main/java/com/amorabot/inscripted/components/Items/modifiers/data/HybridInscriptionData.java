@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Getter
-public class HybridInscriptionData implements Modifier, Serializable {
+public class HybridInscriptionData implements ModifierData, Serializable {
     public static final String HYBRID_SEPARATOR = " & ";
 
     private final Affix affixType;

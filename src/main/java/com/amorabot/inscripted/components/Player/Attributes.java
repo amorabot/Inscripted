@@ -33,14 +33,14 @@ public class Attributes implements EntityComponent {
         this.intelligence = (int) stats.getFinalFlatValueFor(PlayerStats.INTELLIGENCE);
 
         //3 STR -> +1 Base HP
-        //5 STR -> 1% Melee DMG
+        //10 STR -> 1% Melee DMG
         applyStrengthBonusesTo(stats);
 
-        //3 DEX -> ????
-        //5 DEX -> ????
+        //3 DEX -> +1 Accuracy
+        //10 DEX -> +1 Base stamina
         applyDexterityBonusesTo(stats);
 
-        //5 INT -> +1 Base Ward
+        //3 INT -> +1 Base Ward
         //50 INT -> 1% Ward recovery rate
         applyIntelligenceBonusesTo(stats);
 
@@ -50,9 +50,11 @@ public class Attributes implements EntityComponent {
         stats.addSingleStat(PlayerStats.MELEE_DAMAGE, ValueTypes.PERCENT, new int[]{getStrength()/10});
     }
     public void applyDexterityBonusesTo(Stats stats){
-
+        stats.addSingleStat(PlayerStats.ACCURACY, ValueTypes.FLAT, new int[]{getDexterity()/3});
+        stats.addSingleStat(PlayerStats.STAMINA, ValueTypes.FLAT, new int[]{getDexterity()/10});
     }
     public void applyIntelligenceBonusesTo(Stats stats){
-
+        stats.addSingleStat(PlayerStats.WARD, ValueTypes.FLAT, new int[]{getIntelligence()/3});
+        stats.addSingleStat(PlayerStats.WARD_RECOVERY_RATE, ValueTypes.PERCENT, new int[]{getIntelligence()/50});
     }
 }

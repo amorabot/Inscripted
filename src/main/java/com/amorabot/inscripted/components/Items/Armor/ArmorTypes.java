@@ -16,12 +16,12 @@ import java.util.*;
 
 public enum ArmorTypes implements ItemSubtype {
 
-    HEAVY_PLATING(TrimMaterial.REDSTONE),
-    CARVED_PLATING(TrimMaterial.GOLD),
-    LIGHT_CLOTH(TrimMaterial.EMERALD),
-    RUNIC_LEATHER(TrimMaterial.NETHERITE),
-    ENCHANTED_SILK(TrimMaterial.LAPIS),
-    RUNIC_STEEL(TrimMaterial.AMETHYST);
+    HEAVY_PLATING("Heavy",TrimMaterial.REDSTONE),
+    CARVED_PLATING("Carved",TrimMaterial.GOLD),
+    LIGHT_CLOTH("Cloth",TrimMaterial.EMERALD),
+    RUNIC_LEATHER("Pelt",TrimMaterial.NETHERITE),
+    ENCHANTED_SILK("Silk",TrimMaterial.LAPIS),
+    RUNIC_STEEL("Runisteel",TrimMaterial.AMETHYST);
 
 
     private Map<String, Map<String, Map<Integer, Integer>>> helmetAffixes;
@@ -35,6 +35,7 @@ public enum ArmorTypes implements ItemSubtype {
     private static final double LEGGINGS_MAIN_STAT_WEIGHT = 1.2;
     private static final double BOOTS_MAIN_STAT_WEIGHT = 0.7;
 
+    private final String prefix;
     @Getter
     private final TrimMaterial trimMaterial;
 
@@ -42,7 +43,8 @@ public enum ArmorTypes implements ItemSubtype {
     private final Map<Tiers, Map<ItemTypes, Map<DefenceTypes, Integer>>> baseStats = new HashMap<>();
     public static final int percentHealthVariance = 10;
 
-    ArmorTypes(TrimMaterial trimMaterial){
+    ArmorTypes(String prefix, TrimMaterial trimMaterial){
+        this.prefix = prefix;
         this.trimMaterial = trimMaterial;
         for (Tiers tier : Tiers.values()){
             this.names.put(tier, loadTierName(tier));
@@ -50,6 +52,11 @@ public enum ArmorTypes implements ItemSubtype {
         }
         loadAffixes();
     }
+
+    public String getSubtypePrefix() {
+        return prefix;
+    }
+
     public Material mapArmorBase(Tiers tier, ItemTypes armorBase){
         if (armorBase.equals(ItemTypes.WEAPON)){
             Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");

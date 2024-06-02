@@ -7,8 +7,10 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 //import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
 import com.amorabot.inscripted.components.Items.Files.ItemModifiersConfig;
+import com.amorabot.inscripted.components.Items.Files.RelicEditor;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Relics;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
 import com.amorabot.inscripted.handlers.GUI.GUIHandler;
 import com.amorabot.inscripted.handlers.Inventory.*;
@@ -57,6 +59,7 @@ public final class Inscripted extends JavaPlugin {
         this.world = Bukkit.getWorld("world");
 
         initializeProfileJSON();
+//        initializeRelicItemData();
         reloadRoutine();
         InscriptionID.loadModifiers();
         Utils.populatePrettyAlphabet();
@@ -128,6 +131,15 @@ public final class Inscripted extends JavaPlugin {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+    private void initializeRelicItemData() {
+        try {
+            log("Initializing relic item data");
+            RelicEditor.setup(); //vai criar o arquivo se ele não existe
+            log("Relic data initialized.");
+        } catch (IOException exception){
+            Utils.error("Unable to setup relic data file");
         }
     }
 

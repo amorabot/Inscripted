@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.components.Items.Files;
 
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
-import com.amorabot.inscripted.components.Items.modifiers.data.Modifier;
+import com.amorabot.inscripted.components.Items.modifiers.data.ModifierData;
 
 import java.util.List;
 
@@ -55,13 +55,16 @@ public class ModifierEditor {
 //        return valuesArray;
 //    }
     public static int[] getTableValuesFor(InscriptionID mod, int tier){
-        Modifier modData = mod.getData();
+        ModifierData modData = mod.getData();
         String affixType = modData.getAffixType().toString();
         String modString = mod.toString();
         String path = affixType+"."+modString+"."+tier;
         List<Integer> values = ItemModifiersConfig.get().getIntegerList(path);
+        if (modData.isUnique()){ //Overrides in case its unique
+            path = affixType+"."+modString;
+            values = ItemModifiersConfig.get().getIntegerList(path);
+        }
         int[] valuesArray = new int[values.size()];
-
         for (int i = 0; i< valuesArray.length; i++){
             valuesArray[i] = values.get(i);
         }

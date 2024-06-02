@@ -5,11 +5,14 @@ import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.Set;
 import java.util.UUID;
 
 public class Profile {
@@ -21,6 +24,10 @@ public class Profile {
     @Getter
     private Stats stats;
     private PlayerEquipment equipment;
+
+    @Setter
+    private Set<Keystones> keystones;
+
     public Profile(Attributes attributes, PlayerEquipment equipment){
         this.attributes = attributes;
         this.equipment = equipment;
@@ -74,5 +81,9 @@ public class Profile {
         double updatedHearts = getHealthComponent().getMappedHealth(20);
         player.setHealth(updatedHearts);
         return updatedHearts == 0;
+    }
+
+    public boolean hasKeystone(Keystones keystone){
+        return this.keystones.contains(keystone);
     }
 }

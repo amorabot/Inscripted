@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@Setter
 @Getter
 public class Stats implements EntityComponent {
     /*
@@ -19,7 +20,6 @@ public class Stats implements EntityComponent {
     https://www.poewiki.net/wiki/Damage_conversion#Conversion_order
     */
 
-    @Setter
     private Map<PlayerStats, Map<ValueTypes, int[]>> playerStats = new HashMap<>();
 
     public Stats(){

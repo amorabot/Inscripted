@@ -9,7 +9,7 @@ import lombok.Getter;
 import java.io.Serializable;
 
 @Getter
-public class InscriptionData implements Modifier, Serializable {
+public class InscriptionData implements ModifierData, Serializable {
 
     private final Affix affixType;
     private final StatDefinition definitionData;

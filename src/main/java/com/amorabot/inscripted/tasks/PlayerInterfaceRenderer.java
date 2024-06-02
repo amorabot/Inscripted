@@ -1,13 +1,16 @@
 package com.amorabot.inscripted.tasks;
 
 import com.amorabot.inscripted.components.HealthComponent;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.skills.GlobalCooldownManager;
 import com.amorabot.inscripted.skills.SkillTypes;
 import com.amorabot.inscripted.utils.ColorUtils;
+import com.amorabot.inscripted.utils.Utils;
 import me.neznamy.tab.api.TabAPI;
 import me.neznamy.tab.api.TabPlayer;
 import me.neznamy.tab.api.nametag.UnlimitedNameTagManager;
@@ -52,9 +55,15 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             TextComponent health = Component.text((int) curHealth + "/" + (int) maxHealth)
                             .append(Component.text(DefenceTypes.HEALTH.getSpecialChar()))
                             .color(TextColor.fromHexString(healthHex));
-            TextComponent ward = Component.text((int) curWard + "/" + (int) maxWard)
-                    .append(Component.text(DefenceTypes.WARD.getSpecialChar()))
-                    .color(TextColor.fromHexString(wardHex));
+            String wardValues = ((int) curWard + "/" + (int) maxWard) + DefenceTypes.WARD.getSpecialChar();
+            TextComponent ward;
+            if (playerProfile.hasKeystone(Keystones.FORBIDDEN_PACT)){
+                ward = Component.text(wardValues)
+                        .color(TextColor.fromHexString(DefenceTypes.ABYSSAL.getTextColor().replace("&","")))
+                        .decorate(TextDecoration.BOLD);
+            } else {
+                ward = Component.text(wardValues).color(TextColor.fromHexString(wardHex));
+            }
 
 
             String infoSection = "&7&l Lv19[&6&l|||&8|||||||&7&l] ";

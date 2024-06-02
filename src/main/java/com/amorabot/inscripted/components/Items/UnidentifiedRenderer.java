@@ -19,7 +19,7 @@ public class UnidentifiedRenderer implements ItemRenderer {
     }
 
     @Override
-    public void renderMods(Item itemData, List<String> itemLore) {
+    public void renderMods(String valuesColor, Item itemData, List<String> itemLore) {
     }
 
     @Override
@@ -37,12 +37,12 @@ public class UnidentifiedRenderer implements ItemRenderer {
     }
 
     @Override
-    public void renderTag(Item itemData, List<String> itemLore) {
-        ItemRarities rarity = itemData.getRarity();
+    public <subType extends Enum<subType> & ItemSubtype>  void renderTag(Item itemData, List<String> itemLore, subType itemSubtype) {
+        ItemRarities rarity = itemData.getRarity(); //TODO: rework the whole renderer
         switch (rarity){
-            case COMMON -> itemLore.add(color("&f&l"+rarity));
-            case MAGIC -> itemLore.add(color("&9&l"+rarity));
-            case RARE -> itemLore.add(color("&e&l"+rarity));
+            case COMMON -> itemLore.add(color("&f&l"+rarity + " " + itemSubtype));
+            case MAGIC -> itemLore.add(color("&9&l"+rarity + " " + itemSubtype));
+            case RARE -> itemLore.add(color("&e&l"+rarity + " " + itemSubtype));
         }
     }
 }

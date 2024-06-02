@@ -1,0 +1,37 @@
+{
+  "TRAINING_DUMMY_ARMOR": {
+    "name": "Dummy armor",
+    "ilvl": 1,
+    "slot": "CHESTPLATE",
+    "type": "HEAVY_PLATING",
+    "baseHealth": 10,
+    "inscriptions": [
+      "BLEEDING_HEART_BLD_CHANCE",
+      "FORBIDDEN_PACT"
+    ]
+  },
+  "BLEEDING_HEART": {
+    "name": "Bleeding Heart",
+    "ilvl": 42,
+    "slot": "CHESTPLATE",
+    "type": "HEAVY_PLATING",
+    "baseHealth": 400,
+    "inscriptions": [
+      "BLEEDING_HEART_BLD_CHANCE",
+      "BLEEDING_HEART_BLD_DMG",
+      "LETHAL_STRIKES"
+    ]
+  },
+  "CORRUPTORS_WRAPPINGS": {
+    "name": "The corruptor's wrappings",
+    "ilvl": 70,
+    "slot": "CHESTPLATE",
+    "type": "ENCHANTED_SILK",
+    "baseHealth": 1,
+    "inscriptions": [
+      "FORBIDDEN_PACT",
+      "CORRUPTORS_WRAPPINGS_WARD",
+      "CORRUPTORS_WRAPPINGS_STRENGTH"
+    ]
+  }
+}

@@ -9,10 +9,9 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
-import com.amorabot.inscripted.components.Items.modifiers.data.HybridInscriptionData;
-import com.amorabot.inscripted.components.Items.modifiers.data.InscriptionData;
-import com.amorabot.inscripted.components.Items.modifiers.data.Modifier;
-import com.amorabot.inscripted.components.Items.modifiers.data.StatDefinition;
+import com.amorabot.inscripted.components.Items.modifiers.data.*;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
+import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTimes;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.utils.Utils;
 
@@ -35,6 +34,14 @@ public class StatCompiler {
 
         Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats = new HashMap<>();
         addBaseStatsTo(compiledStats);
+        Set<Keystones> playerKeystones = compileKeystones(equipment);
+
+        //Apply early compilation keystones
+        for (Keystones earlyKeystone : playerKeystones){
+            if (!earlyKeystone.getCompilationTime().equals(TriggerTimes.EARLY)){continue;}
+            Utils.log("Applying " + earlyKeystone);
+            earlyKeystone.apply(targetProfile);
+        }
 
 
         //Compiling Armor data
@@ -103,8 +110,47 @@ public class StatCompiler {
 
         //Compiled stats are now available for all components to consume in the build step
         targetProfile.getStats().setPlayerStats(compiledStats);
+        targetProfile.setKeystones(playerKeystones);
+
         buildProfile();
-}
+
+        //Apply late compilation keystones
+        for (Keystones lateKeystone : playerKeystones){
+            if (!lateKeystone.getCompilationTime().equals(TriggerTimes.LATE)){continue;}
+            Utils.log("Applying " + lateKeystone);
+            lateKeystone.apply(targetProfile);
+        }
+    }
+
+    private Set<Keystones> compileKeystones(PlayerEquipment equipment) {
+        Set<Keystones> playerKeystones = new HashSet<>();
+
+        Armor[] armorSet = equipment.getArmorSet();
+        for (Armor equippedArmor : armorSet){
+            if (equippedArmor == null){
+                continue;
+            }
+            List<Inscription> armorInscriptions = equippedArmor.getInscriptionList();
+            for (Inscription inscription : armorInscriptions){
+                addKeystoneFrom(inscription, playerKeystones);
+            }
+        }
+
+        if (!equipment.getSlot(ItemTypes.WEAPON).isIgnorable()){
+            for (Inscription weaponInsc : equipment.getWeaponData().getInscriptionList()){
+                addKeystoneFrom(weaponInsc, playerKeystones);
+            }
+        }
+
+        return playerKeystones;
+    }
+    private void addKeystoneFrom(Inscription inscription, Set<Keystones> keystoneSet){
+        ModifierData inscData = inscription.getInscription().getData();
+        if (inscData.isKeystone()){
+            KeystoneData keystoneData = (KeystoneData) inscData;
+            keystoneSet.add(keystoneData.keystone());
+        }
+    }
 
     private void addBaseStatsTo(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats) {
         putSingleStatIn(compiledStats, PlayerStats.HEALTH, ValueTypes.FLAT, BaseStats.HEALTH.getValue());
@@ -166,17 +212,20 @@ public class StatCompiler {
     }
     private void compileIndividualInscriptionInto(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats, Inscription inscription){
         InscriptionID inscID = inscription.getInscription();
-        Modifier inscData = inscID.getData();
-        if (inscData instanceof InscriptionData regularInsc){
+        ModifierData inscData = inscID.getData();
+        if (inscData.isStandard()){
+            InscriptionData regularInsc = (InscriptionData) inscData;
             StatDefinition def = regularInsc.getDefinitionData();
             PlayerStats targetStat = def.stat();
             ValueTypes type = def.valueType();
             int[] mappedInscriptionValues = inscription.getMappedFinalValue();
+            Utils.error("Compiling " + targetStat + ": " + Arrays.toString(mappedInscriptionValues));
 
             addStat(compiledStats, targetStat, type, mappedInscriptionValues);
             return;
         }
-        if (inscData instanceof HybridInscriptionData hybridInsc){
+        if (inscData.isHybrid()){
+            HybridInscriptionData hybridInsc = (HybridInscriptionData) inscData;
             StatDefinition[] definitions = hybridInsc.getStatDefinitions();
             for (int d = 0; d < definitions.length; d++){
                 StatDefinition currentDef = definitions[d];

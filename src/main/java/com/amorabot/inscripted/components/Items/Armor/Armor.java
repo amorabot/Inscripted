@@ -6,7 +6,7 @@ import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.components.Items.modifiers.data.HybridInscriptionData;
 import com.amorabot.inscripted.components.Items.modifiers.data.InscriptionData;
-import com.amorabot.inscripted.components.Items.modifiers.data.Modifier;
+import com.amorabot.inscripted.components.Items.modifiers.data.ModifierData;
 import com.amorabot.inscripted.components.Items.modifiers.data.StatDefinition;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
@@ -23,7 +23,6 @@ import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +49,19 @@ public class Armor extends Item implements ItemCategory {
         this.baseHealth = getSubype().mapHealthValue(this);
         this.baseHealthVariance = CraftingUtils.getRandomNumber(-ArmorTypes.percentHealthVariance, ArmorTypes.percentHealthVariance);
     }
+
+    public Armor(String name, int ilvl, ItemTypes slot, ArmorTypes type, int baseHealth, List<Inscription> inscriptions){ //Relic constructor
+        super(ilvl, ItemRarities.RELIC, true, false, slot);
+        getModifiers().addAll(inscriptions);
+        this.type = type;
+        this.baseHealth = baseHealth;
+        this.baseHealthVariance = 0;
+        setTier(Tiers.mapItemLevel(getIlvl()));
+        setName(name);
+        setImplicit(Archetypes.mapImplicitFor(getSubype(), getTier(), isCorrupted()));
+        mapBase();
+    }
+
     @Override
     protected void setup(){
         setTier(Tiers.mapItemLevel(getIlvl()));
@@ -137,7 +149,7 @@ public class Armor extends Item implements ItemCategory {
             //Local mod mapping
             InscriptionID armorMod = mod.getInscription();
             if (armorMod.isGlobal()){continue;}
-            Modifier modData = armorMod.getData();
+            ModifierData modData = armorMod.getData();
             if (modData instanceof InscriptionData inscriptionData){
                 int[] mappedValues = mod.getMappedFinalValue();
                 StatDefinition statDef = inscriptionData.getDefinitionData();

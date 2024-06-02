@@ -1,0 +1,15 @@
+{
+  "OMINOUS_TWIG": {
+    "name": "Ominous twig",
+    "ilvl": 3,
+    "type": "WAND",
+    "atkSpeed": "SLOW",
+    "baseDmg": [
+      3,
+      7
+    ],
+    "inscriptions": [
+      "OMINOUS_TWIG_ABYSSAL"
+    ]
+  }
+}

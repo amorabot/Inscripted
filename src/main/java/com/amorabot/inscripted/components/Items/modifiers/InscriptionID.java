@@ -6,6 +6,8 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.Files.ModifierEditor;
 import com.amorabot.inscripted.components.Items.modifiers.data.*;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 
@@ -21,6 +23,22 @@ public enum InscriptionID {
     Definition string syntax:
 
         Num. of Mods     Affix     Stats     ValueTypeToken     RangeTypeToken     isPositiveToken
+
+        GLOSSARY:
+            ValueTypeToken
+                ++  Flat value (FLAT)
+                %+  Additive percentage (INCREASED)
+                +%  Flat percentage value (PERCENT)
+                %*  Multiplicative percentage (MULTI.)
+
+            RangeTypeToken
+                x  Single value to be deserialized (SINGLE_VALUE)
+                -  Single range to be deserialized (SINGLE_RANGE)
+                -/-  Double range to be deserialized (DOUBLE_RANGE)
+
+            isPositiveToken
+                +  The deserialized value will be treated as a positive integer
+                -(or anything else)  The value will be treated as negative
 
         ==> When [num. of mods] is greater than 1 (Hybrid mods), Stats,ValueTypeToken... should be separated by &
     Examples:
@@ -99,7 +117,7 @@ public enum InscriptionID {
     LIFE_ON_HIT("1 SUFFIX LIFE_ON_HIT ++ - +", 5, true),
     ACCURACY("1 SUFFIX ACCURACY ++ - +", 5, true),
     STAMINA_REGEN("1 SUFFIX STAMINA %+ - +", 6, true),
-    BLEEDING("1 SUFFIX BLEED %+ - +", 4, true),
+    BLEEDING("1 SUFFIX BLEED +% - +", 4, true),
     CRITICAL_CHANCE("1 SUFFIX CRITICAL_CHANCE %+ - +", 6, true),
     //Hybrid suffixes
     HYBRID_INT_STR("2 SUFFIX INTELLIGENCE&STRENGTH ++&++ -&- +", 4, true),
@@ -117,14 +135,26 @@ public enum InscriptionID {
     MERCENARY_LIGHT_CLOTH("1 IMPLICIT DEXTERITY ++ - +", 5, true),
     ROGUE_RUNIC_LEATHER("2 IMPLICIT DEXTERITY&INTELLIGENCE ++&++ -&- +", 5, true),
     SORCERER_ENCHANTED_SILK("1 IMPLICIT INTELLIGENCE ++ - +", 5, true),
-    TEMPLAR_RUNIC_STEEL("2 IMPLICIT INTELLIGENCE&STRENGTH ++&++ -&- +", 5, true);
+    TEMPLAR_RUNIC_STEEL("2 IMPLICIT INTELLIGENCE&STRENGTH ++&++ -&- +", 5, true),
+
+    //=====UNIQUE MODS=====
+    BLEEDING_HEART_BLD_CHANCE("1 UNIQUE BLEED +% x +", 1, true),
+    BLEEDING_HEART_BLD_DMG("1 UNIQUE BLEED_DAMAGE +% x +", 1, true),
+    OMINOUS_TWIG_ABYSSAL("1 UNIQUE ABYSSAL_DAMAGE ++ -/- +", 1, false),
+    CORRUPTORS_WRAPPINGS_WARD("1 UNIQUE WARD %+ - +", 1, false),
+    CORRUPTORS_WRAPPINGS_STRENGTH("1 UNIQUE STRENGTH ++ - -", 1, true),
+
+    //=====KEYSTONES=====
+    LETHAL_STRIKES("* UNIQUE KEYSTONE LETHAL_STRIKES", 0, true),
+    FORBIDDEN_PACT("* UNIQUE KEYSTONE FORBIDDEN_PACT", 0, true);
 
     private static final Map<Affix, Map<InscriptionID, Map<Integer, int[]>>> MODIFIER_TABLE = new HashMap<>();
     private static final Map<InscriptionID, Map<Integer, int[]>> IMPLICIT_TABLE = new HashMap<>();
+    private static final Map<InscriptionID, int[]> UNIQUE_MOD_TABLE = new HashMap<>();
 
     private final String definitionString;
     private final String displayName;
-    private final Modifier data;
+    private final ModifierData data;
     private final int totalTiers;
     private final boolean global;
     private final boolean meta;
@@ -140,10 +170,53 @@ public enum InscriptionID {
         this.meta = (metaData!=null);
 
         String[] tokens = definitionString.split(" ");
+        if (tokens[0].equals("*")){//Special Unique inscription handling (Keystones and Effects)
+            this.positive = true;
+            switch (tokens[2]){
+                case "KEYSTONE":
+                    this.displayName = Utils.convertToPrettyString(tokens[3].toLowerCase().replace("_"," ") + " " + Affix.UNIQUE.getRuneIcon());
+                    this.data = parseKeystone(tokens[3]);
+                    break;
+                case "EFFECT":
+                    this.displayName = "effect name :D";
+                    this.data = parseUniqueEffect(tokens[3]);
+                    break;
+                default:
+                    this.displayName = Utils.convertToPrettyString("sample unique mod");
+                    this.data = null;
+                    break;
+            }
+            return;
+        }
+        /*
+        Can still be a Unique value inscription, which will be properly initialized
+        but not instantiated in the MODIFIER_TABLE (Instead, it's data will be used
+        in a Uniques Enum)
+        */
+
         this.positive = tokens[5].equals("+");
 
         this.data = parseDefinitionString(tokens);
         this.displayName = parseDisplayName(data);
+    }
+
+    private ModifierData parseKeystone(String keystone) {
+        try {
+            Keystones mappedKeystone =  Keystones.valueOf(keystone);
+            return new KeystoneData(Affix.UNIQUE, mappedKeystone);
+        } catch (IllegalArgumentException exception){
+            Utils.error("Unable to parse " + keystone + " keystone argument (InscriptionID)");
+        }
+        return null;
+    }
+    private ModifierData parseUniqueEffect(String uniqueEffect) {
+        try {
+            Effects mappedEffect =  Effects.valueOf(uniqueEffect);
+            return new UniqueEffectData(Affix.UNIQUE, mappedEffect);
+        } catch (IllegalArgumentException exception){
+            Utils.error("Unable to parse " + uniqueEffect + " unique effect argument (InscriptionID)");
+        }
+        return null;
     }
 
     public int[] convert(int convertedValue, int[] metaStatValues){
@@ -174,14 +247,14 @@ public enum InscriptionID {
         // https://stackoverflow.com/questions/40970830/get-annotation-value-from-enum-constant
     }
 
-    private String parseDisplayName(Modifier data){
+    private String parseDisplayName(ModifierData data){
         if (data instanceof InscriptionData inscriptionData){return getDisplayName(inscriptionData);}
         if (data instanceof HybridInscriptionData hybridInscriptionData){return getDisplayName(hybridInscriptionData);}
 
         return "INVALID STAT";
     }
 
-    private Modifier parseDefinitionString(String[] tokens){
+    private ModifierData parseDefinitionString(String[] tokens){
         int stats = 0;
         try { stats = Integer.parseInt(tokens[0]); } catch (NumberFormatException exception){
             Utils.error("Invalid inscription definition string: " + this.getClass().getSimpleName());
@@ -192,7 +265,7 @@ public enum InscriptionID {
             default -> buildSpecialInscriptionData(stats, tokens);
         };
     }
-    private Modifier buildStandardInscriptionData(String[] tokens){
+    private ModifierData buildStandardInscriptionData(String[] tokens){
         Affix affix = parseAffixToken(tokens[1]);
         PlayerStats stat = parseStat(tokens[2]);
         ValueTypes valueType = parseValueTypeToken(tokens[3]);
@@ -200,7 +273,7 @@ public enum InscriptionID {
 
         return new InscriptionData(affix, valueType, rangeType, stat);
     }
-    private Modifier buildSpecialInscriptionData(int subtokens, String[] tokens){
+    private ModifierData buildSpecialInscriptionData(int subtokens, String[] tokens){
 
         Affix affix = parseAffixToken(tokens[1]);
         String[] statTokens = tokens[2].split("&");
@@ -270,15 +343,23 @@ public enum InscriptionID {
         return IMPLICIT_TABLE;
     }
 
+    public static Map<InscriptionID, int[]> getUniqueTable() {
+        return UNIQUE_MOD_TABLE;
+    }
+
     public static int[] fetchValuesFor(Inscription mod){
         InscriptionID modID = mod.getInscription();
-        if (modID.getData().getAffixType().equals(Affix.IMPLICIT)){
+        ModifierData data = modID.getData();
+        if (data.isUnique()){
+            return fetchUniqueValuesFor(modID);
+        } //Change the data source when the mod is unique
+        if (data.getAffixType().equals(Affix.IMPLICIT)){
             return fetchValuesForImplicit(modID, mod.getTier());
         }
         return fetchValuesFor(modID, mod.getTier());
     }
     public static int[] fetchValuesFor(InscriptionID mod, int tier){
-        Modifier modData = mod.getData();
+        ModifierData modData = mod.getData();
 
         Affix affixType = modData.getAffixType();
 
@@ -297,27 +378,36 @@ public enum InscriptionID {
         }
         return values;
     }
+    public static int[] fetchUniqueValuesFor(InscriptionID mod){
+        int[] values = getUniqueTable().get(mod);
+        if (values == null){
+            Utils.error("Invalid modifier value for: " + mod);
+            return new int[2];
+        }
+        return values;
+    }
 
     public static void loadModifiers(){
         Map<InscriptionID, Map<Integer, int[]>> prefixModData = new HashMap<>();
         Map<InscriptionID, Map<Integer, int[]>> suffixModData = new HashMap<>();
 
         for (InscriptionID mod : InscriptionID.values()){
-            Modifier modData = mod.getData();
+            ModifierData modData = mod.getData();
             Affix modAffixType = modData.getAffixType();
 
             switch (modAffixType){
-                case PREFIX -> prefixModData.put(mod, mod.fetchModifierValues());
-                case SUFFIX -> suffixModData.put(mod, mod.fetchModifierValues());
-                case IMPLICIT -> IMPLICIT_TABLE.put(mod, mod.fetchModifierValues());
+                case PREFIX -> prefixModData.put(mod, mod.queryModifierValues());
+                case SUFFIX -> suffixModData.put(mod, mod.queryModifierValues());
+                case IMPLICIT -> IMPLICIT_TABLE.put(mod, mod.queryModifierValues());
+                case UNIQUE -> UNIQUE_MOD_TABLE.put(mod, ModifierEditor.getTableValuesFor(mod,mod.getTotalTiers()));
             }
         }
         InscriptionID.MODIFIER_TABLE.put(Affix.PREFIX, prefixModData);
         InscriptionID.MODIFIER_TABLE.put(Affix.SUFFIX, suffixModData);
     }
 
-    public Map<Integer, int[]> fetchModifierValues(){
-        Modifier modData = getData();
+    public Map<Integer, int[]> queryModifierValues(){
+        ModifierData modData = getData();
         if (modData.getAffixType().equals(Affix.UNIQUE)){
             return null;
         }

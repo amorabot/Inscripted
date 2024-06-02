@@ -43,7 +43,7 @@ public class ResourcesJSONReader {
         return gson.fromJson(reader, mapType);
     }
 
-    private static InputStream getResourceJSONAsStream(String path){ //getting the data from the JSON file as a inputStream
+    public static InputStream getResourceJSONAsStream(String path){ //getting the data from the JSON file as a inputStream
         final String fullPath = "/json/" + path + ".json";
 
         InputStream inputStream = ResourcesJSONReader.class.getResourceAsStream(fullPath);

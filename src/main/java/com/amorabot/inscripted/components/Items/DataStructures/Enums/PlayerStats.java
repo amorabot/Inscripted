@@ -28,6 +28,7 @@ public enum PlayerStats {
     ABYSSAL_DAMAGE("Abyssal DMG"),
     ACCURACY("Accuracy"),
     BLEED("Bleed chance"),
+    BLEED_DAMAGE("Bleed damage"),
     CRITICAL_CHANCE("Crit. Chance"),
     CRITICAL_DAMAGE("Crit. DMG"),
     LIFE_ON_HIT("Life on hit"),
