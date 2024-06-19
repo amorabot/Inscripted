@@ -1,8 +1,9 @@
 package com.amorabot.inscripted.skills;
 
-public enum SkillTypes {
+public enum AbilityTypes {
     BASIC_ATTACK,
     MOVEMENT,
     UTILITY,
-    SPECIAL
+    SPECIAL,
+    ITEM;
 }

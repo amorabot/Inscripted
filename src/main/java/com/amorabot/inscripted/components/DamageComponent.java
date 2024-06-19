@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.components;
 
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.Stats;
@@ -19,6 +20,7 @@ public class DamageComponent implements EntityComponent {
     private int lifeOnHit;
     private int lifeSteal;
     private int extraProjectiles;
+    private int meleeDamage;
     private int areaDamage;
 
     //Added damage is added directly to hitData, doesnt need to be stored
@@ -33,10 +35,13 @@ public class DamageComponent implements EntityComponent {
     public void update(UUID profileID) {
         Profile profileData = JSONProfileManager.getProfile(profileID);
         Stats playerStats = profileData.getStats();
+
         setLifeOnHit((int) playerStats.getFinalFlatValueFor(PlayerStats.LIFE_ON_HIT));
-        setLifeSteal(playerStats.getPercentValueFor(PlayerStats.LIFESTEAL));
+        setLifeSteal(playerStats.getFinalPercentValueFor(PlayerStats.LIFESTEAL));
         setExtraProjectiles((int) playerStats.getFinalFlatValueFor(PlayerStats.EXTRA_PROJECTILES));
-        setAreaDamage(playerStats.getPercentValueFor(PlayerStats.AREA_DAMAGE));
+        setMeleeDamage(playerStats.getFinalPercentValueFor(PlayerStats.MELEE_DAMAGE));
+        setAreaDamage(playerStats.getFinalPercentValueFor(PlayerStats.AREA_DAMAGE));
+
         Attack hitData = getHitData();
         hitData.update(profileID);
     }

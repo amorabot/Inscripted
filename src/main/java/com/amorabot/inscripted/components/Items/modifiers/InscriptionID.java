@@ -118,9 +118,8 @@ public enum InscriptionID {
     ACCURACY("1 SUFFIX ACCURACY ++ - +", 5, true),
     STAMINA_REGEN("1 SUFFIX STAMINA %+ - +", 6, true),
     BLEEDING("1 SUFFIX BLEED +% - +", 4, true),
-    CRITICAL_CHANCE("1 SUFFIX CRITICAL_CHANCE %+ - +", 6, true),
+    CRITICAL_CHANCE("1 SUFFIX CRITICAL_CHANCE +% - +", 6, true),
     //Hybrid suffixes
-    HYBRID_INT_STR("2 SUFFIX INTELLIGENCE&STRENGTH ++&++ -&- +", 4, true),
 
     //=====IMPLICITS=====
     MARAUDER_AXE("1 IMPLICIT SHRED +% x +", 5, true),
@@ -143,10 +142,24 @@ public enum InscriptionID {
     OMINOUS_TWIG_ABYSSAL("1 UNIQUE ABYSSAL_DAMAGE ++ -/- +", 1, false),
     CORRUPTORS_WRAPPINGS_WARD("1 UNIQUE WARD %+ - +", 1, false),
     CORRUPTORS_WRAPPINGS_STRENGTH("1 UNIQUE STRENGTH ++ - -", 1, true),
+    CORRUPTORS_WRAPPINGS_MORE_WARD("1 UNIQUE WARD %* - +", 1, true),
+    APPROACHING_WINTER_WALK_SPEED("1 UNIQUE WALK_SPEED ++ - -", 1, true),
+    APPROACHING_WINTER_COLD_RES("1 UNIQUE COLD_RESISTANCE +% - +", 1, true),
+    APPROACHING_WINTER_FIRE_RES("1 UNIQUE FIRE_RESISTANCE +% - -", 1, true),
+    APPROACHING_WINTER_COLD_DMG("1 UNIQUE COLD_DAMAGE %+ - +", 1, true),
+    BLIND_RAGE_ACCURACY("1 UNIQUE ACCURACY ++ - -", 1, true),
+    BLIND_RAGE_LESS_HEALTH("1 UNIQUE HEALTH %* x -", 1, true),
+    EYE_OF_THE_STORM_LIGHTNING_RES("1 UNIQUE LIGHTNING_RESISTANCE +% - -", 1, true),
+    EYE_OF_THE_STORM_MAX_LIGHTNING_RES("1 UNIQUE MAX_LIGHTNING_RESISTANCE +% - +", 1, true),
+    @Meta(convertedStat = PlayerStats.STRENGTH, rate = 10)
+    HELLFORGE_STRENGTH_TO_FIRE_DMG("1 UNIQUE FIRE_DAMAGE ++ -/- +", 1, true),
 
     //=====KEYSTONES=====
     LETHAL_STRIKES("* UNIQUE KEYSTONE LETHAL_STRIKES", 0, true),
-    FORBIDDEN_PACT("* UNIQUE KEYSTONE FORBIDDEN_PACT", 0, true);
+    FORBIDDEN_PACT("* UNIQUE KEYSTONE FORBIDDEN_PACT", 0, true),
+    PERMAFROST("* UNIQUE KEYSTONE PERMAFROST", 0, true),
+    BERSERK("* UNIQUE KEYSTONE BERSERK", 0, true),
+    THUNDERSTRUCK("* UNIQUE KEYSTONE THUNDERSTRUCK", 0, true);
 
     private static final Map<Affix, Map<InscriptionID, Map<Integer, int[]>>> MODIFIER_TABLE = new HashMap<>();
     private static final Map<InscriptionID, Map<Integer, int[]>> IMPLICIT_TABLE = new HashMap<>();
@@ -319,12 +332,12 @@ public enum InscriptionID {
 
 
     private String getDisplayName(InscriptionData data){
-        return data.getDefinitionData().getDisplayName(getMetaAnnotationData(), isPositive());
+        return data.getDefinitionData().getDisplayName(getMetaAnnotationData(), isPositive(), isGlobal());
     }
     private String getDisplayName(HybridInscriptionData data){
         StatDefinition[] statDefinitions = data.getStatDefinitions();
-        String firstDisplayName = statDefinitions[0].getDisplayName(getMetaAnnotationData(), isPositive());
-        String secondDisplayName = statDefinitions[1].getDisplayName(getMetaAnnotationData(), isPositive());
+        String firstDisplayName = statDefinitions[0].getDisplayName(getMetaAnnotationData(), isPositive(), isGlobal());
+        String secondDisplayName = statDefinitions[1].getDisplayName(getMetaAnnotationData(), isPositive(), isGlobal());
 
         return firstDisplayName + HybridInscriptionData.HYBRID_SEPARATOR + secondDisplayName;
     }

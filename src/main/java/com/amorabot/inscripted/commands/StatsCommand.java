@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class StatsCommand implements CommandExecutor {
@@ -69,7 +70,7 @@ public class StatsCommand implements CommandExecutor {
         int[] physRange = damages.get(DamageTypes.PHYSICAL);
         String PHYS = "";
         if (physRange[0] != 0 && physRange[1] != 0){
-            PHYS = ColorUtils.translateColorCodes(attackPrefixes[0] + physRange[0] + "-" + physRange[1]);
+            PHYS = ColorUtils.translateColorCodes(attackPrefixes[0] + Arrays.toString(physRange));
         }
         int[] fireRange = damages.get(DamageTypes.FIRE);
         String FIRE = "";

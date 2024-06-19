@@ -11,5 +11,18 @@
     "inscriptions": [
       "OMINOUS_TWIG_ABYSSAL"
     ]
+  },
+  "HELLFORGE": {
+    "name": "The Hellforge",
+    "ilvl": 45,
+    "type": "AXE",
+    "atkSpeed": "SLOW",
+    "baseDmg": [
+      15,
+      35
+    ],
+    "inscriptions": [
+      "HELLFORGE_STRENGTH_TO_FIRE_DMG"
+    ]
   }
 }

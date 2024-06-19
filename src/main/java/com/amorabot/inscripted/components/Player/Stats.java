@@ -3,14 +3,14 @@ package com.amorabot.inscripted.components.Player;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+
+import static com.amorabot.inscripted.utils.Utils.calculateFinalFlatValue;
 
 @Setter
 @Getter
@@ -21,6 +21,9 @@ public class Stats implements EntityComponent {
     */
 
     private Map<PlayerStats, Map<ValueTypes, int[]>> playerStats = new HashMap<>();
+    private Map<PlayerStats, Map<ValueTypes, int[]>> externalStats = new HashMap<>();
+
+    private Set<Keystones> activeStatKeystones = new HashSet<>();
 
     public Stats(){
 
@@ -45,6 +48,21 @@ public class Stats implements EntityComponent {
 //        player.setWalkSpeed(mappedWS);
         //DEX can give 1% inc MS per 10
         //Default speed value for players: 0.2 (EMPIRIC FUCKING VALUE)  (https://minecraft.wiki/w/Attribute)
+    }
+
+    //Changes to stat keystones will trigger a recompilation
+    public void addActiveStatKeystone(UUID playerID, Keystones keystone){
+        activeStatKeystones.add(keystone);
+        StatCompiler.updateProfile(playerID);
+    }
+    public void removeActiveStatKeystone(UUID playerID, Keystones keystone, boolean supressCompiling){ //TODO: make boolean optional [boolean...]
+        activeStatKeystones.remove(keystone);
+        if (!supressCompiling){
+            StatCompiler.updateProfile(playerID);
+        }
+    }
+    public boolean isStatKeystonePresent(Keystones keystone){
+        return activeStatKeystones.contains(keystone);
     }
 
     public void addSingleStat(PlayerStats targetStat, ValueTypes type, int[] values){
@@ -93,6 +111,9 @@ public class Stats implements EntityComponent {
         int incrDmg = playerStats.get(stat).getOrDefault(ValueTypes.INCREASED, new int[1])[0];
         int dmgMulti = playerStats.get(stat).getOrDefault(ValueTypes.MULTIPLIER, new int[1])[0];
 
+        //Since this method is used only once, the misc. stat pool clearing can be done here to avoid boilerplate
+        clearStatFromMiscPool(stat, ValueTypes.FLAT);
+
         return calculateFinalDmgValue(baseDmg, incrDmg, dmgMulti);
     }
     public float getFinalFlatValueFor(PlayerStats stat){
@@ -100,20 +121,59 @@ public class Stats implements EntityComponent {
         int baseValue = playerStats.get(stat).getOrDefault(ValueTypes.FLAT, new int[1])[0];
         int increasedMod = playerStats.get(stat).getOrDefault(ValueTypes.INCREASED, new int[1])[0];
         int multiplierMod = playerStats.get(stat).getOrDefault(ValueTypes.MULTIPLIER, new int[1])[0];
-        return calculateSingleFinalValue(baseValue, increasedMod, multiplierMod);
+
+        clearStatFromMiscPool(stat, ValueTypes.FLAT);
+
+        return calculateFinalFlatValue(baseValue, increasedMod, multiplierMod);
     }
-    public int getPercentValueFor(PlayerStats stat){
+    public int getFinalPercentValueFor(PlayerStats stat){
         if (!playerStats.containsKey(stat)){return 0;}
-        return playerStats.get(stat).getOrDefault(ValueTypes.PERCENT, new int[1])[0];
+        //TODO: add multiplier support for percent values (EX: more lightning res)
+        int percentValue = playerStats.get(stat).getOrDefault(ValueTypes.PERCENT, new int[1])[0];
+
+        clearStatFromMiscPool(stat, ValueTypes.PERCENT);
+
+        return percentValue;
     }
-    //  finalValue = (Value) * ( 1 + ((Inc - Dec)/100F) ) * ( 1 + (More/100F) ) * ( 1 - (Less/100F) )
+    private void clearStatFromMiscPool(PlayerStats stat, ValueTypes valueTypeToRemove){
+        if (!playerStats.containsKey(stat)){
+            return;
+        }
+        switch (valueTypeToRemove){
+            case FLAT -> {
+                playerStats.get(stat).remove(ValueTypes.FLAT);
+                playerStats.get(stat).remove(ValueTypes.INCREASED);
+                playerStats.get(stat).remove(ValueTypes.MULTIPLIER);
+                if(playerStats.get(stat).isEmpty()){playerStats.remove(stat);}
+            } case PERCENT -> {
+                playerStats.get(stat).remove(ValueTypes.PERCENT);
+                if(playerStats.get(stat).isEmpty()){playerStats.remove(stat);}
+            }
+        }
+    }
+    //  finalValue = (Value) * ( 1 + ((Inc - Dec)/100F) ) * [ ( 1 + (More/100F) ) * ( 1 - (Less/100F) ) ] <= produtorio
     private int[] calculateFinalDmgValue(int[] baseValues, int increasedMod, int multiplierMod){
-        int firstValue = (int) calculateSingleFinalValue(baseValues[0], increasedMod, multiplierMod);
-        int secValue = (int) calculateSingleFinalValue(baseValues[0], increasedMod, multiplierMod);
+        int firstValue = (int) calculateFinalFlatValue(baseValues[0], increasedMod, multiplierMod);
+        int secValue = (int) calculateFinalFlatValue(baseValues[1], increasedMod, multiplierMod);
         return new int[]{firstValue, secValue};
     }
-    private float calculateSingleFinalValue(int baseValue, int inc, int mult){
-        return baseValue * ( 1 + (inc/100F)) * ( 1 + (mult/100F));
+
+
+    public void updateExternalStat(PlayerStats targetStat, ValueTypes type, int[] values){
+        if (!this.externalStats.containsKey(targetStat)){
+            Map<ValueTypes, int[]> newStatMap = new HashMap<>();
+            newStatMap.put(type, values);
+            this.externalStats.put(targetStat, newStatMap);
+            return;
+        }
+        Map<ValueTypes, int[]> valuesMap = this.externalStats.get(targetStat);
+        if (!valuesMap.containsKey(type)){
+            valuesMap.put(type, values);
+            return;
+        }
+        int[] storedValues = valuesMap.get(type);
+        int[] updatedValues = Utils.vectorSum(storedValues, values);
+        valuesMap.put(type, updatedValues);
     }
 
     public void debug(){

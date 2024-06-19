@@ -3,16 +3,20 @@ package com.amorabot.inscripted.handlers.Inventory;
 import com.amorabot.inscripted.APIs.EventAPI;
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.components.Items.Armor.Armor;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.events.ItemUsage;
-import com.amorabot.inscripted.skills.SkillTypes;
-import com.amorabot.inscripted.skills.Skills;
+import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.skills.AbilityTypes;
+import com.amorabot.inscripted.skills.AbilityRoutines;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,6 +37,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.amorabot.inscripted.events.FunctionalItemAccessInterface.*;
 
@@ -53,6 +58,57 @@ public class PlayerEquipmentHandler implements Listener {
     public PlayerEquipmentHandler(Inscripted plugin){
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
+
+
+    @EventHandler
+    public void onArmorChange(PlayerArmorChangeEvent event){
+        //HEAD, CHEST, LEGS, FEET -> HELMET, CHESTPLATE, LEGGINGS, BOOTS
+
+        Player player = event.getPlayer();
+
+        UUID playerUUID = player.getUniqueId();
+        Profile profile = JSONProfileManager.getProfile(playerUUID);
+        ItemStack newItem = event.getNewItem();
+        ItemStack oldItem = event.getOldItem();
+        ItemTypes changedSlot = mapArmorSlot(event.getSlotType());
+        if (isNotFunctional(newItem)){ // Unequip
+            SoundAPI.playArmorUnequipFor(player);
+            profile.updateEquipmentSlot(changedSlot, null, playerUUID);
+            return;
+        }
+        // New item is a armor
+        Armor armorData = getArmorData(newItem); //No problem if null (Doesnt have a valid PDC for Armor)
+        profile.updateEquipmentSlot(changedSlot, armorData, playerUUID);
+        if (armorData == null){
+            player.sendMessage(Utils.color("&cInvalid armor, no stats will be gained."));
+        } else {
+            SoundAPI.playArmorEquipFor(player);
+            player.sendMessage("Equipped: " + armorData.getName());
+        }
+    }
+    private Armor getArmorData(ItemStack armorItem){
+        return FunctionalItemAccessInterface.
+                deserializeArmorData(armorItem.getItemMeta().getPersistentDataContainer());
+    }
+    private ItemTypes mapArmorSlot(PlayerArmorChangeEvent.SlotType eventSlot){
+        switch (eventSlot){
+            case HEAD -> {
+                return ItemTypes.HELMET;
+            }
+            case CHEST -> {
+                return ItemTypes.CHESTPLATE;
+            }
+            case LEGS -> {
+                return ItemTypes.LEGGINGS;
+            }
+            case FEET -> {
+                return ItemTypes.BOOTS;
+            }
+        }
+        return null;
+    }
+
+
     @EventHandler
     public void onSlotChange(PlayerItemHeldEvent event){
         Player player = event.getPlayer();
@@ -127,7 +183,7 @@ public class PlayerEquipmentHandler implements Listener {
                     player.sendMessage("Invalid weapon attack...");
                     return;
                 }
-                Skills.playerAbility(player, SkillTypes.MOVEMENT, weaponData.getSubtype());
+                AbilityRoutines.playerBaseAbilityCast(player, AbilityTypes.MOVEMENT, weaponData.getSubtype());
             }
             case UNIDED_WEAPON -> player.sendMessage(Utils.color("&l&cThis weapon is not identified!"));
         }
@@ -166,6 +222,7 @@ public class PlayerEquipmentHandler implements Listener {
         //From now on, clickedItem OR cursorItem may be null, test if needed
         switch (clickType){
             case DROP -> { //Q
+                player.sendMessage("Dropping: " + event.getCurrentItem().getType());
                 //Decide what to do to functional items (in this case, cursor items should be ignored)
                 if (isNotFunctional(clickedItem)){
                     return; //Ignore drops for non functional items
@@ -198,82 +255,7 @@ public class PlayerEquipmentHandler implements Listener {
                     player.sendMessage("standard click");
                     int clickedSlot = event.getSlot();
                     //Since it was not in the main hand, lets check for armor slot clicks:
-                    if (isArmorSlotClick(event)){
-                        assert cursorItem != null;
-                        PersistentDataContainer cursorDataContainer;
-                        switch (clickedSlot){ //Nullity check for all armor slots upon click
-                            case 39:
-                                if (cursorItem.getType().isAir()){
-                                    //If the clicked slot's item is coming out anyway, just unequip
-                                    EventAPI.callArmorEquipEvent(event, clickedItem, ItemTypes.HELMET, ItemUsage.ARMOR_UNEQUIP);
-                                    return;
-                                }
-                                //Cursor item is valid:
-                                cursorDataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
-                                if (isEquipableArmor(cursorDataContainer)){
-                                    if (deserializeArmorData(cursorDataContainer).getCategory() == ItemTypes.HELMET){
-                                        leftClickArmorSwapping(event, inventory.getHelmet(),ItemTypes.HELMET, cursorItem, clickedItem);
-                                    } else {
-                                        event.setCancelled(true);
-                                    }
-                                    return;
-                                }
-
-                                return;
-                            case 38:
-                                if (cursorItem.getType().isAir()){
-                                    //If the clicked slot's item is coming out anyway, just unequip
-                                    EventAPI.callArmorEquipEvent(event, clickedItem, ItemTypes.CHESTPLATE, ItemUsage.ARMOR_UNEQUIP);
-                                    return;
-                                }
-                                //Cursor item is valid:
-                                cursorDataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
-                                if (isEquipableArmor(cursorDataContainer)){
-                                    if (deserializeArmorData(cursorDataContainer).getCategory() == ItemTypes.CHESTPLATE){
-                                        leftClickArmorSwapping(event, inventory.getChestplate(),ItemTypes.CHESTPLATE, cursorItem, clickedItem);
-                                    } else {
-                                        event.setCancelled(true);
-                                    }
-                                    return;
-                                }
-
-                                return;
-                            case 37:
-                                if (cursorItem.getType().isAir()){
-                                    //If the clicked slot's item is coming out anyway, just unequip
-                                    EventAPI.callArmorEquipEvent(event, clickedItem, ItemTypes.LEGGINGS, ItemUsage.ARMOR_UNEQUIP);
-                                    return;
-                                }
-                                //Cursor item is valid:
-                                cursorDataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
-                                if (isEquipableArmor(cursorDataContainer)){
-                                    if (deserializeArmorData(cursorDataContainer).getCategory() == ItemTypes.LEGGINGS){
-                                        leftClickArmorSwapping(event, inventory.getLeggings(),ItemTypes.LEGGINGS, cursorItem, clickedItem);
-                                    } else {
-                                        event.setCancelled(true);
-                                    }
-                                    return;
-                                }
-                                return;
-                            case 36:
-                                if (cursorItem.getType().isAir()){
-                                    //If the clicked slot's item is coming out anyway, just unequip
-                                    EventAPI.callArmorEquipEvent(event, clickedItem, ItemTypes.BOOTS, ItemUsage.ARMOR_UNEQUIP);
-                                    return;
-                                }
-                                //Cursor item is valid:
-                                cursorDataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
-                                if (isEquipableArmor(cursorDataContainer)){
-                                    if (deserializeArmorData(cursorDataContainer).getCategory() == ItemTypes.BOOTS){
-                                        leftClickArmorSwapping(event, inventory.getBoots(),ItemTypes.BOOTS, cursorItem, clickedItem);
-                                    } else {
-                                        event.setCancelled(true);
-                                    }
-                                    return;
-                                }
-                                return;
-                        }
-                    }
+                    // REMOVED
                     //If its not a armor slot click, ignore for now
                     return;
                 }
@@ -342,55 +324,11 @@ public class PlayerEquipmentHandler implements Listener {
                 return; //Ignore shift-clicks for non functional items
             }
             //Checking clicks in armor slots
-            if (isArmorSlotClick(event)){
-                //(helmet, chest, leg, boot) 39, 40, 41, 42 (NOVO)
-                int clickedSlot = event.getSlot();
-                ItemStack clickedArmorSlotItem = inventory.getItem(clickedSlot);
-                if (clickedArmorSlotItem == null){
-                    return;
-                }
-                PersistentDataContainer clickedArmorDataContainer =
-                        Objects.requireNonNull(clickedArmorSlotItem.getItemMeta()).getPersistentDataContainer();
-                switch (clickedSlot){
-                    case 39:
-                        if (!isEquipableArmor(clickedArmorDataContainer)){
-                            return;
-                        }
-                        //Equipability by a specific player will be tested later (and may cause this event's cancel)
-                        EventAPI.callArmorEquipEvent(event, clickedArmorSlotItem, ItemTypes.HELMET, ItemUsage.ARMOR_UNEQUIP);
-                        return;
-                    case 38:
-                        if (!isEquipableArmor(clickedArmorDataContainer)){
-                            return;
-                        }
-                        EventAPI.callArmorEquipEvent(event, clickedArmorSlotItem, ItemTypes.CHESTPLATE, ItemUsage.ARMOR_UNEQUIP);
-                        return;
-                    case 37:
-                        if (!isEquipableArmor(clickedArmorDataContainer)){
-                            return;
-                        }
-                        EventAPI.callArmorEquipEvent(event, clickedArmorSlotItem, ItemTypes.LEGGINGS, ItemUsage.ARMOR_UNEQUIP);
-                        return;
-                    case 36:
-                        if (!isEquipableArmor(clickedArmorDataContainer)){
-                            return;
-                        }
-                        EventAPI.callArmorEquipEvent(event, clickedArmorSlotItem, ItemTypes.BOOTS, ItemUsage.ARMOR_UNEQUIP);
-                        return;
-                }
-                return;
-            }
+            //NOT NEEDED ANYMORE
 
 
             //Other shift-clicks
             PersistentDataContainer clickedDataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
-            if (isEquipableArmor(clickedDataContainer)){
-                //TODO: check for invalid armor with nbt and move it as if there as was something equipped
-                ItemTypes armorPiece = Objects.requireNonNull(deserializeArmorData(clickedDataContainer)).getCategory();
-                //Equipability by a specific player will be tested later (and may cause this event's cancel)
-                EventAPI.callArmorEquipEvent(event, clickedItem, armorPiece, ItemUsage.ARMOR_SHIFTING_FROM_INV);
-                return;
-            }
 
             //Its not armor-shifting, lets check for weapon-shifting
             //Lets first check for main-hand clicks to filter unequip attempts with shift
@@ -546,7 +484,7 @@ public class PlayerEquipmentHandler implements Listener {
             }
 
             //Cast attack
-            Skills.playerAbility(player, SkillTypes.BASIC_ATTACK, weaponType);
+            AbilityRoutines.playerBaseAbilityCast(player, AbilityTypes.BASIC_ATTACK, weaponType);
             SoundAPI.playAttackSoundFor(player, player.getLocation(), weaponType);
 
             //Apply the item usage cooldown

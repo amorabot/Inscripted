@@ -45,19 +45,14 @@ public class PlayerRegenerationTask extends BukkitRunnable {
 
 
         if (HPComponent.getCurrentHealth() != HPComponent.getMaxHealth() && !isPvPTagged){
-            int HPS = HPComponent.getHealthRegen();
 
-
-            //TODO: Make a specific logger for player debug messages
-            if (player.hasMetadata(CombatLogger.getCombatTag())){
-                HPS = HPS/2;
-                regenString.append("&e&l+");
-            } else {
-                regenString.append("&a&l+");
-            }
+            boolean inCombat = player.hasMetadata(CombatLogger.getCombatTag());
+            boolean isBleeding = false; //TEMPORARY
+            int HPS = HPComponent.regenHealth(inCombat, isBleeding);
+            if (inCombat){regenString.append("&e&l+");}
+            else {regenString.append("&a&l+");}
             regenString.append(HPS);
 
-            HPComponent.regenHealth(HPS);
 
             //TODO: Encapsulate Health and Ward mapping
             double mappedHealth = HPComponent.getMappedHealth(20);
@@ -67,7 +62,7 @@ public class PlayerRegenerationTask extends BukkitRunnable {
         }
 
         if (HPComponent.getCurrentWard() != HPComponent.getMaxWard() && (PlayerRegenManager.canRegenWard(playerID))){
-            float wardRegen = HPComponent.getMaxWard() * (playerProfile.getStats().getPercentValueFor(PlayerStats.WARD_RECOVERY_RATE)/100F);
+            float wardRegen = HPComponent.getMaxWard() * (HPComponent.getWardRecovery()/100F);
 
             if (isPvPTagged){
                 wardRegen = wardRegen/2;
@@ -82,7 +77,9 @@ public class PlayerRegenerationTask extends BukkitRunnable {
         }
 
         if (!regenString.isEmpty()){
-            CombatHologramsDepleter.getInstance().instantiateRegenHologram(player.getLocation(), regenString.toString());
+//            CombatHologramsDepleter.getInstance().instantiateRegenHologram(player.getLocation(), regenString.toString());
+            CombatHologramsDepleter.getInstance().instantiateRegenHologram(player.getLocation(),
+                    regenString.toString());
         }
     }
 }

@@ -1,8 +1,5 @@
 package com.amorabot.inscripted.skills;
 
-import com.amorabot.inscripted.APIs.MessageAPI;
-import net.kyori.adventure.text.Component;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -10,16 +7,17 @@ import java.util.UUID;
 public class GlobalCooldownManager {
 
     private static Map<UUID, Long> playerCooldown = new HashMap<>();
-    private static Map<SkillTypes, Map<UUID, Long>> skillGDCData = new HashMap<>();
+    private static Map<AbilityTypes, Map<UUID, Long>> skillGDCData = new HashMap<>();
+    //TODO: manage effect cooldown here
 
     public static void setup(){
-        for (SkillTypes skills : SkillTypes.values()){
+        for (AbilityTypes skills : AbilityTypes.values()){
             skillGDCData.put(skills, new HashMap<>());
         }
     }
 
 
-    public static boolean skillcastBy(UUID playerID, SkillTypes skillTypeUsed, long GCDcooldown){
+    public static boolean skillcastBy(UUID playerID, AbilityTypes skillTypeUsed, long GCDcooldown){
         Long remainingCD = fetchRemainingCooldownFor(playerID, skillTypeUsed);
         if (remainingCD > 0){
             return false;
@@ -29,7 +27,7 @@ public class GlobalCooldownManager {
         return true;
     }
 
-    public static Long fetchRemainingCooldownFor(UUID playerID, SkillTypes skill){
+    public static Long fetchRemainingCooldownFor(UUID playerID, AbilityTypes skill){
         Map<UUID, Long> skillGDCMap = skillGDCData.get(skill);
         if (!skillGDCMap.containsKey(playerID)){
             return 0L;

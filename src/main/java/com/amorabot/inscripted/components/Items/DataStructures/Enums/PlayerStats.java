@@ -15,8 +15,11 @@ public enum PlayerStats {
     DODGE("Dodge"),
     ARMOR("Armor"),
     FIRE_RESISTANCE("Fire resistance"),
+    MAX_FIRE_RESISTANCE("Maximum fire res."),
     COLD_RESISTANCE("Cold resistance"),
+    MAX_COLD_RESISTANCE("Maximum cold res."),
     LIGHTNING_RESISTANCE("Lightning resistance"),
+    MAX_LIGHTNING_RESISTANCE("Maximum lightning res."),
     ABYSSAL_RESISTANCE("Abyssal resistance"),
     //Add resistance cap stats
     PHYSICAL_DAMAGE("Physical DMG"),

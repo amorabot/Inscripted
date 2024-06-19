@@ -2,6 +2,7 @@ package com.amorabot.inscripted.handlers.misc;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.tasks.CombatLogger;
 import com.amorabot.inscripted.utils.Utils;
@@ -70,6 +71,7 @@ public class JoinQuitHandler implements Listener {
     private void destroyPlayerData(Player player){
         //Un-instantiate bossbars
         PlayerRegenManager.removePlayer(player.getUniqueId());
+        PlayerPassivesManager.removePlayer(player.getUniqueId());
         if (CombatLogger.isInCombat(player)) {
             if (player.hasMetadata(CombatLogger.getPvpTag())){
                 Utils.error(player.getName() + " logged out during PVP... crack his skull");

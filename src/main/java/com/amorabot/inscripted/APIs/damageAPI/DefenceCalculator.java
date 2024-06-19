@@ -2,29 +2,57 @@ package com.amorabot.inscripted.APIs.damageAPI;
 
 import com.amorabot.inscripted.components.Attack;
 import com.amorabot.inscripted.components.DefenceComponent;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
+import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.utils.CraftingUtils;
+
+import java.util.Set;
 
 public class DefenceCalculator {
 
     private static float getDefenderPhysicalMitigation(float defenderArmor){
-        return 100*(1 - (100 / ( 100 + defenderArmor ))); // DamageReduction = 1 - physDmgMulti;
+        float boundArmor = Math.max(0, defenderArmor);
+        return 80*(1 - (110 / ( 100 + boundArmor ))); // DamageReduction = 1 - physDmgMulti;
+        /* Armor lower bound should be 0
+        0 -> -8.5 phys. mitigaiton
+        10 -> 0 PM
+        100 -> 38.2 PM
+        ...
+        800 -> 74 PM (Softcap, but can be done with higher scaling and a upper bound)
+        */
     }
     private static float shredArmorMitigation(float damageReduction, int attackerShred){
         return (damageReduction - attackerShred); //Can be negative => More damage multiplier
     }
     public static float getDefenderDodgeChance(DefenceComponent defenderDefence){
         final float scalingFactor = 300F;
-        return 100 * ( 1 - ( scalingFactor / (scalingFactor + defenderDefence.getDodge()) ) );
+        int boundDodge = Math.max(0, defenderDefence.getDodge());
+        return 100 * ( 1 - ( scalingFactor / (scalingFactor + boundDodge) ) );
+        /*
+        Lower bound: 0
+        Starts getting diminishing returns around 600 (75%)
+        0 -> 0%
+        100 -> 33%
+        300 -> 60%
+        500 -> 71%
+        600 -> 75%
+        */
     }
 
-    public static int[] applyDefences(int[] incomingHit, Attack attackerDamage, DefenceComponent defenderDefences){
+    public static int[] applyDefences(int[] incomingHit, Profile attackerProfile, Profile defenderProfile){
+        Attack attackerDamage = attackerProfile.getDamageComponent().getHitData();
+        DefenceComponent defenderDefences = defenderProfile.getDefenceComponent();
         if (incomingHit[0] > 0 && defenderDefences.getArmor()>0){ //Physical mitigation
             incomingHit[0] = resultingPhysical(incomingHit[0], attackerDamage, defenderDefences.getArmor());
+        }
+        if (incomingHit[4] > 0 && defenderProfile.hasKeystone(Keystones.FORBIDDEN_PACT)){
+            incomingHit[4] = 0;
+        } else {
+            applyElementalDamageCalculations(incomingHit, attackerDamage, 4, defenderDefences.getAbyssalResistance());
         }
         applyElementalDamageCalculations(incomingHit, attackerDamage, 1, defenderDefences.getFireResistance());
         applyElementalDamageCalculations(incomingHit, attackerDamage, 2, defenderDefences.getLightningResistance());
         applyElementalDamageCalculations(incomingHit, attackerDamage, 3, defenderDefences.getColdResistance());
-        applyElementalDamageCalculations(incomingHit, attackerDamage, 4, defenderDefences.getAbyssalResistance());
 
         return incomingHit;
     }

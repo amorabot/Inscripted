@@ -39,7 +39,7 @@ public class ArmorEquipEvent extends Event {
         }
         if (!allowedItemTypes.contains(armorPiece)){
             this.armorSlot = null;
-            Utils.log("Invalid armor piece: " + armorPiece);
+//            Utils.log("Invalid armor piece: " + armorPiece);
             return;
         }
         this.armorSlot = armorPiece;

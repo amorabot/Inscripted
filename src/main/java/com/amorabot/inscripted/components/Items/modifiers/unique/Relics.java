@@ -25,7 +25,11 @@ public enum Relics {
     TRAINING_DUMMY_ARMOR(ItemTypes.CHESTPLATE, "lol"),
     BLEEDING_HEART(ItemTypes.CHESTPLATE, "This severed, yet","pulsating heart","gives you a unending","desire for carnage."),
     CORRUPTORS_WRAPPINGS(ItemTypes.CHESTPLATE, "This old tunic","once belonged to","a powerful sage","that stared too","long into the abyss."),
-    OMINOUS_TWIG(ItemTypes.WEAPON,"Amidst a wasteland,","a single tree remains.","From it's wretched","form, a single", "branch lives on.");
+    OMINOUS_TWIG(ItemTypes.WEAPON,"Amidst a wasteland,","a single tree remains.","From it's wretched","form, a single", "branch lives on."),
+    APPROACHING_WINTER(ItemTypes.BOOTS,"The winter's cold","embrace is slowly","approaching."),
+    BLIND_RAGE(ItemTypes.HELMET,"This cursed helmet","once belonged to","a mysterious ske-","letal and silent","protector."),
+    EYE_OF_THE_STORM(ItemTypes.CHESTPLATE,"This heavenly curse","can be a powerful","boon in the right", "hands."),
+    HELLFORGE(ItemTypes.WEAPON,"This glowing-hot","cleaver seems","to sap it's user's", "might to grow even", "stronger...");
 
     @Getter
     private static final Map<Relics, RelicArmorDAO> relicArmorsData = RelicEditor.loadAllArmors();

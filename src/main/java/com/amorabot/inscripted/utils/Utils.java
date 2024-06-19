@@ -196,10 +196,12 @@ public class Utils {
     }
 
     public static float applyPercentageTo(int baseValue, int percentMod){
+        if (baseValue == 0){return baseValue;}
         return baseValue * (1 + (percentMod)/100F);
     }
-    public static float applyPercentageTo(float baseValue, int percentMod){
-        return baseValue * (1 + (percentMod)/100F);
+    public static int[] applyPercentageToArray(int[] values, int percentModifier){
+        return Arrays.stream(values.clone()).map( currDMG ->
+                (int) Utils.applyPercentageTo(currDMG, percentModifier)).toArray();
     }
     public static int[] vectorSum(int[] vec1, int[] vec2){
         int[] updatedVec = new int[vec1.length];
@@ -208,5 +210,16 @@ public class Utils {
             updatedVec[f] = (vec1[f] + vec2[f]);
         }
         return updatedVec;
+    }
+    public static int[] vectorSub(int[] vec1, int[] vec2){
+        int[] updatedVec = new int[vec1.length];
+        if (vec1.length != vec2.length){return updatedVec;}
+        for (int f = 0; f < vec1.length; f++){
+            updatedVec[f] = (vec1[f] - vec2[f]);
+        }
+        return updatedVec;
+    }
+    public static float calculateFinalFlatValue(int baseValue, int inc, int mult){
+        return baseValue * ( 1 + (inc/100F)) * ( 1 + (mult/100F));
     }
 }

@@ -2,8 +2,8 @@ package com.amorabot.inscripted.components;
 
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
-import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.Stats;
 import com.amorabot.inscripted.managers.JSONProfileManager;
@@ -25,8 +25,8 @@ public class Attack implements EntityComponent {
 
     private Map<DamageTypes, int[]> hitDamage = new HashMap<>();
     private float accuracy;
-    private final float baseCrit = 5; //Weapon-dependent, but will be standard for now
-    private float critChance;
+//    private final float baseCrit = 5; //Weapon-dependent, but will be standard for now
+    private int critChance;
     private int critDamage; //100% (base) + critDamage (modifier)
     private int shred;
     private int maelstrom;
@@ -37,11 +37,11 @@ public class Attack implements EntityComponent {
 
     public Attack(){
         hitDamage.put(DamageTypes.PHYSICAL, new int[]{1,1});
-        setDps();
+        setDPS();
     }
 
     //For mobs
-    public Attack(int[] phys, int[] fire, int[] light, int[] cold, int[] abyss, float critChance, int critDamage, int shred, int maelstrom, float bleedChance){
+    public Attack(int[] phys, int[] fire, int[] light, int[] cold, int[] abyss, int critChance, int critDamage, int shred, int maelstrom, float bleedChance){
         this.hitDamage = new HashMap<>();
         hitDamage.put(DamageTypes.PHYSICAL, phys);
         hitDamage.put(DamageTypes.FIRE, fire);
@@ -54,14 +54,14 @@ public class Attack implements EntityComponent {
         this.maelstrom = maelstrom;
         this.bleedChance = bleedChance;
 
-        setDps();
+        setDPS();
     }
 
     public Map<DamageTypes, int[]> getDamages() {
         return hitDamage;
     }
 
-    private void setDps(){
+    private void setDPS(){
         int lowerDamageSum = 0;
         int upperDamageSum = 0;
         for (DamageTypes dmgType : hitDamage.keySet()){
@@ -93,12 +93,25 @@ public class Attack implements EntityComponent {
         hitDamage.put(DamageTypes.COLD, playerDamage[3]);
         hitDamage.put(DamageTypes.ABYSSAL, playerDamage[4]);
 
+        setDPS();
+
         this.accuracy = playerStats.getFinalFlatValueFor(PlayerStats.ACCURACY);
-        this.critChance = Utils.applyPercentageTo(baseCrit, playerStats.getPercentValueFor(PlayerStats.CRITICAL_CHANCE));
-        this.critDamage = playerStats.getPercentValueFor(PlayerStats.CRITICAL_DAMAGE);
-        this.shred = playerStats.getPercentValueFor(PlayerStats.SHRED);
-        this.maelstrom = playerStats.getPercentValueFor(PlayerStats.MAELSTROM);
-        this.bleedChance = playerStats.getPercentValueFor(PlayerStats.BLEED);
+//        playerStats.clearStatFromMiscPool(PlayerStats.ACCURACY, ValueTypes.FLAT);
+
+        this.critChance = 5 + playerStats.getFinalPercentValueFor(PlayerStats.CRITICAL_CHANCE);
+//        playerStats.clearStatFromMiscPool(PlayerStats.CRITICAL_CHANCE, ValueTypes.PERCENT);
+
+        this.critDamage = playerStats.getFinalPercentValueFor(PlayerStats.CRITICAL_DAMAGE);
+//        playerStats.clearStatFromMiscPool(PlayerStats.CRITICAL_DAMAGE, ValueTypes.PERCENT);
+
+        this.shred = playerStats.getFinalPercentValueFor(PlayerStats.SHRED);
+//        playerStats.clearStatFromMiscPool(PlayerStats.SHRED, ValueTypes.PERCENT);
+
+        this.maelstrom = playerStats.getFinalPercentValueFor(PlayerStats.MAELSTROM);
+//        playerStats.clearStatFromMiscPool(PlayerStats.MAELSTROM, ValueTypes.PERCENT);
+
+        this.bleedChance = playerStats.getFinalPercentValueFor(PlayerStats.BLEED);
+//        playerStats.clearStatFromMiscPool(PlayerStats.BLEED, ValueTypes.PERCENT);
     }
 
     public static @NotNull String getDamageString(int[] damagesArray){
@@ -108,7 +121,12 @@ public class Attack implements EntityComponent {
         addDamageToString(dmgString, damagesArray[2], DamageTypes.LIGHTNING);
         addDamageToString(dmgString, damagesArray[3], DamageTypes.COLD);
         addDamageToString(dmgString, damagesArray[4], DamageTypes.ABYSSAL);
-        return dmgString.toString().trim();
+        String finalDmgString = dmgString.toString().trim();
+        if (finalDmgString.isEmpty()){
+            return DamageTypes.PHYSICAL.getCharacter();
+        } else {
+            return dmgString.toString().trim();
+        }
     }
 
     private static void addDamageToString(StringBuilder builder, int damage, DamageTypes damageType){

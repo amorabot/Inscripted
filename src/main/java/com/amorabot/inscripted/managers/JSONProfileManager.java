@@ -9,7 +9,6 @@ import com.amorabot.inscripted.components.Items.Files.ItemGSONAdapter;
 import com.amorabot.inscripted.components.Player.Attributes;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.PlayerEquipment;
-import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -58,7 +57,7 @@ public class JSONProfileManager {
     }
 
     public static void saveAllToJSON() throws IOException { //Saves ALL cached profile changes to the main JSON
-        Gson gson = new GsonBuilder().registerTypeAdapter(Item.class, new ItemGSONAdapter()).setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().create();
         File file = new File(plugin.getDataFolder().getAbsolutePath() + "/profiles.json");
         file.getParentFile().mkdir();
         //Check if the accessed file path exists:
@@ -87,7 +86,8 @@ public class JSONProfileManager {
     }
     public static void saveProfileOnQuitToJSON(UUID uuid, Profile playerProfile){
         //Since this method overrides the file, it may cause de-syncronization in some saving circunstances
-        Gson gson = new GsonBuilder().registerTypeAdapter(Item.class, new ItemGSONAdapter()).setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().create();
+//        Gson gson = new GsonBuilder().registerTypeAdapter(Item.class, new ItemGSONAdapter()).setPrettyPrinting().create();
         File file = new File(plugin.getDataFolder().getAbsolutePath() + "/profiles.json");
         try {
             Reader reader = new FileReader(file);//Getting the profile map
@@ -126,7 +126,7 @@ public class JSONProfileManager {
 
     public static void loadProfileFromJSON(UUID uuid){ // Loads a specific profile into memory
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(Item.class, new ItemGSONAdapter());
+//        builder.registerTypeAdapter(Item.class, new ItemGSONAdapter());
         Gson gson = builder.create();
 //        Gson gson = new Gson();
         File file = new File(plugin.getDataFolder().getAbsolutePath() + "/profiles.json");
@@ -134,7 +134,7 @@ public class JSONProfileManager {
             try {
                 Reader reader = new FileReader(file);
                 TypeToken<Map<UUID, Profile>> mapType = new TypeToken<Map<UUID, Profile>>(){};
-                Map<UUID, Profile> profileMap = gson.fromJson(reader, mapType); //Loads the entire profile JSON, farm from optimal
+                Map<UUID, Profile> profileMap = gson.fromJson(reader, mapType); //Loads the entire profile JSON, far from optimal
                 profiles.put(uuid, profileMap.get(uuid));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
@@ -144,7 +144,7 @@ public class JSONProfileManager {
     }
     public static void reloadOnlinePlayers(Collection<? extends Player> onlinePlayers){
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(Item.class, new ItemGSONAdapter());
+//        builder.registerTypeAdapter(Item.class, new ItemGSONAdapter());
         Gson gson = builder.create();
 //        Gson gson = new Gson();
         File file = new File(plugin.getDataFolder().getAbsolutePath() + "/profiles.json");

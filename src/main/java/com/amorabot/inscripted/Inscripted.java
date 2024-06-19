@@ -5,18 +5,17 @@ import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
-//import com.amorabot.inscripted.components.Items.DataStructures.ModifierIDs;
 import com.amorabot.inscripted.components.Items.Files.ItemModifiersConfig;
 import com.amorabot.inscripted.components.Items.Files.RelicEditor;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Relics;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
 import com.amorabot.inscripted.handlers.GUI.GUIHandler;
 import com.amorabot.inscripted.handlers.Inventory.*;
 import com.amorabot.inscripted.handlers.misc.JoinQuitHandler;
 import com.amorabot.inscripted.handlers.misc.SunlightBurnHandler;
 import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.skills.GlobalCooldownManager;
 import com.amorabot.inscripted.tasks.CombatLogger;
@@ -30,6 +29,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
@@ -71,11 +71,11 @@ public final class Inscripted extends JavaPlugin {
         eventListenersStartupRoutine();
 
         //Damage hologram depleter
-        holoDepleterTask = CombatHologramsDepleter.getInstance().runTaskTimer(this,0, 1L);
+        holoDepleterTask = CombatHologramsDepleter.getInstance().runTaskTimer(this,(long) (Math.random()*11), 1L);
         //Combat logger
-        combatLogger = CombatLogger.getInstance().runTaskTimer(this, 0, 20L);
+        combatLogger = CombatLogger.getInstance().runTaskTimer(this, (long) (Math.random()*11), 20L);
         //Interface renderer
-        playerInterfaceRenderer = PlayerInterfaceRenderer.getInstance().runTaskTimer(this, 0, 5L);
+        playerInterfaceRenderer = PlayerInterfaceRenderer.getInstance().runTaskTimer(this, (long) (Math.random()*11), 5L);
         //Player regeneration
 //        playerRegen = PlayerRegen.getInstance().runTaskTimer(this, 0, 10L);
     }
@@ -111,10 +111,15 @@ public final class Inscripted extends JavaPlugin {
     public static Inscripted getPlugin(){
         return inscriptedPlugin;
     }
+    public static BukkitScheduler getScheduler(){
+        return getPlugin().getServer().getScheduler();
+    }
 
     private void reloadRoutine(){
+        getScheduler().cancelTasks(this);
         JSONProfileManager.reloadOnlinePlayers(Bukkit.getOnlinePlayers());
         PlayerRegenManager.reloadOnlinePlayers();
+        PlayerPassivesManager.reloadOnlinePlayers();
 
         ItemModifiersConfig.setup();
     }

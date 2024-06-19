@@ -29,7 +29,9 @@ public class Attributes implements EntityComponent {
         Stats stats = profileData.getStats();
 
         this.strength = (int) stats.getFinalFlatValueFor(PlayerStats.STRENGTH);
+
         this.dexterity = (int) stats.getFinalFlatValueFor(PlayerStats.DEXTERITY);
+
         this.intelligence = (int) stats.getFinalFlatValueFor(PlayerStats.INTELLIGENCE);
 
         //3 STR -> +1 Base HP

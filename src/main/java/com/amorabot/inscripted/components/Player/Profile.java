@@ -12,8 +12,7 @@ import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class Profile {
     private HealthComponent health;
@@ -25,8 +24,9 @@ public class Profile {
     private Stats stats;
     private PlayerEquipment equipment;
 
+    @Getter
     @Setter
-    private Set<Keystones> keystones;
+    private Set<Keystones> keystones = new HashSet<>();
 
     public Profile(Attributes attributes, PlayerEquipment equipment){
         this.attributes = attributes;
@@ -53,8 +53,7 @@ public class Profile {
         return this.damage;
     }
     private void updateProfile(UUID profileID){
-        StatCompiler compiler = new StatCompiler(profileID);
-        compiler.updateProfile();
+        StatCompiler.updateProfile(profileID);
 
         Player player = Bukkit.getPlayer(profileID);
         assert player != null;
@@ -72,7 +71,9 @@ public class Profile {
         return success;
     }
     public boolean hasWeaponEquipped(){
-        return getEquipmentComponent().getWeaponData() != null;
+        PlayerEquipment playerEquipment = getEquipmentComponent();
+        EquipmentSlot weaponSlot = playerEquipment.getSlot(ItemTypes.WEAPON);
+        return ((weaponSlot.getItemHash()!=0) && (!weaponSlot.isIgnorable()));
     }
 
     public boolean mapPlayerHearts(Player player){
@@ -84,6 +85,6 @@ public class Profile {
     }
 
     public boolean hasKeystone(Keystones keystone){
-        return this.keystones.contains(keystone);
+        return keystones.contains(keystone);
     }
 }

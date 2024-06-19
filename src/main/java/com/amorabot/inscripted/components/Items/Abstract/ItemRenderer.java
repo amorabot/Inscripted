@@ -87,10 +87,12 @@ public interface ItemRenderer extends Serializable {
             int padding = 2;
             String keystoneName = ColorUtils.translateColorCodes(("&c&l"+insc.getInscription().getDisplayName()).indent(padding));
             itemLore.add(keystoneName);
+//            itemLore.add(ColorUtils.translateColorCodes("&8╔════════╗").indent(padding+1));
             for (String descriLine : keystone.getDescription()){
                 String keystoneDescLine = ColorUtils.translateColorCodes(("&8"+Utils.convertToPrettyString(descriLine)).indent(padding+2));
                 itemLore.add(keystoneDescLine);
             }
+//            itemLore.add(ColorUtils.translateColorCodes("&8╚════════╝").indent(padding+1));
         }
         //Then effects
         //-----------

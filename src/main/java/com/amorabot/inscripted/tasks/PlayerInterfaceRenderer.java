@@ -1,16 +1,14 @@
 package com.amorabot.inscripted.tasks;
 
 import com.amorabot.inscripted.components.HealthComponent;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.skills.GlobalCooldownManager;
-import com.amorabot.inscripted.skills.SkillTypes;
+import com.amorabot.inscripted.skills.AbilityTypes;
 import com.amorabot.inscripted.utils.ColorUtils;
-import com.amorabot.inscripted.utils.Utils;
 import me.neznamy.tab.api.TabAPI;
 import me.neznamy.tab.api.TabPlayer;
 import me.neznamy.tab.api.nametag.UnlimitedNameTagManager;
@@ -72,7 +70,7 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             if (dps > 1){
                 cooldownSection+= "&a\uD83D\uDDE1 ";
             }
-            Long remainingMovementCD = GlobalCooldownManager.fetchRemainingCooldownFor(currentPlayer.getUniqueId(), SkillTypes.MOVEMENT);
+            Long remainingMovementCD = GlobalCooldownManager.fetchRemainingCooldownFor(currentPlayer.getUniqueId(), AbilityTypes.MOVEMENT);
             if (remainingMovementCD > 0){
                 if (remainingMovementCD<4000){
                     cooldownSection += "&8"+ remainingMovementCD/1000 +"⏳M ";

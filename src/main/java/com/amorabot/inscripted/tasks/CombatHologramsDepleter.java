@@ -1,9 +1,12 @@
 package com.amorabot.inscripted.tasks;
 
 import com.amorabot.inscripted.APIs.HologramAPI;
+import com.amorabot.inscripted.utils.DelayedTask;
+import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.joml.Matrix4f;
 
 import java.util.*;
 
@@ -13,10 +16,11 @@ public class CombatHologramsDepleter extends BukkitRunnable {
 
     //Instance really needed?
     private static final CombatHologramsDepleter instance = new CombatHologramsDepleter();
+    private static final Matrix4f transf = new Matrix4f().translate(0F, 1.2F, 0F);
 
     private static final Map<TextDisplay, Integer> damageIndicators = new HashMap<>(); //Map de entity e duração do indicator
-    private static Set<TextDisplay> hologramsToRemove = new HashSet<>();
-    private static final int persistTime = 20; //Ticks
+    private static final Set<TextDisplay> hologramsToRemove = new HashSet<>();
+    private static final int persistTime = 15; //Ticks
 
     private CombatHologramsDepleter(){
     }
@@ -30,9 +34,10 @@ public class CombatHologramsDepleter extends BukkitRunnable {
                     hologramsToRemove.add(dmgHolo);
                     continue;
                 }
-                int opactiyStep = 255 / persistTime;
-                dmgHolo.setTextOpacity((byte) (dmgHolo.getTextOpacity()-opactiyStep));
-                ticksLeft--;
+                dmgHolo.setTextOpacity((byte) (255*(ticksLeft/persistTime)));
+                dmgHolo.setTransformationMatrix(transf);
+
+                ticksLeft --;
                 damageIndicators.put(dmgHolo, ticksLeft);
             }
             damageIndicators.keySet().removeAll(hologramsToRemove);
@@ -58,19 +63,29 @@ public class CombatHologramsDepleter extends BukkitRunnable {
         }
     }
 
+    private void putHologram(TextDisplay holo, int duration){
+        new DelayedTask(new BukkitRunnable() {
+            @Override
+            public void run() {
+                holo.setTransformationMatrix(transf);
+                damageIndicators.put(holo, duration);
+            }
+        }, 1L);
+    }
+
     public void instantiateDamageHologramAt(Location loc, int[] incomingDamage){
         TextDisplay dmgHologram = HologramAPI.createDamageHologramAt(loc, incomingDamage);
-        damageIndicators.put(dmgHologram, persistTime);
+        putHologram(dmgHologram, persistTime);
     }
 
     public void instantiateDodgeHologramAt(Location loc){
         TextDisplay dodgeHolo = HologramAPI.createDodgeIndicatorAt(loc);
-        damageIndicators.put(dodgeHolo, persistTime);
+        putHologram(dodgeHolo, persistTime);
     }
 
     public void instantiateRegenHologram(Location loc, String regenString){
-        TextDisplay regenHologram = HologramAPI.createOffsetTextHologram(regenString, loc, getRandomOffset(), 2.85, getRandomOffset());
-        damageIndicators.put(regenHologram, persistTime/2);
+        TextDisplay regenHologram = HologramAPI.createRegenHologramAt(loc, regenString);
+        putHologram(regenHologram, persistTime/2);
     }
 
 }

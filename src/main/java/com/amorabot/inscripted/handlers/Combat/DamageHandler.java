@@ -2,23 +2,20 @@ package com.amorabot.inscripted.handlers.Combat;
 
 import com.amorabot.inscripted.APIs.MessageAPI;
 import com.amorabot.inscripted.APIs.SoundAPI;
-import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.HealthComponent;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.skills.ParticlePlotter;
-import com.destroystokyo.paper.ParticleBuilder;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,7 +27,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 public class DamageHandler implements Listener {
 
     private Inscripted plugin;
-//    private DecimalFormat formatter = new DecimalFormat("#.##");
 
     public DamageHandler(Inscripted p){
         plugin = p;
@@ -56,9 +52,19 @@ public class DamageHandler implements Listener {
             Player p = (Player) attacker;
             ItemStack heldItem = p.getInventory().getItemInMainHand();
             if (heldItem.getType().isAir()){ //If the player is punching
-                if (defender instanceof LivingEntity){
-                    DamageRouter.playerAttack((Player) attacker, (LivingEntity) defender);
+                Profile playerProfile = JSONProfileManager.getProfile(p.getUniqueId());
+                if (!playerProfile.getEquipmentComponent().getSlot(ItemTypes.WEAPON).isIgnorable()){ //If punching with a equipped weapon, unequip
+                    playerProfile.getEquipmentComponent().setSlot(ItemTypes.WEAPON, null);
                 }
+                //Temporary---------------------------
+                if (defender instanceof Player){
+                    event.setCancelled(true);
+                    return;
+                }//---------------------------
+//                if (defender instanceof LivingEntity def){ //TODO: check why resulting holograms are not interpolating(FROM THIS CALL ONLY)
+//                    DamageRouter.playerAttack(p, def, DamageSource.HIT);
+//                    return;
+//                }
             }
             PersistentDataContainer dataContainer = heldItem.getItemMeta().getPersistentDataContainer();
             boolean isWeapon = FunctionalItemAccessInterface.isItemType(FunctionalItemAccessInterface.WEAPON_TAG, dataContainer);
@@ -91,14 +97,8 @@ public class DamageHandler implements Listener {
         Location loc = killedPlayer.getEyeLocation();
         World world = event.getEntity().getWorld();
         ItemStack itemCrackData = new ItemStack(Material.NETHER_WART_BLOCK);
-        for (int i = 0; i < 20; i++){
-            ParticlePlotter.spawnBlockCrackPartileAt(loc.toVector(), world, itemCrackData.getType(),0,4.9);
-
-//            world.spawnParticle(Particle.BLOCK, loc.x(),loc.y(),loc.z(), 2,
-//                    0.5,
-//                    0.5,
-//                    0.5,
-//                    itemCrackData);
-        }
+        ParticlePlotter.spawnBlockCrackPartileAt(loc.toVector(), world, itemCrackData.getType(),20,4.9);
+//        for (int i = 0; i < 20; i++){
+//        }
     }
 }

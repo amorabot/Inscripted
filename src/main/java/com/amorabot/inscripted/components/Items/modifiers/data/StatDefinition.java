@@ -6,7 +6,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 
 public record StatDefinition(ValueTypes valueType, RangeTypes rangeType, PlayerStats stat) {
 
-    public String getDisplayName(Meta metaData, boolean isPositive) {
+    public String getDisplayName(Meta metaData, boolean isPositive, boolean isGlobal) {
         StringBuilder baseString = new StringBuilder();
 
         baseString.append(ValueTypes.getSign(valueType, isPositive));
@@ -17,6 +17,8 @@ public record StatDefinition(ValueTypes valueType, RangeTypes rangeType, PlayerS
         String signIndicator = valueType.getSignIndicatorSuffix(isPositive);
         baseString.append(signIndicator);
         if (!signIndicator.isEmpty()){baseString.append(" ");}
+
+        if (!isGlobal){baseString.append("local ");}
 
         baseString.append(stat.getAlias());
 

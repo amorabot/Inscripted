@@ -2,13 +2,19 @@ package com.amorabot.inscripted.skills;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
+import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
+import com.amorabot.inscripted.components.Player.Profile;
+import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -21,105 +27,22 @@ import org.bukkit.util.Vector;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
-public class Skills {
+public class AbilityRoutines {
 
-    public static void playerAbility(Player player, SkillTypes skillType, WeaponTypes weapon){
-        switch (weapon){
-            case AXE -> {
-                switch (skillType){
-                    case BASIC_ATTACK -> {
-//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 300, 5));
-
-                        axeBasicAttackBy(player);
-                    }
-                    case MOVEMENT -> {
-                        if (GlobalCooldownManager.skillcastBy(player.getUniqueId(),skillType,10)){
-                            marauderMovement(player);
-                        } else {
-                            SoundAPI.playGenericSoundAtLocation(player, player.getLocation(), "block.note_block.basedrum", 0.9F, 1.0F);
-                        }
-                    }
-                }
-            }
-            case SWORD -> {
-                switch (skillType){
-                    case BASIC_ATTACK -> {
-//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 300, 2));
-                        swordBasicAttackBy(player);
-                    }
-                    case MOVEMENT -> {
-                        if (GlobalCooldownManager.skillcastBy(player.getUniqueId(),skillType,3)){
-                            gladiatorMovement(player);
-                        } else {
-                            SoundAPI.playGenericSoundAtLocation(player, player.getLocation(), "block.note_block.basedrum", 0.9F, 1.0F);
-                        }
-                    }
-                }
-            }
-            case BOW -> {
-                switch (skillType){
-                    case BASIC_ATTACK -> {
-//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 3));
-                        bowBasicAttackBy(player);
-                    }
-                    case MOVEMENT -> {
-                        if (GlobalCooldownManager.skillcastBy(player.getUniqueId(),skillType,5)){
-                            mercenaryMovement(player);
-                        } else {
-                            SoundAPI.playGenericSoundAtLocation(player, player.getLocation(), "block.note_block.basedrum", 0.9F, 1.0F);
-                        }
-                    }
-                }
-            }
-            case DAGGER -> {
-                switch (skillType){
-                    case BASIC_ATTACK -> {
-//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 3));
-                        daggerBasicAttackBy(player);
-                    }
-                    case MOVEMENT -> {
-                        if (GlobalCooldownManager.skillcastBy(player.getUniqueId(),skillType,12)){
-                            rogueMovement(player);
-                        } else {
-                            SoundAPI.playGenericSoundAtLocation(player, player.getLocation(), "block.note_block.basedrum", 0.9F, 1.0F);
-                        }
-                    }
-                }
-            }
-            case WAND -> {
-                switch (skillType){
-                    case BASIC_ATTACK -> {
-//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 3));
-                        wandBasicAttackBy(player);
-                    }
-                    case MOVEMENT -> {
-                        if (GlobalCooldownManager.skillcastBy(player.getUniqueId(),skillType,5)){
-                            sorcererMovement(player);
-                        } else {
-                            SoundAPI.playGenericSoundAtLocation(player, player.getLocation(), "block.note_block.basedrum", 0.9F, 1.0F);
-                        }
-                    }
-                }
-            }
-            case MACE -> {
-                switch (skillType){
-                    case BASIC_ATTACK -> {
-//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 4));
-                        sceptreBasicAttackBy(player);
-                    }
-                    case MOVEMENT -> {
-                        if (GlobalCooldownManager.skillcastBy(player.getUniqueId(),skillType,7)){
-                            templarMovement(player);
-                        } else {
-                            SoundAPI.playGenericSoundAtLocation(player, player.getLocation(), "block.note_block.basedrum", 0.9F, 1.0F);
-                        }
-                    }
-                }
-            }
+    public static void playerBaseAbilityCast(Player player, AbilityTypes skillType, WeaponTypes weapon){
+        PlayerAbilities ability = PlayerAbilities.mapBaseAbility(weapon, skillType, 0);
+        if (ability == null){
+            Utils.error("Invalid skill mapping: " + weapon + " and " + skillType);
+            return;
         }
+        ability.cast(player);
     }
-    private static void swordBasicAttackBy(Player player){
+
+
+
+    public static void swordBasicAttackBy(Player player, PlayerAbilities mappedAbility){
 
         World playerWorld = player.getWorld();
         Location playerLocation = player.getLocation();
@@ -200,7 +123,7 @@ public class Skills {
                             Vector dir = tipPoint.clone().subtract(handlePoint);
                             RayTraceResult collisionResult = playerAABB.rayTrace(handlePoint.clone(), dir.clone().normalize(), dir.length()+0.1);
                             if (collisionResult != null){
-                                DamageRouter.playerAttack(player, p);
+                                DamageRouter. playerAttack(player, p, DamageSource.HIT, mappedAbility);
                                 hitPlayers.add(p);
                             }
                         }
@@ -270,7 +193,7 @@ public class Skills {
         }.runTaskTimer(Inscripted.getPlugin(), 0, 1).getTaskId();
     }
 
-    private static void axeBasicAttackBy(Player player){
+    public static void axeBasicAttackBy(Player player, PlayerAbilities mappedAbility){
 
         World playerWorld = player.getWorld();
 
@@ -338,7 +261,7 @@ public class Skills {
 
                             RayTraceResult collisionResult = playerAABB.rayTrace(begin, dir.clone(), length);
                             if (collisionResult != null){
-                                DamageRouter.playerAttack(player, p);
+                                DamageRouter.playerAttack(player, p,DamageSource.HIT, mappedAbility);
                                 hitPlayers.add(p);
                             }
                         }
@@ -350,7 +273,7 @@ public class Skills {
         }.runTaskTimer(Inscripted.getPlugin(), 0, durationPerStep).getTaskId();
     }
 
-    private static void bowBasicAttackBy(Player player){
+    public static void bowBasicAttackBy(Player player, PlayerAbilities mappedAbility){
         World playerWorld = player.getWorld();
         Location playerLocation = player.getLocation().clone().add(0,1.5,0);
 
@@ -403,7 +326,7 @@ public class Skills {
                             arrowAABB.expand(collisionDetectionRadius/4);
 
                             if (playerAABB.overlaps(arrowAABB)){
-                                DamageRouter.playerAttack(player, p);
+                                DamageRouter.playerAttack(player, p,DamageSource.HIT, mappedAbility);
                                 this.cancel();
                                 return;
                             }
@@ -418,7 +341,7 @@ public class Skills {
         }.runTaskTimer(Inscripted.getPlugin(), 0, delta).getTaskId();
     }
 
-    private static void daggerBasicAttackBy(Player player){
+    public static void daggerBasicAttackBy(Player player, PlayerAbilities mappedAbility){
         World playerWorld = player.getWorld();
 
         //Get player location -> Access to direction vector later
@@ -484,7 +407,7 @@ public class Skills {
 
                             RayTraceResult collisionResult = playerAABB.rayTrace(handleEnd, dir.clone(), length);
                             if (collisionResult != null){
-                                DamageRouter.playerAttack(player, p);
+                                DamageRouter.playerAttack(player, p,DamageSource.HIT, mappedAbility);
                                 hitPlayers.add(p);
                             }
                         }
@@ -496,7 +419,7 @@ public class Skills {
         }.runTaskTimer(Inscripted.getPlugin(), 0, durationPerStep).getTaskId();
     }
 
-    private static void wandBasicAttackBy(Player player){
+    public static void wandBasicAttackBy(Player player, PlayerAbilities mappedAbility){
         World playerWorld = player.getWorld();
         Location playerLocation = player.getLocation().clone().add(0,1.2,0).add(player.getLocation().getDirection().clone().multiply(1.2));
 
@@ -547,13 +470,13 @@ public class Skills {
                         if (nearbyPlayers.size() == 1){
                             Player nearbyPlayer = nearbyPlayers.get(0);
                             if (wandBoltCollision(nearbyPlayer, currentPosition, hitPlayers)){
-                                DamageRouter.playerAttack(player, nearbyPlayer);
+                                DamageRouter.playerAttack(player, nearbyPlayer,DamageSource.HIT, mappedAbility);
                                 hitPlayers.add(nearbyPlayer);
                             }
                         } else {
                             for (Player p : nearbyPlayers){
                                 if (wandBoltCollision(p, currentPosition, hitPlayers)){
-                                    DamageRouter.playerAttack(player, p);
+                                    DamageRouter.playerAttack(player, p,DamageSource.HIT, mappedAbility);
                                     hitPlayers.add(p);
                                 }
                             }
@@ -581,7 +504,7 @@ public class Skills {
         return playerAABB.overlaps(magicBoltAABB);
     }
 
-    public static void sceptreBasicAttackBy(Player player){
+    public static void maceBasicAttackBy(Player player, PlayerAbilities mappedAbility){
         World playerWorld = player.getWorld();
 
         //Get player location -> Access to direction vector later
@@ -631,7 +554,7 @@ public class Skills {
                         List<Player> nearbyPlayers = (List<Player>) groundCollisionPos.toLocation(playerWorld).getNearbyPlayers(slamRadius);
                         nearbyPlayers.remove(player);
                         for (Player p : nearbyPlayers){
-                            DamageRouter.playerAttack(player,p);
+                            DamageRouter.playerAttack(player,p,DamageSource.HIT, mappedAbility);
                         }
 
                         this.cancel();
@@ -753,6 +676,107 @@ public class Skills {
             double velocity = 0.2F + velScaling*maxVelocity;
             p.setVelocity(dirToCenter.multiply(-velocity));
         }
+    }
+
+
+    public static int activatePermafrost(Player keystoneHolder, int period, int animationSteps){
+        return new BukkitRunnable() {
+
+            int counter = 1;
+            final float radius = 3; //Make it scale with AoE? :D
+
+            @Override
+            public void run() {
+                Location playerLoc = keystoneHolder.getLocation();
+
+                float radiusStep = radius /animationSteps;
+                int colorVariance = 45;
+                float colorStep = ((float) colorVariance) / animationSteps;
+
+                ParticlePlotter.plotColoredCircleAt(playerLoc.toVector(),playerLoc.getWorld(),
+                        (int) (200 - (counter-1)*colorStep),
+                        (int) (200 - (counter-1)*colorStep),
+                        255,
+                        1.3F,
+                        radiusStep*counter,
+                        30);
+                counter++;
+                if (counter>3){
+                    PotionEffect slowness = new PotionEffect(PotionEffectType.SLOWNESS, (int)(period*1.1), 0, true, false, false);
+                    ParticlePlotter.plotCircleAt(playerLoc.toVector(),playerLoc.getWorld(), Particle.END_ROD, radius, 40);
+                    for (Player p : playerLoc.getNearbyPlayers(radius)){
+                        slowness.apply(p);
+                    }
+                    counter = 1;
+                }
+            }
+        }.runTaskTimer(Inscripted.getPlugin(), period, period/animationSteps).getTaskId();
+    }
+    public static int activateThunderstruck(Player keystoneHolder, int period){
+        return new BukkitRunnable() {
+
+            final float radius = 2.5F; //Make it scale with AoE? :D
+
+            @Override
+            public void run() {
+                if (keystoneHolder.isSneaking()){return;}
+                Location playerLoc = keystoneHolder.getLocation();
+                World world = playerLoc.getWorld();
+
+                ParticlePlotter.plotColoredCircleAt(playerLoc.toVector(), world,
+                        240,
+                        200,
+                        100,
+                        1.3F,
+                        radius,
+                        30);
+                ParticlePlotter.plotCircleAt(playerLoc.toVector(), world, Particle.ELECTRIC_SPARK, radius, 20);
+                List<LivingEntity> nearbyEntities = (List<LivingEntity>) playerLoc.getNearbyLivingEntities(radius+0.1);
+                //TODO: make isMob() and isPlayer() for inscripted entities
+                for (LivingEntity entity : nearbyEntities){
+                    ParticlePlotter.thunderAt(entity.getLocation().clone(), 4, 16);
+                    DamageRouter.playerAttack(keystoneHolder, entity, DamageSource.HIT, PlayerAbilities.THUNDERSTRUCK);
+                }
+            }
+        }.runTaskTimer(Inscripted.getPlugin(), period, period).getTaskId();
+    }
+
+
+    public static int initializeBerserkToggleMonitorFor(Player keystoneHolder){
+        return new BukkitRunnable() {
+            @Override
+            public void run() {
+                UUID playerID = keystoneHolder.getUniqueId();
+                Location loc = keystoneHolder.getLocation();
+                Profile playerProfile = JSONProfileManager.getProfile(playerID);
+                HealthComponent HPComponent = playerProfile.getHealthComponent();
+                boolean isActive = playerProfile.getStats().isStatKeystonePresent(Keystones.BERSERK);
+                        /*
+                        Truth table
+                        LL  ACTIVE  (toggle)
+                        T     T       F
+                        T     F       T
+                        F     T       T
+                        F     F       F
+                        */
+                boolean needsToggle = (HPComponent.isLowLife() ^ isActive);
+                if (isActive){
+                    ParticlePlotter.spawnParticleAt(loc.toVector().clone().add(new Vector(0,1.5D, 0)), loc.getWorld(), Particle.ANGRY_VILLAGER);
+                }
+
+                if (needsToggle){
+                    if (isActive){ //De-activate
+                        Utils.log("Toggling berserk! (OFF)");
+                        playerProfile.getStats().removeActiveStatKeystone(playerID, Keystones.BERSERK, false);
+                    } else { //Activate
+                        Utils.log("Toggling berserk! (ON)");
+                        playerProfile.getStats().addActiveStatKeystone(playerID, Keystones.BERSERK);
+                    }
+                }
+            }
+
+
+        }.runTaskTimer(Inscripted.getPlugin(), 20, 5).getTaskId();
     }
 
 

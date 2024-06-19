@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.components;
 
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.Stats;
@@ -85,15 +86,19 @@ public class DefenceComponent implements EntityComponent {
         Stats playerStats = profileData.getStats();
 
         //Set elemental mod caps (When implemented)
+        setFireCapMod(playerStats.getFinalPercentValueFor(PlayerStats.MAX_FIRE_RESISTANCE));
+        setLightningCapMod(playerStats.getFinalPercentValueFor(PlayerStats.MAX_LIGHTNING_RESISTANCE));
+        setColdCapMod(playerStats.getFinalPercentValueFor(PlayerStats.MAX_COLD_RESISTANCE));
 
         //Setting resistances
-        setFireResistance(playerStats.getPercentValueFor(PlayerStats.FIRE_RESISTANCE));
-        setLightningResistance(playerStats.getPercentValueFor(PlayerStats.LIGHTNING_RESISTANCE));
-        setColdResistance(playerStats.getPercentValueFor(PlayerStats.COLD_RESISTANCE));
-        setAbyssalResistance(playerStats.getPercentValueFor(PlayerStats.ABYSSAL_RESISTANCE));
+        setFireResistance(playerStats.getFinalPercentValueFor(PlayerStats.FIRE_RESISTANCE));
+        setLightningResistance(playerStats.getFinalPercentValueFor(PlayerStats.LIGHTNING_RESISTANCE));
+        setColdResistance(playerStats.getFinalPercentValueFor(PlayerStats.COLD_RESISTANCE));
+        setAbyssalResistance(playerStats.getFinalPercentValueFor(PlayerStats.ABYSSAL_RESISTANCE));
 
         //Setting defensive stats
         setArmor(playerStats.getFinalFlatValueFor(PlayerStats.ARMOR));
+
         setDodge((int)playerStats.getFinalFlatValueFor(PlayerStats.DODGE));
     }
 }

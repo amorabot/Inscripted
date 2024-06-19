@@ -4,43 +4,46 @@ import com.amorabot.inscripted.components.Items.Abstract.Item;
 
 public class EquipmentSlot {
 
-    private Item itemData;
+    private int itemHash;
     private boolean ignore;
 
 
     public EquipmentSlot(){
-        resetSlot();
-    }
-
-    public void resetSlot(){
-        this.itemData = null;
+        this.itemHash = 0;
         this.ignore = true;
     }
 
-    public void setItemData(Item newItemData){
-        if (this.itemData == null){
-            this.itemData = newItemData;
+    /*
+    Return value: Signifies whether the stats for that item
+    should be (re)compiled and stored into the PlayerEquipment class
+    */
+    public boolean setItemHash(Item newItemData){
+        if (this.itemHash == 0){
+            this.itemHash = newItemData.hashCode();
             this.ignore = false;
         }
         if (newItemData == null){
             this.ignore = true;
-            return;
+            return false; // No recompilation
         }
-        if (newItemData.hashCode() == itemData.hashCode()){ //Its the same item, but its already cached from previously
+        int newHash = newItemData.hashCode();
+        if (newHash == itemHash){ //Its the same item, but its already been cached
             if (ignore){ //If its already cached but set to ignore, simply dont ignore it anymore
                 this.ignore = false;
             }
+            return false; // No recompilation (The cached item hasnt changed)
         } else { //If the new item's hash is different, lets store it
-            this.itemData = newItemData;
+            this.itemHash = newHash;
             this.ignore = false;
+            return true; // And recompile the stat data
         }
     }
 
-    public Item getItemData(){
+    public int getItemHash(){
         if (ignore){
-            return null;
+            return 0;
         }
-        return this.itemData;
+        return this.itemHash;
     }
 
     public boolean isIgnorable(){

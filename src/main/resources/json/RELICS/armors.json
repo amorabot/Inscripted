@@ -23,7 +23,7 @@
     ]
   },
   "CORRUPTORS_WRAPPINGS": {
-    "name": "The corruptor's wrappings",
+    "name": "The Corruptor's Wrappings",
     "ilvl": 70,
     "slot": "CHESTPLATE",
     "type": "ENCHANTED_SILK",
@@ -31,7 +31,46 @@
     "inscriptions": [
       "FORBIDDEN_PACT",
       "CORRUPTORS_WRAPPINGS_WARD",
-      "CORRUPTORS_WRAPPINGS_STRENGTH"
+      "CORRUPTORS_WRAPPINGS_STRENGTH",
+      "CORRUPTORS_WRAPPINGS_MORE_WARD"
+    ]
+  },
+  "APPROACHING_WINTER": {
+    "name": "The Approaching Winter",
+    "ilvl": 90,
+    "slot": "BOOTS",
+    "type": "ENCHANTED_SILK",
+    "baseHealth": 200,
+    "inscriptions": [
+      "PERMAFROST",
+      "APPROACHING_WINTER_WALK_SPEED",
+      "APPROACHING_WINTER_COLD_RES",
+      "APPROACHING_WINTER_FIRE_RES",
+      "APPROACHING_WINTER_COLD_DMG"
+    ]
+  },
+  "BLIND_RAGE": {
+    "name": "Blind Rage",
+    "ilvl": 40,
+    "slot": "HELMET",
+    "type": "HEAVY_PLATING",
+    "baseHealth": 666,
+    "inscriptions": [
+      "BERSERK",
+      "BLIND_RAGE_ACCURACY",
+      "BLIND_RAGE_LESS_HEALTH"
+    ]
+  },
+  "EYE_OF_THE_STORM": {
+    "name": "Eye of The Storm",
+    "ilvl": 75,
+    "slot": "CHESTPLATE",
+    "type": "ENCHANTED_SILK",
+    "baseHealth": 1000,
+    "inscriptions": [
+      "THUNDERSTRUCK",
+      "EYE_OF_THE_STORM_LIGHTNING_RES",
+      "EYE_OF_THE_STORM_MAX_LIGHTNING_RES"
     ]
   }
 }

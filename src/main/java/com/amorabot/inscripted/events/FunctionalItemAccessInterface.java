@@ -102,7 +102,7 @@ public class FunctionalItemAccessInterface {
             if (armorData == null){ Utils.error("FunctionalItemHandler error: Null weapon deserialization"); }
             return armorData;
         }
-        Utils.error("FunctionalItemHandler error: Not a weapon");
+        Utils.error("FunctionalItemHandler error: Not a armor");
         return null;
     }
 }
