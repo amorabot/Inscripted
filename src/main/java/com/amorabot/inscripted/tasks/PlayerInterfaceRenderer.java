@@ -70,7 +70,7 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             if (dps > 1){
                 cooldownSection+= "&a\uD83D\uDDE1 ";
             }
-            Long remainingMovementCD = GlobalCooldownManager.fetchRemainingCooldownFor(currentPlayer.getUniqueId(), AbilityTypes.MOVEMENT);
+            Long remainingMovementCD = GlobalCooldownManager.fetchAbilityRemainingCooldown(currentPlayer.getUniqueId(), AbilityTypes.MOVEMENT);
             if (remainingMovementCD > 0){
                 if (remainingMovementCD<4000){
                     cooldownSection += "&8"+ remainingMovementCD/1000 +"⏳M ";

@@ -7,6 +7,7 @@ import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.components.Items.modifiers.data.Meta;
+import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.utils.ColorUtils;
 import org.bukkit.*;
@@ -83,6 +84,9 @@ public class TemplateCommand implements CommandExecutor {
                     player.sendMessage(temp);
                     player.sendMessage(ColorUtils.decolor(temp));
                     player.sendMessage(ColorUtils.translateColorCodes(temp));
+                    return true;
+                case "unalive":
+                    Profile.execute(player);
                     return true;
             }
         }

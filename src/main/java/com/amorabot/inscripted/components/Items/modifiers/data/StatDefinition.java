@@ -20,12 +20,19 @@ public record StatDefinition(ValueTypes valueType, RangeTypes rangeType, PlayerS
 
         if (!isGlobal){baseString.append("local ");}
 
-        baseString.append(stat.getAlias());
 
         if (metaData != null) {
-            baseString.append(" per ").append(metaData.rate()).append(" ").append(metaData.convertedStat().getAlias());
+            //Inc. walk speed per 15 DEX
+            baseString.append(stat.getAlias());
+            baseString.append(" per ")
+                    .append(metaData.rate())
+                    .append(" ")
+                    .append(metaData.convertedValueType().getSignIndicatorSuffix(true))
+                    .append(" ")
+                    .append(metaData.convertedStat().getAlias());
             return baseString.toString();
         }
+        baseString.append(stat.getAlias());
 
         return baseString.toString();
     }

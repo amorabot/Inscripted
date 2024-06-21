@@ -59,7 +59,7 @@ public enum PlayerAbilities {
             HitTypes.NONE) {
         @Override
         public void cast(Player caster) {
-            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this.getType(),10)){
+            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this)){
                 marauderMovement(caster);
                 return;
             }
@@ -71,7 +71,7 @@ public enum PlayerAbilities {
             HitTypes.NONE) {
         @Override
         public void cast(Player caster) {
-            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this.getType(),this.getCooldownInSeconds())){
+            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this)){
                 gladiatorMovement(caster);
                 return;
             }
@@ -83,7 +83,7 @@ public enum PlayerAbilities {
             HitTypes.NONE) {
         @Override
         public void cast(Player caster) {
-            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this.getType(),this.getCooldownInSeconds())){
+            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this)){
                 mercenaryMovement(caster);
                 return;
             }
@@ -95,7 +95,7 @@ public enum PlayerAbilities {
             HitTypes.NONE) {
         @Override
         public void cast(Player caster) {
-            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this.getType(),this.getCooldownInSeconds())){
+            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this)){
                 rogueMovement(caster);
                 return;
             }
@@ -107,7 +107,7 @@ public enum PlayerAbilities {
             HitTypes.NONE) {
         @Override
         public void cast(Player caster) {
-            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this.getType(),this.getCooldownInSeconds())){
+            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this)){
                 sorcererMovement(caster);
                 return;
             }
@@ -119,7 +119,7 @@ public enum PlayerAbilities {
             HitTypes.NONE) {
         @Override
         public void cast(Player caster) {
-            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this.getType(),this.getCooldownInSeconds())){
+            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this)){
                 templarMovement(caster);
                 return;
             }

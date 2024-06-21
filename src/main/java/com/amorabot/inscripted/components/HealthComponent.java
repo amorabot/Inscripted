@@ -3,6 +3,7 @@ package com.amorabot.inscripted.components;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.components.Player.BaseStats;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.Stats;
@@ -10,7 +11,9 @@ import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.entity.Player;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -46,10 +49,12 @@ public class HealthComponent implements EntityComponent {
     }
 
     //------------LIFE METHODS-------------
-    public void replenishHitPoints(){
-        currentHealth = maxHealth;
-        currentWard = maxWard;
-        Utils.log("Reseting player's life");
+    public static void replenishHitPoints(Player player){
+        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
+        HealthComponent playerHP = playerProfile.getHealthComponent();
+        playerHP.setCurrentHealth(playerHP.getMaxHealth());
+        playerHP.setCurrentWard(playerHP.getMaxWard());
+        playerProfile.updatePlayerHearts(player);
     }
     public int regenHealth(boolean inCombat, boolean bleeding){
         int regeneratedHealthTick = healthRegen;
@@ -75,7 +80,7 @@ public class HealthComponent implements EntityComponent {
         }
         return regeneratedHealthTick;
     }
-    public void damage(int[] incomingDamage){
+    public void damage(int[] incomingDamage, Set<Keystones> defKeystones, Set<Keystones> atkrKeystones){
         int damage = 0;
         for (int dmg : incomingDamage){
             damage += dmg;
@@ -110,26 +115,33 @@ public class HealthComponent implements EntityComponent {
         }
     }
     //------------WARD METHODS-------------
-    public void regenWard(float wardRegenTick){ //Standard ward regen call
+    public int regenWard(boolean inCombat){ //Standard ward regen call
+        float wardRegen = getMaxWard() * (getWardRecovery()/100F);
+        if (inCombat){
+            wardRegen = wardRegen/2;
+        }
         //In the specific case its already been capped out, ignore
         if (currentWard == maxWard){
-            return;
+            return 0;
         }
         //If this tick of regen surpasses the max ward, cap it to max ward
-        if (currentWard+wardRegenTick>maxWard){
+        if (currentWard+wardRegen>maxWard){
+            int wardRegenTick = (int) (maxWard - currentWard);
             currentWard = maxWard;
-            return;
+            return wardRegenTick;
         }
         //If theres room to regenerate, do
-        if (currentWard+wardRegenTick <= maxWard){
-            this.currentWard += wardRegenTick;
+        if (currentWard+wardRegen <= maxWard){
+            this.currentWard += wardRegen;
         }
+        return (int) wardRegen;
     }
 
     public float getNormalizedHP(){
         return Math.min(currentHealth/maxHealth, 1F);
     }
-    public double getMappedHealth(int basePlayerHearts){
+    public double getMappedHealth(){
+        int basePlayerHearts = 20;
         if (currentHealth == 0){return 0;}
         return Math.max(0.5, getNormalizedHP()*basePlayerHearts);
     }
@@ -137,7 +149,8 @@ public class HealthComponent implements EntityComponent {
     public float getNormalizedWard(){
         return Math.min(currentWard/maxWard, 1F);
     }
-    public double getMappedWard(int basePlayerHearts){
+    public double getMappedWard(){
+        int basePlayerHearts = 20;
         if (currentWard == 0){return 0;}
         return Math.max(0.5, getNormalizedWard()*basePlayerHearts);
     }
@@ -146,13 +159,19 @@ public class HealthComponent implements EntityComponent {
         return (getCurrentHealth()/getMaxHealth()*(100)) < LOW_LIFE_THRESHOLD;
     }
 
-    public void healHealth(int amount){
-        if (currentHealth == maxHealth){return;}
-        if (currentHealth+amount>maxHealth){
-            currentHealth = maxHealth;
-            return;
+    public int healHealth(int amount, Set<Keystones> keystones){
+        int finalAmount = amount;
+        if (keystones.contains(Keystones.BLOOD_PACT)){
+            finalAmount = 2*amount;
         }
-        if (currentHealth+amount <= maxHealth){this.currentHealth += amount;}
+
+        if (currentHealth == maxHealth){return 0;}
+        if (currentHealth+finalAmount>maxHealth){
+            currentHealth = maxHealth;
+            return (int) (maxHealth - currentHealth);
+        }
+        if (currentHealth+finalAmount <= maxHealth){this.currentHealth += finalAmount;}
+        return finalAmount;
     }
 
     @Override
@@ -161,7 +180,7 @@ public class HealthComponent implements EntityComponent {
         Stats playerStats = profileData.getStats();
         setMaxHealth(playerStats.getFinalFlatValueFor(PlayerStats.HEALTH));
 
-        setMaxWard(playerStats.getFinalFlatValueFor(PlayerStats.WARD));
+        setMaxWard(Math.max(0, playerStats.getFinalFlatValueFor(PlayerStats.WARD)));
 
         setHealthRegen((int) playerStats.getFinalFlatValueFor(PlayerStats.HEALTH_REGEN));
 

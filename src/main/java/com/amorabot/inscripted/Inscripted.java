@@ -64,7 +64,7 @@ public final class Inscripted extends JavaPlugin {
         InscriptionID.loadModifiers();
         Utils.populatePrettyAlphabet();
         Utils.populateRomanChars();
-        GlobalCooldownManager.setup();
+//        GlobalCooldownManager.setup();
 //        getWorld().getLivingEntities()
 
         commandsStartupRoutine();

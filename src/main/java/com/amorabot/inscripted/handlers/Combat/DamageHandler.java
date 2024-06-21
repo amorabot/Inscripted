@@ -11,6 +11,7 @@ import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.skills.ParticlePlotter;
+import com.amorabot.inscripted.utils.DelayedTask;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -23,6 +24,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class DamageHandler implements Listener {
 
@@ -88,9 +90,17 @@ public class DamageHandler implements Listener {
         } else {
             event.deathMessage(Component.text(event.getEntity().getName() + " ☠").color(NamedTextColor.RED));
         }
-        Profile playerProfile = JSONProfileManager.getProfile((event.getEntity()).getUniqueId());
-        HealthComponent playerHealth = playerProfile.getHealthComponent();
-        playerHealth.replenishHitPoints();
+        /*
+        If the player's HP is tempered with immediatly, in game death effects are cancelled (Teleport, automatic HP remapping)
+        When implementing custom deaths (predefined respawns, etc...), keep this in mind
+        */
+        new DelayedTask(new BukkitRunnable() {
+            @Override
+            public void run() {
+                HealthComponent.replenishHitPoints(event.getEntity());
+            }
+        }, 5
+        );
 
         //Death effect -> TODO: Move this block to CombatEffects class
         Player killedPlayer = event.getEntity();

@@ -10,5 +10,5 @@ public interface ModifierData {
         return getAffixType().equals(Affix.UNIQUE);
     }
     default boolean isKeystone(){return (this instanceof KeystoneData);}
-    default boolean isUniqueEffect(){return (this instanceof KeystoneData);}
+    default boolean isUniqueEffect(){return (this instanceof UniqueEffectData);}
 }

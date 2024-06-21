@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.commands;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.managers.JSONProfileManager;
@@ -26,7 +27,7 @@ public class ResetAttributes implements CommandExecutor {
         Player player = (Player) sender;
         Profile profile = JSONProfileManager.getProfile(player.getUniqueId());
 //        profile.getEquipmentComponent().setArmorSet(null, null, null, null);
-        profile.getHealthComponent().replenishHitPoints();
+        HealthComponent.replenishHitPoints(player);
         profile.updateEquipmentSlot(ItemTypes.WEAPON, null, player.getUniqueId());
         return true;
     }

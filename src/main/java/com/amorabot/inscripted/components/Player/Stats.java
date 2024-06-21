@@ -4,9 +4,12 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
+import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -31,23 +34,23 @@ public class Stats implements EntityComponent {
 
     @Override
     public void update(UUID profileID) {
-        /*
-        TODO: Set custom walk speeds, jump heights, etc...
-        */
 //        Profile profileData = JSONProfileManager.getProfile(profileID);
 
-//        Player player = Bukkit.getPlayer(profileID);
-//        assert player != null;
-//        /*
-//        The final walkSpeed stat reflects the % multiplier that is applied to the base player's movement speed
-//        Ex:  100 (Base) MS = 0.2  player speed
-//             169 (100 + 54) * 1.1 => 169% base MS,   1,69 multiplier overall to the base 0.2 MS => 0.3388
-//         */
-//        float mappedWS = ( walkSpeed ) * 0.002F;
-//        // input ->  min -1 |  max 1
-//        player.setWalkSpeed(mappedWS);
-        //DEX can give 1% inc MS per 10
-        //Default speed value for players: 0.2 (EMPIRIC FUCKING VALUE)  (https://minecraft.wiki/w/Attribute)
+        Player player = Bukkit.getPlayer(profileID);
+        assert player != null;
+        /*
+        The final walkSpeed stat reflects the % multiplier that is applied to the base player's movement speed
+        Ex:  100 (Base) MS = 0.2  player speed
+             169 (100 + 54) * 1.1 => 169% base MS,   1,69 multiplier overall to the base 0.2 MS => 0.3388
+
+        Input ->  min -1 | max 1
+        Default speed value for players: 0.2 (EMPIRIC FUCKING VALUE)  (https://minecraft.wiki/w/Attribute)
+         */
+        float finalWalkSpeed = getFinalFlatValueFor(PlayerStats.WALK_SPEED);
+        Utils.log("Final WS: " + finalWalkSpeed);
+
+        float mappedWS = Math.max(-1, ( finalWalkSpeed ) * 0.002F);
+        player.setWalkSpeed(mappedWS);
     }
 
     //Changes to stat keystones will trigger a recompilation

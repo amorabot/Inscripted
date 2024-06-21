@@ -10,6 +10,7 @@ import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.components.Items.modifiers.data.*;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTimes;
 import com.amorabot.inscripted.managers.JSONProfileManager;
@@ -33,6 +34,8 @@ public class StatCompiler {
         addBaseStatsTo(compiledStats);
 
         Set<Keystones> playerKeystones = compileKeystones(equipment);
+        Set<Effects> playerEffects = compileUniqueEffects(equipment);
+
         manageKeystoneTasks(playerID, playerKeystones);
 
         //Apply early compilation keystones
@@ -53,6 +56,7 @@ public class StatCompiler {
         //Compiled stats are now available for all components to consume in the build step
         targetProfile.getStats().setPlayerStats(compiledStats);
         targetProfile.setKeystones(playerKeystones);
+        targetProfile.setEffects(playerEffects);
 
         buildProfile(targetProfile, playerID);
 
@@ -98,8 +102,9 @@ public class StatCompiler {
                     InscriptionData inscData = (InscriptionData) ID.getData();
                     StatDefinition definitionData = inscData.getDefinitionData();
 
-                    PlayerStats targetConvertedStat = ID.getMetaAnnotationData().convertedStat();
-                    ValueTypes type = ValueTypes.FLAT; //To make things simple, meta stats will only work with flat values for now
+                    Meta metaData = ID.getMetaAnnotationData();
+                    PlayerStats targetConvertedStat = metaData.convertedStat();
+                    ValueTypes type = metaData.convertedValueType(); //To make things simple, meta stats will only work with flat values for now
 
                     PlayerStats finalConvertedStat = definitionData.stat();
                     ValueTypes finalStatType = definitionData.valueType();
@@ -130,7 +135,7 @@ public class StatCompiler {
         Set<Keystones> playerKeystones = new HashSet<>();
 
         for (ItemTypes slot : ItemTypes.values()){
-            EquipmentSlot equipmentSlot = equipment.getSlot(slot);
+            ItemSlotData equipmentSlot = equipment.getSlot(slot);
             if (equipmentSlot.isIgnorable()){continue;}
             if (!equipment.getSlotKeystones().containsKey(slot)){continue;}
             Set<Keystones> slotKeystones = equipment.getSlotKeystones().get(slot);
@@ -138,6 +143,19 @@ public class StatCompiler {
         }
         return playerKeystones;
     }
+    private static Set<Effects> compileUniqueEffects(PlayerEquipment equipment) {
+        Set<Effects> playerEffects = new HashSet<>();
+
+        for (ItemTypes slot : ItemTypes.values()){
+            ItemSlotData equipmentSlot = equipment.getSlot(slot);
+            if (equipmentSlot.isIgnorable()){continue;}
+            if (!equipment.getSlotEffects().containsKey(slot)){continue;}
+            Set<Effects> slotEffects = equipment.getSlotEffects().get(slot);
+            playerEffects.addAll(slotEffects);
+        }
+        return playerEffects;
+    }
+
     public static void manageKeystoneTasks(UUID playerID, Set<Keystones> compiledPlayerKeystones){
         Utils.log("Managing keystones for: " + playerID);
 
@@ -199,13 +217,14 @@ public class StatCompiler {
         }
     }
 
-    public static void addKeystonesFrom(Inscription inscription, Set<Keystones> keystoneSet){
-        ModifierData inscData = inscription.getInscription().getData();
-        if (inscData.isKeystone()){
-            KeystoneData keystoneData = (KeystoneData) inscData;
-            keystoneSet.add(keystoneData.keystone());
-        }
-    }
+//    public static void addKeystonesFrom(Inscription inscription, Set<Keystones> keystoneSet){
+//        ModifierData inscData = inscription.getInscription().getData();
+//        if (inscData.isKeystone()){
+//            KeystoneData keystoneData = (KeystoneData) inscData;
+//            keystoneSet.add(keystoneData.keystone());
+//        }
+//    }
+
 
     private static void addBaseStatsTo(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats) {
         putSingleValueIn(compiledStats, PlayerStats.HEALTH, ValueTypes.FLAT, BaseStats.HEALTH.getValue());
@@ -264,6 +283,7 @@ public class StatCompiler {
         List<Inscription> inscriptions = item.getInscriptionList();
         for (Inscription inscription : inscriptions){
             if (!inscription.getInscription().isGlobal()){continue;}
+            if (inscription.getInscription().isMeta()){continue;}
             compileIndividualInscriptionInto(compiledStats, inscription);
         }
         compileIndividualInscriptionInto(compiledStats, item.getImplicit());

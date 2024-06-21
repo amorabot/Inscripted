@@ -72,5 +72,28 @@
       "EYE_OF_THE_STORM_LIGHTNING_RES",
       "EYE_OF_THE_STORM_MAX_LIGHTNING_RES"
     ]
+  },
+  "TIN_FOIL_HELMET": {
+    "name": "Tin Foil Helmet",
+    "ilvl": 42,
+    "slot": "HELMET",
+    "type": "HEAVY_PLATING",
+    "baseHealth": 100,
+    "inscriptions": [
+      "OVERDRIVE",
+      "TIN_FOIL_HELMET_INTELLIGENCE"
+    ]
+  },
+  "QUEEN_OF_THE_FOREST": {
+    "name": "Queen of The Forest",
+    "ilvl": 90,
+    "slot": "LEGGINGS",
+    "type": "LIGHT_CLOTH",
+    "baseHealth": 1200,
+    "inscriptions": [
+      "THRILL_OF_THE_HUNT",
+      "QOTF_DEX_TO_WS",
+      "QOTF_REDU_WALK_SPEED"
+    ]
   }
 }

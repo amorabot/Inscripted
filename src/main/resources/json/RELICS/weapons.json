@@ -16,13 +16,30 @@
     "name": "The Hellforge",
     "ilvl": 45,
     "type": "AXE",
-    "atkSpeed": "SLOW",
+    "atkSpeed": "HEAVY",
     "baseDmg": [
       15,
       35
     ],
     "inscriptions": [
       "HELLFORGE_STRENGTH_TO_FIRE_DMG"
+    ]
+  },
+  "SCARLET_DANCER": {
+    "name": "The Scarlet Dancer",
+    "ilvl": 90,
+    "type": "SWORD",
+    "atkSpeed": "NORMAL",
+    "baseDmg": [
+      150,
+      220
+    ],
+    "inscriptions": [
+      "BLOOD_PACT",
+      "ADRENALINE_RUSH",
+      "SCARLET_DANCER_PHYS",
+      "SCARLET_DANCER_LESS_ARMOR",
+      "SCARLET_DANCER_LIFE_ON_HIT"
     ]
   }
 }

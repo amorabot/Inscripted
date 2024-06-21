@@ -1355,3 +1355,19 @@ UNIQUE:
     - 4
     - 7
     - 7
+  TIN_FOIL_HELMET_INTELLIGENCE:
+    - 30
+    - 70
+  QOTF_DEX_TO_WS:
+    - 1
+  QOTF_REDU_WALK_SPEED:
+    - 20
+    - 30
+  SCARLET_DANCER_PHYS:
+    - 30
+    - 50
+  SCARLET_DANCER_LESS_ARMOR:
+    - 50
+  SCARLET_DANCER_LIFE_ON_HIT:
+    - 6
+    - 9

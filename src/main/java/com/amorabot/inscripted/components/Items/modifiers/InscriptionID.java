@@ -96,7 +96,7 @@ public enum InscriptionID {
     ARMOR_DODGE("2 PREFIX ARMOR&DODGE ++&++ -&- +", 4, false),
     DODGE_WARD("2 PREFIX DODGE&WARD ++&++ -&- +", 4, false),
     //Meta prefixes,
-    @Meta(convertedStat = PlayerStats.STRENGTH, rate = 10)
+    @Meta(convertedStat = PlayerStats.STRENGTH, convertedValueType = ValueTypes.FLAT, rate = 10)
     STRENGTH_TO_FIRE_DMG("1 PREFIX FIRE_DAMAGE ++ -/- +", 3, true),
 
 
@@ -151,15 +151,30 @@ public enum InscriptionID {
     BLIND_RAGE_LESS_HEALTH("1 UNIQUE HEALTH %* x -", 1, true),
     EYE_OF_THE_STORM_LIGHTNING_RES("1 UNIQUE LIGHTNING_RESISTANCE +% - -", 1, true),
     EYE_OF_THE_STORM_MAX_LIGHTNING_RES("1 UNIQUE MAX_LIGHTNING_RESISTANCE +% - +", 1, true),
-    @Meta(convertedStat = PlayerStats.STRENGTH, rate = 10)
+    TIN_FOIL_HELMET_INTELLIGENCE("1 UNIQUE INTELLIGENCE ++ - -", 1, true),
+    QOTF_REDU_WALK_SPEED("1 UNIQUE WALK_SPEED %+ - -", 1, true),
+    SCARLET_DANCER_PHYS("1 UNIQUE PHYSICAL_DAMAGE %+ - +", 1, false),
+    SCARLET_DANCER_LESS_ARMOR("1 UNIQUE ARMOR %* x -", 1, true),
+    SCARLET_DANCER_LIFE_ON_HIT("1 UNIQUE LIFE_ON_HIT ++ - +", 1, true),
+
+    @Meta(convertedStat = PlayerStats.STRENGTH, convertedValueType = ValueTypes.FLAT, rate = 10)
     HELLFORGE_STRENGTH_TO_FIRE_DMG("1 UNIQUE FIRE_DAMAGE ++ -/- +", 1, true),
+    @Meta(convertedStat = PlayerStats.DEXTERITY, convertedValueType = ValueTypes.FLAT, rate = 5)
+    QOTF_DEX_TO_WS("1 UNIQUE WALK_SPEED %+ x +", 1, true),
 
     //=====KEYSTONES=====
     LETHAL_STRIKES("* UNIQUE KEYSTONE LETHAL_STRIKES", 0, true),
     FORBIDDEN_PACT("* UNIQUE KEYSTONE FORBIDDEN_PACT", 0, true),
     PERMAFROST("* UNIQUE KEYSTONE PERMAFROST", 0, true),
     BERSERK("* UNIQUE KEYSTONE BERSERK", 0, true),
-    THUNDERSTRUCK("* UNIQUE KEYSTONE THUNDERSTRUCK", 0, true);
+    THUNDERSTRUCK("* UNIQUE KEYSTONE THUNDERSTRUCK", 0, true),
+    BLOOD_PACT("* UNIQUE KEYSTONE BLOOD_PACT", 0, true),
+
+    //=====EFFECTS=====
+    THRILL_OF_THE_HUNT("* UNIQUE EFFECT THRILL_OF_THE_HUNT", 0, true),
+    ADRENALINE_RUSH("* UNIQUE EFFECT ADRENALINE_RUSH", 0, true),
+    OVERDRIVE("* UNIQUE EFFECT OVERDRIVE", 0, true);
+
 
     private static final Map<Affix, Map<InscriptionID, Map<Integer, int[]>>> MODIFIER_TABLE = new HashMap<>();
     private static final Map<InscriptionID, Map<Integer, int[]>> IMPLICIT_TABLE = new HashMap<>();
@@ -184,15 +199,26 @@ public enum InscriptionID {
 
         String[] tokens = definitionString.split(" ");
         if (tokens[0].equals("*")){//Special Unique inscription handling (Keystones and Effects)
+            String uniqueRuneSuffix = " " + Affix.UNIQUE.getRuneIcon();
             this.positive = true;
             switch (tokens[2]){
                 case "KEYSTONE":
-                    this.displayName = Utils.convertToPrettyString(tokens[3].toLowerCase().replace("_"," ") + " " + Affix.UNIQUE.getRuneIcon());
+                    this.displayName = Utils.convertToPrettyString(tokens[3].toLowerCase().replace("_"," ")
+                            + " - KEYSTONE"+ uniqueRuneSuffix + "  ");
                     this.data = parseKeystone(tokens[3]);
                     break;
                 case "EFFECT":
-                    this.displayName = "effect name :D";
-                    this.data = parseUniqueEffect(tokens[3]);
+                    Effects mappedEffect;
+                    try{
+                        mappedEffect = Effects.valueOf(tokens[3]);
+                    } catch (IllegalArgumentException exception){
+                        Utils.error("Unable to parse " + tokens[3] + " unique effect argument (InscriptionID)");
+                        displayName = "null effect momento";
+                        data = null;
+                        return;
+                    }
+                    this.displayName = mappedEffect.getDisplayName() + uniqueRuneSuffix;
+                    this.data = new UniqueEffectData(Affix.UNIQUE, mappedEffect);
                     break;
                 default:
                     this.displayName = Utils.convertToPrettyString("sample unique mod");
@@ -222,15 +248,6 @@ public enum InscriptionID {
         }
         return null;
     }
-    private ModifierData parseUniqueEffect(String uniqueEffect) {
-        try {
-            Effects mappedEffect =  Effects.valueOf(uniqueEffect);
-            return new UniqueEffectData(Affix.UNIQUE, mappedEffect);
-        } catch (IllegalArgumentException exception){
-            Utils.error("Unable to parse " + uniqueEffect + " unique effect argument (InscriptionID)");
-        }
-        return null;
-    }
 
     public int[] convert(int convertedValue, int[] metaStatValues){
         if(!isMeta()){return new int[]{69};}
@@ -238,7 +255,8 @@ public enum InscriptionID {
         Meta metaData = getMetaAnnotationData();
         int conversionRate = metaData.rate();
 
-        int stacks = convertedValue / conversionRate; //568 DEX / 50 -> 11 stacks of metaStatValues
+        int stacks = Math.floorDiv(convertedValue,conversionRate); //568 DEX / 50 -> 11 stacks of metaStatValues
+        if (stacks == 0){return new int[metaStatValues.length];}
         int[] convertedStatValues = metaStatValues.clone();
 
         return Arrays.stream(convertedStatValues).map(value ->{

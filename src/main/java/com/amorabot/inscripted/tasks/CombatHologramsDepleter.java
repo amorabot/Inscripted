@@ -84,6 +84,7 @@ public class CombatHologramsDepleter extends BukkitRunnable {
     }
 
     public void instantiateRegenHologram(Location loc, String regenString){
+        if (regenString.isEmpty()){return;}
         TextDisplay regenHologram = HologramAPI.createRegenHologramAt(loc, regenString);
         putHologram(regenHologram, persistTime/2);
     }

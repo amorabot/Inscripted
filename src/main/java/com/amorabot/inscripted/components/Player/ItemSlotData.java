@@ -2,13 +2,13 @@ package com.amorabot.inscripted.components.Player;
 
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 
-public class EquipmentSlot {
+public class ItemSlotData {
 
     private int itemHash;
     private boolean ignore;
 
 
-    public EquipmentSlot(){
+    public ItemSlotData(){
         this.itemHash = 0;
         this.ignore = true;
     }

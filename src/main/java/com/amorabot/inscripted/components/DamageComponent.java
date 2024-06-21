@@ -23,8 +23,6 @@ public class DamageComponent implements EntityComponent {
     private int meleeDamage;
     private int areaDamage;
 
-    //Added damage is added directly to hitData, doesnt need to be stored
-
     //List of special on-hit keystones
 
     public DamageComponent(){

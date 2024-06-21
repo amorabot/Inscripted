@@ -5,6 +5,9 @@ import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Attack;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
+import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTimes;
+import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTypes;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
@@ -17,6 +20,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import static com.amorabot.inscripted.APIs.damageAPI.AttackProcessor.rollDamages;
@@ -42,7 +47,7 @@ public class DamageRouter {
     public static void playerVsPlayerDamage(Player attacker, Player defender, DamageSource originalSource, PlayerAbilities ability){
         boolean hitLanded;
         DamageSource source = originalSource;
-        if (attacker.getUniqueId().equals(defender.getUniqueId())){
+        if (attacker.getUniqueId().equals(defender.getUniqueId()) && !originalSource.equals(DamageSource.SELF)){
             source = DamageSource.SELF;
         }
 
@@ -62,10 +67,94 @@ public class DamageRouter {
             CombatEffects.playDodgeEffectsAt(defender, attacker);
             AttackProcessor.dodgeAttack(incomingHit, 60);
         }
+
+        debugCombat(attacker, defender, incomingHit, isCriticalHit, source.equals(DamageSource.SELF));
+
+        //Combat healing
+        combatHeal(attacker);
+
+        damagePlayer(defender, incomingHit, isCriticalHit, source.equals(DamageSource.SELF), attacker, originalSource);
+    }
+
+    public static void damagePlayer(Player defender, int[] incomingHit, boolean isCriticalHit, boolean isSelfDamage,
+                                    Player attacker,DamageSource originalSource){
+
+//        boolean isPlayerAttacker = attacker instanceof Player; TODO: implement polymorphysm
+
+        boolean isDoT = originalSource.equals(DamageSource.DOT);
+        Profile defenderProfile = JSONProfileManager.getProfile(defender.getUniqueId());
+
+        if (!isDoT){ //Early hit triggers
+            notifyHitTrigger(TriggerTimes.EARLY, attacker, defender, incomingHit, isCriticalHit);
+        }
+
+        //Combat logging
+        //Adds defender to combat
+        playerDamaged(defender, incomingHit, isSelfDamage, attacker);
+        HealthComponent defHP = defenderProfile.getHealthComponent();
+        double newMappedHealth = defHP.getMappedHealth();
+        double newMappedWard = defHP.getMappedWard();
+        //The damage, its triggers and consequences must be processed and then the player can actually die
+
+        //Late hit triggers
+        if (!isDoT){
+            notifyHitTrigger(TriggerTimes.LATE, attacker, defender, incomingHit, isCriticalHit);
+        }
+
+        if (!isSelfDamage){
+            //Adds attacker to combat
+            CombatLogger.addToPvPCombat(attacker, defender);
+        }
+
+        boolean died = newMappedHealth == 0;
+        //Early death trigger
+        if (died){
+            notifyProfile(attacker,defender, TriggerTypes.ON_DEATH, TriggerTimes.EARLY, incomingHit);
+        }
+        //Lets get the updated health in case it's been changed
+        defenderProfile.setPlayerHearts(defender, defHP.getMappedHealth(), newMappedWard);
+        //Late death trigger
+
+    }
+
+    //Handles the effects of a player being hit
+    public static void playerDamaged(Player player, int[] incomingHit, boolean isSelfDamage, LivingEntity attacker){
+        UUID playerID = player.getUniqueId();
+        Profile playerProfile = JSONProfileManager.getProfile(playerID);
+        HealthComponent HPComponent = playerProfile.getHealthComponent();
+
+
+        Set<Keystones> atkrKeystones = new HashSet<>();
+        if (attacker instanceof Player playerAtkr){
+            player.setKiller(playerAtkr);
+            atkrKeystones = JSONProfileManager.getProfile(playerAtkr.getUniqueId()).getKeystones();
+        }
+
+        HPComponent.damage(incomingHit,playerProfile.getKeystones(),atkrKeystones);
+        //
+
+        PlayerRegenManager.startWardRegenCooldownFor(playerID);
+        if (!isSelfDamage){
+            CombatLogger.addToCombat(player);
+        }
+    }
+
+    public static void notifyProfile(Player attacker, Player defender, TriggerTypes trigger, TriggerTimes triggerTiming, int[] hit){
+        Profile attackerProfile = JSONProfileManager.getProfile(attacker.getUniqueId());
+        Profile defenderProfile = JSONProfileManager.getProfile(defender.getUniqueId());
+        if (trigger.equals(TriggerTypes.WHEN_HIT) || trigger.equals(TriggerTypes.ON_DEATH)){
+            //In those cases, the recieving end of the hit is the caster
+            defenderProfile.notify(trigger, triggerTiming, defender, attacker, hit);
+            return;
+        }
+        attackerProfile.notify(trigger, triggerTiming, attacker, defender, hit);
+    }
+
+
+    private static void debugCombat(Player attacker, Player defender,int[] incomingHit, boolean isCriticalHit, boolean isSelfDamage){
         String damageHoloString = Attack.getDamageString(incomingHit);
 
         CombatHologramsDepleter.getInstance().instantiateDamageHologramAt(defender.getLocation(), incomingHit);
-
 
         //DMG DEBUG FOR DEFdr ---------------------------------------------
         StringBuilder defenderDebug = new StringBuilder("&c&l<- ");
@@ -81,12 +170,12 @@ public class DamageRouter {
             SoundAPI.playGenericSoundAtLocation(aud, defender.getLocation(), "entity.zombie.break_wooden_door", 0.1f, 1.3f);
         }
 
-        if (!source.equals(DamageSource.SELF)){
+        if (!isSelfDamage){
             Utils.msgPlayer(defender ,defenderDebug.toString());
         }
 
         //DMG DEBUG FOR ATKr ---------------------------------------------
-        HealthComponent defHP = defenderProfile.getHealthComponent();
+        HealthComponent defHP = JSONProfileManager.getProfile(defender.getUniqueId()).getHealthComponent();
         StringBuilder attackerDebug = new StringBuilder(damageHoloString);
         attackerDebug.append("&a&l -> &f").append(defender.getName()).append(" ");
         attackerDebug.append("&c&l[").append(( int )(defHP.getCurrentHealth())).append("]");
@@ -95,63 +184,20 @@ public class DamageRouter {
         if (isCriticalHit){attackerDebug.append(critMsg);}
 
         Utils.msgPlayer(attacker ,attackerDebug.toString());
+    }
 
-
-        //Combat healing
-        //TODO: encapsulate into a combathealing method
+    private static void notifyHitTrigger(TriggerTimes timing, Player attacker, Player defender, int[] incomingHit, boolean isCriticalHit){
+        notifyProfile(attacker, defender, TriggerTypes.ON_HIT, timing, incomingHit);
+        notifyProfile(attacker, defender, TriggerTypes.WHEN_HIT, timing, incomingHit);
+        if (isCriticalHit){notifyProfile(attacker, defender, TriggerTypes.ON_CRIT, timing ,incomingHit);}
+    }
+    private static void combatHeal(Player attacker){
+        Profile attackerProfile = JSONProfileManager.getProfile(attacker.getUniqueId());
         int lifeHealed = attackerProfile.getDamageComponent().getLifeOnHit();
-        attackerProfile.getHealthComponent().healHealth(lifeHealed);
-        if (lifeHealed>0){
-            CombatHologramsDepleter.getInstance().instantiateRegenHologram(attacker.getLocation(),
-                    "&2"+lifeHealed);
+
+        int finalLifeHealed = attackerProfile.getHealthComponent().healHealth(lifeHealed, attackerProfile.getKeystones());
+        if (finalLifeHealed>0){
+            CombatHologramsDepleter.getInstance().instantiateRegenHologram(attacker.getLocation(), "&2"+finalLifeHealed);
         }
-
-        //Combat logging
-        //Adds defender to combat
-        defender.setKiller(attacker);
-        boolean died = playerDamaged(defender, incomingHit, source);
-        if (!source.equals(DamageSource.SELF)){
-            if (died){
-                CombatLogger.addToPvPCombat(attacker, defender);
-                return;
-            }
-            //Adds attacker to combat
-            CombatLogger.addToPvPCombat(attacker, defender);
-        }
-
-
-
-//        if (!source.equals(DamageSource.SELF)){
-//            //Adds defender to combat
-//            defender.setKiller(attacker);
-//            boolean died = playerDamaged(defender, incomingHit, source);
-//            if (died){
-//                CombatLogger.addToPvPCombat(attacker, defender);
-//                return;
-//            }
-//            //Adds attacker to combat
-//            CombatLogger.addToPvPCombat(attacker, defender);
-//        } else {
-//            defender.setKiller(attacker);
-//            boolean died = playerDamaged(defender, incomingHit, source);
-//            if (died){Utils.msgPlayer(defender, "Congratulations! You killed yourself!");}
-//        }
     }
-
-    //Handles the effects of a player being hit
-    public static boolean playerDamaged(Player player, int[] incomingHit, DamageSource source){
-        HealthComponent HPComponent = JSONProfileManager.getProfile(player.getUniqueId()).getHealthComponent();
-
-        HPComponent.damage(incomingHit);
-
-        UUID playerID = player.getUniqueId();
-        boolean died = JSONProfileManager.getProfile(playerID).mapPlayerHearts(player);
-        PlayerRegenManager.startWardRegenCooldownFor(player.getUniqueId());
-        if (!source.equals(DamageSource.SELF)){
-            CombatLogger.addToCombat(player);
-        }
-
-        return died;
-    }
-
 }

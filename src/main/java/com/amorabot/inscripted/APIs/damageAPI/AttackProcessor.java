@@ -38,7 +38,7 @@ public class AttackProcessor {
     }
     public static void dodgeAttack(int[] dmgArray, int mitigation){
         //Mitigate mitigation % amount of dmg
-        float resultingDamagePercent = (100-mitigation)/100F;
+        float resultingDamagePercent = (100-Math.min(mitigation, 100))/100F;
         for (int i = 0; i < dmgArray.length; i++){
             dmgArray[i] = (int) (dmgArray[i] * resultingDamagePercent);
         }

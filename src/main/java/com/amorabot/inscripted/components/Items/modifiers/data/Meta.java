@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.components.Items.modifiers.data;
 
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -12,5 +13,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Meta {
     PlayerStats convertedStat();
+    ValueTypes convertedValueType();
     int rate();
 }

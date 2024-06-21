@@ -19,7 +19,9 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 @Getter
-public enum Keystones { //Add "early" boolean? -> Checking for early/late effect on profile
+public enum Keystones {
+    //Add "early" boolean? -> Checking for early/late effect on profile
+    //Add int[] values -> would indicate what values need to be used when applying, if any
 
     FORBIDDEN_PACT(TriggerTimes.LATE, false, false,"The abyssal gaze","has changed you."," ",
             "Become immune to","☽ Abyssal DMG",
@@ -31,7 +33,8 @@ public enum Keystones { //Add "early" boolean? -> Checking for early/late effect
             playerProfile.getHealthComponent().setMaxHealth(1);
         }
     }, //Chaos inoc
-    LETHAL_STRIKES(TriggerTimes.LATE, false, false,"You aim for the","weak spots."," ",
+    LETHAL_STRIKES(TriggerTimes.LATE, false, false,
+            "You aim for the","weak spots."," ",
             "All Shred is con-","verted to Bleed","chance.") {
         @Override
         public void apply(UUID playerID) {
@@ -87,6 +90,14 @@ public enum Keystones { //Add "early" boolean? -> Checking for early/late effect
                 assert player != null;
                 PlayerAbilities.THUNDERSTRUCK.cast(player);
             }
+        }
+    },
+    BLOOD_PACT(TriggerTimes.LATE, false, false,
+            "Your health rege-","neration is 0", "", "HEALS on you are", "twice as powerful") {
+        @Override
+        public void apply(UUID playerID) {
+            Profile playerProfile = JSONProfileManager.getProfile(playerID);
+            playerProfile.getHealthComponent().setHealthRegen(0);
         }
     };
 

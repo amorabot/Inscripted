@@ -6,6 +6,8 @@ import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.data.KeystoneData;
 import com.amorabot.inscripted.components.Items.modifiers.data.ModifierData;
+import com.amorabot.inscripted.components.Items.modifiers.data.UniqueEffectData;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
@@ -85,18 +87,42 @@ public interface ItemRenderer extends Serializable {
             hasKeystone = true;
             Keystones keystone = ((KeystoneData) data).keystone();
             int padding = 2;
-            String keystoneName = ColorUtils.translateColorCodes(("&c&l"+insc.getInscription().getDisplayName()).indent(padding));
+            //TODO: encapsulate keystone and effect rendering (name + description)
+            String rawName = "&c&l"+insc.getInscription().getDisplayName();
+            String keystoneName = ColorUtils.translateColorCodes(rawName).indent(padding);
             itemLore.add(keystoneName);
-//            itemLore.add(ColorUtils.translateColorCodes("&8╔════════╗").indent(padding+1));
-            for (String descriLine : keystone.getDescription()){
-                String keystoneDescLine = ColorUtils.translateColorCodes(("&8"+Utils.convertToPrettyString(descriLine)).indent(padding+2));
-                itemLore.add(keystoneDescLine);
+            String[] desc = keystone.getDescription();
+            String headerLine = ColorUtils.translateColorCodes(("&8&l>| &8"+Utils.convertToPrettyString(desc[0])).indent(padding+2));
+            itemLore.add(headerLine);
+            for(int k = 1; k < desc.length; k++){
+                String keystoneDescriptionLine = ColorUtils.translateColorCodes(("&8"+Utils.convertToPrettyString(desc[k])).indent(padding+6));
+                itemLore.add(keystoneDescriptionLine);
             }
-//            itemLore.add(ColorUtils.translateColorCodes("&8╚════════╝").indent(padding+1));
         }
         //Then effects
-        //-----------
+        boolean hasUniqueEffect = false;
         if (hasKeystone){
+            itemLore.add("");
+        }
+        for (Inscription insc : inscriptions){
+            ModifierData data = insc.getInscription().getData();
+            if (!data.isUniqueEffect()){continue;}
+            hasUniqueEffect = true;
+            Effects effect = ((UniqueEffectData) data).uniqueEffect();
+            int padding = 2;
+            String rawName = ("&c&l"+(insc.getInscription().getDisplayName()));
+            String effectDisplayName = ColorUtils.translateColorCodes((rawName+" ".repeat(padding)).indent(padding));
+            itemLore.add(effectDisplayName);
+            String[] desc = effect.getDescription();
+            String headerLine = ColorUtils.translateColorCodes(("&8&l>| &8"+Utils.convertToPrettyString(desc[0])).indent(padding+2));
+            itemLore.add(headerLine);
+            for(int e = 1; e < desc.length; e++){
+                String effectDescriptionLine = ColorUtils.translateColorCodes(("&8"+Utils.convertToPrettyString(desc[e])).indent(padding+6));
+                itemLore.add(effectDescriptionLine);
+            }
+        }
+        //-----------
+        if (hasUniqueEffect){
             itemLore.add("");
         }
     }
