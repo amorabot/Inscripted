@@ -4,7 +4,6 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
-import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
@@ -131,12 +130,12 @@ public class Stats implements EntityComponent {
     }
     public int getFinalPercentValueFor(PlayerStats stat){
         if (!playerStats.containsKey(stat)){return 0;}
-        //TODO: add multiplier support for percent values (EX: more lightning res)
         int percentValue = playerStats.get(stat).getOrDefault(ValueTypes.PERCENT, new int[1])[0];
+        int multiplierMod = playerStats.get(stat).getOrDefault(ValueTypes.MULTIPLIER, new int[1])[0];
 
         clearStatFromMiscPool(stat, ValueTypes.PERCENT);
 
-        return percentValue;
+        return (int) calculateFinalFlatValue(percentValue, 0, multiplierMod);
     }
     private void clearStatFromMiscPool(PlayerStats stat, ValueTypes valueTypeToRemove){
         if (!playerStats.containsKey(stat)){
@@ -179,8 +178,8 @@ public class Stats implements EntityComponent {
         valuesMap.put(type, updatedValues);
     }
 
-    public void debug(){
-        Utils.log("-----COMPILED STATS-----");
+    public static void debugStatMap(Map<PlayerStats, Map<ValueTypes, int[]>> playerStats, String debuggedMapName){
+        Utils.log("-----"+debuggedMapName+"-----");
         for (PlayerStats stat : playerStats.keySet()){
             Map<ValueTypes, int[]> valuesMap = playerStats.get(stat);
             Utils.log(stat.getAlias()+"-------");

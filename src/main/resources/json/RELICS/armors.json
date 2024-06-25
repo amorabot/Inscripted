@@ -46,7 +46,8 @@
       "APPROACHING_WINTER_WALK_SPEED",
       "APPROACHING_WINTER_COLD_RES",
       "APPROACHING_WINTER_FIRE_RES",
-      "APPROACHING_WINTER_COLD_DMG"
+      "APPROACHING_WINTER_COLD_DMG",
+      "APPROACHING_WINTER_FLAT_COLD"
     ]
   },
   "BLIND_RAGE": {
@@ -94,6 +95,94 @@
       "THRILL_OF_THE_HUNT",
       "QOTF_DEX_TO_WS",
       "QOTF_REDU_WALK_SPEED"
+    ]
+  },
+  "IMMORTAL_FLESH": {
+    "name": "Immortal Flesh",
+    "ilvl": 90,
+    "slot": "CHESTPLATE",
+    "type": "HEAVY_PLATING",
+    "baseHealth": 5000,
+    "inscriptions": [
+      "ORGAN_FAILURE",
+      "BLIND_RAGE_LESS_HEALTH",
+      "IMMORTAL_FLESH_INC_REGEN",
+      "IMMORTAL_FLESH_FLAT_REGEN"
+    ]
+  },
+  "THE_BODY": {
+    "name": "The Body",
+    "ilvl": 100,
+    "slot": "CHESTPLATE",
+    "type": "HEAVY_PLATING",
+    "baseHealth": 4000,
+    "inscriptions": [
+      "FIRE_ATTUNEMENT",
+      "GODHEAD_LESS_LIGHTNING_RES",
+      "GODHEAD_LESS_COLD_RES",
+      "THE_BODY_INC_ARMOR"
+    ]
+  },
+  "THE_MIND": {
+    "name": "The Mind",
+    "ilvl": 100,
+    "slot": "HELMET",
+    "type": "ENCHANTED_SILK",
+    "baseHealth": 1000,
+    "inscriptions": [
+      "COLD_ATTUNEMENT",
+      "GODHEAD_LESS_FIRE_RES",
+      "GODHEAD_LESS_LIGHTNING_RES",
+      "THE_MIND_INC_WARD"
+    ]
+  },
+  "THE_SOUL": {
+    "name": "The Soul",
+    "ilvl": 100,
+    "slot": "BOOTS",
+    "type": "LIGHT_CLOTH",
+    "baseHealth": 3000,
+    "inscriptions": [
+      "LIGHTNING_ATTUNEMENT",
+      "GODHEAD_LESS_FIRE_RES",
+      "GODHEAD_LESS_COLD_RES",
+      "THE_SOUL_INC_DODGE"
+    ]
+  },
+  "TRINITY": {
+    "name": "Trinity",
+    "ilvl": 77,
+    "slot": "LEGGINGS",
+    "type": "RUNIC_STEEL",
+    "baseHealth": 3333,
+    "inscriptions": [
+      "ELEMENTAL_BLESSING",
+      "TRINITY_LESS_HEALTH",
+      "TRINITY_LESS_WARD"
+    ]
+  },
+  "EXECUTIONERS_MASK": {
+    "name": "The Executioner's mask",
+    "ilvl": 90,
+    "slot": "HELMET",
+    "type": "RUNIC_LEATHER",
+    "baseHealth": 3000,
+    "inscriptions": [
+      "COUP_DE_GRACE",
+      "EXECUTIONERS_MASK_FLAT_PHYS",
+      "EXECUTIONERS_MASK_SHRED",
+      "EXECUTIONERS_MASK_CRIT_DMG"
+    ]
+  },
+  "DRUIDIC_PELTS": {
+    "name": "Druidic Pelts",
+    "ilvl": 64,
+    "slot": "CHESTPLATE",
+    "type": "RUNIC_LEATHER",
+    "baseHealth": 1200,
+    "inscriptions": [
+      "WINDS_OF_CHANGE",
+      "DRUIDIC_PELTS_HEALTH_REGEN"
     ]
   }
 }

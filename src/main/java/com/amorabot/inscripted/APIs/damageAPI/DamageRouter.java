@@ -5,11 +5,14 @@ import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Attack;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTimes;
 import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTypes;
 import com.amorabot.inscripted.components.Player.Profile;
+import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.skills.PlayerAbilities;
 import com.amorabot.inscripted.tasks.CombatLogger;
@@ -68,15 +71,18 @@ public class DamageRouter {
             AttackProcessor.dodgeAttack(incomingHit, 60);
         }
 
-        debugCombat(attacker, defender, incomingHit, isCriticalHit, source.equals(DamageSource.SELF));
+////        Apply bleed
+//        AttackProcessor.applyBleed(attacker, defender, incomingHit);
 
-        //Combat healing
-        combatHeal(attacker);
+//        debugCombat(attacker, defender, incomingHit, isCriticalHit, source.equals(DamageSource.SELF));
+//
+//        //Combat healing
+//        combatHeal(attacker);
 
         damagePlayer(defender, incomingHit, isCriticalHit, source.equals(DamageSource.SELF), attacker, originalSource);
     }
 
-    public static void damagePlayer(Player defender, int[] incomingHit, boolean isCriticalHit, boolean isSelfDamage,
+    public static boolean damagePlayer(Player defender, int[] incomingHit, boolean isCriticalHit, boolean isSelfDamage,
                                     Player attacker,DamageSource originalSource){
 
 //        boolean isPlayerAttacker = attacker instanceof Player; TODO: implement polymorphysm
@@ -88,8 +94,29 @@ public class DamageRouter {
             notifyHitTrigger(TriggerTimes.EARLY, attacker, defender, incomingHit, isCriticalHit);
         }
 
-        //Combat logging
-        //Adds defender to combat
+        /*
+        COUP DE GRACE MAY cause stuff like:
+            A killing blow executes the target and kills it
+            But a arbitraty damage debuff can tick on that player during the 5tick window where the they
+            are:
+            1) Dead by heart update -> 2) Health not restored yet after death (virtual HP = 0 + Remapping) -- 5 tick delay -> 3) Replenish player life
+                which can cause the dmg debuff to tick in the meantime the player isnt fully reset. a possible solution may be
+                checking whether the player's HP is 0 when the dmg buff is ticking (If a double death never happens again, delete this)
+        */
+
+        boolean wasExecutedEarly = defenderProfile.getHealthComponent().getCurrentHealth() == 0;
+        if (wasExecutedEarly){
+            defender.setKiller(attacker);
+            defenderProfile.updatePlayerHearts(defender);
+//            Utils.msgPlayer(attacker,"Executed " + defender.getName());
+            return true;
+        } else {
+            //If the player was not executed immediatly, bleed can be applied
+        //        Apply bleed
+        AttackProcessor.applyBleed(attacker, defender, incomingHit);
+        }
+
+
         playerDamaged(defender, incomingHit, isSelfDamage, attacker);
         HealthComponent defHP = defenderProfile.getHealthComponent();
         double newMappedHealth = defHP.getMappedHealth();
@@ -100,6 +127,16 @@ public class DamageRouter {
         if (!isDoT){
             notifyHitTrigger(TriggerTimes.LATE, attacker, defender, incomingHit, isCriticalHit);
         }
+
+
+        debugCombat(attacker, defender, incomingHit, isCriticalHit, isSelfDamage);
+
+        //Combat healing
+        if (!isDoT){
+            boolean isBleeding = PlayerBuffManager.hasActiveBuff(Buffs.BLEED, attacker);
+            combatHeal(attacker, isBleeding);
+        }
+
 
         if (!isSelfDamage){
             //Adds attacker to combat
@@ -112,9 +149,12 @@ public class DamageRouter {
             notifyProfile(attacker,defender, TriggerTypes.ON_DEATH, TriggerTimes.EARLY, incomingHit);
         }
         //Lets get the updated health in case it's been changed
-        defenderProfile.setPlayerHearts(defender, defHP.getMappedHealth(), newMappedWard);
+        double updatedHealth = defHP.getMappedHealth();
+        defenderProfile.setPlayerHearts(defender, updatedHealth, newMappedWard);
         //Late death trigger
 
+
+        return updatedHealth==0; //Updated died, basically
     }
 
     //Handles the effects of a player being hit
@@ -191,11 +231,11 @@ public class DamageRouter {
         notifyProfile(attacker, defender, TriggerTypes.WHEN_HIT, timing, incomingHit);
         if (isCriticalHit){notifyProfile(attacker, defender, TriggerTypes.ON_CRIT, timing ,incomingHit);}
     }
-    private static void combatHeal(Player attacker){
+    private static void combatHeal(Player attacker, boolean isBleeding){
         Profile attackerProfile = JSONProfileManager.getProfile(attacker.getUniqueId());
         int lifeHealed = attackerProfile.getDamageComponent().getLifeOnHit();
 
-        int finalLifeHealed = attackerProfile.getHealthComponent().healHealth(lifeHealed, attackerProfile.getKeystones());
+        int finalLifeHealed = attackerProfile.getHealthComponent().healHealth(lifeHealed, isBleeding, attacker, attackerProfile.getKeystones());
         if (finalLifeHealed>0){
             CombatHologramsDepleter.getInstance().instantiateRegenHologram(attacker.getLocation(), "&2"+finalLifeHealed);
         }

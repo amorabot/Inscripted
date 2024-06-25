@@ -68,16 +68,16 @@ public class DefenceComponent implements EntityComponent {
 
     }
     public int getFireResistance() {
-        return Math.min(fireResistance, baseElementalCap + fireCapMod);
+        return getCappedRes(fireResistance, fireCapMod);
     }
     public int getColdResistance() {
-        return Math.min(coldResistance, baseElementalCap + coldCapMod);
+        return getCappedRes(coldResistance, coldCapMod);
     }
     public int getLightningResistance() {
-        return Math.min(lightningResistance, baseElementalCap + lightningCapMod);
+        return getCappedRes(lightningResistance, lightningCapMod);
     }
     public int getAbyssalResistance() {
-        return Math.min(abyssalResistance, abyssalCap);
+        return getCappedRes(abyssalResistance, 0);
     }
 
     @Override
@@ -100,5 +100,9 @@ public class DefenceComponent implements EntityComponent {
         setArmor(playerStats.getFinalFlatValueFor(PlayerStats.ARMOR));
 
         setDodge((int)playerStats.getFinalFlatValueFor(PlayerStats.DODGE));
+    }
+    private int getCappedRes(int uncappedRes, int capMod){
+        int cappedRes = Math.min(uncappedRes, baseElementalCap + capMod);
+        return Math.min(cappedRes, 85);
     }
 }

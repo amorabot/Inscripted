@@ -14,23 +14,6 @@ import static com.amorabot.inscripted.utils.Utils.getRandomOffset;
 
 public class HologramAPI {
 
-//    private static void setupTextDisplayData(TextDisplay display, String displayText, byte baseOpacity){
-//        display.setText(displayText);
-//        display.setBillboard(Display.Billboard.CENTER);
-//        display.setAlignment(TextDisplay.TextAlignment.CENTER);
-//        display.setTextOpacity(baseOpacity);
-//    }
-
-//    public static TextDisplay createOffsetTextHologram(String displayText, Location location, double xOff, double yOff, double zOff){
-////        TextDisplay hologram = createOffsetHologram(location, xOff, yOff, zOff);
-//        TextDisplay hologram = createAlignedHologram("asdasdasd",location, 3F, true);
-//        setupTextDisplayData(
-//                hologram,
-//                ColorUtils.translateColorCodes(displayText),
-//                (byte) 255
-//                );
-//        return hologram;
-//    }
     public static TextDisplay createAlignedHologram(String displayText, Location location, double dist, boolean left){
         double distDirection = dist;
         if (left){
@@ -53,10 +36,6 @@ public class HologramAPI {
             textDisplay.setPersistent(false);
         });
     }
-//    private static TextDisplay createOffsetHologram(Location location, double xOff, double yOff, double zOff){
-//        Location hologramLocation = location.clone().add(xOff, yOff, zOff);
-//        return Inscripted.getPlugin().getWorld().spawn(hologramLocation, TextDisplay.class);
-//    }
     public static TextDisplay createRegenHologramAt(Location location, String regenString){
         return createAlignedHologram(regenString, location, 0.65D, true);
     }

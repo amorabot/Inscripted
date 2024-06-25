@@ -22,6 +22,7 @@ public class DamageComponent implements EntityComponent {
     private int extraProjectiles;
     private int meleeDamage;
     private int areaDamage;
+    private int bleedDamage;
 
     //List of special on-hit keystones
 
@@ -39,6 +40,7 @@ public class DamageComponent implements EntityComponent {
         setExtraProjectiles((int) playerStats.getFinalFlatValueFor(PlayerStats.EXTRA_PROJECTILES));
         setMeleeDamage(playerStats.getFinalPercentValueFor(PlayerStats.MELEE_DAMAGE));
         setAreaDamage(playerStats.getFinalPercentValueFor(PlayerStats.AREA_DAMAGE));
+        setBleedDamage(playerStats.getFinalPercentValueFor(PlayerStats.BLEED_DAMAGE));
 
         Attack hitData = getHitData();
         hitData.update(profileID);

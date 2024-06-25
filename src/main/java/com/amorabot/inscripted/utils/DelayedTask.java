@@ -18,8 +18,8 @@ public class DelayedTask implements Listener {
 
     public DelayedTask(Runnable runnable, long delay){
         if (plugin.isEnabled()){
-            id = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, runnable, delay); //mexe no ID da task
-            //e dá um schedule pra ela acontecer na main thread do server que roda o plugin especificado
+            id = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, runnable, delay);
+            //Runs the runnable routine after delay ticks, on the server's main thread
         }else {
             runnable.run();
         }

@@ -113,8 +113,9 @@ public class Profile {
     public static void execute(Player player){
         Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
         HealthComponent HP = playerProfile.getHealthComponent();
-        HP.setCurrentWard(0);
-        HP.setCurrentHealth(0);
-        playerProfile.updatePlayerHearts(player);
+        HP.damageHealth((int) HP.getCurrentHealth());
+//        HP.setCurrentWard(0);
+//        HP.setCurrentHealth(0);
+//        playerProfile.updatePlayerHearts(player);
     }
 }

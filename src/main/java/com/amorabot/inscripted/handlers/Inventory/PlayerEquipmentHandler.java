@@ -475,7 +475,10 @@ public class PlayerEquipmentHandler implements Listener {
         //This is triggered when dropping a equiped weapon from inv
 
         if (!player.hasCooldown(usedItem.getType())){
-            WeaponAttackSpeeds atkSpeed = weaponType.getBaseAttackSpeed();
+//            WeaponAttackSpeeds atkSpeed = weaponType.getBaseAttackSpeed();
+            Weapon usedWeapon = FunctionalItemAccessInterface.deserializeWeaponData(Objects.requireNonNull(usedItem.getItemMeta()).getPersistentDataContainer());
+            assert usedWeapon != null;
+            WeaponAttackSpeeds atkSpeed = usedWeapon.getAtkSpeed();
 
             //Apply the swing speed modifier
             PotionEffect swingSpeedModifier = atkSpeed.getSwingAnimationBuff();
@@ -487,8 +490,11 @@ public class PlayerEquipmentHandler implements Listener {
             AbilityRoutines.playerBaseAbilityCast(player, AbilityTypes.BASIC_ATTACK, weaponType);
             SoundAPI.playAttackSoundFor(player, player.getLocation(), weaponType);
 
+            double APS = atkSpeed.getItemUsageCooldown();
+            int attackCD = (int) (APS*20);
             //Apply the item usage cooldown
-            player.setCooldown(weaponType.getRange().getItem(), (int) (weaponType.getBaseAttackSpeed().getItemUsageCooldown()*20));
+            player.setCooldown(weaponType.getRange().getItem(), attackCD);
+//            player.sendMessage("atk CD: " + attackCD + " ("+atkSpeed+")");
         }
     }
 }

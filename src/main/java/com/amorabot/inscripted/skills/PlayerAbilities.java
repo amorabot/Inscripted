@@ -11,8 +11,6 @@ import static com.amorabot.inscripted.skills.AbilityRoutines.*;
 
 @Getter
 public enum PlayerAbilities {
-    //TODO: Add damage source natively to abilities?
-
     BASIC_AXE_SLASH(new int[5], new float[]{1.1F,1,1,1,1},0, AbilityTypes.BASIC_ATTACK, HitTypes.MELEE) {
         @Override
         public void cast(Player caster) {
@@ -131,7 +129,7 @@ public enum PlayerAbilities {
 
 
 
-    PERMAFROST(null, null, 0,
+    PERMAFROST_PASSIVE(null, null, 0,
             AbilityTypes.ITEM,
             HitTypes.SPELL,HitTypes.AOE) {
         @Override
@@ -142,7 +140,7 @@ public enum PlayerAbilities {
             PlayerPassivesManager.addKeystonePassive(caster.getUniqueId(), Keystones.PERMAFROST, taskID);
         }
     },
-    THUNDERSTRUCK(new int[]{0,0,50,0,0}, new float[]{0,0,0.15F,0,0}, 0,
+    THUNDERSTRUCK_PASSIVE(new int[]{0,0,50,0,0}, new float[]{0,0,0.15F,0,0}, 0,
             AbilityTypes.ITEM,
             HitTypes.SPELL,HitTypes.AOE) {
         @Override
@@ -150,6 +148,16 @@ public enum PlayerAbilities {
             int period = 30; //Ticks
             int taskID = AbilityRoutines.activateThunderstruck(caster, period);
             PlayerPassivesManager.addKeystonePassive(caster.getUniqueId(), Keystones.THUNDERSTRUCK, taskID);
+        }
+    },
+    WINDS_OF_CHANGE_PASSIVE(new int[5], new float[5], 0,
+            AbilityTypes.ITEM,
+            HitTypes.SPELL,HitTypes.NONE) {
+        @Override
+        public void cast(Player caster) {
+            int period = 20*60; //Ticks
+            int taskID = AbilityRoutines.activateWindsOfChangeFor(caster, period);
+            PlayerPassivesManager.addKeystonePassive(caster.getUniqueId(), Keystones.WINDS_OF_CHANGE, taskID);
         }
     };
 

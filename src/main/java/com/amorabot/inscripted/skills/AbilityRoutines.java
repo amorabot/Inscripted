@@ -6,9 +6,15 @@ import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
+import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTimes;
+import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTypes;
 import com.amorabot.inscripted.components.Player.Profile;
+import com.amorabot.inscripted.components.buffs.Buffs;
+import com.amorabot.inscripted.components.buffs.categories.healing.HealingBuff;
 import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -30,14 +36,30 @@ import java.util.Set;
 import java.util.UUID;
 
 public class AbilityRoutines {
-
+    //TODO: Make skill cooldowns be affected by (20% * swing speed)!!! + add cooldown modifiers for skills
     public static void playerBaseAbilityCast(Player player, AbilityTypes skillType, WeaponTypes weapon){
         PlayerAbilities ability = PlayerAbilities.mapBaseAbility(weapon, skillType, 0);
         if (ability == null){
             Utils.error("Invalid skill mapping: " + weapon + " and " + skillType);
             return;
         }
-        ability.cast(player);
+        Set<Effects> playerEffects = JSONProfileManager.getProfile(player.getUniqueId()).getEffects();
+
+
+        //Early cast effects
+
+
+        abilityTriggers(skillType, player, playerEffects);
+        ability.cast(player); //TODO: Should support specific targets
+        //LATE cast effects
+        for (Effects effects : playerEffects){
+            if (!effects.getTiming().equals(TriggerTimes.LATE)){continue;}
+            if (effects.getTrigger().equals(TriggerTypes.ON_CAST)){
+                effects.check(player, player, null);
+            }
+        }
+
+
     }
 
 
@@ -735,8 +757,36 @@ public class AbilityRoutines {
                 //TODO: make isMob() and isPlayer() for inscripted entities
                 for (LivingEntity entity : nearbyEntities){
                     ParticlePlotter.thunderAt(entity.getLocation().clone(), 4, 16);
-                    DamageRouter.playerAttack(keystoneHolder, entity, DamageSource.HIT, PlayerAbilities.THUNDERSTRUCK);
+                    DamageRouter.playerAttack(keystoneHolder, entity, DamageSource.HIT, PlayerAbilities.THUNDERSTRUCK_PASSIVE);
                 }
+            }
+        }.runTaskTimer(Inscripted.getPlugin(), period, period).getTaskId();
+    }
+    public static int activateWindsOfChangeFor(Player keystoneHolder, int period){
+        return new BukkitRunnable() {
+
+            final float particlesRadius = 0.8F; //Make it scale with AoE? :D
+
+            @Override
+            public void run() {
+                if (keystoneHolder.isSneaking()){return;}
+                Location playerLoc = keystoneHolder.getLocation();
+                World world = playerLoc.getWorld();
+
+                HealingBuff rejuv = new HealingBuff(Buffs.REJUVENATE);
+                int baseHealing = rejuv.getFinalHealingTick(JSONProfileManager.getProfile(keystoneHolder.getUniqueId()));
+                rejuv.createHealingTask(baseHealing, keystoneHolder, keystoneHolder);
+                PlayerBuffManager.addBuffToPlayer(rejuv, keystoneHolder);
+
+                Vector centerVec = playerLoc.toVector().clone().subtract(new Vector(0,0.3,0));
+                ParticlePlotter.plotColoredCircleAt(centerVec, world,
+                        30,
+                        210,
+                        30,
+                        1F,
+                        particlesRadius,
+                        15);
+                ParticlePlotter.plotCircleAt(centerVec, world, Particle.TOTEM_OF_UNDYING, particlesRadius+0.1F, 25);
             }
         }.runTaskTimer(Inscripted.getPlugin(), period, period).getTaskId();
     }
@@ -817,6 +867,25 @@ public class AbilityRoutines {
             ParticlePlotter.lerpParticlesBetween(topVertices[i], topVertices[(i + 1) % topVertices.length], 0.2f, Particle.END_ROD, playerWorld);
             ParticlePlotter.lerpParticlesBetween(botVertices[i], botVertices[(i + 1) % botVertices.length], 0.2f, Particle.END_ROD, playerWorld);
             ParticlePlotter.lerpParticlesBetween(topVertices[i], botVertices[i], 0.2f, Particle.END_ROD, playerWorld);
+        }
+    }
+
+    private static void abilityTriggers(AbilityTypes skillType, Player player, Set<Effects> playerEffects){
+        //Triggers for specific skill-types only
+        if (GlobalCooldownManager.fetchAbilityRemainingCooldown(player.getUniqueId(),skillType)>0){return;}
+        switch (skillType){
+            case MOVEMENT -> {
+                for (Effects effect : playerEffects){
+                    if (!effect.getTrigger().equals(TriggerTypes.ON_MOVEMENT)){continue;}
+                    effect.check(player,player, null);
+                }
+            }
+            case UTILITY -> {
+                break;
+            }
+            case SPECIAL -> {
+                break;
+            }
         }
     }
 }

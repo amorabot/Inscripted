@@ -27,13 +27,13 @@ public class Attack implements EntityComponent {
     private float accuracy;
 //    private final float baseCrit = 5; //Weapon-dependent, but will be standard for now
     private int critChance;
-    private int critDamage; //100% (base) + critDamage (modifier)
+    private int critDamage;
     private int shred;
     private int maelstrom;
-    private float bleedChance;
-
-    //TODO: ON-ATTACK TRIGGERS/CHECKS
-    //Special attack modifiers go here
+    private int firePen;
+    private int lightningPen;
+    private int coldPen;
+    private int bleedChance;
 
     public Attack(){
         hitDamage.put(DamageTypes.PHYSICAL, new int[]{1,1});
@@ -41,7 +41,7 @@ public class Attack implements EntityComponent {
     }
 
     //For mobs
-    public Attack(int[] phys, int[] fire, int[] light, int[] cold, int[] abyss, int critChance, int critDamage, int shred, int maelstrom, float bleedChance){
+    public Attack(int[] phys, int[] fire, int[] light, int[] cold, int[] abyss, int critChance, int critDamage, int shred, int maelstrom, int bleedChance){
         this.hitDamage = new HashMap<>();
         hitDamage.put(DamageTypes.PHYSICAL, phys);
         hitDamage.put(DamageTypes.FIRE, fire);
@@ -96,22 +96,16 @@ public class Attack implements EntityComponent {
         setDPS();
 
         this.accuracy = playerStats.getFinalFlatValueFor(PlayerStats.ACCURACY);
-//        playerStats.clearStatFromMiscPool(PlayerStats.ACCURACY, ValueTypes.FLAT);
-
         this.critChance = 5 + playerStats.getFinalPercentValueFor(PlayerStats.CRITICAL_CHANCE);
-//        playerStats.clearStatFromMiscPool(PlayerStats.CRITICAL_CHANCE, ValueTypes.PERCENT);
-
         this.critDamage = playerStats.getFinalPercentValueFor(PlayerStats.CRITICAL_DAMAGE);
-//        playerStats.clearStatFromMiscPool(PlayerStats.CRITICAL_DAMAGE, ValueTypes.PERCENT);
-
         this.shred = playerStats.getFinalPercentValueFor(PlayerStats.SHRED);
-//        playerStats.clearStatFromMiscPool(PlayerStats.SHRED, ValueTypes.PERCENT);
-
         this.maelstrom = playerStats.getFinalPercentValueFor(PlayerStats.MAELSTROM);
-//        playerStats.clearStatFromMiscPool(PlayerStats.MAELSTROM, ValueTypes.PERCENT);
-
         this.bleedChance = playerStats.getFinalPercentValueFor(PlayerStats.BLEED);
-//        playerStats.clearStatFromMiscPool(PlayerStats.BLEED, ValueTypes.PERCENT);
+
+        this.firePen = playerStats.getFinalPercentValueFor(PlayerStats.FIRE_PENETRATION);
+        this.lightningPen = playerStats.getFinalPercentValueFor(PlayerStats.LIGHTNING_PENETRATION);
+        this.coldPen = playerStats.getFinalPercentValueFor(PlayerStats.COLD_PENETRATION);
+
     }
 
     public static @NotNull String getDamageString(int[] damagesArray){

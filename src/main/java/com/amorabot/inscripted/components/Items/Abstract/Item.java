@@ -5,6 +5,8 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
+import com.amorabot.inscripted.components.Items.modifiers.data.HybridInscriptionData;
+import com.amorabot.inscripted.components.Items.modifiers.data.InscriptionData;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -136,8 +138,20 @@ public abstract class Item implements Serializable {
                 invalidMods++;
                 continue;
             }
+            boolean invertValue = !inscID.isPositive();
+            RangeTypes range = null;
+            if (inscID.getData() instanceof InscriptionData){
+                range = ((InscriptionData)inscID.getData()).getDefinitionData().rangeType();
+            } else if (inscID.getData() instanceof HybridInscriptionData) {
+                range = RangeTypes.SINGLE_VALUE; //Ignore SR calc for Hybrid insc for now
+            }
+            if (range.equals(RangeTypes.SINGLE_VALUE)){
+                //Even if it's negative, it's max rolled so it doesnt count towards SR
+                invalidMods+=1;
+                continue;
+            }
             double inscBP = mod.getBasePercentile();
-            if (!inscID.isPositive()){inscBP = (1D-inscBP);}
+            if (invertValue){inscBP = (1D-inscBP);}
             percentileSum += inscBP;
         }
         if (!getInscriptionList().isEmpty()){

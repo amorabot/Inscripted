@@ -13,9 +13,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -40,7 +37,7 @@ public class StatsCommand implements CommandExecutor {
 
         for (int i = 0; i < defencesPrefixes.length; i++){
             DefenceTypes currDef = DefenceTypes.values()[i];
-            String defString = currDef.getTextColor() + currDef.getSpecialChar();
+            String defString = currDef.getTextColorTag() + currDef.getSpecialChar();
             defencesPrefixes[i] = defString;
         }
         for (int i = 0; i < attackPrefixes.length; i++){

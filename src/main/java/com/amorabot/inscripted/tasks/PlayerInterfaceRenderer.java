@@ -5,6 +5,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceType
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
+import com.amorabot.inscripted.components.Player.StatCompiler;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.skills.GlobalCooldownManager;
 import com.amorabot.inscripted.skills.AbilityTypes;
@@ -35,12 +36,12 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             HealthComponent healthComponent = playerProfile.getHealthComponent();
             float maxHealth = healthComponent.getMaxHealth();
             float curHealth = healthComponent.getCurrentHealth();
-            String healthHex = DefenceTypes.HEALTH.getTextColor().replace("&", "");
+            String healthHex = DefenceTypes.HEALTH.getTextColorTag().replace("&", "");
             float maxWard = healthComponent.getMaxWard();
             float curWard = healthComponent.getCurrentWard();
-            String wardHex = DefenceTypes.WARD.getTextColor().replace("&", "");
+            String wardHex = DefenceTypes.WARD.getTextColorTag().replace("&", "");
             float dps = playerProfile.getDamageComponent().getHitData().getDPS();
-            int staminaValue = (int) playerProfile.getStats().getFinalFlatValueFor(PlayerStats.STAMINA); //TODO: put a cached value for this in some player profile component
+            int staminaValue = (int) StatCompiler.readFinalFlatValueFrom(playerProfile.getStats().getPlayerStats(),PlayerStats.STAMINA); //TODO: put a cached value for this in some player profile component
 //            char facing = currentPlayer.getFacing().toString().charAt(0);
 
             Audience playerAudience = Audience.audience(currentPlayer);
@@ -57,7 +58,7 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             TextComponent ward;
             if (playerProfile.hasKeystone(Keystones.FORBIDDEN_PACT)){
                 ward = Component.text(wardValues)
-                        .color(TextColor.fromHexString(DefenceTypes.ABYSSAL.getTextColor().replace("&","")))
+                        .color(TextColor.fromHexString(DefenceTypes.ABYSSAL.getTextColorTag().replace("&","")))
                         .decorate(TextDecoration.BOLD);
             } else {
                 ward = Component.text(wardValues).color(TextColor.fromHexString(wardHex));
@@ -100,8 +101,8 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
         if (TabAPI.getInstance().getNameTagManager() instanceof UnlimitedNameTagManager){
             UnlimitedNameTagManager unm = (UnlimitedNameTagManager) TabAPI.getInstance().getNameTagManager();
 
-            String healthString = ColorUtils.translateColorCodes(DefenceTypes.HEALTH.getTextColor() + curHealth + DefenceTypes.HEALTH.getSpecialChar());
-            String wardString = ColorUtils.translateColorCodes(DefenceTypes.WARD.getTextColor() + curWard + DefenceTypes.WARD.getSpecialChar());
+            String healthString = ColorUtils.translateColorCodes(DefenceTypes.HEALTH.getTextColorTag() + curHealth + DefenceTypes.HEALTH.getSpecialChar());
+            String wardString = ColorUtils.translateColorCodes(DefenceTypes.WARD.getTextColorTag() + curWard + DefenceTypes.WARD.getSpecialChar());
             String finalString;
             if (curWard == 0){
                 finalString = healthString;

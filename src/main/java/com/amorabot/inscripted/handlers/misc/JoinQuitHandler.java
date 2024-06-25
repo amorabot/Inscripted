@@ -2,6 +2,7 @@ package com.amorabot.inscripted.handlers.misc;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.tasks.CombatLogger;
@@ -55,6 +56,9 @@ public class JoinQuitHandler implements Listener {
         Player player = event.getPlayer();
         Utils.log(player.getDisplayName() + " has quit. Saving profile and removing from cache.");
         UUID playerUUID = player.getUniqueId();
+
+        combatLog(player);
+
         JSONProfileManager.saveProfileOnQuitToJSON(playerUUID, JSONProfileManager.getProfile(playerUUID));
 
         destroyPlayerData(player);
@@ -62,6 +66,7 @@ public class JoinQuitHandler implements Listener {
 
     private void initializePlayer(Player player){
         PlayerRegenManager.addPlayer(player.getUniqueId());
+        PlayerBuffManager.initializePlayer(player);
         //                                                          min 0  |  max 1
         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE)).setBaseValue(1);
         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_ABSORPTION)).setBaseValue(20);
@@ -70,17 +75,10 @@ public class JoinQuitHandler implements Listener {
     }
     private void destroyPlayerData(Player player){
         //Un-instantiate bossbars
-        PlayerRegenManager.removePlayer(player.getUniqueId());
-        PlayerPassivesManager.removePlayer(player.getUniqueId());
-        if (CombatLogger.isInCombat(player)) {
-            if (player.hasMetadata(CombatLogger.getPvpTag())){
-                Utils.error(player.getName() + " logged out during PVP... crack his skull");
-            }
-            else if (player.hasMetadata(CombatLogger.getCombatTag())){
-                Utils.error(player.getName() + " logged out during regular combat");
-            }
-            CombatLogger.removeFromCombat(player.getUniqueId());
-        }
+        UUID playerID = player.getUniqueId();
+        PlayerRegenManager.removePlayer(playerID);
+        PlayerPassivesManager.removePlayer(playerID);
+        PlayerBuffManager.expirePlayerStatBuffs(player);
     }
 
     private void showTitleTo(Player player, String mainTitle, String subtitle){
@@ -91,5 +89,18 @@ public class JoinQuitHandler implements Listener {
                 mainTitleText, subtitleText,
                 Title.Times.times(Duration.ofMillis(1500), Duration.ofMillis(3000), Duration.ofMillis(200)) );
         player.showTitle(title);
+    }
+
+    private void combatLog(Player player){
+        if (CombatLogger.isInCombat(player)) {
+            if (player.hasMetadata(CombatLogger.getPvpTag())){
+                Utils.error(player.getName() + " logged out during PVP... crack his skull");
+                //TODO: play custom death event
+            }
+            else if (player.hasMetadata(CombatLogger.getCombatTag())){
+                Utils.error(player.getName() + " logged out during regular combat");
+            }
+            CombatLogger.removeFromCombat(player.getUniqueId());
+        }
     }
 }

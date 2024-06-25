@@ -7,11 +7,11 @@ import org.bukkit.potion.PotionEffectType;
 @Getter
 public enum WeaponAttackSpeeds {
 
-    HEAVY(0.83, -2),
+    HEAVY(1, -2),
     SLOW(1.5, -1),
     NORMAL(2.05, 0),
-    QUICK(2.5, 1),
-    FAST(3.1, 2);
+    QUICK(2.65, 1),
+    FAST(2.9, 2);
 
     private final double attacksPerSecond;
     private final double itemUsageCooldown;

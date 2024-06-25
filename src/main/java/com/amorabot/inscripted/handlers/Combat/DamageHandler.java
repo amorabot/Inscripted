@@ -2,15 +2,17 @@ package com.amorabot.inscripted.handlers.Combat;
 
 import com.amorabot.inscripted.APIs.MessageAPI;
 import com.amorabot.inscripted.APIs.SoundAPI;
+import com.amorabot.inscripted.APIs.damageAPI.CombatEffects;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Player.Profile;
+import com.amorabot.inscripted.components.Player.StatCompiler;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.inscripted.managers.JSONProfileManager;
-import com.amorabot.inscripted.skills.ParticlePlotter;
+import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.utils.DelayedTask;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -83,13 +85,17 @@ public class DamageHandler implements Listener {
     @EventHandler
     public void onEntityDeath(PlayerDeathEvent event){
         event.setShouldPlayDeathSound(false);
-        if (event.getEntity().getKiller() != null) {
-            Audience audience = Audience.audience(event.getEntity(), event.getEntity().getKiller());
+        Player deadPlayer = event.getEntity();
+        if (deadPlayer.getKiller() != null) {
+            Audience audience = Audience.audience(event.getEntity(), deadPlayer.getKiller());
             SoundAPI.playDeathSoundFor(audience, event.getEntity().getLocation());
-            event.deathMessage(MessageAPI.deathMessage(event.getEntity().getKiller(), event.getPlayer()));
+            event.deathMessage(MessageAPI.deathMessage(deadPlayer.getKiller(), event.getPlayer()));
         } else {
-            event.deathMessage(Component.text(event.getEntity().getName() + " ☠").color(NamedTextColor.RED));
+            event.deathMessage(Component.text(deadPlayer.getName() + " ☠").color(NamedTextColor.RED));
         }
+
+        PlayerBuffManager.clearAllBuffsFor(deadPlayer);
+
         /*
         If the player's HP is tempered with immediatly, in game death effects are cancelled (Teleport, automatic HP remapping)
         When implementing custom deaths (predefined respawns, etc...), keep this in mind
@@ -97,17 +103,15 @@ public class DamageHandler implements Listener {
         new DelayedTask(new BukkitRunnable() {
             @Override
             public void run() {
-                HealthComponent.replenishHitPoints(event.getEntity());
+                StatCompiler.updateProfile(deadPlayer.getUniqueId());
+
+                HealthComponent.replenishHitPoints(deadPlayer);
             }
         }, 5
         );
 
+        CombatEffects.deathEffect(deadPlayer);
         //Death effect -> TODO: Move this block to CombatEffects class
-        Player killedPlayer = event.getEntity();
-        Location loc = killedPlayer.getEyeLocation();
-        World world = event.getEntity().getWorld();
-        ItemStack itemCrackData = new ItemStack(Material.NETHER_WART_BLOCK);
-        ParticlePlotter.spawnBlockCrackPartileAt(loc.toVector(), world, itemCrackData.getType(),20,4.9);
 //        for (int i = 0; i < 20; i++){
 //        }
     }

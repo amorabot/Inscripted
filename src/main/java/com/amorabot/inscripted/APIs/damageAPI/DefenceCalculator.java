@@ -2,6 +2,7 @@ package com.amorabot.inscripted.APIs.damageAPI;
 
 import com.amorabot.inscripted.components.Attack;
 import com.amorabot.inscripted.components.DefenceComponent;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.utils.CraftingUtils;
@@ -48,11 +49,11 @@ public class DefenceCalculator {
         if (incomingHit[4] > 0 && defenderProfile.hasKeystone(Keystones.FORBIDDEN_PACT)){
             incomingHit[4] = 0;
         } else {
-            applyElementalDamageCalculations(incomingHit, attackerDamage, 4, defenderDefences.getAbyssalResistance());
+            applyElementalDamageCalculations(incomingHit, attackerDamage, DamageTypes.ABYSSAL, defenderDefences.getAbyssalResistance());
         }
-        applyElementalDamageCalculations(incomingHit, attackerDamage, 1, defenderDefences.getFireResistance());
-        applyElementalDamageCalculations(incomingHit, attackerDamage, 2, defenderDefences.getLightningResistance());
-        applyElementalDamageCalculations(incomingHit, attackerDamage, 3, defenderDefences.getColdResistance());
+        applyElementalDamageCalculations(incomingHit, attackerDamage, DamageTypes.FIRE, defenderDefences.getFireResistance());
+        applyElementalDamageCalculations(incomingHit, attackerDamage, DamageTypes.LIGHTNING, defenderDefences.getLightningResistance());
+        applyElementalDamageCalculations(incomingHit, attackerDamage, DamageTypes.COLD, defenderDefences.getColdResistance());
 
         return incomingHit;
     }
@@ -63,17 +64,28 @@ public class DefenceCalculator {
         float resultingDamage = rawPhysicalDamage * ( 1 - (resultingReduction/100F) );
         return (int) resultingDamage;
     }
-    private static void applyElementalDamageCalculations(int[] incomingHit, Attack attackerDamage, int elementIndex, int elementalRes){
+    private static void applyElementalDamageCalculations(int[] incomingHit, Attack attackerDamage, DamageTypes dmgType, int elementalRes){
         //If the incoming damage is 0, or the there is no resulting resistance, there's no need to calculate changes
-        //TODO: Factor in specific elemental penetrations
         float elementalPenetration = attackerDamage.getMaelstrom(); // + any specific elemental penetrations that apply
+        int elementIndex = dmgType.ordinal();
+        switch (dmgType){
+            case FIRE -> elementalPenetration += attackerDamage.getFirePen();
+            case LIGHTNING -> elementalPenetration += attackerDamage.getLightningPen();
+            case COLD -> elementalPenetration += attackerDamage.getColdPen();
+            case ABYSSAL -> {
+                if (incomingHit[elementIndex] > 0 && (elementalRes)!=0){
+                    incomingHit[elementIndex] = resultingElementalDamage(incomingHit[elementIndex], attackerDamage.getMaelstrom(), elementalRes);
+                }
+                return;
+            }
+        }
         if (incomingHit[elementIndex] > 0 && (elementalRes-(elementalPenetration/100F))!=0){
             incomingHit[elementIndex] = resultingElementalDamage(incomingHit[elementIndex], elementalPenetration,  elementalRes);
         }
     }
     private static int resultingElementalDamage(int rawEleDamage, float elementalPen, float defenderEleRes){
         //In case of negative resistances, elemental damage gets amplified
-        //defenderEleRes is capped below 100, but can be negative
+        //defenderEleRes is capped at 90, but can be negative
 
         float newDamage = ( 1 - ((defenderEleRes - elementalPen)/100F) ) * rawEleDamage;
         return (int) newDamage;

@@ -1,10 +1,15 @@
 package com.amorabot.inscripted.APIs.damageAPI;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
+import com.amorabot.inscripted.skills.ParticlePlotter;
 import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class CombatEffects {
 
@@ -15,6 +20,13 @@ public class CombatEffects {
             return;
         }
         SoundAPI.playDodgeFor(targetAudience, dodgeEntity.getLocation().clone());
+    }
+
+    public static void deathEffect(Player killedPlayer){
+        Location loc = killedPlayer.getEyeLocation();
+        World world = killedPlayer.getWorld();
+        ItemStack itemCrackData = new ItemStack(Material.NETHER_WART_BLOCK);
+        ParticlePlotter.spawnBlockCrackPartileAt(loc.toVector(), world, itemCrackData.getType(),20,4.9);
     }
     //TODO: Death effect
 }

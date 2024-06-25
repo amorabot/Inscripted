@@ -125,7 +125,7 @@ public enum InscriptionID {
     MARAUDER_AXE("1 IMPLICIT SHRED +% x +", 5, true),
     GLADIATOR_SWORD("1 IMPLICIT ACCURACY %+ x +", 5, true),
     MERCENARY_BOW("1 IMPLICIT DODGE ++ x +", 5, true),
-    ROGUE_DAGGER("1 IMPLICIT CRITICAL_DAMAGE %+ x +", 5, true),
+    ROGUE_DAGGER("1 IMPLICIT CRITICAL_DAMAGE +% x +", 5, true),
     SORCERER_WAND("1 IMPLICIT MAELSTROM +% x +", 5, true),
     TEMPLAR_MACE("1 IMPLICIT ELEMENTAL_DAMAGE %+ x +", 5, true),
 
@@ -138,7 +138,7 @@ public enum InscriptionID {
 
     //=====UNIQUE MODS=====
     BLEEDING_HEART_BLD_CHANCE("1 UNIQUE BLEED +% x +", 1, true),
-    BLEEDING_HEART_BLD_DMG("1 UNIQUE BLEED_DAMAGE +% x +", 1, true),
+    BLEEDING_HEART_BLD_DMG("1 UNIQUE BLEED_DAMAGE +% - +", 1, true),
     OMINOUS_TWIG_ABYSSAL("1 UNIQUE ABYSSAL_DAMAGE ++ -/- +", 1, false),
     CORRUPTORS_WRAPPINGS_WARD("1 UNIQUE WARD %+ - +", 1, false),
     CORRUPTORS_WRAPPINGS_STRENGTH("1 UNIQUE STRENGTH ++ - -", 1, true),
@@ -147,6 +147,7 @@ public enum InscriptionID {
     APPROACHING_WINTER_COLD_RES("1 UNIQUE COLD_RESISTANCE +% - +", 1, true),
     APPROACHING_WINTER_FIRE_RES("1 UNIQUE FIRE_RESISTANCE +% - -", 1, true),
     APPROACHING_WINTER_COLD_DMG("1 UNIQUE COLD_DAMAGE %+ - +", 1, true),
+    APPROACHING_WINTER_FLAT_COLD("1 UNIQUE COLD_DAMAGE ++ -/- +", 1, true),
     BLIND_RAGE_ACCURACY("1 UNIQUE ACCURACY ++ - -", 1, true),
     BLIND_RAGE_LESS_HEALTH("1 UNIQUE HEALTH %* x -", 1, true),
     EYE_OF_THE_STORM_LIGHTNING_RES("1 UNIQUE LIGHTNING_RESISTANCE +% - -", 1, true),
@@ -156,11 +157,35 @@ public enum InscriptionID {
     SCARLET_DANCER_PHYS("1 UNIQUE PHYSICAL_DAMAGE %+ - +", 1, false),
     SCARLET_DANCER_LESS_ARMOR("1 UNIQUE ARMOR %* x -", 1, true),
     SCARLET_DANCER_LIFE_ON_HIT("1 UNIQUE LIFE_ON_HIT ++ - +", 1, true),
+    IMMORTAL_FLESH_INC_REGEN("1 UNIQUE HEALTH_REGEN %+ - +", 1, true),
+    IMMORTAL_FLESH_FLAT_REGEN("1 UNIQUE HEALTH_REGEN ++ - +", 1, true),
+    GODHEAD_LESS_FIRE_RES("1 UNIQUE FIRE_RESISTANCE %* x -", 1, true),
+    GODHEAD_LESS_LIGHTNING_RES("1 UNIQUE LIGHTNING_RESISTANCE %* x -", 1, true),
+    GODHEAD_LESS_COLD_RES("1 UNIQUE COLD_RESISTANCE %* x -", 1, true),
+    TRINITY_LESS_HEALTH("1 UNIQUE HEALTH %* x -", 1, true),
+    TRINITY_LESS_WARD("1 UNIQUE WARD %* x -", 1, true),
+    THE_BODY_INC_ARMOR("1 UNIQUE ARMOR %+ - +", 1, false),
+    THE_MIND_INC_WARD("1 UNIQUE WARD %+ - +", 1, false),
+    THE_SOUL_INC_DODGE("1 UNIQUE DODGE ++ - +", 1, false),
+    MAD_BUTCHER_BLEED_CHANCE("1 UNIQUE BLEED +% - +", 1, true),
+    HEADSMAN_BLADE_BLEED_DMG("1 UNIQUE BLEED_DAMAGE +% - +", 1, true),
+    HEADSMAN_BLADE_SHRED("1 UNIQUE SHRED +% x +", 1, true),
+    EXECUTIONERS_MASK_FLAT_PHYS("1 UNIQUE PHYSICAL_DAMAGE ++ -/- +", 1, true),
+    EXECUTIONERS_MASK_SHRED("1 UNIQUE SHRED +% - +", 1, true),
+    EXECUTIONERS_MASK_CRIT_DMG("1 UNIQUE CRITICAL_DAMAGE +% - +", 1, true),
+    ELUSIVE_SHADOW_CRIT_CHANCE("1 UNIQUE CRITICAL_CHANCE +% - +", 1, true),
+    BROKEN_FAITH_ABYSS_FLAT("1 UNIQUE ABYSSAL_DAMAGE ++ -/- +", 1, false),
+    BROKEN_FAITH_ABYSS_PERCENT("1 UNIQUE ABYSSAL_DAMAGE %+ - +", 1, true),
+    BROKEN_FAITH_LESS_HPS("1 UNIQUE HEALTH_REGEN %* x -", 1, true),
+    DRUIDIC_PELTS_HEALTH_REGEN("1 UNIQUE HEALTH_REGEN ++ - +", 1, true),
 
+    //META UNIQUE MODS
     @Meta(convertedStat = PlayerStats.STRENGTH, convertedValueType = ValueTypes.FLAT, rate = 10)
     HELLFORGE_STRENGTH_TO_FIRE_DMG("1 UNIQUE FIRE_DAMAGE ++ -/- +", 1, true),
     @Meta(convertedStat = PlayerStats.DEXTERITY, convertedValueType = ValueTypes.FLAT, rate = 5)
     QOTF_DEX_TO_WS("1 UNIQUE WALK_SPEED %+ x +", 1, true),
+    @Meta(convertedStat = PlayerStats.WARD, convertedValueType = ValueTypes.FLAT, rate = 600)
+    BROKEN_FAITH_WARD_TO_ABYSS("1 UNIQUE ABYSSAL_DAMAGE ++ -/- +", 1, true),
 
     //=====KEYSTONES=====
     LETHAL_STRIKES("* UNIQUE KEYSTONE LETHAL_STRIKES", 0, true),
@@ -169,10 +194,21 @@ public enum InscriptionID {
     BERSERK("* UNIQUE KEYSTONE BERSERK", 0, true),
     THUNDERSTRUCK("* UNIQUE KEYSTONE THUNDERSTRUCK", 0, true),
     BLOOD_PACT("* UNIQUE KEYSTONE BLOOD_PACT", 0, true),
+    ORGAN_FAILURE("* UNIQUE KEYSTONE ORGAN_FAILURE", 0, true),
+    FIRE_ATTUNEMENT("* UNIQUE KEYSTONE FIRE_ATTUNEMENT", 0, true),
+    LIGHTNING_ATTUNEMENT("* UNIQUE KEYSTONE LIGHTNING_ATTUNEMENT", 0, true),
+    COLD_ATTUNEMENT("* UNIQUE KEYSTONE COLD_ATTUNEMENT", 0, true),
+    ELEMENTAL_BLESSING("* UNIQUE KEYSTONE ELEMENTAL_BLESSING", 0, true),
+    AGNOSTIC("* UNIQUE KEYSTONE AGNOSTIC", 0, true),
+    WINDS_OF_CHANGE("* UNIQUE KEYSTONE WINDS_OF_CHANGE", 0, true),
 
     //=====EFFECTS=====
     THRILL_OF_THE_HUNT("* UNIQUE EFFECT THRILL_OF_THE_HUNT", 0, true),
     ADRENALINE_RUSH("* UNIQUE EFFECT ADRENALINE_RUSH", 0, true),
+    GRACEFUL_LANDING("* UNIQUE EFFECT GRACEFUL_LANDING", 0, true),
+    SADISM("* UNIQUE EFFECT SADISM", 0, true),
+    COUP_DE_GRACE("* UNIQUE EFFECT COUP_DE_GRACE", 0, true),
+    OPPORTUNIST("* UNIQUE EFFECT OPPORTUNIST", 0, true),
     OVERDRIVE("* UNIQUE EFFECT OVERDRIVE", 0, true);
 
 
@@ -204,7 +240,7 @@ public enum InscriptionID {
             switch (tokens[2]){
                 case "KEYSTONE":
                     this.displayName = Utils.convertToPrettyString(tokens[3].toLowerCase().replace("_"," ")
-                            + " - KEYSTONE"+ uniqueRuneSuffix + "  ");
+                            + " - (P)"+ uniqueRuneSuffix + "  ");
                     this.data = parseKeystone(tokens[3]);
                     break;
                 case "EFFECT":

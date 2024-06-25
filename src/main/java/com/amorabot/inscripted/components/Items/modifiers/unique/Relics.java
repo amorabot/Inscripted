@@ -32,6 +32,19 @@ public enum Relics {
     TIN_FOIL_HELMET(ItemTypes.HELMET,"Can protect you","against conspiracies,","but certainly not", "against electricity!"),
     QUEEN_OF_THE_FOREST(ItemTypes.LEGGINGS,"Become one with nature.","","To hunt is to live."),
     SCARLET_DANCER(ItemTypes.WEAPON,"Oh, the thrill of dancing","to a battle's rhythm...","","The thrill of flirting","with death..."),
+    IMMORTAL_FLESH(ItemTypes.CHESTPLATE,"The cycle of carnage","is the only constant","in life."),
+    FEATHERED_BOW(ItemTypes.WEAPON,"Reflecting the local","fauna's elegance,","the user can't","help but to feel","graceful aswell."),
+    THE_BODY(ItemTypes.CHESTPLATE,"The resilience of","a body can reach","impressive heights.","","But alone... it can't","be whole."),
+    THE_MIND(ItemTypes.HELMET,"The strength of","mind can bring","enlightenment.","","But alone... it can't","be whole."),
+    THE_SOUL(ItemTypes.BOOTS,"The freedom of a","soul can bring","inner peace.","","But alone... it can't","be whole."),
+    TRINITY(ItemTypes.LEGGINGS,"One must seek balance","at all costs."),
+    EXECUTIONERS_MASK(ItemTypes.HELMET,"The merciful face","of death shall","remain concealed."),
+    HEADSMAN_BLADE(ItemTypes.WEAPON,"No victim is","unworthy of mercy.","Thy death will","shall be quick","and painless."),
+    MAD_BUTCHER(ItemTypes.WEAPON,"dihgubsduygahsuidy","","- A once wise and sane", "butcher."),
+    ELUSIVE_SHADOW(ItemTypes.WEAPON,"Check every corner.","","Every. Shadow."),
+    BROKEN_FAITH(ItemTypes.WEAPON,"Whatever watches","over us must be","completely ignorant","or blind to the","horrors of this land..."),
+//    UNWAVERING_FAITH(ItemTypes.WEAPON,"Check every corner.","","Every. Shadow."),
+    DRUIDIC_PELTS(ItemTypes.CHESTPLATE,"Nature's beautiful","cycle...","To be wounded","To be healed"),
     HELLFORGE(ItemTypes.WEAPON,"This glowing-hot","cleaver seems","to sap it's user's", "might to grow even", "stronger...");
 
     @Getter

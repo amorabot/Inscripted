@@ -41,5 +41,81 @@
       "SCARLET_DANCER_LESS_ARMOR",
       "SCARLET_DANCER_LIFE_ON_HIT"
     ]
+  },
+  "FEATHERED_BOW": {
+    "name": "Feathered bow",
+    "ilvl": 22,
+    "type": "BOW",
+    "atkSpeed": "FAST",
+    "baseDmg": [
+      9,
+      20
+    ],
+    "inscriptions": [
+      "GRACEFUL_LANDING"
+    ]
+  },
+  "MAD_BUTCHER": {
+    "name": "The Mad Butcher's cleaver",
+    "ilvl": 70,
+    "type": "AXE",
+    "atkSpeed": "NORMAL",
+    "baseDmg": [
+      100,
+      170
+    ],
+    "inscriptions": [
+      "SADISM",
+      "MAD_BUTCHER_BLEED_CHANCE"
+    ]
+  },
+  "HEADSMAN_BLADE": {
+    "name": "The Headsman blade",
+    "ilvl": 110,
+    "type": "SWORD",
+    "atkSpeed": "HEAVY",
+    "baseDmg": [
+      260,
+      320
+    ],
+    "inscriptions": [
+      "AGNOSTIC",
+      "COUP_DE_GRACE",
+      "SCARLET_DANCER_PHYS",
+      "HEADSMAN_BLADE_BLEED_DMG",
+      "HEADSMAN_BLADE_SHRED"
+    ]
+  },
+  "ELUSIVE_SHADOW": {
+    "name": "Elusive Shadow",
+    "ilvl": 93,
+    "type": "DAGGER",
+    "atkSpeed": "NORMAL",
+    "baseDmg": [
+      123,
+      197
+    ],
+    "inscriptions": [
+      "OPPORTUNIST",
+      "ELUSIVE_SHADOW_CRIT_CHANCE"
+    ]
+  },
+  "BROKEN_FAITH": {
+    "name": "Broken Faith",
+    "ilvl": 99,
+    "type": "MACE",
+    "atkSpeed": "NORMAL",
+    "baseDmg": [
+      100,
+      130
+    ],
+    "inscriptions": [
+      "AGNOSTIC",
+      "BROKEN_FAITH_ABYSS_FLAT",
+      "BROKEN_FAITH_ABYSS_PERCENT",
+      "BROKEN_FAITH_LESS_HPS",
+      "BROKEN_FAITH_WARD_TO_ABYSS",
+      "CORRUPTORS_WRAPPINGS_MORE_WARD"
+    ]
   }
 }

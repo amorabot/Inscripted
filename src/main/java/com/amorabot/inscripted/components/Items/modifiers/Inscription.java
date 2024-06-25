@@ -47,7 +47,12 @@ public class Inscription implements Serializable {
         //Unique value constructor
         this.tier = uniqueMod.getTotalTiers();
         this.maxTier = uniqueMod.getTotalTiers();
-        this.basePercentile = Utils.getNormalizedValue();
+        StatDefinition modDefinition = ((InscriptionData)uniqueMod.getData()).getDefinitionData();
+        if (modDefinition.rangeType().equals(RangeTypes.SINGLE_VALUE)){
+            this.basePercentile = 1;
+        } else {
+            this.basePercentile = Utils.getNormalizedValue();
+        }
         this.imbued = false;
     }
 

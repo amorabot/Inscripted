@@ -49,7 +49,7 @@ public class CombatLogger extends BukkitRunnable {
         if (player == null ){return;}
         UUID playerID = player.getUniqueId();
         if (COMBAT.containsKey(playerID)){
-            Utils.log( player.getName() + " already in combat, resetting the timer");
+//            Utils.log( player.getName() + " already in combat, resetting the timer");
             COMBAT.put(playerID, COMBAT_TIMER);
             return;
         }

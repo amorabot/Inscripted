@@ -15,6 +15,7 @@ import com.amorabot.inscripted.handlers.Inventory.*;
 import com.amorabot.inscripted.handlers.misc.JoinQuitHandler;
 import com.amorabot.inscripted.handlers.misc.SunlightBurnHandler;
 import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.skills.GlobalCooldownManager;
@@ -120,6 +121,7 @@ public final class Inscripted extends JavaPlugin {
         JSONProfileManager.reloadOnlinePlayers(Bukkit.getOnlinePlayers());
         PlayerRegenManager.reloadOnlinePlayers();
         PlayerPassivesManager.reloadOnlinePlayers();
+        PlayerBuffManager.reloadOnlinePlayers();
 
         ItemModifiersConfig.setup();
     }

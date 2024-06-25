@@ -14,6 +14,7 @@ import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTimes;
 import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
@@ -48,7 +49,7 @@ public class StatCompiler {
         //Lets reset the external stat container and see what external sources of stats are valid to be recompiled
         targetProfile.getStats().getExternalStats().clear();
         addExternalStatsFromKeystones(playerID);
-        groupExternalStats(compiledStats, targetProfile.getStats());
+        groupExternalStats(compiledStats, playerID);
 
         //Once most stats were added, lets add the meta stat values, based on it's target mod base final value
         addMetaStatsFrom(equipment, compiledStats);
@@ -122,7 +123,7 @@ public class StatCompiler {
             }
         }
     }
-    private static float readFinalFlatValueFrom(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats, PlayerStats stat){
+    public static float readFinalFlatValueFrom(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats, PlayerStats stat){
         if (!compiledStats.containsKey(stat)){return 0F;} //Invalid query
         int baseValue = compiledStats.get(stat).getOrDefault(ValueTypes.FLAT, new int[1])[0];
         int increasedMod = compiledStats.get(stat).getOrDefault(ValueTypes.INCREASED, new int[1])[0];
@@ -234,7 +235,7 @@ public class StatCompiler {
         putSingleValueIn(compiledStats, PlayerStats.STAMINA_REGEN, ValueTypes.FLAT, BaseStats.STAMINA_REGEN.getValue());
         putSingleValueIn(compiledStats, PlayerStats.WALK_SPEED, ValueTypes.FLAT, BaseStats.WALK_SPEED.getValue());
     }
-    private static void putSingleValueIn(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats, PlayerStats targetStat, ValueTypes type, int value){
+    public static void putSingleValueIn(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats, PlayerStats targetStat, ValueTypes type, int value){
         if (compiledStats.containsKey(targetStat)){
             compiledStats.get(targetStat).put(type, new int[]{value});
             return;
@@ -259,7 +260,7 @@ public class StatCompiler {
         health.update(playerID);
         damage.update(playerID);
 
-        stats.debug();
+        Stats.debugStatMap(stats.getPlayerStats(), "MISC STATS (Profile build step)");
     }
 
     public static void addStat(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats, PlayerStats stat, ValueTypes type, int[] values){
@@ -342,14 +343,27 @@ public class StatCompiler {
             }
         }
     }
-    private static void groupExternalStats(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats, Stats playerStats){
-        Map<PlayerStats, Map<ValueTypes, int[]>> externalStats = playerStats.getExternalStats();
-        for (PlayerStats stat : externalStats.keySet()){
-            Map<ValueTypes, int[]> valueTypeMap = externalStats.get(stat);
+    private static void groupExternalStats(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats, UUID playerID){
+        Profile playerProfile = JSONProfileManager.getProfile(playerID);
+        Map<PlayerStats, Map<ValueTypes, int[]>> externalStats = playerProfile.getStats().getExternalStats();
+        mergeStatMaps(compiledStats, externalStats);
+
+        //After grouping any external stats, lets get and add all buff stats
+        Utils.log("Grouping buff stats!");
+        Map<PlayerStats, Map<ValueTypes, int[]>> buffStats = PlayerBuffManager.getBuffStatsFor(playerID);
+        if (!buffStats.isEmpty()){
+            mergeStatMaps(compiledStats, buffStats);
+        }
+    }
+
+    public static void mergeStatMaps(Map<PlayerStats, Map<ValueTypes, int[]>> mainStatPool, Map<PlayerStats, Map<ValueTypes, int[]>> addedStats){
+        Utils.log("Merging statmaps!");
+        for (PlayerStats stat : addedStats.keySet()){
+            Map<ValueTypes, int[]> valueTypeMap = addedStats.get(stat);
             for (ValueTypes type : valueTypeMap.keySet()){
                 int[] currentValues = valueTypeMap.get(type).clone();
-                    Utils.log("Grouping external stat! " + stat + " " + type + ": " + Arrays.toString(currentValues));
-                addStat(compiledStats, stat, type, currentValues);
+                Utils.log("Grouping external stat! " + stat + " " + type + ": " + Arrays.toString(currentValues));
+                addStat(mainStatPool, stat, type, currentValues);
             }
         }
     }

@@ -38,7 +38,7 @@ public class ArmorRenderer implements ItemRenderer {
         String HPcomponent = Utils.convertToPrettyString("&7HP: ");
         String DEFcomponent = Utils.convertToPrettyString("&7DEF: ");
 
-        String healthLine = DefenceTypes.HEALTH.getTextColor()+ DefenceTypes.HEALTH.getSpecialChar() + " +" + hp + " Health" ;
+        String healthLine = DefenceTypes.HEALTH.getTextColorTag()+ DefenceTypes.HEALTH.getSpecialChar() + " +" + hp + " Health" ;
         int healthLength = healthLine.length();
 
         String wardLine = "";
@@ -46,7 +46,7 @@ public class ArmorRenderer implements ItemRenderer {
         String dodgeLine = "";
 
         if (ward > 0){
-            wardLine = DefenceTypes.WARD.getTextColor()+ DefenceTypes.WARD.getSpecialChar() + " +" + ward + " Ward" ;
+            wardLine = DefenceTypes.WARD.getTextColorTag()+ DefenceTypes.WARD.getSpecialChar() + " +" + ward + " Ward" ;
             HPlines++;
         }
         if (armor > 0){
@@ -54,7 +54,7 @@ public class ArmorRenderer implements ItemRenderer {
             DEFlines++;
         }
         if (dodge > 0){
-            dodgeLine = DefenceTypes.DODGE.getTextColor()+ DefenceTypes.DODGE.getSpecialChar() + " +" + dodge + " Dodge" ;
+            dodgeLine = DefenceTypes.DODGE.getTextColorTag()+ DefenceTypes.DODGE.getSpecialChar() + " +" + dodge + " Dodge" ;
             DEFlines++;
         }
 

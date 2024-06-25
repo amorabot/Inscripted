@@ -26,7 +26,7 @@ public enum DefenceTypes {
     public String getStatColor() {
         return statColor;
     }
-    public String getTextColor() {
+    public String getTextColorTag() {
         return textColor;
     }
     public String getSpecialChar() {

@@ -406,10 +406,10 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             List.of("&7Can be used on armors  ",
                     "&7to increase their quality,",
                     "&7improving their base",
-                    "&7defensive stats "+ DefenceTypes.HEALTH.getTextColor() + DefenceTypes.HEALTH.getSpecialChar() + " "
-                            + DefenceTypes.WARD.getTextColor() + DefenceTypes.WARD.getSpecialChar() + " "
-                            + DefenceTypes.ARMOR.getTextColor() + DefenceTypes.ARMOR.getSpecialChar() + " "
-                            + DefenceTypes.DODGE.getTextColor() + DefenceTypes.DODGE.getSpecialChar() + " "
+                    "&7defensive stats "+ DefenceTypes.HEALTH.getTextColorTag() + DefenceTypes.HEALTH.getSpecialChar() + " "
+                            + DefenceTypes.WARD.getTextColorTag() + DefenceTypes.WARD.getSpecialChar() + " "
+                            + DefenceTypes.ARMOR.getTextColorTag() + DefenceTypes.ARMOR.getSpecialChar() + " "
+                            + DefenceTypes.DODGE.getTextColorTag() + DefenceTypes.DODGE.getSpecialChar() + " "
                             +"&7.",
                     "",
                     "&8Those armor fragments",

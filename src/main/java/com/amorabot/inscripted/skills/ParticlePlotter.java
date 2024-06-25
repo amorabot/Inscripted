@@ -17,6 +17,16 @@ public class ParticlePlotter {
         particleBuilder.count(0);
         particleBuilder.spawn();
     }
+    public static void spawnOffsetParticleAt(Vector position, World world, Particle particle, double offX, double offY, double offZ){
+        ParticleBuilder particleBuilder = new ParticleBuilder(particle);
+        particleBuilder.location(position.toLocation(world));
+
+        particleBuilder.offset(offX, offY, offZ);
+
+        particleBuilder.receivers(10);
+        particleBuilder.count(0);
+        particleBuilder.spawn();
+    }
     public static void spawnDifuseParticleAt(Vector position, World world, Particle particle, double velocity){
         ParticleBuilder particleBuilder = new ParticleBuilder(particle);
         particleBuilder.location(position.toLocation(world));
@@ -28,6 +38,18 @@ public class ParticlePlotter {
         ParticleBuilder particle = new ParticleBuilder(Particle.DUST);
         particle.location(position.toLocation(world));
         particle.receivers(30);
+        particle.color(Color.fromRGB(r,g,b), size);
+        particle.count(quantity);
+
+        particle.spawn();
+    }
+    public static void spawnOffsetColoredParticleAt(Vector position, World world, int r, int g, int b, float size, int quantity, double offX, double offY, double offZ){
+        ParticleBuilder particle = new ParticleBuilder(Particle.DUST);
+        particle.location(position.toLocation(world));
+
+        particle.offset(offX, offY, offZ);
+
+        particle.receivers(10);
         particle.color(Color.fromRGB(r,g,b), size);
         particle.count(quantity);
 

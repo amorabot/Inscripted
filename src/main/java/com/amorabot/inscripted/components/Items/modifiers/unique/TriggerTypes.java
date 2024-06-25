@@ -9,7 +9,11 @@ public enum TriggerTypes {
     ON_CAST("\uD83D\uDD25"),
     ON_CRIT("\uD83D\uDCA5"),
     ON_DODGE("\uD83C\uDF0A"),
-    ON_DEATH("☠");
+    ON_BLEED("❣"),
+    ON_DEATH("☠"),
+    ON_MOVEMENT("Mov."),
+    ON_UTILITY("Uti."),
+    ON_SIGNATURE("Sig.");
 
     private final String icon;
 

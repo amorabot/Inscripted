@@ -1,13 +1,25 @@
 package com.amorabot.inscripted.APIs.damageAPI;
 
+import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.components.Attack;
 import com.amorabot.inscripted.components.DamageComponent;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
 import com.amorabot.inscripted.components.Player.Profile;
+import com.amorabot.inscripted.components.buffs.Buffs;
+import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
+import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.skills.HitTypes;
 import com.amorabot.inscripted.skills.PlayerAbilities;
 import com.amorabot.inscripted.utils.CraftingUtils;
+import com.amorabot.inscripted.utils.Utils;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.entity.Player;
+
 import java.util.Map;
 
 import static com.amorabot.inscripted.utils.Utils.applyPercentageToArray;
@@ -46,7 +58,36 @@ public class AttackProcessor {
     public static boolean isCriticalHit(Attack attackerHitData){
         int critChance = attackerHitData.getCritChance();
         double critRoll = Math.random();
-        return (critRoll*100) < critChance;
+        return (critRoll*100) <= critChance;
+    }
+
+    public static void applyBleed(Player attacker, Player defender, int[] incomingHit){
+        if (incomingHit[0]<=0){return;}
+        //Min dmg threshold check
+        int baseDamage = incomingHit[0]/10;
+        if (incomingHit[0] < JSONProfileManager.getProfile(defender.getUniqueId()).getHealthComponent().getMaxHealth()*0.01){
+            //If the incoming physical hit itself is less than 1% the targets health, dont even apply bleed
+            return;
+        }
+
+        Profile attackerProfile = JSONProfileManager.getProfile(attacker.getUniqueId());
+        Attack hitData = attackerProfile.getDamageComponent().getHitData();
+        int bleedChance = hitData.getBleedChance();
+        double bleedRoll = Math.random();
+        if ((bleedRoll*100) > bleedChance){return;}
+
+        //Time to apply the debuff
+        DamageBuff bleed = new DamageBuff(Buffs.BLEED);
+        baseDamage = (int) Utils.applyPercentageTo(baseDamage, attackerProfile.getDamageComponent().getBleedDamage());
+        int[] dot = bleed.convertBaseHit(baseDamage);
+        bleed.createDamageTask(dot, defender, false, attacker);
+        if (attackerProfile.getEffects().contains(Effects.SADISM)){
+            Effects.SADISM.check(attacker, defender, incomingHit);
+        }
+
+        PlayerBuffManager.addBuffToPlayer(bleed, defender);
+        Audience audience = Audience.audience(attacker, defender);
+        SoundAPI.playGenericSoundAtLocation(audience, defender.getLocation(),"block.pumpkin.carve", 2f, 0.5f);
     }
 
     public static int[] rollDamages(Map<DamageTypes, int[]> rawDamages){

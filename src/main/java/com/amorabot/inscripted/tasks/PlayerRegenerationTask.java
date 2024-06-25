@@ -2,7 +2,7 @@ package com.amorabot.inscripted.tasks;
 
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
+import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
@@ -11,7 +11,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Set;
 import java.util.UUID;
+
+import static com.amorabot.inscripted.components.HealthComponent.updateHealthHearts;
+import static com.amorabot.inscripted.components.HealthComponent.updateWardHearts;
 
 public class PlayerRegenerationTask extends BukkitRunnable {
 
@@ -47,41 +51,34 @@ public class PlayerRegenerationTask extends BukkitRunnable {
         if (HPComponent.getCurrentHealth() != HPComponent.getMaxHealth() && !isPvPTagged){
 
             boolean inCombat = player.hasMetadata(CombatLogger.getCombatTag());
-            boolean isBleeding = false; //TEMPORARY
-            int HPS = HPComponent.regenHealth(inCombat, isBleeding);
-            if (HPS > 0){
-                if (inCombat){regenString.append("&e&l+");}
-                else {regenString.append("&a&l+");}
-                regenString.append(HPS);
+            Set<Keystones> playerKeystones = playerProfile.getKeystones();
+            if (!playerKeystones.contains(Keystones.BLOOD_PACT)){
+                int HPS = HPComponent.regenHealth(inCombat, playerID);
+                if (HPS > 0){
+                    if (inCombat){regenString.append("&e&l+");}
+                    else {regenString.append("&a&l+");}
+                    regenString.append(HPS);
 
-                regenHealthHearts(player, HPComponent);
+                    updateHealthHearts(player, HPComponent);
+                }
+            } else {
+                updateHealthHearts(player, HPComponent);
             }
+
         }
 
         if (HPComponent.getCurrentWard() != HPComponent.getMaxWard() && (PlayerRegenManager.canRegenWard(playerID))){
             int wardRegen = HPComponent.regenWard(isPvPTagged);
 
-            regenWardHearts(player, HPComponent);
+            updateWardHearts(player, HPComponent);
 
-            regenString.append(" ").append(DefenceTypes.WARD.getTextColor()).append("&l+").append((int) (wardRegen));
+            regenString.append(" ").append(DefenceTypes.WARD.getTextColorTag()).append("&l+").append((int) (wardRegen));
         }
 
         if (!regenString.isEmpty()){
 //            CombatHologramsDepleter.getInstance().instantiateRegenHologram(player.getLocation(), regenString.toString());
             CombatHologramsDepleter.getInstance().instantiateRegenHologram(player.getLocation(),
                     regenString.toString());
-        }
-    }
-    public static void regenHealthHearts(Player player, HealthComponent playerHP){
-        double mappedHealth = playerHP.getMappedHealth();
-        if ((mappedHealth - player.getHealth()) >= 0.5D){
-            player.setHealth(mappedHealth);
-        }
-    }
-    public static void regenWardHearts(Player player, HealthComponent playerHP){
-        double mappedWard = playerHP.getMappedWard();
-        if ((mappedWard - player.getAbsorptionAmount()) >= 0.5D){
-            player.setAbsorptionAmount(mappedWard);
         }
     }
 }

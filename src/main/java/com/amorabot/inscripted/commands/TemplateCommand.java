@@ -9,7 +9,14 @@ import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.components.Items.modifiers.data.Meta;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.components.buffs.Buffs;
+import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
+import com.amorabot.inscripted.components.buffs.categories.healing.HealingBuff;
+import com.amorabot.inscripted.components.buffs.categories.stat.StatBuff;
+import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.utils.ColorUtils;
+import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -87,6 +94,40 @@ public class TemplateCommand implements CommandExecutor {
                     return true;
                 case "unalive":
                     Profile.execute(player);
+                    JSONProfileManager.getProfile(player.getUniqueId()).updatePlayerHearts(player);
+                    return true;
+                case "bleed":
+                    DamageBuff bleed = new DamageBuff(Buffs.BLEED);
+                    int baseDamage = (int) (Math.random()*100);
+                    Utils.error("Current base DoT: " + baseDamage);
+                    int[] dot = bleed.convertBaseHit(baseDamage);
+                    bleed.createDamageTask(dot, player, true, player);
+
+                    PlayerBuffManager.addBuffToPlayer(bleed, player);
+//                    bleed.activate();
+                    return true;
+                case "stat":
+                    StatBuff fortify = new StatBuff(Buffs.FORTIFY, player);
+                    Utils.log("Applying fortify to " + player.getName());
+                    PlayerBuffManager.addBuffToPlayer(fortify, player);
+                    return true;
+                case "tailwind":
+                    StatBuff tailwind = new StatBuff(Buffs.TAILWIND, player);
+                    player.sendMessage("Applying tailwind!");
+                    PlayerBuffManager.addBuffToPlayer(tailwind, player);
+                    return true;
+                case "cripple":
+                    StatBuff cripple = new StatBuff(Buffs.MAIM, player);
+                    player.sendMessage("Applying cripple :(");
+                    PlayerBuffManager.addBuffToPlayer(cripple, player);
+                    return true;
+                case "rejuv":
+                    HealingBuff rejuv = new HealingBuff(Buffs.REJUVENATE);
+                    Utils.msgPlayer(player, "Rejuvenating!");
+                    int baseHealing = rejuv.getFinalHealingTick(JSONProfileManager.getProfile(player.getUniqueId()));
+                    rejuv.createHealingTask(baseHealing, player, player);
+
+                    PlayerBuffManager.addBuffToPlayer(rejuv, player);
                     return true;
             }
         }
