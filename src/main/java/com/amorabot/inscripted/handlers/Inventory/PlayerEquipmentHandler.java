@@ -14,9 +14,12 @@ import com.amorabot.inscripted.events.ItemUsage;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.skills.AbilityTypes;
 import com.amorabot.inscripted.skills.AbilityRoutines;
+import com.amorabot.inscripted.skills.PlayerAbilities;
+import com.amorabot.inscripted.skills.axe.AxeBasicAttacks;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
+import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,6 +32,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -43,22 +47,19 @@ import static com.amorabot.inscripted.events.FunctionalItemAccessInterface.*;
 
 //TODO: fragment this class in multiple event handlers
 public class PlayerEquipmentHandler implements Listener {
-//    private static final Set<InventoryAction> CHECKED_CLICKS = Set.of(
-//            InventoryAction.SWAP_WITH_CURSOR,
-//            InventoryAction.PICKUP_ALL, InventoryAction.PICKUP_SOME, InventoryAction.PICKUP_HALF, InventoryAction.PICKUP_ONE,
-//            InventoryAction.PLACE_ALL, InventoryAction.PLACE_SOME, InventoryAction.PLACE_ONE,
-//            InventoryAction.MOVE_TO_OTHER_INVENTORY,
-//            InventoryAction.HOTBAR_MOVE_AND_READD,
-//            InventoryAction.HOTBAR_SWAP);
-//    player.hasPotionEffect()
-//    player.getAttackCooldown()
 
-    //TODO: hook equip/unequips to events
-    //TODO: shift click detection and mapping via ItemUsage
     public PlayerEquipmentHandler(Inscripted plugin){
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
+    //TODO: InventoryEvent - Represents an inventory-related event
+    //TODO: InventoryOpenEvent - Called when inventory is opened
+
+    @EventHandler
+    public void onInvEvent(PlayerSwapHandItemsEvent event){
+        Utils.log("Toggling spellcast mode");
+        event.setCancelled(true);
+    }
 
     @EventHandler
     public void onArmorChange(PlayerArmorChangeEvent event){
@@ -146,7 +147,7 @@ public class PlayerEquipmentHandler implements Listener {
         }
         PersistentDataContainer heldItemDataContainer = heldItem.getItemMeta().getPersistentDataContainer();
         if (isIdentified(WEAPON_TAG,heldItemDataContainer)){
-            player.setCooldown(heldItem.getType(), 20*1);
+            player.setCooldown(heldItem.getType(), 20*2);
             EventAPI.callWeaponEquipEvent(event, heldItem);
         } else {
             EventAPI.callWeaponEquipEvent(event, null);
@@ -183,7 +184,7 @@ public class PlayerEquipmentHandler implements Listener {
                     player.sendMessage("Invalid weapon attack...");
                     return;
                 }
-                AbilityRoutines.playerBaseAbilityCast(player, AbilityTypes.MOVEMENT, weaponData.getSubtype());
+                AbilityRoutines.playerBaseAbilityCast(player, AbilityTypes.MOVEMENT, weaponData.getSubtype(), weaponData.getAtkSpeed());
             }
             case UNIDED_WEAPON -> player.sendMessage(Utils.color("&l&cThis weapon is not identified!"));
         }
@@ -196,9 +197,19 @@ public class PlayerEquipmentHandler implements Listener {
         if (event.getClickedInventory() == null){return;}
         if (event.getCurrentItem() == null){return;}
 
+
         InventoryAction attemptedAction = event.getAction();
         Player player = (Player) event.getWhoClicked();
         PlayerInventory inventory = player.getInventory();
+
+//        if (event.)
+
+        if (event.getClick().equals(ClickType.SWAP_OFFHAND)){
+            player.sendMessage("Swap!");
+            event.setCancelled(true);
+            return;
+        }
+
         //InventoryHandler should handle all inventory interactions that are not happening exclusively on the players inventory alone
         //Lets assume it from now on
 
@@ -442,40 +453,39 @@ public class PlayerEquipmentHandler implements Listener {
     }
 
 
-    private void leftClickArmorSwapping(InventoryClickEvent event, ItemStack testedArmor, ItemTypes slotType,
-                                        ItemStack cursorItem, ItemStack clickedItem){
-        //Armor slot was clicked: (armor-slot match done prior)
-        if (testedArmor == null){
-            EventAPI.callArmorEquipEvent(event, cursorItem, slotType, ItemUsage.ARMOR_SWAP);
-            return;
-        }
-        //Functional item checks??????????
-
-        PersistentDataContainer clickedDataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
-        PersistentDataContainer cursorDataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
-
-        if (!(isEquipableArmor(clickedDataContainer) && isEquipableArmor(cursorDataContainer))){
-            //If they're not both equipable armor items, cancel the attemp to swap them
-            event.setCancelled(true);
-            return;
-        }
-
-        //The helmet slot was clicked and it contains a armor piece, lets check if the cursor item is compatible (helmet-to-helmet swap)
-        ItemTypes cursorArmorCategory = Objects.requireNonNull(deserializeArmorData(cursorDataContainer)).getCategory();
-        if (cursorArmorCategory.equals(slotType)){
-//            Utils.log("armorswap!!!!");
-            EventAPI.callArmorEquipEvent(event, cursorItem, slotType, ItemUsage.ARMOR_SWAP);
-            return;
-        }
-        //The cursor item is not a helmet, cancel the equip attempt
-        event.setCancelled(true);
-    }
+//    private void leftClickArmorSwapping(InventoryClickEvent event, ItemStack testedArmor, ItemTypes slotType,
+//                                        ItemStack cursorItem, ItemStack clickedItem){
+//        //Armor slot was clicked: (armor-slot match done prior)
+//        if (testedArmor == null){
+//            EventAPI.callArmorEquipEvent(event, cursorItem, slotType, ItemUsage.ARMOR_SWAP);
+//            return;
+//        }
+//        //Functional item checks??????????
+//
+//        PersistentDataContainer clickedDataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
+//        PersistentDataContainer cursorDataContainer = Objects.requireNonNull(cursorItem.getItemMeta()).getPersistentDataContainer();
+//
+//        if (!(isEquipableArmor(clickedDataContainer) && isEquipableArmor(cursorDataContainer))){
+//            //If they're not both equipable armor items, cancel the attemp to swap them
+//            event.setCancelled(true);
+//            return;
+//        }
+//
+//        //The helmet slot was clicked and it contains a armor piece, lets check if the cursor item is compatible (helmet-to-helmet swap)
+//        ItemTypes cursorArmorCategory = Objects.requireNonNull(deserializeArmorData(cursorDataContainer)).getCategory();
+//        if (cursorArmorCategory.equals(slotType)){
+////            Utils.log("armorswap!!!!");
+//            EventAPI.callArmorEquipEvent(event, cursorItem, slotType, ItemUsage.ARMOR_SWAP);
+//            return;
+//        }
+//        //The cursor item is not a helmet, cancel the equip attempt
+//        event.setCancelled(true);
+//    }
 
     public static void basicAttackBy(Player player, ItemStack usedItem, WeaponTypes weaponType){
         //This is triggered when dropping a equiped weapon from inv
 
         if (!player.hasCooldown(usedItem.getType())){
-//            WeaponAttackSpeeds atkSpeed = weaponType.getBaseAttackSpeed();
             Weapon usedWeapon = FunctionalItemAccessInterface.deserializeWeaponData(Objects.requireNonNull(usedItem.getItemMeta()).getPersistentDataContainer());
             assert usedWeapon != null;
             WeaponAttackSpeeds atkSpeed = usedWeapon.getAtkSpeed();
@@ -487,14 +497,13 @@ public class PlayerEquipmentHandler implements Listener {
             }
 
             //Cast attack
-            AbilityRoutines.playerBaseAbilityCast(player, AbilityTypes.BASIC_ATTACK, weaponType);
+            AbilityRoutines.playerBaseAbilityCast(player, AbilityTypes.BASIC_ATTACK, weaponType,usedWeapon.getAtkSpeed());
             SoundAPI.playAttackSoundFor(player, player.getLocation(), weaponType);
 
             double APS = atkSpeed.getItemUsageCooldown();
             int attackCD = (int) (APS*20);
             //Apply the item usage cooldown
             player.setCooldown(weaponType.getRange().getItem(), attackCD);
-//            player.sendMessage("atk CD: " + attackCD + " ("+atkSpeed+")");
         }
     }
 }

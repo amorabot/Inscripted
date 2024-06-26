@@ -102,6 +102,7 @@ public class Stats implements EntityComponent {
         int[] cold = getDmgValuesFor(PlayerStats.COLD_DAMAGE);
         int[] abyss = getDmgValuesFor(PlayerStats.ABYSSAL_DAMAGE);
 
+        clearStatFromMiscPool(PlayerStats.ELEMENTAL_DAMAGE, ValueTypes.FLAT); // Will clear all ELEMENTAL_DAMAGE values
         //Before returning do the conversion routines for all elements
 
         return new int[][]{phys, fire, light, cold, abyss};
@@ -113,6 +114,12 @@ public class Stats implements EntityComponent {
         int incrDmg = playerStats.get(stat).getOrDefault(ValueTypes.INCREASED, new int[1])[0];
         int dmgMulti = playerStats.get(stat).getOrDefault(ValueTypes.MULTIPLIER, new int[1])[0];
 
+        if (playerStats.containsKey(PlayerStats.ELEMENTAL_DAMAGE)){
+            int genericElementalDmg = playerStats.get(PlayerStats.ELEMENTAL_DAMAGE).getOrDefault(ValueTypes.INCREASED, new int[1])[0];
+            switch (stat){
+                case FIRE_DAMAGE,LIGHTNING_DAMAGE,COLD_DAMAGE -> incrDmg += genericElementalDmg;
+            }
+        }
         //Since this method is used only once, the misc. stat pool clearing can be done here to avoid boilerplate
         clearStatFromMiscPool(stat, ValueTypes.FLAT);
 

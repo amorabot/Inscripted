@@ -46,4 +46,7 @@ public enum WeaponAttackSpeeds {
 
         return bar.toString();
     }
+    public int getAbilityCooldownModifier(){
+        return 10 * (-swingAnimationSpeed); //Percentage value
+    }
 }

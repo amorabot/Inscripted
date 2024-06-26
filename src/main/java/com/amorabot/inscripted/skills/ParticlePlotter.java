@@ -1,6 +1,5 @@
 package com.amorabot.inscripted.skills;
 
-import com.amorabot.inscripted.utils.Utils;
 import com.destroystokyo.paper.ParticleBuilder;
 import org.bukkit.*;
 import org.bukkit.block.data.BlockData;
@@ -113,7 +112,7 @@ public class ParticlePlotter {
             particlePos.add(step);
             spawnParticleAt(particlePos, world, particle);
         }
-        spawnParticleAt(particlePos, world, Particle.ELECTRIC_SPARK);
+//        spawnParticleAt(particlePos, world, Particle.ELECTRIC_SPARK);
     }
     public static void coloredParticleLerp(Vector begin, Vector end, float minDist, World world, int r, int g, int b, float size){
         int particleCount = (int) Math.round(Math.max(begin.distance(end)/minDist, 1));
@@ -131,7 +130,7 @@ public class ParticlePlotter {
             particlePos.add(step);
             spawnColoredParticleAt(particlePos, world, r,g,b, size, 1);
         }
-        spawnParticleAt(particlePos, world, Particle.ELECTRIC_SPARK);
+//        spawnParticleAt(particlePos, world, Particle.ELECTRIC_SPARK);
     }
 
     public static void thunderAt(Location loc, int segments, double height){

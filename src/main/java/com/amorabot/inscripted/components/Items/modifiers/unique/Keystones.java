@@ -16,6 +16,7 @@ import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.skills.AbilityRoutines;
 import com.amorabot.inscripted.skills.PlayerAbilities;
+import com.amorabot.inscripted.skills.item.StatToggleMonitors;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
@@ -61,7 +62,7 @@ public enum Keystones {
             if (needsInstantiation(playerID)){
                 Player player = Bukkit.getPlayer(playerID);
                 assert player != null;
-                PlayerAbilities.PERMAFROST_PASSIVE.cast(player); //Creates a new runnable and store its ID in the passivesManager
+                PlayerAbilities.PERMAFROST_PASSIVE.cast(player, null); //Creates a new runnable and store its ID in the passivesManager
             }
         }
     },
@@ -73,7 +74,7 @@ public enum Keystones {
             if (needsInstantiation(playerID)){
                 Player player = Bukkit.getPlayer(playerID);
                 assert player != null;
-                PlayerAbilities.WINDS_OF_CHANGE_PASSIVE.cast(player);
+                PlayerAbilities.WINDS_OF_CHANGE_PASSIVE.cast(player, null);
             }
         }
     },
@@ -85,7 +86,7 @@ public enum Keystones {
             if (needsInstantiation(playerID)){
                 Player player = Bukkit.getPlayer(playerID);
                 assert player != null;
-                int taskID = AbilityRoutines.initializeBerserkToggleMonitorFor(player);
+                int taskID = StatToggleMonitors.initializeBerserkToggleMonitorFor(player);
                 PlayerPassivesManager.addKeystonePassive(playerID, this, taskID);
             }
         }
@@ -107,7 +108,7 @@ public enum Keystones {
             if (needsInstantiation(playerID)){
                 Player player = Bukkit.getPlayer(playerID);
                 assert player != null;
-                PlayerAbilities.THUNDERSTRUCK_PASSIVE.cast(player);
+                PlayerAbilities.THUNDERSTRUCK_PASSIVE.cast(player, null);
             }
         }
     },
