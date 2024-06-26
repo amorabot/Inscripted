@@ -15,7 +15,7 @@ import static com.amorabot.inscripted.skills.bow.BowBasicAttacks.bowBasicAttackB
 import static com.amorabot.inscripted.skills.bow.BowMovement.mercenaryMovement;
 import static com.amorabot.inscripted.skills.dagger.DaggerBasicAttacks.newDaggerBasicAttackBy;
 import static com.amorabot.inscripted.skills.dagger.DaggerMovement.rogueMovement;
-import static com.amorabot.inscripted.skills.mace.MaceBasicAttacks.maceBasicAttackBy;
+import static com.amorabot.inscripted.skills.mace.MaceBasicAttacks.newMaceBasicAttackFor;
 import static com.amorabot.inscripted.skills.mace.MaceMovement.templarMovement;
 import static com.amorabot.inscripted.skills.sword.SwordBasicAttacks.newSwordBasicAttackBy;
 import static com.amorabot.inscripted.skills.sword.SwordMovement.gladiatorMovement;
@@ -58,7 +58,7 @@ public enum PlayerAbilities {
     BASIC_MACE_SLAM(new int[5], new float[]{1,1,1,1,1},0,AbilityTypes.BASIC_ATTACK, HitTypes.MELEE,HitTypes.AOE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            maceBasicAttackBy(caster, this);
+            newMaceBasicAttackFor(caster, this);
         }
     },
 

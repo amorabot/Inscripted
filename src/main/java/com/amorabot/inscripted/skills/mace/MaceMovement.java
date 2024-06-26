@@ -5,6 +5,8 @@ import com.amorabot.inscripted.skills.ParticlePlotter;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.List;
@@ -14,6 +16,7 @@ public class MaceMovement {
 
     public static void templarMovement(Player player){
         double radius = 4.7;
+        double innerRadius = 3.7;
         Vector center = player.getLocation().toVector().clone();
         World playerWorld = player.getWorld();
         double maxVelocity = 1.6;
@@ -21,11 +24,13 @@ public class MaceMovement {
         SoundAPI.playGenericSoundAtLocation(player, player.getLocation(), "block.basalt.break", 0.8f, 0.5f);
         SoundAPI.playGenericSoundAtLocation(player, player.getLocation(), "entity.zombie.break_wooden_door", 0.1f, 0.2f);
 
-        for (double rad = 0; rad <= 2*Math.PI; rad += Math.PI/16){
-            double xPos = Math.sin(rad)*radius;
-            double zPos = Math.cos(rad)*radius;
-            ParticlePlotter.spawnParticleAt(center.clone().add(new Vector(xPos,0.4,zPos)), playerWorld, Particle.END_ROD);
+        double fullRotation = 2*Math.PI;
+        for (double rad = 0; rad <= fullRotation; rad += Math.PI/16){
+            double xPos = Math.sin(rad)*innerRadius;
+            double zPos = Math.cos(rad)*innerRadius;
+            ParticlePlotter.plotColoredCircleAt(center.clone().add(new Vector(xPos,0.2,zPos)), playerWorld, 166, 91, 75, 1.2f, 1, 10);
         }
+        ParticlePlotter.plotColoredCircleAt(center.clone(), playerWorld, 200,160,200, 1.2f, (float) radius, 60);
 
         List<Player> nearbyPlayers = (List<Player>) center.toLocation(playerWorld).getNearbyPlayers(radius);
         nearbyPlayers.remove(player);
@@ -36,6 +41,8 @@ public class MaceMovement {
             double velScaling = distToCenter/radius;
             double velocity = 0.2F + velScaling*maxVelocity;
             p.setVelocity(dirToCenter.multiply(-velocity));
+            PotionEffect slow = new PotionEffect(PotionEffectType.SLOWNESS, 60, 1, true, false, false);
+            slow.apply(p);
         }
     }
 }

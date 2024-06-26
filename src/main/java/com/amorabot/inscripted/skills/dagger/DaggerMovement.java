@@ -2,11 +2,15 @@ package com.amorabot.inscripted.skills.dagger;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.skills.ParticlePlotter;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 public class DaggerMovement {
 
@@ -22,7 +26,11 @@ public class DaggerMovement {
                 if (index >= iterations){
                     this.cancel();
                 }
-                SoundAPI.playGenericSoundAtLocation(player, player.getLocation(), "entity.ghast.shoot", 0.7f, 0.9f + (0.3f*index));
+                Location playerLoc = player.getLocation();
+                double progress = (double) index /iterations;
+                double circleHeight = 0.2 + progress;
+                SoundAPI.playGenericSoundAtLocation(player, playerLoc, "entity.ghast.shoot", 0.7f, 0.9f + (0.3f*index));
+                ParticlePlotter.plotCircleAt(playerLoc.toVector().clone().add(new Vector(0, circleHeight, 0)), playerLoc.getWorld(), Particle.SMOKE,0.5F, 20);
                 index++;
             }
         }.runTaskTimer(Inscripted.getPlugin(), 0, 2);
@@ -37,6 +45,8 @@ public class DaggerMovement {
                 for (Player p : Bukkit.getOnlinePlayers()){
                     p.showPlayer(Inscripted.getPlugin(), player);
                 }
+                PotionEffect exhaustionEffect = new PotionEffect(PotionEffectType.SLOWNESS, 40, 1, true, false, false);
+                exhaustionEffect.apply(player);
                 this.cancel();
             }
         }.runTaskLater(Inscripted.getPlugin(), duration);
