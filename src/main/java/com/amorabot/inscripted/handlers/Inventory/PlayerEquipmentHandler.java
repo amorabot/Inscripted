@@ -2,6 +2,7 @@ package com.amorabot.inscripted.handlers.Inventory;
 
 import com.amorabot.inscripted.APIs.EventAPI;
 import com.amorabot.inscripted.APIs.SoundAPI;
+import com.amorabot.inscripted.GUIs.OrbGUI;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
@@ -14,8 +15,6 @@ import com.amorabot.inscripted.events.ItemUsage;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.skills.AbilityTypes;
 import com.amorabot.inscripted.skills.AbilityRoutines;
-import com.amorabot.inscripted.skills.PlayerAbilities;
-import com.amorabot.inscripted.skills.mace.MaceBasicAttacks;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
@@ -204,7 +203,9 @@ public class PlayerEquipmentHandler implements Listener {
 //        if (event.)
 
         if (event.getClick().equals(ClickType.SWAP_OFFHAND)){
-            player.sendMessage("Swap!");
+            player.sendMessage("Opening Orb menu!");
+            OrbGUI orbGUI = new OrbGUI();
+            player.openInventory(orbGUI.getInventory());
             event.setCancelled(true);
             return;
         }

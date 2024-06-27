@@ -71,10 +71,10 @@ public abstract class GUI implements InventoryHolder {
                 clickedButton.rightClick(player);
             }
             case SHIFT_LEFT -> {
-
+                clickedButton.shiftLeftClick(player);
             }
             case SHIFT_RIGHT -> {
-
+                clickedButton.shiftRightClick(player);
             }
             default ->{
                 return;
@@ -99,5 +99,9 @@ public abstract class GUI implements InventoryHolder {
     @Override
     public @NotNull Inventory getInventory() {
         return this.inventory;
+    }
+
+    public static int mapGridSlot(int row, int column){
+        return (9*(row-1)) + column;
     }
 }

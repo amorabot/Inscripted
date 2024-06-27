@@ -18,6 +18,7 @@ import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import com.amorabot.inscripted.utils.Utils;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -30,6 +31,7 @@ import java.util.*;
 
 import static com.amorabot.inscripted.events.FunctionalItemAccessInterface.*;
 import static com.amorabot.inscripted.utils.Utils.color;
+import static com.amorabot.inscripted.utils.Utils.convertToPrettyString;
 
 public enum Currencies { //TODO: Functional programming solution for orb routines?
 
@@ -53,13 +55,15 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
     },
     AUGMENT("Orb of augmentation", Material.LIGHT_BLUE_DYE,
             List.of("&7Enhances the rarity  ",
-                    "&7of a common item",
-                    "&f&lCOMMON &8>> &9&lMAGIC",
+                    "&7of a &f&lCOMMON &7item",
+                    "&7to &9&lMAGIC",
                     "",
-                    "&8This magic orb can",
-                    "&8enhance mundane",
-                    "&8items and give them",
-                    "&8magical properties."
+                    "&9&lMAGIC &7items can have",
+                    "&7up to 2 inscriptions",
+                    "",
+                    "&8This orb infuses a",
+                    "&8dull item with runic",
+                    "&8energy!"
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
@@ -86,10 +90,9 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             List.of("&7Rerolls the inscriptions  ",
                     "&7on a &9&lMAGIC &7item",
                     "",
-                    "&8This magic-filled orb",
-                    "&8allows experimentation",
-                    "&8with new inscriptions",
-                    "&8on already magic items."
+                    "&8Great for experimentation",
+                    "&8and looking for specific",
+                    "&8inscription combinations!"
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
@@ -114,15 +117,16 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
         }
     },
     REGAL("Regal orb", Material.YELLOW_DYE,
-            List.of("&7Enhances the rarity",
-                    "&7of a magic item",
-                    "&9&lMAGIC &8>> &e&lRARE",
+            List.of("&7Enhances the rarity  ",
+                    "&7of a &9&lMAGIC item",
+                    "&7to &e&lRARE",
                     "",
-                    "&8This luxurious orb can  ",
-                    "&8enhance magical items",
-                    "&8and greatly increase",
-                    "&8the amount of inscrip-",
-                    "&8tions they can hold."
+                    "&e&lRARE &7items can have",
+                    "&7up to 6 inscriptions",
+                    "",
+                    "&8This luxurious orb can",
+                    "&8greatly enhance a magic  ",
+                    "&8item's potential!"
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
@@ -150,8 +154,8 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
                     "&7on a &e&lRARE &7item",
                     "",
                     "&8This chaotic orb scrambles  ",
-                    "&8all inscriptions on a rare",
-                    "&8item. Something exceptional",
+                    "&8all inscriptions around.",
+                    "&8Something exceptional",
                     "&8may come out of madness."
             )) {
         @Override
@@ -178,7 +182,7 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
     },
     MAGIC_CHISEL("Magic chisel",Material.INK_SAC,
           List.of("&7Adds one random inscription  ",
-                    "&7on a &9&lMAGIC &7item",
+                  "&7on a &9&lMAGIC &7item",
                   "",
                   "&8This magic-infused chisel",
                   "&8is the perfect tool to shape",
@@ -237,13 +241,13 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
         }
     },
     NULLIFYING("Nullifying orb",Material.WHITE_DYE,
-            List.of("&7Clears all non-imbued inscr.  ",
+            List.of("&7Clears all inscriptions  ",
                     "&7on a &9&lMAGIC &7or &e&lRARE &7item",
+                    "&7that are not &6imbued.",
                     "",
                     "&8This orb can cleanse the",
-                    "&8magical properties of an",
-                    "&8item, removing all non",
-                    "&8inbued inscriptions on it."
+                    "&8runic properties of a",
+                    "&8item."
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
@@ -275,15 +279,14 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
         }
     },
     IMBUIMENT_SEAL("Imbuement seal",Material.BLAZE_POWDER,
-            List.of("&7Seals a random inscription onto ",
-                    "&7a item, turning it &6&nImbued&7.",
+            List.of("&7Randomly &6&lImbue &7a inscription, ",
+                    "&7locking it permanently.",
                     "",
                     "&8This singular seal is capable",
                     "&8of engraving a inscription",
                     "&8onto a item's very core,",
                     "&8making it carry an immutable mark.  ",
-                    "",
-                    "&8*Imbued: Permanent and immutable."
+                    ""
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
@@ -307,18 +310,18 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
         }
     },
     PROFANE_TENDRILS("&4Profane tendrils",Material.NETHER_WART,
-            List.of("&7Use this on a item to  ",
-                    "&7to turn it &4&nCorrupted&7.",
+            List.of("&4&lCorrupts &7an item,  ",
+                    "&7making it immutable",
+                    "&7by tapping into",
+                    "&7otherworldly strength...  ",
                     "",
-                    "&8Those pulsating, vile,",
-                    "&8tendrils look severed.",
-                    "&8Its strong miasma can",
+                    "&8Those vile tendrils",
+                    "&8although severed, still",
+                    "&8pulsate intensely...",
+                    "&8Its strong miasma could",
                     "&8corrupt even the most",
                     "&8righteous of warriors.",
-                    "",
-                    "&8*Corrupted: The item can  ",
-                    "&8recieve profane power,",
-                    "&8but at a cost..."
+                    ""
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
@@ -362,10 +365,13 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
         }
     },
     SHARPENING_WHETSTONE("Sharpening whetstone",Material.CLAY_BALL,
-            List.of("&7Can be used on weapons  ",
-                    "&7to increase their quality,",
-                    "&7improving their &6base",
-                    "&6physical damage \uD83D\uDDE1 \uD83C\uDFF9&7.",
+            List.of("&7Improves a weapon's  ",
+                    "&bquality&7, increasing all",
+                    "",
+                    "&7       \uD83D\uDDE1 \uD83C\uDFF9&7&l"+convertToPrettyString("DMG"),
+                    "",
+                    "&7local stats by 5%,",
+                    "&7up to &f[&b+10&f] &7quality",
                     "",
                     "&8Those whetstones are",
                     "&8commonly used by bla-",
@@ -374,10 +380,8 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
                     "&8pons of any kind.",
                     "&8Seeking perfection  ",
                     "&8comes with a risk.",
-                    "",
-                    "&8*Quality: +5% on a item's",
-                    "&8main stat per +1 quality.",
-                    "&8Maximum quality is +10."
+                    ""
+//                    🗡 🏹
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
@@ -403,14 +407,17 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
         }
     },
     ARMOR_SCRAP("Armor scrap",Material.PRISMARINE_CRYSTALS,
-            List.of("&7Can be used on armors  ",
-                    "&7to increase their quality,",
-                    "&7improving their base",
-                    "&7defensive stats "+ DefenceTypes.HEALTH.getTextColorTag() + DefenceTypes.HEALTH.getSpecialChar() + " "
-                            + DefenceTypes.WARD.getTextColorTag() + DefenceTypes.WARD.getSpecialChar() + " "
-                            + DefenceTypes.ARMOR.getTextColorTag() + DefenceTypes.ARMOR.getSpecialChar() + " "
-                            + DefenceTypes.DODGE.getTextColorTag() + DefenceTypes.DODGE.getSpecialChar() + " "
-                            +"&7.",
+            List.of("&7Improves a armors's  ",
+                    "&bquality&7, increasing all",
+                    "",
+                    "&7     "
+                    + DefenceTypes.HEALTH.getSpecialChar()+ "&7&l"
+                    +convertToPrettyString("HP")+ " &7& "+
+                    DefenceTypes.ARMOR.getSpecialChar() + "&7&l"+
+                    convertToPrettyString("DEF"),
+                    "",
+                    "&7local stats by 5%,",
+                    "&7up to &f[&b+10&f] &7quality",
                     "",
                     "&8Those armor fragments",
                     "&8can be used to reinforce",
@@ -418,10 +425,7 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
                     "&8That process may render",
                     "&8it useless if done with-",
                     "&8out caution.",
-                    "",
-                    "&8*Quality: +5% on a item's",
-                    "&8main stat per +1 quality.",
-                    "&8Maximum quality is +10."
+                    ""
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
@@ -450,7 +454,9 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
     public static final NamespacedKey PDC_ID = new NamespacedKey(Inscripted.getPlugin(), "INSCRIPTED_CURRENCY");
     public static final String CURRENCY_LORE_TAG = "&a&lCURRENCY";
     private final String displayName;
+    @Getter
     private final Material item;
+    @Getter
     private final List<String> description;
 
     Currencies(String displayName, Material itemIcon, List<String> descriptionLore){

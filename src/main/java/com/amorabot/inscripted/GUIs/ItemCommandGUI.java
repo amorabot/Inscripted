@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ItemCommandGUI extends GUI{
 
@@ -73,196 +74,11 @@ public class ItemCommandGUI extends GUI{
     @Override
     public GUIButton[] createButtons() {
         GUIButton[] buttons = new GUIButton[6];
-
-        GUIButton helmetButton = new GUIButton(
-                13,
-                Material.IRON_HELMET,1,
-                false, ColorUtils.translateColorCodes("&"+getArchetype().getColor() + "&lProcedural helmet"),
-                new ArrayList<String>(){
-                    {
-                        add("");
-                        add(Utils.color("&7>&lLEFT CLICK -> "+ getRarity().getColor() + getRarity().toString() +" Identified &7helmet"));
-                        add("");
-                        add(Utils.color("&7>&lRIGHT CLICK ->"+ "&4" +" Unidentified &7helmet"));
-                    }
-                }
-        ) {
-            @Override
-            public void leftClick(Player playerWhoClicked) {
-                Armor armor = ( Armor ) ItemBuilder.randomItem(ItemTypes.HELMET,archetype.getArmorType(), ilvl, getRarity(), true, false);
-                if (armor == null){
-                    Utils.msgPlayer(playerWhoClicked, "Invalid armor stats...");
-                    return;
-                }
-                giveGeneratedItem(armor, playerWhoClicked);
-            }
-
-            @Override
-            public void rightClick(Player playerWhoClicked) {
-                Armor armor = ( Armor ) ItemBuilder.randomItem(ItemTypes.HELMET,archetype.getArmorType(), ilvl, getRarity(), false, false);
-                if (armor == null){
-                    Utils.msgPlayer(playerWhoClicked, "Invalid armor stats...");
-                    return;
-                }
-                giveGeneratedItem(armor, playerWhoClicked);
-            }
-
-            @Override
-            public void shiftLeftClick(Player playerWhoClicked) {}
-            @Override
-            public void shiftRightClick(Player playerWhoClicked) {}
-        };
-
-        GUIButton chestButton = new GUIButton(
-                22,
-                Material.IRON_CHESTPLATE,1,
-                false, ColorUtils.translateColorCodes("&"+getArchetype().getColor() + "&lProcedural chestplate"),
-                new ArrayList<String>(){
-                    {
-                        add("");
-                        add(Utils.color("&7>&lLEFT CLICK -> "+ getRarity().getColor() + getRarity().toString() +" Identified &7chestplate"));
-                        add("");
-                        add(Utils.color("&7>&lRIGHT CLICK ->"+ "&4" +" Unidentified &7chestplate"));
-                    }
-                }
-        ) {
-            @Override
-            public void leftClick(Player playerWhoClicked) {
-                Armor armor = ( Armor ) ItemBuilder.randomItem(ItemTypes.CHESTPLATE,archetype.getArmorType(), ilvl, getRarity(), true, false);
-                if (armor == null){
-                    Utils.msgPlayer(playerWhoClicked, "Invalid armor stats...");
-                    return;
-                }
-                giveGeneratedItem(armor, playerWhoClicked);
-            }
-
-            @Override
-            public void rightClick(Player playerWhoClicked) {
-                Armor armor = ( Armor ) ItemBuilder.randomItem(ItemTypes.CHESTPLATE,archetype.getArmorType(), ilvl, getRarity(), false, false);
-                if (armor == null){
-                    Utils.msgPlayer(playerWhoClicked, "Invalid armor stats...");
-                    return;
-                }
-                giveGeneratedItem(armor, playerWhoClicked);
-            }
-
-            @Override
-            public void shiftLeftClick(Player playerWhoClicked) {}
-            @Override
-            public void shiftRightClick(Player playerWhoClicked) {}
-        };
-        GUIButton leggingsButton = new GUIButton(
-                31,
-                Material.IRON_LEGGINGS,1,
-                false, ColorUtils.translateColorCodes("&"+getArchetype().getColor() + "&lProcedural leggings"),
-                new ArrayList<String>(){
-                    {
-                        add("");
-                        add(Utils.color("&7>&lLEFT CLICK -> "+ getRarity().getColor() + getRarity().toString() +" Identified &7leggings"));
-                        add("");
-                        add(Utils.color("&7>&lRIGHT CLICK ->"+ "&4" +" Unidentified &7leggings"));
-                    }
-                }
-        ) {
-            @Override
-            public void leftClick(Player playerWhoClicked) {
-                Armor armor = ( Armor ) ItemBuilder.randomItem(ItemTypes.LEGGINGS,archetype.getArmorType(), ilvl, getRarity(), true, false);
-                if (armor == null){
-                    Utils.msgPlayer(playerWhoClicked, "Invalid armor stats...");
-                    return;
-                }
-                giveGeneratedItem(armor, playerWhoClicked);
-            }
-
-            @Override
-            public void rightClick(Player playerWhoClicked) {
-                Armor armor = ( Armor ) ItemBuilder.randomItem(ItemTypes.LEGGINGS,archetype.getArmorType(), ilvl, getRarity(), false, false);
-                if (armor == null){
-                    Utils.msgPlayer(playerWhoClicked, "Invalid armor stats...");
-                    return;
-                }
-                giveGeneratedItem(armor, playerWhoClicked);
-            }
-
-            @Override
-            public void shiftLeftClick(Player playerWhoClicked) {}
-            @Override
-            public void shiftRightClick(Player playerWhoClicked) {}
-        };
-        GUIButton bootsButton = new GUIButton(
-                40, Material.IRON_BOOTS,1,
-                false, ColorUtils.translateColorCodes("&"+getArchetype().getColor() + "&lProcedural boots"),
-                new ArrayList<String>(){
-                    {
-                        add("");
-                        add(Utils.color("&7>&lLEFT CLICK -> "+ getRarity().getColor() + getRarity().toString() +" Identified &7boots"));
-                        add("");
-                        add(Utils.color("&7>&lRIGHT CLICK ->"+ "&4" +" Unidentified &7boots"));
-                    }
-                }
-        ) {
-            @Override
-            public void leftClick(Player playerWhoClicked) {
-                Armor armor = ( Armor ) ItemBuilder.randomItem(ItemTypes.BOOTS,archetype.getArmorType(), ilvl, getRarity(), true, false);
-                if (armor == null){
-                    Utils.msgPlayer(playerWhoClicked, "Invalid armor stats...");
-                    return;
-                }
-                giveGeneratedItem(armor, playerWhoClicked);
-            }
-
-            @Override
-            public void rightClick(Player playerWhoClicked) {
-                Armor armor = ( Armor ) ItemBuilder.randomItem(ItemTypes.BOOTS,archetype.getArmorType(), ilvl, getRarity(), false, false);
-                if (armor == null){
-                    Utils.msgPlayer(playerWhoClicked, "Invalid armor stats...");
-                    return;
-                }
-                giveGeneratedItem(armor, playerWhoClicked);
-            }
-
-            @Override
-            public void shiftLeftClick(Player playerWhoClicked) {}
-            @Override
-            public void shiftRightClick(Player playerWhoClicked) {}
-        };
-        GUIButton weaponsButton = new GUIButton(21,
-                Material.IRON_SWORD,1,
-                true, ColorUtils.translateColorCodes("&"+getArchetype().getColor() + "&lProcedural weapon"),
-                new ArrayList<String>(){
-                    {
-                        add("");
-                        add(Utils.color("&7>&lLEFT CLICK -> "+ getRarity().getColor() + getRarity().toString() +" Identified &7weapon"));
-                        add("");
-                        add(Utils.color("&7>&lRIGHT CLICK -> "+ "&4" +"Unidentified &7weapon"));
-                    }
-                }
-        ) {
-            @Override
-            public void leftClick(Player playerWhoClicked) {
-                Weapon weapon = ( Weapon ) ItemBuilder.randomItem(ItemTypes.WEAPON, archetype.getWeaponType(), ilvl, getRarity(),  true, false);
-                if (weapon == null){
-                    Utils.msgPlayer(playerWhoClicked, "Invalid weapon stats...");
-                    return;
-                }
-                giveGeneratedItem(weapon, playerWhoClicked);
-            }
-
-            @Override
-            public void rightClick(Player playerWhoClicked) {
-                Weapon weapon = ( Weapon ) ItemBuilder.randomItem(ItemTypes.WEAPON, archetype.getWeaponType(), ilvl, getRarity(),  false, false);
-                if (weapon == null){
-                    Utils.msgPlayer(playerWhoClicked, "Invalid weapon stats...");
-                    return;
-                }
-                giveGeneratedItem(weapon, playerWhoClicked);
-            }
-
-            @Override
-            public void shiftLeftClick(Player playerWhoClicked) {}
-            @Override
-            public void shiftRightClick(Player playerWhoClicked) {}
-        };
+        GUIButton weaponsButton = generateEquipmentSlotButton(21, ItemTypes.WEAPON);
+        GUIButton bootsButton = generateEquipmentSlotButton(40, ItemTypes.BOOTS);
+        GUIButton leggingsButton = generateEquipmentSlotButton(31, ItemTypes.LEGGINGS);
+        GUIButton chestButton = generateEquipmentSlotButton(22, ItemTypes.CHESTPLATE);
+        GUIButton helmetButton = generateEquipmentSlotButton(13, ItemTypes.HELMET);
         GUIButton itemDescription = new GUIButton(23,
                 Material.WRITABLE_BOOK,1,
                 true, Utils.color("&f&lItem presets:"),
@@ -296,6 +112,67 @@ public class ItemCommandGUI extends GUI{
         buttons[4] = weaponsButton;
         buttons[5] = itemDescription;
         return buttons;
+    }
+
+    private GUIButton generateEquipmentSlotButton(int desiredSlot, ItemTypes slot){
+
+        Item randomItem;
+        if (slot.equals(ItemTypes.WEAPON)){
+            randomItem = ItemBuilder.randomItem(slot, archetype.getWeaponType(), getIlvl(), getRarity(),false, false);
+        } else {
+            randomItem = ItemBuilder.randomItem(slot, archetype.getArmorType(), getIlvl(), getRarity(),false, false);
+        }
+        ItemStack itemIcon = randomItem.getItemForm(Inscripted.getPlugin());
+        ItemMeta iconItemMeta = itemIcon.getItemMeta();
+        iconItemMeta.setDisplayName(ColorUtils.translateColorCodes(
+                getRarity().getColor()+ "&l" + getRarity().toString() +" &" +archetype.getColor()+"&l"+archetype+" "+slot));
+        List<String> lore = new ArrayList<String>(){
+            {
+                add("");
+                add(Utils.color("&8>| &lLEFT CLICK -> "+ getRarity().getColor() + getRarity().toString() +" Identified item"));
+                add("");
+                add(Utils.color("&8>| &lRIGHT CLICK -> "+ "&4" +"Unidentified item"));
+            }
+        };
+        iconItemMeta.setLore(lore);
+        itemIcon.setItemMeta(iconItemMeta);
+
+        return new GUIButton(desiredSlot, itemIcon) {
+            @Override
+            public void leftClick(Player playerWhoClicked) {
+                Item generatedItem;
+                if (slot.equals(ItemTypes.WEAPON)){
+                    generatedItem = ItemBuilder.randomItem(slot, archetype.getWeaponType(), getIlvl(), getRarity(),true, false);
+                } else {
+                    generatedItem = ItemBuilder.randomItem(slot, archetype.getArmorType(), getIlvl(), getRarity(),true, false);
+                }
+                if (generatedItem == null){
+                    Utils.msgPlayer(playerWhoClicked, "Invalid item stats...");
+                    return;
+                }
+                giveGeneratedItem(generatedItem, playerWhoClicked);
+            }
+
+            @Override
+            public void rightClick(Player playerWhoClicked) {
+                Item generatedItem;
+                if (slot.equals(ItemTypes.WEAPON)){
+                    generatedItem = ItemBuilder.randomItem(slot, archetype.getWeaponType(), getIlvl(), getRarity(),false, false);
+                } else {
+                    generatedItem = ItemBuilder.randomItem(slot, archetype.getArmorType(), getIlvl(), getRarity(),false, false);
+                }
+                if (generatedItem == null){
+                    Utils.msgPlayer(playerWhoClicked, "Invalid item stats...");
+                    return;
+                }
+                giveGeneratedItem(generatedItem, playerWhoClicked);
+            }
+
+            @Override
+            public void shiftLeftClick(Player playerWhoClicked) {}
+            @Override
+            public void shiftRightClick(Player playerWhoClicked) {}
+        };
     }
 
     private void giveGeneratedItem(Item item, Player player){

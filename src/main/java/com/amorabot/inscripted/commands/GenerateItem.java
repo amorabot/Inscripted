@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.commands;
 
 import com.amorabot.inscripted.GUIs.ItemCommandGUI;
+import com.amorabot.inscripted.GUIs.RelicsGUI;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
@@ -41,17 +42,20 @@ public class GenerateItem implements TabExecutor {
 
         if (args.length == 0){
             player.sendMessage("Usage: /item ItemLevel Rarity Archetype");
-            player.sendMessage("Example: " +
-                    Utils.color("&c&l/item" + " 120" + " " + ItemRarities.MAGIC + " " + Archetypes.MERCENARY));
+            player.sendMessage("Alternate usage: /item RELIC (Opens the Relic list menu)");
+            player.sendMessage("");
+
+            Utils.msgPlayer(player, "Example: "+"&c&l/item" + " 89" + " " + ItemRarities.MAGIC + " " + Archetypes.MERCENARY);
+            Utils.msgPlayer(player, "&c  ->Would open the item generation menu for &9&lMAGIC &cMercenary items (of ilvl 89)");
             return true;
         }
-        if (args.length == 1){//getting Relic
-            try{
-                Relics relic = Relics.valueOf(args[0]);
-                player.getInventory().addItem(relic.getItemForm());
-//                giveGeneratedItem(Objects.requireNonNull(relic.generate()), player);
-            } catch (IllegalArgumentException exception){
-                Utils.error("wrong relic name");
+        if (args.length == 1){//manually getting Relics
+            if (Objects.equals(args[0], "RELIC")){
+                RelicsGUI relicsGUI = new RelicsGUI();
+                player.openInventory(relicsGUI.getInventory());
+                return true;
+            } else {
+                Utils.error("Not a valid argument for item generation");
             }
             return true;
         }
@@ -61,6 +65,7 @@ public class GenerateItem implements TabExecutor {
         Archetypes archetype = Archetypes.valueOf(args[2]);
 
         if (args.length == 3){
+
             ItemCommandGUI itemGUI = new ItemCommandGUI(player, archetype, ilvl, rarity, 6, false, true);
             player.openInventory(itemGUI.getInventory());
             return true;
@@ -87,7 +92,7 @@ public class GenerateItem implements TabExecutor {
 
         List<String> options = new ArrayList<>();
         if (strings.length == 1){ //Level argument
-            options.add("1");
+            options.add("RELIC");
             for (Tiers tier : Tiers.values()){
                 int tierMaxLevel = tier.getMaxLevel();
                 options.add(String.valueOf(tierMaxLevel));
@@ -97,6 +102,7 @@ public class GenerateItem implements TabExecutor {
             for (ItemRarities rarity : ItemRarities.values()){
                 options.add(rarity.toString());
             }
+            options.remove(ItemRarities.RELIC.toString());
             return options;
         } else if (strings.length == 3) { //Archetype
             for (Archetypes archetype : Archetypes.values()){

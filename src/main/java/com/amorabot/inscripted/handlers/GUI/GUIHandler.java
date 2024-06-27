@@ -1,6 +1,8 @@
 package com.amorabot.inscripted.handlers.GUI;
 
 import com.amorabot.inscripted.GUIs.ItemCommandGUI;
+import com.amorabot.inscripted.GUIs.OrbGUI;
+import com.amorabot.inscripted.GUIs.RelicsGUI;
 import com.amorabot.inscripted.Inscripted;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -28,31 +30,30 @@ public class GUIHandler implements Listener {
         int clickedSlot = event.getSlot();
         ClickType clickType = event.getClick();
 
-        //Item command GUI handling
-//        if (event.getView().getTitle().equals(ItemCommandGUI.TITLE)){
-//          OLD METHOD
-//        }
         if (inventory.getHolder(false) instanceof ItemCommandGUI itemCommandGUI){
-            event.getView().setTitle(ItemCommandGUI.TITLE);
-
-
             if (itemCommandGUI.getInventory() != event.getClickedInventory()){
-//                player.sendMessage("DEBUG: Inventory click @" + ItemCommandGUI.class.getSimpleName()); //Debug message
-                //Canceling the event due to client-side visual bugs (Cursor items vanishing)
-                event.setCancelled(true);
                 return;
             }
-
-
             event.setCancelled(!itemCommandGUI.isEditable());
             itemCommandGUI.click(player, clickedSlot, clickType);
+            return;
+        }
+        if (inventory.getHolder(false) instanceof OrbGUI orbGUI){
+            if (orbGUI.getInventory() != event.getClickedInventory()){
+                return;
+            }
+            event.setCancelled(!orbGUI.isEditable());
+            orbGUI.click(player, clickedSlot, clickType);
+            return;
+        }
 
-            //Debug/test methods
-//            player.getOpenInventory().getInventory()
-//            event.getClick().isKeyboardClick();
-//            player.closeInventory();
-//            player.updateInventory();
-//            player.openInventory(inventory);
+        if (inventory.getHolder(false) instanceof RelicsGUI relicsGUI){
+            if (relicsGUI.getInventory() != event.getClickedInventory()){
+                return;
+            }
+            event.setCancelled(!relicsGUI.isEditable());
+            relicsGUI.click(player, clickedSlot, clickType);
+            return;
         }
     }
 }

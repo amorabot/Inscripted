@@ -33,6 +33,11 @@ public abstract class GUIButton implements Button {
 
         this.icon = iconItem;
     }
+    public GUIButton(int desiredSlot, ItemStack iconItem){
+        this.slot = desiredSlot;
+
+        this.icon = iconItem;
+    }
 
     public ItemStack getIcon() {
         return icon;
