@@ -4,8 +4,6 @@
 
 ## Gameplay Demo: https://www.youtube.com/watch?v=7vwqPahws5U
 
-![thumb3](https://github.com/amorabot/Inscripted/assets/16783145/62c548db-68b1-4624-84ad-13975ebba863)
-
 ![thumb4](https://github.com/amorabot/Inscripted/assets/16783145/8d6b0652-22f4-40e6-9aca-0090488b4a60)
 
 ![2024-05-07_21 52 34](https://github.com/amorabot/Inscripted/assets/16783145/a5820915-be36-45b0-ac10-8bf4d91aedbd)
@@ -13,31 +11,45 @@
 
 ![ItemSystem](https://github.com/amorabot/Inscripted/assets/16783145/27e9172e-762a-4f3b-98c1-a1524b7c4bc1)
 
-The item system is meant to allow for expressive build creation, mixing and matching all the different items and their stats to fit your preferred style! It also offers procedural item generation and customization, where most items will have a unique modifier pool that will offer unique stat combinations that can only be found on certain items. The exception are the so-called Relic items (Pre-defined and rarer), that will bend some of the game mechanics and subvert the use of some stats, allowing for even quirkier builds!
+### The item system is meant to allow for expressive build creation, mixing and matching all the different items and their stats to fit your preferred style!
 
-One of the core principles of the item system is that obtaining a desired item is pretty much a deterministic process. Not easy. Deterministic. Through Orbs (And later on NPCs), you can manipulate procedural items to achieve a desired combination of Inscriptions (Modifiers that grant stats for your character, basically). Do you NEED a specific Relic item to bring your dream build to life? There will be a way to grind to it.
+Equippable items can be one of two types: **Craftables** or **Relics**! Craftable items can have their Inscriptions modified to your needs with currencies, such as Orbs, while Relic items cannot!
+
+![image](https://github.com/amorabot/Inscripted/assets/16783145/7f8c79a4-77f5-47b5-b21f-0b04290ba5dc)
+![image](https://github.com/amorabot/Inscripted/assets/16783145/7b42f750-ef64-418d-8563-a1750ab647e2)
+![image](https://github.com/amorabot/Inscripted/assets/16783145/325616d1-9390-4312-b0cb-1e43f59b21a5)
+
+A Relics main purpose is to turn some of the game mechanics on their head and subvert the use of some stats, allowing for even quirkier builds!
+This way you can, for instance, take advantage of the Inscription combinations available only for certain item [Archetypes](#The-Attribute-trinity), while counter-balancing the negative effects of a mighty Relic!
+
+### One of the core principles of the item system is that obtaining a desired item is pretty much a deterministic process. Not easy. Deterministic.
+
+Through Orbs, you can manipulate procedural items to achieve a desired combination of Inscriptions and achieve the playstyle for you. Also you NEED a specific Relic item to bring your dream build to life? There will be a way to grind to it.
 
 The itemization was designed around the concepts of item archetypes and attribute-alignment (Strength, Dexterity and Intelligence alignments), meaning items are meant to be representative of the
-attribute they're aligned with and their general characteristics aswell as their general archetype roles. That means, for instance, that Strength-Aligned items will have a set of characteristics in common
-and typically fit a Archetype that reinforces certain mehcanical, strategic and class-fantasy aspects of play! There's a entire section dedicated to showcasing Archetype roles and attribute-alignment, go check it out!
+attribute they're aligned and have somewhat predictable characteristics.
+
+That means, for instance, that Strength-Aligned items will have a set of characteristics in common
+and typically fit a Archetype that reinforces certain mehcanical, strategic and class-fantasy aspects of play! Check out the [section](#Core-Archetypes) dedicated to showcasing Archetype roles and attribute-alignments!
 
 The collapsable sections below are a showcase of what some Inscripted items look like!
 
+You can also check out the entire [Relic item showcase](https://www.behance.net/gallery/201899933/Inscripted-Relic-showcase#)!
+
+-----------------------------------------------------------------------------------------------------------------
 
 ![Weapons](https://github.com/amorabot/Inscripted/assets/16783145/b6835343-d477-480b-9882-df5a667b71bd)
 
 
 <details>
 
-<summary>Click here to see the weapon showcase!</summary>
-  
-![Screenshot from 2024-03-13 21-05-37](https://github.com/amorabot/Inscripted/assets/16783145/cccdbe2d-5c3e-4fd0-9150-e694fad11966)
+<summary>Click here to see some weapon examples!</summary>
 
+![image](https://github.com/amorabot/Inscripted/assets/16783145/62f6e779-9990-476b-a4f9-229064434b22)
 
-![Screenshot from 2024-03-13 21-07-57](https://github.com/amorabot/Inscripted/assets/16783145/6b2ce24b-2998-4101-be3a-2b32c0bf56b4)
+![image](https://github.com/amorabot/Inscripted/assets/16783145/5369c7f1-bdb5-489f-9792-369b5996a46c)
 
-
-![Screenshot from 2024-03-14 11-43-52](https://github.com/amorabot/Inscripted/assets/16783145/9d3ae1fa-5f7b-4c7b-b5a1-afe4551a3644)
+![image](https://github.com/amorabot/Inscripted/assets/16783145/da1e1c6f-d5d6-408e-b1cf-1bbae3e92d9f)
 
 </details>
 
@@ -47,13 +59,14 @@ The collapsable sections below are a showcase of what some Inscripted items look
 
 <details>
 
-<summary>Click here to see the armors showcase!</summary>
+<summary>Click here to see some armor examples!</summary>
 
-![Screenshot from 2024-03-13 21-11-22](https://github.com/amorabot/Inscripted/assets/16783145/a250b68b-53d2-4d84-8827-f6229eef33fa)
+![image](https://github.com/amorabot/Inscripted/assets/16783145/b6e738be-4b02-496d-9bf8-1679f0075d65)
 
-![Screenshot from 2024-03-13 21-11-04](https://github.com/amorabot/Inscripted/assets/16783145/d0f5d121-a204-4730-9eef-3c25195c3d6f)
+![image](https://github.com/amorabot/Inscripted/assets/16783145/e85fcac2-6cfd-487f-869d-5a0beee7557c)
 
-![Screenshot from 2024-03-13 21-10-47](https://github.com/amorabot/Inscripted/assets/16783145/be60ae81-b21b-4041-8a1c-e15081a94c4a)
+![image](https://github.com/amorabot/Inscripted/assets/16783145/5bd02d83-b467-4c3e-9b84-0e744f7eaa31)
+
 
 </details>
 
@@ -61,33 +74,51 @@ The collapsable sections below are a showcase of what some Inscripted items look
 
 ![Archetypes](https://github.com/amorabot/Inscripted/assets/16783145/eaa49118-0b6f-42bf-abdd-87c69b76f8cf)
 
+## The Attribute trinity:
+
 ![STRFull](https://github.com/amorabot/Inscripted/assets/16783145/052387ab-f8eb-40d0-828f-9c2f67587f60)
+
 ![DEXFull](https://github.com/amorabot/Inscripted/assets/16783145/3aaf35ab-386e-421e-9c3c-a1ad0d25c0cb)
+
 ![INTFull](https://github.com/amorabot/Inscripted/assets/16783145/a94547b7-265d-4ac7-bc04-2c91eb45e51f)
 
 
 -----------------------------------------------------------------------------------------------------------------
 Inscripted doesn't feature typical classes. Items are the main way for players to express themselves! Items are one of the cores of a player's build, and there are many item archetypes that can help one achieve their ideal build! Each archetype reinforces a particular playstyle and they can be mixed and matched together to fit one's needs!
 
-![STR](https://github.com/amorabot/Inscripted/assets/16783145/d3ac961a-b556-4d9e-b672-b25967463820)
-The strength attribute will typically represent physical stats (damage, mitigation) and it's associated element is Fire.
+![STR](https://github.com/amorabot/Inscripted/assets/16783145/d3ac961a-b556-4d9e-b672-b25967463820) The strength attribute is represented by the element Fire aswell as physical stats (damage & mitigation).
 
-![DEX](https://github.com/amorabot/Inscripted/assets/16783145/c67f9dcd-c9c3-4956-b1fa-3e7e78c6be5c)
-The dexterity attribute will typically represent evasiveness and movement speed stats. It's associated element is Lightning.
+![DEX](https://github.com/amorabot/Inscripted/assets/16783145/c67f9dcd-c9c3-4956-b1fa-3e7e78c6be5c) The dexterity attribute is represented by the element Lightning aswell as evasiveness and mobility stats.
 
-![INT](https://github.com/amorabot/Inscripted/assets/16783145/85a0fec7-05a0-4065-9d50-01beb940a423)
-The intelligence attribute will typically represent elemental stats and stamina. It's associated element is Cold.
+![INT](https://github.com/amorabot/Inscripted/assets/16783145/85a0fec7-05a0-4065-9d50-01beb940a423) The intelligence attribute is represented by the element Cold aswell as elemental and stamina stats.
 
 Some archetypes will represent a mixture of the main 3 attribute's characteristics. For example, the Gladiator is a hybrid class that taps both into Strength and Dexterity.
 
 --------------------------------------------------
 
-## Example:
+## Itemization example:
 
-### A typical axe will be a strength-aligned weapon that fits the Marauder archetype. A more specialized and rarer axe, like Relic Axes, can bend those rules and still be alligned with the strength attribute but offer tradeoffs for being able to tap into other achetype's typical characteristics, allowing for more fun and diverse builds(A axe could convert a fraction of your fire damage into cold, but increase your cold damage taken, leaning into Intelligence but giving tradeoffs). 
+### One of the core archetypes is the Templar! A god-fearing warrior with a mighty body and unwavering faith.
+
+As you wil see in the next section about the archetypes themselves, the Templar is a Hybrid Archetype that mixes both aspects of Strength and Intelligence.
+When choosing templar items, you are a blank canvas:
+
+![image](https://github.com/amorabot/Inscripted/assets/16783145/6fac0327-09ba-430a-bc5e-a3bb5b408d40)
+
+### And you can choose wether you want to take advantage of your physical strength to overpower your foes (More Strength-Aligned):
+
+![image](https://github.com/amorabot/Inscripted/assets/16783145/681dfb5a-b819-4c6f-8dec-a13d0dde0caa)
+
+### Or channel your faith and connection with the arcane through your Mace, piercing through the enemies resistances (More Intelligence Aligned):
+
+![image](https://github.com/amorabot/Inscripted/assets/16783145/8ccfb02c-00fe-45a5-b938-021353c3367d)
+
+### Or a mixture of both!
+
+### And Relic items exist as a way to reinforce those decisions or create new ones entirely!
 --------------------------------------------------
 
-Next will be the descriptions and general characteristics of all current archetypes: 
+# Core Archetypes: 
 
 -----------------------------------------------------------------------------------------------------------------
 
@@ -95,8 +126,9 @@ Next will be the descriptions and general characteristics of all current archety
 ![STR](https://github.com/amorabot/Inscripted/assets/16783145/d3ac961a-b556-4d9e-b672-b25967463820)
 
 
-The Marauder is a warrior that wears heavy and protective armor and specilizes in strong physical blows, shredding through enemies defences.
+The Marauder is a warrior that wears heavy and protective armor and specilizes in strong physical blows, shredding through the enemies defences.
 
+Their weapon of choice is the Axe, wearing Heavy Plating armor.
 
 ![Shield](https://github.com/amorabot/Inscripted/assets/16783145/000e65c4-7794-4120-8662-b1741e6dbd31)
 *Defences:*
@@ -116,8 +148,10 @@ Physical Damage and penetration.
 ![STR](https://github.com/amorabot/Inscripted/assets/16783145/d3ac961a-b556-4d9e-b672-b25967463820)
 ![DEX](https://github.com/amorabot/Inscripted/assets/16783145/c67f9dcd-c9c3-4956-b1fa-3e7e78c6be5c)
 
-A fierce duelist that excels at battle. the Gladiator prefers quicker and wider blows to finish their enemies, and of course, all of that
-while wearing the fanciest of armor and showing off some of their agility in combat.
+A fierce duelist that excels at battle. the Gladiator prefers precise and quicker blows to finish their enemies. And of course, all of that
+while wearing the fanciest of armor, showing off their agility and form in combat.
+
+Their weapon of choice is the Sword, wearing Carved Plating armor.
 
 ![Shield](https://github.com/amorabot/Inscripted/assets/16783145/000e65c4-7794-4120-8662-b1741e6dbd31)
 *Defences:*
@@ -140,6 +174,8 @@ Damage variety, Stamina and Critical strikes.
 
 The Mercenary is agile and decisive, having long range and high mobility to dictate the pace of battle.
 
+Their weapon of choice is the Bow/Crossbow, wearing Light Cloth armor.
+
 ![Shield](https://github.com/amorabot/Inscripted/assets/16783145/000e65c4-7794-4120-8662-b1741e6dbd31)
 *Defences:*
 
@@ -161,6 +197,8 @@ Long-range physical damage, penetration and ailments.
 
 Although The Rogue has shorter range than average, they're elusive and sneaky. They can vanish before your eyes and strike a deadly backstab in a instant!
 
+Their weapon of choice is the Dagger, wearing Runic Leather armor.
+
 ![Shield](https://github.com/amorabot/Inscripted/assets/16783145/000e65c4-7794-4120-8662-b1741e6dbd31)
 *Defences:*
 
@@ -181,6 +219,8 @@ Backstab damage multiplier, critical strikes and multipliers.
 
 The Sorcerer conjures the arcane in combat to cast powerful projectiles and spells. Although not as mobile as the Mercenary, they're very adaptable and a force to be reckoned with.
 
+Their weapon of choice is the Wand, wearing Enchanted Silk armor.
+
 ![Shield](https://github.com/amorabot/Inscripted/assets/16783145/000e65c4-7794-4120-8662-b1741e6dbd31)
 *Defences:*
 
@@ -200,7 +240,9 @@ Elemental damage and penetration.
 ![INT](https://github.com/amorabot/Inscripted/assets/16783145/85a0fec7-05a0-4065-9d50-01beb940a423)
 ![STR](https://github.com/amorabot/Inscripted/assets/16783145/d3ac961a-b556-4d9e-b672-b25967463820)
 
-The Templar is a righteous warrior that has the might and the faith to overcome their foes. They specialize in area effects and buffs with their prayers, being a bastion for those in need
+The Templar is a righteous warrior that has the might and the faith to overcome their foes. They specialize in area effects and buffs with their prayers, being a bastion for those in need.
+
+Their weapon of choice is the Mace, wearing Runic Steel armor.
 
 ![Shield](https://github.com/amorabot/Inscripted/assets/16783145/000e65c4-7794-4120-8662-b1741e6dbd31)
 *Defences:*
@@ -215,25 +257,3 @@ Moderate physical mitigation and ward.
 Heavy elemental damage, area damage.
 
 -----------------------------------------------------------------------------------------------------------------
-
-
-<br/><br/>
-<details>
-<summary>Mob system</summary>
-
-# Custom Mobs:
-  - ![image](https://user-images.githubusercontent.com/16783145/229311488-ecff6cdb-bf89-4526-9ba8-b1a05c2f9c6c.png)
-# Custom Drops:
-  - ![image](https://user-images.githubusercontent.com/16783145/229311923-8271516b-9ac5-4bff-871e-a0f96e9e0be5.png)
-</details>
-
-<br/><br/>
------------------------------------------------------------------------------------------------------------------
-<details>
-<summary>Player profile storage</summary>
-
-# Player profile storage using JSON format:
-![image](https://github.com/amorabot/RPG-Elements/assets/16783145/ad3a6724-b3c7-4681-98e3-80eb6ce96334)
-
-# Basic CRUD operations with profiles
-</details>
