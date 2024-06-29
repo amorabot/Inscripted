@@ -1,6 +1,4 @@
-# Inscripted
-
-![logo-beeg](https://github.com/amorabot/Inscripted/assets/16783145/7a0b5918-e269-4e26-a5c1-4479d8bed8e9)
+![logoextended](https://github.com/amorabot/Inscripted/assets/16783145/3af46604-2387-4459-9f58-179b6564f0b8)
 
 -----------------------------------------------------------------------------------------------------------------
 
