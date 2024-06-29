@@ -105,17 +105,17 @@ When choosing templar items, you are a blank canvas:
 
 ![image](https://github.com/amorabot/Inscripted/assets/16783145/6fac0327-09ba-430a-bc5e-a3bb5b408d40)
 
-### And you can choose wether you want to take advantage of your physical strength to overpower your foes (More Strength-Aligned):
+And you can choose wether you want to take advantage of your physical strength to overpower your foes (More Strength-Aligned):
 
 ![image](https://github.com/amorabot/Inscripted/assets/16783145/681dfb5a-b819-4c6f-8dec-a13d0dde0caa)
 
-### Or channel your faith and connection with the arcane through your Mace, piercing through the enemies resistances (More Intelligence Aligned):
+Or channel your faith and connection with the arcane through your Mace, piercing through the enemies resistances (More Intelligence Aligned):
 
 ![image](https://github.com/amorabot/Inscripted/assets/16783145/8ccfb02c-00fe-45a5-b938-021353c3367d)
 
-### Or a mixture of both!
+Or a mixture of both!
 
-### And Relic items exist as a way to reinforce those decisions or create new ones entirely!
+And Relic items exist as a way to reinforce those decisions or create new ones entirely!
 --------------------------------------------------
 
 # Core Archetypes: 
