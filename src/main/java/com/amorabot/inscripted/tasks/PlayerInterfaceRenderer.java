@@ -9,10 +9,6 @@ import com.amorabot.inscripted.components.Player.StatCompiler;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.skills.GlobalCooldownManager;
 import com.amorabot.inscripted.skills.AbilityTypes;
-import com.amorabot.inscripted.utils.ColorUtils;
-import me.neznamy.tab.api.TabAPI;
-import me.neznamy.tab.api.TabPlayer;
-import me.neznamy.tab.api.nametag.UnlimitedNameTagManager;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -98,21 +94,22 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
     }
 
     private void renderCustomNametagsFor(Player player,int curHealth, int curWard){
-        if (TabAPI.getInstance().getNameTagManager() instanceof UnlimitedNameTagManager){
-            UnlimitedNameTagManager unm = (UnlimitedNameTagManager) TabAPI.getInstance().getNameTagManager();
-
-            String healthString = ColorUtils.translateColorCodes(DefenceTypes.HEALTH.getTextColorTag() + curHealth + DefenceTypes.HEALTH.getSpecialChar());
-            String wardString = ColorUtils.translateColorCodes(DefenceTypes.WARD.getTextColorTag() + curWard + DefenceTypes.WARD.getSpecialChar());
-            String finalString;
-            if (curWard == 0){
-                finalString = healthString;
-            } else {
-                finalString = healthString + " " + wardString;
-            }
-
-            TabPlayer tabPlayer = TabAPI.getInstance().getPlayer(player.getUniqueId());
-            unm.setLine(tabPlayer, "abovename", finalString);
-        }
+//        TabAPI.getInstance().getNameTagManager();
+//        if (TabAPI.getInstance().getNameTagManager() instanceof UnlimitedNameTagManager){
+//            UnlimitedNameTagManager unm = (UnlimitedNameTagManager) TabAPI.getInstance().getNameTagManager();
+//
+//            String healthString = ColorUtils.translateColorCodes(DefenceTypes.HEALTH.getTextColorTag() + curHealth + DefenceTypes.HEALTH.getSpecialChar());
+//            String wardString = ColorUtils.translateColorCodes(DefenceTypes.WARD.getTextColorTag() + curWard + DefenceTypes.WARD.getSpecialChar());
+//            String finalString;
+//            if (curWard == 0){
+//                finalString = healthString;
+//            } else {
+//                finalString = healthString + " " + wardString;
+//            }
+//
+//            TabPlayer tabPlayer = TabAPI.getInstance().getPlayer(player.getUniqueId());
+//            unm.setLine(tabPlayer, "abovename", finalString);
+//        }
     }
 
     public static PlayerInterfaceRenderer getInstance() {
