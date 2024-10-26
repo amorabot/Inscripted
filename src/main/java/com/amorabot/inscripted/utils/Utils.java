@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -221,5 +222,10 @@ public class Utils {
     }
     public static float calculateFinalFlatValue(int baseValue, int inc, int mult){
         return baseValue * ( 1 + (inc/100F)) * ( 1 + (mult/100F));
+    }
+    public static Vector limitVector(Vector v, double limitSize){
+//        if (v.isZero()){return v;}
+        if (v.lengthSquared() > (limitSize*limitSize)){return v.clone().normalize().multiply(limitSize);}
+        return v;
     }
 }

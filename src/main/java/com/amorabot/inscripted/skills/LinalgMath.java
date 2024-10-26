@@ -1,5 +1,7 @@
 package com.amorabot.inscripted.skills;
 
+import com.amorabot.inscripted.utils.Utils;
+import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 public class LinalgMath {
@@ -42,6 +44,41 @@ public class LinalgMath {
         return vec.multiply(cos(angleR))
                 .add(normalAxis.getCrossProduct(vec).multiply(sen(angleR)))
                 .add(normalAxis.multiply( (normalAxis.dot(vec)*(1-cos(angleR))) ));
+    }
+
+    public static Vector[] plotPointsInsideNonAlignedCircle(Vector center, Vector planeNormal, double radius, int numPoints){
+        Vector[] plottedPoints = new Vector[numPoints];
+
+        Vector xAxis = planeNormal.clone().crossProduct(new Vector(0,1,0)).normalize();
+        Vector yAxis = xAxis.clone().crossProduct(planeNormal);
+
+        for (int n = 0; n<numPoints; n++){
+            double intermediateRadius = Utils.getRandomInclusiveValue(0, radius);
+            double randomPhase = Utils.getRandomInclusiveValue(0, 359);
+            double rad = (randomPhase/180) * Math.PI;
+            Vector relativeXPos = xAxis.clone().multiply(intermediateRadius*cos(rad));
+            Vector relativeYPos = yAxis.clone().multiply(intermediateRadius*sen(rad));
+            Vector randomPoint = center.clone().add(relativeXPos).add(relativeYPos);
+            plottedPoints[n] = randomPoint;
+        }
+
+        return plottedPoints;
+    }
+
+    public static Vector[] plotNonAlignedCircleBorder(Vector center, Vector planeNormal, double radius, int numPoints){
+        Vector[] plottedPoints = new Vector[numPoints];
+
+        Vector xAxis = planeNormal.clone().crossProduct(new Vector(0,1,0)).normalize();
+        Vector yAxis = xAxis.clone().crossProduct(planeNormal);
+        double angleStepR = ((360D /numPoints)/180) * Math.PI;
+        for (int n = 0; n<numPoints; n++){
+            double currAngle = angleStepR*n;
+            Vector relativeXPos = xAxis.clone().multiply(radius*cos(currAngle));
+            Vector relativeYPos = yAxis.clone().multiply(radius*sen(currAngle));
+            Vector currentPoint = center.clone().add(relativeXPos).add(relativeYPos);
+            plottedPoints[n] = currentPoint;
+        }
+        return plottedPoints;
     }
 }
     /*

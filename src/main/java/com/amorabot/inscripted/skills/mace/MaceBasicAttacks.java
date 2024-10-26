@@ -35,8 +35,10 @@ public class MaceBasicAttacks {
             @Override
             public void run() {
                 ParticlePlotter.spawnParticleAt(slamCenter.clone().add(new Vector(0,0.5,0)), playerWorld, Particle.SWEEP_ATTACK);
+                ParticlePlotter.dustPlumeAt(slamCenter.toLocation(playerWorld), 20, 0.12f);
                 ParticlePlotter.plotColoredCircleAt(slamCenter, playerWorld, 160,160,160, 1.5F, (float) slamRadius, 16);
-                ParticlePlotter.plotCircleAt(slamCenter, playerWorld, Particle.ELECTRIC_SPARK, (float) slamRadius, 16);
+//                ParticlePlotter.plotCircleAt(slamCenter, playerWorld, Particle.ELECTRIC_SPARK, (float) slamRadius, 16);
+                ParticlePlotter.plotDirectionalCircleAt(slamCenter,playerWorld,Particle.ELECTRIC_SPARK, (float) (slamRadius-0.1f), 16, false, 0.3f);
                 //Checking collisions
                 final List<Player> nearbyPlayers = (List<Player>) slamCenter.toLocation(playerWorld).getNearbyPlayers(slamRadius+0.2);
                 nearbyPlayers.remove(player);

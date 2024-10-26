@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 import static com.amorabot.inscripted.skills.axe.AxeBasicAttacks.newAxeBasicAttackBy;
 import static com.amorabot.inscripted.skills.axe.AxeMovement.marauderMovement;
-import static com.amorabot.inscripted.skills.bow.BowBasicAttacks.bowBasicAttackBy;
+import static com.amorabot.inscripted.skills.bow.BowBasicAttacks.standardBowAttackBy;
 import static com.amorabot.inscripted.skills.bow.BowMovement.mercenaryMovement;
 import static com.amorabot.inscripted.skills.dagger.DaggerBasicAttacks.newDaggerBasicAttackBy;
 import static com.amorabot.inscripted.skills.dagger.DaggerMovement.rogueMovement;
@@ -19,7 +19,7 @@ import static com.amorabot.inscripted.skills.mace.MaceBasicAttacks.newMaceBasicA
 import static com.amorabot.inscripted.skills.mace.MaceMovement.templarMovement;
 import static com.amorabot.inscripted.skills.sword.SwordBasicAttacks.newSwordBasicAttackBy;
 import static com.amorabot.inscripted.skills.sword.SwordMovement.gladiatorMovement;
-import static com.amorabot.inscripted.skills.wand.WandBasicAttacks.wandBasicAttackBy;
+import static com.amorabot.inscripted.skills.wand.WandBasicAttacks.standardWandAttackBy;
 import static com.amorabot.inscripted.skills.wand.WandMovement.sorcererMovement;
 
 @Getter
@@ -40,7 +40,8 @@ public enum PlayerAbilities {
     BASIC_BOW_ATTACK(new int[5], new float[]{1,1,1,1,1},0, AbilityTypes.BASIC_ATTACK, HitTypes.PROJECTILE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            bowBasicAttackBy(caster, this);
+//            bowBasicAttackBy(caster, this);
+            standardBowAttackBy(caster, this, SteeringBehaviors.STRAIGHT_LINE, 1);
         }
     },
     BASIC_DAGGER_SLASH(new int[5], new float[]{1,1,1,1,1},0, AbilityTypes.BASIC_ATTACK, HitTypes.MELEE) {
@@ -52,7 +53,8 @@ public enum PlayerAbilities {
     BASIC_WAND_ATTACK(new int[5], new float[]{1,1,1,1,1},0,AbilityTypes.BASIC_ATTACK, HitTypes.PROJECTILE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            wandBasicAttackBy(caster, this);
+//            wandBasicAttackBy(caster, this);
+            standardWandAttackBy(caster, this, SteeringBehaviors.ARRIVE, 1);
         }
     },
     BASIC_MACE_SLAM(new int[5], new float[]{1,1,1,1,1},0,AbilityTypes.BASIC_ATTACK, HitTypes.MELEE,HitTypes.AOE) {

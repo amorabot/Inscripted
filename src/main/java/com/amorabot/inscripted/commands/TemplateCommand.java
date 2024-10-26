@@ -15,6 +15,12 @@ import com.amorabot.inscripted.components.buffs.categories.healing.HealingBuff;
 import com.amorabot.inscripted.components.buffs.categories.stat.StatBuff;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
+import com.amorabot.inscripted.skills.LinalgMath;
+import com.amorabot.inscripted.skills.ParticlePlotter;
+import com.amorabot.inscripted.skills.PlayerAbilities;
+import com.amorabot.inscripted.skills.SteeringBehaviors;
+import com.amorabot.inscripted.skills.attackInstances.projectile.Projectile;
+import com.amorabot.inscripted.skills.bow.BowBasicAttacks;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.*;
@@ -24,6 +30,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -128,6 +135,20 @@ public class TemplateCommand implements CommandExecutor {
                     rejuv.createHealingTask(baseHealing, player, player);
 
                     PlayerBuffManager.addBuffToPlayer(rejuv, player);
+                    return true;
+                case "seek":
+                    BowBasicAttacks.standardBowAttackBy(player, PlayerAbilities.BASIC_BOW_ATTACK, SteeringBehaviors.STRAIGHT_LINE, 4);
+//                    BowBasicAttacks.standardBowAttackBy(player, SteeringBehaviors.ARRIVE, 10);
+                    return true;
+                case "circle":
+                    Location loc = player.getLocation().clone().add(0,1.5,0);
+                    Vector raytracePos = Projectile.getRaytracedMaxDistance(loc, loc.getDirection(), 10);
+                    ParticlePlotter.spawnParticleAt(raytracePos, loc.getWorld(), Particle.GUST);
+                    Vector[] points = LinalgMath.plotPointsInsideNonAlignedCircle(raytracePos,loc.getDirection(), 6, 200);
+//                    Vector[] points = LinalgMath.plotNonAlignedCircleBorder(raytracePos,loc.getDirection(), 6, 100);
+                    for (Vector point : points){
+                        ParticlePlotter.spawnParticleAt(point, loc.getWorld(), Particle.ELECTRIC_SPARK);
+                    }
                     return true;
             }
         }

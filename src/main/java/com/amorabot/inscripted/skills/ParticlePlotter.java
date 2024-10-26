@@ -6,6 +6,8 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.util.Vector;
 
 import static com.amorabot.inscripted.utils.Utils.getRandomOffset;
+//Use block markers for player portals
+//Dust plume for slams (and orb sucess?)
 
 public class ParticlePlotter {
 
@@ -14,6 +16,17 @@ public class ParticlePlotter {
         particleBuilder.location(position.toLocation(world));
         particleBuilder.receivers(30);
         particleBuilder.count(0);
+        particleBuilder.spawn();
+    }
+    public static void spawnDirectionalParticle(Vector position, Vector dir, float vel, World world, Particle dirParticle){
+        ParticleBuilder particleBuilder = new ParticleBuilder(dirParticle);
+        particleBuilder.location(position.toLocation(world));
+        particleBuilder.receivers(30);
+
+        particleBuilder.count(0);
+        particleBuilder.offset(dir.getX(), dir.getY(), dir.getZ());
+        particleBuilder.extra(vel);
+
         particleBuilder.spawn();
     }
     public static void spawnOffsetParticleAt(Vector position, World world, Particle particle, double offX, double offY, double offZ){
@@ -63,6 +76,20 @@ public class ParticlePlotter {
             spawnParticleAt(currentPoint, world, particle);
         }
     }
+    public static void plotDirectionalCircleAt(Vector center, World world, Particle particle, float radius, int points, boolean inward, float vel){
+        double angleStep = 2*Math.PI/points;
+        for (double a = 0; a < 2*Math.PI; a+=angleStep){
+            double xPos = Math.sin(a)*radius;
+            double zPos = Math.cos(a)*radius;
+            Vector currentPoint = center.clone().add(new Vector(xPos, 0.4D, zPos));
+            Vector dir;
+            dir = currentPoint.clone().subtract(center).normalize();
+            if (inward){
+                dir.multiply(-1);
+            }
+            spawnDirectionalParticle(currentPoint, dir, vel, world, particle);
+        }
+    }
     public static void plotColoredCircleAt(Vector center, World world, int r, int g, int b, float particSize, float radius, int points){
         double angleStep = 2*Math.PI/points;
         for (double a = 0; a < 2*Math.PI; a+=angleStep){
@@ -87,11 +114,14 @@ public class ParticlePlotter {
         }
         ParticleBuilder particle = new ParticleBuilder(Particle.BLOCK);
         BlockData blockData = blockMaterial.createBlockData();
+
         particle.location(world,position.getX(),position.getY(),position.getZ());
         particle.receivers(30);
         particle.data(blockData);
+        particle.offset(0.3,0.3,0.3);
         particle.count(quantity);
         particle.extra(velocity);
+//        particle.
 //        particle.offset(20, 20, 20);
         particle.spawn();
     }
@@ -144,5 +174,14 @@ public class ParticlePlotter {
                     255, 240, 200, 1.5F);
             baseHeight = segmentEnd;
         }
+    }
+
+    public static void dustPlumeAt(Location loc, int amount, float vel){
+        ParticleBuilder particleBuilder = new ParticleBuilder(Particle.DUST_PLUME);
+        particleBuilder.location(loc);
+        particleBuilder.receivers(30);
+        particleBuilder.count(amount);
+        particleBuilder.extra(vel);
+        particleBuilder.spawn();
     }
 }
