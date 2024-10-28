@@ -14,6 +14,7 @@ import static com.amorabot.inscripted.skills.AbilityRoutines.getLargeHitbox;
 
 public class ProjectileCollision {
 
+    //TODO: Replace for 2 methods -> detection & execution
     public static void standard(Projectile projectile){
         Vector currentPosition = projectile.getPosition();
         Player attacker = Bukkit.getPlayer(projectile.getContext().getAttackerID());

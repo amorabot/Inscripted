@@ -51,8 +51,7 @@ public class Projectile extends PlayerAttack {
                       Vector initialPos, Vector baseVelocity, Vector baseAcceleration, Vector targetPos,
                       boolean hasGravity, boolean ignoreBlocks, boolean destroyOnContact, double maxSpeed, double maxForce, double maxTravelDistance, double detectionRange,
                       SteeringBehaviors behavior,Consumer<Projectile> trail, Consumer<Projectile> collision){
-        super(new AttackContext(attacker,sourceAbility));
-        getBlacklistedEntities().add(attacker.getUniqueId());
+        super(new AttackContext(attacker,sourceAbility), true);
         this.position = initialPos;
         this.velocity = baseVelocity;
         this.baseAcceleration = baseAcceleration;

@@ -18,7 +18,6 @@ import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
-import com.amorabot.inscripted.skills.GlobalCooldownManager;
 import com.amorabot.inscripted.tasks.CombatLogger;
 import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
@@ -223,6 +222,7 @@ public final class Inscripted extends JavaPlugin {
         getCommand("template").setExecutor(new TemplateCommand());
 
         //Has tab executor functionality, if its all in MobCommand class, no need to setTabCompleter()
+        getCommand("cast").setExecutor(new CastCommand());
         getCommand("mob").setExecutor(new MobCommand());
         getCommand("orb").setExecutor(new OrbCommand());
     }

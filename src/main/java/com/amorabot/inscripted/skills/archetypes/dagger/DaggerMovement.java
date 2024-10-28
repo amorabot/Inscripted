@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.skills.dagger;
+package com.amorabot.inscripted.skills.archetypes.dagger;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.Inscripted;

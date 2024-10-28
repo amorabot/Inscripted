@@ -1,10 +1,13 @@
 name: Inscripted
 version: '0.2'
 main: com.amorabot.inscripted.Inscripted
-api-version: 1.19
+api-version: 1.21
 permissions:
 
 commands:
+  cast:
+    description: Casts the selected player ability
+    usage: /cast
   orb:
     description: Command for easy currency access.
     usage: /orb

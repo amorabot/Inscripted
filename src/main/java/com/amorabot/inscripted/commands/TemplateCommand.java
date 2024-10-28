@@ -15,12 +15,13 @@ import com.amorabot.inscripted.components.buffs.categories.healing.HealingBuff;
 import com.amorabot.inscripted.components.buffs.categories.stat.StatBuff;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
-import com.amorabot.inscripted.skills.LinalgMath;
+import com.amorabot.inscripted.skills.math.LinalgMath;
 import com.amorabot.inscripted.skills.ParticlePlotter;
 import com.amorabot.inscripted.skills.PlayerAbilities;
 import com.amorabot.inscripted.skills.SteeringBehaviors;
 import com.amorabot.inscripted.skills.attackInstances.projectile.Projectile;
-import com.amorabot.inscripted.skills.bow.BowBasicAttacks;
+import com.amorabot.inscripted.skills.archetypes.bow.BowBasicAttacks;
+import com.amorabot.inscripted.skills.math.OrientedBoundingBox;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.*;
@@ -144,11 +145,21 @@ public class TemplateCommand implements CommandExecutor {
                     Location loc = player.getLocation().clone().add(0,1.5,0);
                     Vector raytracePos = Projectile.getRaytracedMaxDistance(loc, loc.getDirection(), 10);
                     ParticlePlotter.spawnParticleAt(raytracePos, loc.getWorld(), Particle.GUST);
-                    Vector[] points = LinalgMath.plotPointsInsideNonAlignedCircle(raytracePos,loc.getDirection(), 6, 200);
+//                    Vector[] points = LinalgMath.plotPointsInsideNonAlignedCircle(raytracePos,loc.getDirection(), 6, 200);
+                    Vector[] points = LinalgMath.plotPointsInsideNonAlignedCircle(raytracePos,loc.getDirection(), 6, 12);
 //                    Vector[] points = LinalgMath.plotNonAlignedCircleBorder(raytracePos,loc.getDirection(), 6, 100);
                     for (Vector point : points){
-                        ParticlePlotter.spawnParticleAt(point, loc.getWorld(), Particle.ELECTRIC_SPARK);
+                        ParticlePlotter.spawnParticleAt(point, loc.getWorld(), Particle.END_ROD);
                     }
+
+                    Vector zAxis = loc.getDirection();
+                    Vector xAxis = zAxis.clone().crossProduct(new Vector(0,1,0)).normalize();
+                    Vector yAxis = xAxis.clone().crossProduct(zAxis);
+                    OrientedBoundingBox spreadOBB = new OrientedBoundingBox(points, new Vector[]{xAxis,yAxis,zAxis});
+//                    spreadOBB.expandDirectional(2, true, 3);
+                    spreadOBB.expandFromCenter(3);
+                    spreadOBB.render(playerWorld);
+                    if (spreadOBB.intersects(player.getBoundingBox())){Utils.msgPlayer(player, "CollisioN!");}
                     return true;
             }
         }

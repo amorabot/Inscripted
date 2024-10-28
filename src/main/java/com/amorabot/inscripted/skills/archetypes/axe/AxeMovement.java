@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.skills.axe;
+package com.amorabot.inscripted.skills.archetypes.axe;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.Inscripted;

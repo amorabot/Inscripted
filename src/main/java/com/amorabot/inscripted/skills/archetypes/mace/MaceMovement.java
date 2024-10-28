@@ -1,8 +1,7 @@
-package com.amorabot.inscripted.skills.mace;
+package com.amorabot.inscripted.skills.archetypes.mace;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.skills.ParticlePlotter;
-import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;

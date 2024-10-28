@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.skills.mace;
+package com.amorabot.inscripted.skills.archetypes.mace;
 
 import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
 import com.amorabot.inscripted.APIs.damageAPI.DamageSource;

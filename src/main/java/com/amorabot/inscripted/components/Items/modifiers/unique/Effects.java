@@ -7,7 +7,7 @@ import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.stat.StatBuff;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
-import com.amorabot.inscripted.skills.GlobalCooldownManager;
+import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
 import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;

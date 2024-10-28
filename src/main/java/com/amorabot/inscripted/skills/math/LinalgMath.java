@@ -1,7 +1,6 @@
-package com.amorabot.inscripted.skills;
+package com.amorabot.inscripted.skills.math;
 
 import com.amorabot.inscripted.utils.Utils;
-import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 public class LinalgMath {
@@ -41,9 +40,9 @@ public class LinalgMath {
     //https://math.stackexchange.com/questions/2782529/is-the-maximum-rotation-by-multiplying-a-positive-definite-matrix-is-less-than-9
     //https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
     public static Vector rotateAroundGenericAxis(Vector normalAxis, Vector vec, double angleR){
-        return vec.multiply(cos(angleR))
+        return vec.clone().multiply(cos(angleR))
                 .add(normalAxis.getCrossProduct(vec).multiply(sen(angleR)))
-                .add(normalAxis.multiply( (normalAxis.dot(vec)*(1-cos(angleR))) ));
+                .add(normalAxis.clone().multiply( (normalAxis.dot(vec)*(1-cos(angleR))) ));
     }
 
     public static Vector[] plotPointsInsideNonAlignedCircle(Vector center, Vector planeNormal, double radius, int numPoints){
@@ -79,6 +78,49 @@ public class LinalgMath {
             plottedPoints[n] = currentPoint;
         }
         return plottedPoints;
+    }
+
+    //Assumes normalized axis
+    public static double[] getProjectionExtents(Vector[] points, Vector axis){
+        if (axis==null){return new double[2];}
+
+        double minProjection = Integer.MAX_VALUE;
+        double maxProjection = Integer.MIN_VALUE;
+
+        for (Vector point : points){
+            if (point==null || point.isZero()){return new double[2];}
+            double currentDot = axis.dot(point); //Projection value along "axis"
+            minProjection = Math.min(minProjection, currentDot);
+            maxProjection = Math.max(maxProjection, currentDot);
+        }
+
+        return new double[]{minProjection, maxProjection};
+    }
+
+    //https://gamedev.stackexchange.com/questions/44500/how-many-and-which-axes-to-use-for-3d-obb-collision-with-sat  => Logic behind 3D S.A.T. with OBB
+    public static boolean areSeparated(Vector[] vertsA, Vector[] vertsB, Vector axis){
+        if (axis.isZero()){return false;}
+
+        //Get both projections along "axis"
+        double[] projectionA = getProjectionExtents(vertsA, axis);
+        double[] projectionB = getProjectionExtents(vertsB, axis);
+
+        //Once we have all projections, we can do a simple one-dimensional intersection check (because "axis" is normalized)
+        //NOT SEPARATED => Length of Proj A + Length of Proj B is greater than the Length from minimal value to max value
+        //----------X-------------------------------O-------X-----------------------------------------------O----------
+        //          |                               |       |                                               |
+        //        minA----------------------------- | ----maxA                                              |
+        //                                        minB-----------------------------------------------------maxB
+
+        //SEPARATED => The length from the minValue to maxValue is greater than the sum of both lengths
+        //----------X---------------------------------------X----------O--------------------------------------------------------O----------
+        //          |                                       |          |                                                        |
+        //        minA------------------------------------maxA         |                                                        |
+        //                                                           minB-----------------------------------------------------maxB
+
+        double longSpan = Math.max(projectionA[1],projectionB[1]) - Math.min(projectionA[0],projectionB[0]);
+        double sumSpan = (projectionA[1]-projectionA[0]) + (projectionB[1]-projectionB[0]);
+        return longSpan >= sumSpan; //Handles when the projections are touching
     }
 }
     /*

@@ -1,5 +1,6 @@
-package com.amorabot.inscripted.skills;
+package com.amorabot.inscripted.skills.casting;
 
+import com.amorabot.inscripted.skills.PlayerAbilities;
 import lombok.Getter;
 
 public class CasterState {

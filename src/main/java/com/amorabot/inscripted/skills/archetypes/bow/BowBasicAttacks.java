@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.skills.bow;
+package com.amorabot.inscripted.skills.archetypes.bow;
 
 import com.amorabot.inscripted.skills.PlayerAbilities;
 import com.amorabot.inscripted.skills.SteeringBehaviors;

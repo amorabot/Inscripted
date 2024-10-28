@@ -7,7 +7,7 @@ import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.StatCompiler;
 import com.amorabot.inscripted.managers.JSONProfileManager;
-import com.amorabot.inscripted.skills.GlobalCooldownManager;
+import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
 import com.amorabot.inscripted.skills.AbilityTypes;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;

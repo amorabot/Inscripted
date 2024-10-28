@@ -22,6 +22,7 @@ public class Stats implements EntityComponent {
     https://www.poewiki.net/wiki/Damage_conversion#Conversion_order
     */
 
+    //TODO: make atk speed a stat (+1, -3, +2)
     private Map<PlayerStats, Map<ValueTypes, int[]>> playerStats = new HashMap<>();
     private Map<PlayerStats, Map<ValueTypes, int[]>> externalStats = new HashMap<>();
 

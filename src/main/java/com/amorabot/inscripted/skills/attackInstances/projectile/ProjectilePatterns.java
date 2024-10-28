@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.skills.attackInstances.projectile;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.skills.LinalgMath;
+import com.amorabot.inscripted.skills.math.LinalgMath;
 import com.amorabot.inscripted.skills.PlayerAbilities;
 import com.amorabot.inscripted.skills.SteeringBehaviors;
 import com.amorabot.inscripted.utils.Utils;
