@@ -14,7 +14,7 @@ public class SwordBasicAttacks {
         boolean isInverted = Math.random() > 0.5;
         SlashConfigDTO slashConfig = new SlashConfigDTO(
                 20,100,2,-0.2, 0.1,
-                0.3,1.2, new int[]{173, 143, 130}, 0.7F, 0.2
+                0.3,1.2, new int[]{173, 143, 130}, null,0.7F, 0.2
         );
 
         Slash slash = new Slash(player, mappedAbility,slashConfig,

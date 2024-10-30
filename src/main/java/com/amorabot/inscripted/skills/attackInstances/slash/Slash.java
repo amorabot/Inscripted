@@ -53,7 +53,10 @@ public class Slash extends PlayerAttack {
         this.inverted = isInverted;
         this.randomized = isRandomized;
 
-        Vector[] slashOrientation = defineOrientation(player.getLocation(),planeRotation);
+        Vector[] slashOrientation = LinalgMath.defineOrientation(
+                player.getLocation(),
+                isMirrored,isInverted,isRandomized,
+                15, planeRotation);
 
         //Valid plotting will only occour when the given orientation is valid
         this.points = plot(player.getLocation(),player.isSprinting(), slashOrientation);
@@ -70,6 +73,11 @@ public class Slash extends PlayerAttack {
         }
         this.hitbox = new OrientedBoundingBox(mergedPoints,slashOrientation);
         this.hitbox.expandFromCenter(0.5);
+    }
+
+    public static Slash generateSlash(){
+        //Constructor call + execute()
+        return null;
     }
 
     @Override
@@ -98,109 +106,17 @@ public class Slash extends PlayerAttack {
 
     }
 
-    private Vector[] defineOrientation(Location playerLoc, double... planeRotation){
-        Vector initialDirection;
-        Vector perpendicularAxis;
-        Vector slashPlaneNormal;
-
-        if (Math.abs(playerLoc.getPitch()+90) <= 2){ //2 degree "facing up" threshold
-            initialDirection = new Vector(0, 1, 0);
-            //If the player is looking UP, we have their YAW to define a "facing" direction
-//            double yawRad = (playerLoc.getYaw()) /180*Math.PI;
-            double yawRad;
-            if (playerLoc.getYaw()>0){
-                yawRad = -(playerLoc.getYaw()) /180*Math.PI;
-            } else {
-                yawRad = (180-playerLoc.getYaw()) /180*Math.PI;
-            }
-            //Plane normal and "facing"
-            double xPos = Math.sin(yawRad);
-            double zPos = Math.cos(yawRad);
-            Vector planeNormal = new Vector(xPos, 0, zPos);
-            perpendicularAxis = planeNormal.clone().crossProduct(initialDirection);
-
-            slashPlaneNormal = planeNormal;
-        } else {
-            initialDirection = playerLoc.getDirection().clone();
-            Vector horizontalVec = new Vector(initialDirection.getX(), 0, initialDirection.getZ());
-            perpendicularAxis = initialDirection.clone().crossProduct(horizontalVec).normalize();
-            slashPlaneNormal = perpendicularAxis.clone().crossProduct(initialDirection);
-
-            //Slash randomization when view angle is low
-            if (planeRotation!= null && planeRotation.length>0){
-                if (playerLoc.getPitch() <=15 && playerLoc.getPitch() >= -15){ //When inside the 30deg view angle, apply the plane rotation
-                    double rotationAngle;
-                    if (isRandomized() && planeRotation.length==2){
-                        rotationAngle = Utils.getRandomInclusiveValue(planeRotation[0],planeRotation[1]);
-                    } else {
-                        rotationAngle = planeRotation[0];
-                    }
-                    if (isMirrored()){rotationAngle = -rotationAngle;}
-                    perpendicularAxis = LinalgMath.rotateAroundGenericAxis(initialDirection.clone(),perpendicularAxis.clone(), rotationAngle/180*Math.PI);
-
-                    slashPlaneNormal = perpendicularAxis.clone().crossProduct(initialDirection); //Update and override plane normal
-                }
-            }
-        }
-
-        if (isInverted()){perpendicularAxis.multiply(-1);}
-        return new Vector[]{perpendicularAxis,initialDirection,slashPlaneNormal};
-    }
-
     //randomizedAngleInterval must be a 1st quadrant angle value in DEG
     public Vector[][] plot(Location playerLoc, boolean sprinting, Vector[] orientation){
-        Vector[][] points = new Vector[2][getSlashData().segments()];
-
         if (!checkValidity(orientation)){
-            return points;
+            return new Vector[2][getSlashData().segments()];
         }
 
-        final double arc = getSlashData().arc();
-        final double angleStep = ( arc / getSlashData().segments()) /180*Math.PI;
-        double startingPhase = (arc/2) /180*Math.PI;
-        if (isMirrored()){
-            startingPhase = -startingPhase;
-        }
-
-        final Vector playerPos = playerLoc.toVector().clone().add(new Vector(0, 1.4, 0));
-
-        double minDistanceFromOrigin = 0.3;
-        if (sprinting){
-            minDistanceFromOrigin+=1.4;
-        }
-
-        Vector initialDirection = orientation[1];
-        Vector perpendicularAxis = orientation[0];
-
-        final Vector attackCenter = playerPos.clone().add(initialDirection.clone().multiply(minDistanceFromOrigin));
-
-        double t = startingPhase;
-        for (int segmentIndex = 0; segmentIndex < getSlashData().segments(); segmentIndex++){
-            double animationProgress = ((double) (segmentIndex)/ getSlashData().segments());
-
-
-            double swipeSize = getSlashData().startingLength() + (getSlashData().finalLength()-getSlashData().startingLength())*animationProgress;
-            double handleOffset = getSlashData().initialOffset() + (getSlashData().finalOffset()-getSlashData().initialOffset())*animationProgress;
-
-            Vector tip =
-                    attackCenter.clone()
-                            .add( initialDirection.clone().multiply((getSlashData().baseRadius()+handleOffset)*Math.cos(t)) )
-                            .add( perpendicularAxis.clone().multiply((getSlashData().baseRadius()+handleOffset)*Math.sin(t)) );
-            Vector radialDirection = attackCenter.clone().subtract(tip).normalize();
-
-            Vector handle = tip.clone().add(radialDirection.multiply(swipeSize));
-
-            points[0][segmentIndex] = tip;
-            points[1][segmentIndex] = handle;
-
-            if (isMirrored()){
-                t += angleStep;
-                continue;
-            }
-            t -= angleStep;
-        }
-
-        return points;
+        return LinalgMath.plotSlash(playerLoc, orientation, slashData.skewFactor(), false,
+                slashData.baseRadius(), slashData.arc(), slashData.segments(), isMirrored(),sprinting,
+                getSlashData().startingLength(), getSlashData().finalLength()-getSlashData().startingLength(),
+                getSlashData().initialOffset(), getSlashData().finalOffset()- getSlashData().initialOffset(),0
+                );
     }
 
     public void animate(int animationDuration){

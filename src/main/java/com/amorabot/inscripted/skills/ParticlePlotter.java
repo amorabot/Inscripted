@@ -121,8 +121,6 @@ public class ParticlePlotter {
         particle.offset(0.3,0.3,0.3);
         particle.count(quantity);
         particle.extra(velocity);
-//        particle.
-//        particle.offset(20, 20, 20);
         particle.spawn();
     }
 
@@ -142,7 +140,6 @@ public class ParticlePlotter {
             particlePos.add(step);
             spawnParticleAt(particlePos, world, particle);
         }
-//        spawnParticleAt(particlePos, world, Particle.ELECTRIC_SPARK);
     }
     public static void coloredParticleLerp(Vector begin, Vector end, float minDist, World world, int r, int g, int b, float size){
         int particleCount = (int) Math.round(Math.max(begin.distance(end)/minDist, 1));
@@ -171,7 +168,7 @@ public class ParticlePlotter {
             double zOff = (0.5+i)*getRandomOffset();
             Vector segmentEnd = new Vector(xOff, heightStep*(Math.max(0.6, Math.random())), zOff).add(baseHeight);
             coloredParticleLerp(baseHeight, segmentEnd, 0.3F, loc.getWorld(),
-                    255, 240, 200, 1.5F);
+                    245, 230, 80, 1.5F);
             baseHeight = segmentEnd;
         }
     }

@@ -14,7 +14,7 @@ public class AxeBasicAttacks {
         boolean isInverted = Math.random() > 0.5;
         SlashConfigDTO slashConfig = new SlashConfigDTO(
                 24,120,2.2,-0.3, 0.3,
-                0.4,1.4, new int[]{176, 126, 111}, 0.85F, 0.45
+                0.4,1.4, new int[]{176, 126, 111}, null,0.85F, 0.45
         );
 
         Slash slash = new Slash(player, mappedAbility,slashConfig,

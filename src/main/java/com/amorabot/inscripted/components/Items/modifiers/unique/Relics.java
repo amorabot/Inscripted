@@ -81,6 +81,7 @@ public enum Relics {
         return relicItemStack;
     }
 
+    //TODO: relic constructors should deserialize data from the relic definition file
     private Item generate(){
         if (slot.equals(ItemTypes.WEAPON)){
             RelicWeaponDAO weaponDAO = getRelicWeaponsData().get(this);

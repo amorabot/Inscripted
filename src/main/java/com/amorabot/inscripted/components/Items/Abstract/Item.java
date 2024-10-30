@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.components.Items.Abstract;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
@@ -63,6 +64,9 @@ public abstract class Item implements Serializable {
     }
     protected abstract void setup();
     //-------------------------------------------------------------------------
+    //TODO: Add a Function<Item,List<String>> that handles each section of the item's lore
+    //Based on internal factors, predefined renderers are selected to generate the lore
+    //Ex: Type -> Armor
     public <subType extends Enum<subType> & ItemSubtype> void imprint(ItemStack item, subType subType){
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;

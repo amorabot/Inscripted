@@ -14,7 +14,7 @@ public class DaggerBasicAttacks {
         boolean isInverted = Math.random() > 0.5;
         SlashConfigDTO slashConfig = new SlashConfigDTO(
                 12,90,1.6,0, 0,
-                1.1,1.1, new int[]{140,140,140}, 0.5F, 0.1
+                1.1,1.1, new int[]{140,140,140}, null, 0.5F, 0.1
         );
 
         Slash slash = new Slash(player, mappedAbility,slashConfig,

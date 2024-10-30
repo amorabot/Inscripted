@@ -137,6 +137,7 @@ public enum InscriptionID {
     TEMPLAR_RUNIC_STEEL("2 IMPLICIT INTELLIGENCE&STRENGTH ++&++ -&- +", 5, true),
 
     //=====UNIQUE MODS=====
+    //TODO: unique mods must have their generic unique stats defined inside the relic definition file and deserialized from there to Inscription form
     BLEEDING_HEART_BLD_CHANCE("1 UNIQUE BLEED +% x +", 1, true),
     BLEEDING_HEART_BLD_DMG("1 UNIQUE BLEED_DAMAGE +% - +", 1, true),
     OMINOUS_TWIG_ABYSSAL("1 UNIQUE ABYSSAL_DAMAGE ++ -/- +", 1, false),
@@ -212,6 +213,7 @@ public enum InscriptionID {
     OVERDRIVE("* UNIQUE EFFECT OVERDRIVE", 0, true);
 
 
+    //TODO: modifier tables must be moved to a separate enum containing all NAMED tables and subtables
     private static final Map<Affix, Map<InscriptionID, Map<Integer, int[]>>> MODIFIER_TABLE = new HashMap<>();
     private static final Map<InscriptionID, Map<Integer, int[]>> IMPLICIT_TABLE = new HashMap<>();
     private static final Map<InscriptionID, int[]> UNIQUE_MOD_TABLE = new HashMap<>();

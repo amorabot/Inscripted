@@ -14,7 +14,8 @@ import static com.amorabot.inscripted.skills.AbilityRoutines.getLargeHitbox;
 
 public class ProjectileCollision {
 
-    //TODO: Replace for 2 methods -> detection & execution
+    //TODO: Replace for 2 methods -> detection & execution //Detection can be a projectile standard method and execution a Consumer<Proj>
+    //that can mutate its internal value (like changing targets,resetting travel distance, chain, explosion,...)
     public static void standard(Projectile projectile){
         Vector currentPosition = projectile.getPosition();
         Player attacker = Bukkit.getPlayer(projectile.getContext().getAttackerID());
@@ -35,6 +36,7 @@ public class ProjectileCollision {
                 arrowAABB.expand(detectionRange/4);
 
                 if (playerAABB.overlaps(arrowAABB)){
+                    if (!attacker.hasLineOfSight(p)){continue;}
                     DamageRouter.playerAttack(attacker, p, DamageSource.HIT, projectile.getContext().getSourceAbility());
                     projectile.getAffectedEntities().add(p.getUniqueId());
                     if (projectile.isDestroyOnContact()){projectile.setValid(false);}
