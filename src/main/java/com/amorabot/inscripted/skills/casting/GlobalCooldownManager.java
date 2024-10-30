@@ -1,6 +1,8 @@
-package com.amorabot.inscripted.skills;
+package com.amorabot.inscripted.skills.casting;
 
 import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
+import com.amorabot.inscripted.skills.AbilityTypes;
+import com.amorabot.inscripted.skills.PlayerAbilities;
 import com.amorabot.inscripted.utils.Utils;
 
 import java.util.HashMap;

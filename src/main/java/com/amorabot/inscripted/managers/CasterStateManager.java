@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.managers;
 
-import com.amorabot.inscripted.skills.CasterState;
+import com.amorabot.inscripted.skills.casting.CasterState;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

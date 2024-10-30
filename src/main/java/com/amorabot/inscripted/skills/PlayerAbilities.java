@@ -5,60 +5,62 @@ import com.amorabot.inscripted.components.Items.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
+import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
 import com.amorabot.inscripted.skills.item.ItemPassiveAbilities;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 
-import static com.amorabot.inscripted.skills.axe.AxeBasicAttacks.newAxeBasicAttackBy;
-import static com.amorabot.inscripted.skills.axe.AxeMovement.marauderMovement;
-import static com.amorabot.inscripted.skills.bow.BowBasicAttacks.bowBasicAttackBy;
-import static com.amorabot.inscripted.skills.bow.BowMovement.mercenaryMovement;
-import static com.amorabot.inscripted.skills.dagger.DaggerBasicAttacks.newDaggerBasicAttackBy;
-import static com.amorabot.inscripted.skills.dagger.DaggerMovement.rogueMovement;
-import static com.amorabot.inscripted.skills.mace.MaceBasicAttacks.newMaceBasicAttackFor;
-import static com.amorabot.inscripted.skills.mace.MaceMovement.templarMovement;
-import static com.amorabot.inscripted.skills.sword.SwordBasicAttacks.newSwordBasicAttackBy;
-import static com.amorabot.inscripted.skills.sword.SwordMovement.gladiatorMovement;
-import static com.amorabot.inscripted.skills.wand.WandBasicAttacks.wandBasicAttackBy;
-import static com.amorabot.inscripted.skills.wand.WandMovement.sorcererMovement;
+import static com.amorabot.inscripted.skills.archetypes.axe.AxeBasicAttacks.standardAxeSlashBy;
+import static com.amorabot.inscripted.skills.archetypes.axe.AxeMovement.marauderMovement;
+import static com.amorabot.inscripted.skills.archetypes.bow.BowBasicAttacks.standardBowAttackBy;
+import static com.amorabot.inscripted.skills.archetypes.bow.BowMovement.mercenaryMovement;
+import static com.amorabot.inscripted.skills.archetypes.dagger.DaggerBasicAttacks.standardDaggerSlashBy;
+import static com.amorabot.inscripted.skills.archetypes.dagger.DaggerMovement.rogueMovement;
+import static com.amorabot.inscripted.skills.archetypes.mace.MaceBasicAttacks.newMaceBasicAttackFor;
+import static com.amorabot.inscripted.skills.archetypes.mace.MaceBasicAttacks.standardMaceSlamBy;
+import static com.amorabot.inscripted.skills.archetypes.mace.MaceMovement.templarMovement;
+import static com.amorabot.inscripted.skills.archetypes.sword.SwordBasicAttacks.standardSwordSlashBy;
+import static com.amorabot.inscripted.skills.archetypes.sword.SwordMovement.gladiatorMovement;
+import static com.amorabot.inscripted.skills.archetypes.wand.WandBasicAttacks.standardWandAttackBy;
+import static com.amorabot.inscripted.skills.archetypes.wand.WandMovement.sorcererMovement;
 
 @Getter
 public enum PlayerAbilities {
     BASIC_AXE_SLASH(new int[5], new float[]{1.1F,1,1,1,1},0, AbilityTypes.BASIC_ATTACK, HitTypes.MELEE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            //Extra skill flare goes here
-            newAxeBasicAttackBy(caster, this);
+            standardAxeSlashBy(caster, this);
         }
     },
     BASIC_SWORD_SLASH(new int[5], new float[]{1,1,1,1,1},0, AbilityTypes.BASIC_ATTACK, HitTypes.MELEE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            newSwordBasicAttackBy(caster, this);
+            standardSwordSlashBy(caster,this);
         }
     },
     BASIC_BOW_ATTACK(new int[5], new float[]{1,1,1,1,1},0, AbilityTypes.BASIC_ATTACK, HitTypes.PROJECTILE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            bowBasicAttackBy(caster, this);
+            standardBowAttackBy(caster, this, SteeringBehaviors.STRAIGHT_LINE, 1);
         }
     },
     BASIC_DAGGER_SLASH(new int[5], new float[]{1,1,1,1,1},0, AbilityTypes.BASIC_ATTACK, HitTypes.MELEE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            newDaggerBasicAttackBy(caster, this);
+            standardDaggerSlashBy(caster,this);
         }
     },
     BASIC_WAND_ATTACK(new int[5], new float[]{1,1,1,1,1},0,AbilityTypes.BASIC_ATTACK, HitTypes.PROJECTILE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            wandBasicAttackBy(caster, this);
+            standardWandAttackBy(caster, this, SteeringBehaviors.ARRIVE, 1);
         }
     },
     BASIC_MACE_SLAM(new int[5], new float[]{1,1,1,1,1},0,AbilityTypes.BASIC_ATTACK, HitTypes.MELEE,HitTypes.AOE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            newMaceBasicAttackFor(caster, this);
+            standardMaceSlamBy(caster,this);
+//            newMaceBasicAttackFor(caster, this);
         }
     },
 
@@ -175,6 +177,7 @@ public enum PlayerAbilities {
     };
 
 
+    //TODO: turn into a config file
     private final AbilityTypes type;
     private final HitTypes[] tags;
     private final int[] abilityBaseDamage;

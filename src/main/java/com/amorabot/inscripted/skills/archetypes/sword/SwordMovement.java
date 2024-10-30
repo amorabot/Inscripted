@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.skills.sword;
+package com.amorabot.inscripted.skills.archetypes.sword;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.skills.ParticlePlotter;

@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class Profile {
+    //TODO: Make a getAsTextComponent() for all profile components, to summarize player data
     private HealthComponent health;
     private DefenceComponent defences;
     private DamageComponent damage;

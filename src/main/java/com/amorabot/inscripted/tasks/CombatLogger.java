@@ -4,17 +4,12 @@ import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.utils.Utils;
 import me.neznamy.tab.api.TabAPI;
 import me.neznamy.tab.api.TabPlayer;
-import me.neznamy.tab.api.nametag.UnlimitedNameTagManager;
+import me.neznamy.tab.api.nametag.NameTagManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.Team;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -55,7 +50,7 @@ public class CombatLogger extends BukkitRunnable {
         }
         COMBAT.put(playerID, COMBAT_TIMER); //COMBAT_TIMER seconds for combat to deplete
         player.setMetadata(COMBAT_TAG, Inscripted.getPlugin().getMetadataTag());
-        setCombatTag(player);
+        setCombatTag(player, false);
     }
 
     public static void addToPvPCombat(Player attacker, Player defender){
@@ -89,11 +84,15 @@ public class CombatLogger extends BukkitRunnable {
             player.removeMetadata(PVP_TAG, Inscripted.getPlugin());
         }
 
-        UnlimitedNameTagManager unm = (UnlimitedNameTagManager) TabAPI.getInstance().getNameTagManager();
+//        UnlimitedNameTagManager unm = (UnlimitedNameTagManager) TabAPI.getInstance().getNameTagManager();
         TabPlayer tabPlayer = TabAPI.getInstance().getPlayer(playerID);
-        assert unm != null;
-        unm.setSuffix(tabPlayer,unm.getOriginalSuffix(tabPlayer));
-        unm.setName(tabPlayer, unm.getOriginalName(tabPlayer));
+        NameTagManager ntm = TabAPI.getInstance().getNameTagManager();
+        assert tabPlayer != null;
+        assert ntm != null;
+        ntm.setSuffix(tabPlayer, "");
+//        assert unm != null;
+//        unm.setSuffix(tabPlayer,unm.getOriginalSuffix(tabPlayer));
+//        unm.setName(tabPlayer, unm.getOriginalName(tabPlayer));
     }
 
     public static boolean isInCombat(Player player){
@@ -101,20 +100,34 @@ public class CombatLogger extends BukkitRunnable {
         return COMBAT.containsKey(PUUID);
     }
 
-    private static void setCombatTag(Player player){
-        UnlimitedNameTagManager unm = (UnlimitedNameTagManager) TabAPI.getInstance().getNameTagManager();
+    private static void setCombatTag(Player player, boolean isPvP){
+//        UnlimitedNameTagManager unm = (UnlimitedNameTagManager) TabAPI.getInstance().getNameTagManager();
+//        TabPlayer tabPlayer = TabAPI.getInstance().getPlayer(player.getUniqueId());
+//        assert unm != null;
+//        //TODO: check if changes are actually needed on this call
+//        unm.setSuffix(tabPlayer," &f⚔");
         TabPlayer tabPlayer = TabAPI.getInstance().getPlayer(player.getUniqueId());
-        assert unm != null;
-        //TODO: check if changes are actually needed on this call
-        unm.setSuffix(tabPlayer," &f⚔");
+        NameTagManager ntm = TabAPI.getInstance().getNameTagManager();
+        assert tabPlayer != null;
+        assert ntm != null;
+        if (isPvP){
+            ntm.setSuffix(tabPlayer," &e⚔");
+            return;
+        }
+        ntm.setSuffix(tabPlayer," &f⚔");
     }
-    private static void setNeutralNametag(Player player){
-        UnlimitedNameTagManager unm = (UnlimitedNameTagManager) TabAPI.getInstance().getNameTagManager();
-        TabPlayer tabPlayer = TabAPI.getInstance().getPlayer(player.getUniqueId());
-        assert unm != null;
-        unm.setName(tabPlayer,"&e"+unm.getOriginalName(tabPlayer));
-        //If the name has not changed, change it
-    }
+//    private static void setNeutralNametag(Player player){
+////        UnlimitedNameTagManager unm = (UnlimitedNameTagManager) TabAPI.getInstance().getNameTagManager();
+////        TabPlayer tabPlayer = TabAPI.getInstance().getPlayer(player.getUniqueId());
+////        assert unm != null;
+////        unm.setName(tabPlayer,"&e"+unm.getOriginalName(tabPlayer));
+//        TabPlayer tabPlayer = TabAPI.getInstance().getPlayer(player.getUniqueId());
+//        NameTagManager ntm = TabAPI.getInstance().getNameTagManager();
+//        assert tabPlayer != null;
+//        assert ntm != null;
+//        ntm.setSuffix(tabPlayer," &e⚔");
+//        //If the name has not changed, change it
+//    }
 
     private static void resetPvPStatusFor(Player player){
         COMBAT.put(player.getUniqueId(), PVP_COMBAT_TIMER);
@@ -125,8 +138,8 @@ public class CombatLogger extends BukkitRunnable {
             player.setMetadata(COMBAT_TAG, Inscripted.getPlugin().getMetadataTag());
         }
         //Adjusting the pvp player's nametag
-        setCombatTag(player);
-        setNeutralNametag(player);
+        setCombatTag(player, true);
+//        setNeutralNametag(player);
     }
 
     public static CombatLogger getInstance() {

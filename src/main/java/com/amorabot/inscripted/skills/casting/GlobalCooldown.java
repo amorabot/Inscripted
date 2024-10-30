@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.skills;
+package com.amorabot.inscripted.skills.casting;
 
 import lombok.Getter;
 import lombok.Setter;
