@@ -52,4 +52,12 @@ public class ResourcesJSONReader {
         Utils.log("File not found. File's path: "+ fullPath);
         return null;
     }
+
+    public static InputStream getResourceJSONAt(String fullPath){
+        InputStream inputStream = ResourcesJSONReader.class.getResourceAsStream(fullPath);
+
+        if (inputStream!=null){return  inputStream;}
+        Utils.log("File not found. File's path: "+ fullPath);
+        return null;
+    }
 }

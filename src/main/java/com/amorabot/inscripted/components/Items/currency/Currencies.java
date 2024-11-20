@@ -5,16 +5,12 @@ import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
 import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRarities;
-import com.amorabot.inscripted.components.Items.DataStructures.ModifierManager;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
-import com.amorabot.inscripted.components.Items.ItemBuilder;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
-import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import com.amorabot.inscripted.utils.Utils;
@@ -53,7 +49,7 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             return true;
         }
     },
-    AUGMENT("Orb of augmentation", Material.LIGHT_BLUE_DYE,
+    AUGMENT("Runic Core", Material.LIGHT_BLUE_DYE,
             List.of("&7Enhances the rarity  ",
                     "&7of a &f&lCOMMON &7item",
                     "&7to &9&lMAGIC",
@@ -116,7 +112,7 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             return true;
         }
     },
-    REGAL("Regal orb", Material.YELLOW_DYE,
+    REGAL("Core enhancer", Material.YELLOW_DYE,
             List.of("&7Enhances the rarity  ",
                     "&7of a &9&lMAGIC item",
                     "&7to &e&lRARE",
@@ -509,82 +505,83 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
 
 
     public <SubType extends Enum<SubType> & ItemSubtype> boolean improvedRarityOrbUsage(ItemRarities from, ItemRarities to, Item itemData, SubType itemSubtype){
-        if (!itemData.getRarity().equals(from)){
-            return false;
-        }
-        Map<InscriptionID, Map<Integer, Integer>> affixTable;
-        itemData.setRarity(to);
-        if (ItemBuilder.isPrefix()){ //Choose wether the new mod is a prefix or not
-            //Load the respective mod table
-            affixTable = ItemBuilder.getAffixTableOf(Affix.PREFIX, itemData.getCategory(), itemSubtype);
-        } else {
-            affixTable = ItemBuilder.getAffixTableOf(Affix.SUFFIX, itemData.getCategory(), itemSubtype);
-        }
-        //Lets add the mods blocked by the item's level
-        Set<InscriptionID> illegalMods = new HashSet<>(ModifierManager.checkForIllegalMods(affixTable, itemData.getIlvl()));
-        ItemBuilder.addModTo(itemData, affixTable, illegalMods);
+//        if (!itemData.getRarity().equals(from)){
+//            return false;
+//        }
+//        Map<InscriptionID, Map<Integer, Integer>> affixTable;
+//        itemData.setRarity(to);
+//        if (ItemBuilder.isPrefix()){ //Choose wether the new mod is a prefix or not
+//            //Load the respective mod table
+//            affixTable = ItemBuilder.getAffixTableOf(Affix.PREFIX, itemData.getCategory(), itemSubtype);
+//        } else {
+//            affixTable = ItemBuilder.getAffixTableOf(Affix.SUFFIX, itemData.getCategory(), itemSubtype);
+//        }
+//        //Lets add the mods blocked by the item's level
+//        Set<InscriptionID> illegalMods = new HashSet<>(ModifierManager.checkForIllegalMods(affixTable, itemData.getIlvl()));
+//        ItemBuilder.addModTo(itemData, affixTable, illegalMods);
         return true;
     }
 
     public <SubType extends Enum<SubType> & ItemSubtype> void reroll(Item itemData, SubType subType){
-        Map<InscriptionID, Map<Integer, Integer>> prefixes = new HashMap<>();
-        Map<InscriptionID, Map<Integer, Integer>> suffixes = new HashMap<>();
-        Set<InscriptionID> illegalMods = new HashSet<>();
-        ItemBuilder.fillAllPrerequisiteTablesFor(itemData.getCategory(), subType, itemData.getIlvl(), prefixes, suffixes, illegalMods);
+//        Map<InscriptionID, Map<Integer, Integer>> prefixes = new HashMap<>();
+//        Map<InscriptionID, Map<Integer, Integer>> suffixes = new HashMap<>();
+//        Set<InscriptionID> illegalMods = new HashSet<>();
+//        ItemBuilder.fillAllPrerequisiteTablesFor(itemData.getCategory(), subType, itemData.getIlvl(), prefixes, suffixes, illegalMods);
 
-        switch (itemData.getRarity()){
-            case MAGIC -> ItemBuilder.addNewMagicModSet(itemData, prefixes, suffixes, illegalMods);
-            case RARE -> ItemBuilder.addNewRareModSet(itemData, prefixes, suffixes, illegalMods);
-        }
+//        switch (itemData.getRarity()){
+////            case MAGIC -> ItemBuilder.addNewMagicModSet(itemData, prefixes, suffixes, illegalMods);
+////            case RARE -> ItemBuilder.addNewRareModSet(itemData, prefixes, suffixes, illegalMods);
+//        }
     }
 
     public <SubType extends Enum<SubType> & ItemSubtype> boolean addRandomInscriptionTo(Item itemData, SubType subType){
-        Map<InscriptionID, Map<Integer, Integer>> prefixes = new HashMap<>();
-        Map<InscriptionID, Map<Integer, Integer>> suffixes = new HashMap<>();
-        Set<InscriptionID> illegalMods = new HashSet<>();
-        ItemBuilder.fillAllPrerequisiteTablesFor(itemData.getCategory(), subType, itemData.getIlvl(), prefixes, suffixes, illegalMods);
-
-        List<Inscription> itemMods = itemData.getInscriptionList();
-
-        switch (itemData.getRarity()){
-            case MAGIC -> {
-                if (itemMods.size() >= ItemRarities.MAGIC.getMaxMods()){
-                    return false;
-                }
-                if (ItemBuilder.isPrefix()){
-                    ItemBuilder.addModTo(itemData, prefixes, illegalMods);
-                } else {
-                    ItemBuilder.addModTo(itemData, suffixes, illegalMods);
-                }
-                return true;
-            }
-            case RARE -> {
-                if (itemMods.size() >= ItemRarities.RARE.getMaxMods()){
-                    return false;
-                }
-                int p = 0;
-                int s = 0;
-                for (Inscription mod : itemMods){
-                    if (mod.getInscription().getData().getAffixType().equals(Affix.PREFIX)){
-                        p++;
-                    } else {
-                        s++;
-                    }
-                }
-                boolean isPrefix = ItemBuilder.isPrefix();
-                if (isPrefix && p < 3){ //If a prefix is chosen and theyre not full
-                    ItemBuilder.addModTo(itemData, prefixes, illegalMods);
-                } else if (isPrefix) { //If its a prefix and theyre full, add a suffix
-                    ItemBuilder.addModTo(itemData, suffixes, illegalMods);
-                } else if (s < 3) { //If its not a prefix, add a suffix if theyre not full
-                    ItemBuilder.addModTo(itemData, suffixes, illegalMods);
-                } else {//If its not a prefix and suffixes are full, add a prefix anyway
-                    ItemBuilder.addModTo(itemData, prefixes, illegalMods);
-                }
-                return true;
-            }
-        }
-        //Functionality not mapped, thus invalid
+//        Map<InscriptionID, Map<Integer, Integer>> prefixes = new HashMap<>();
+//        Map<InscriptionID, Map<Integer, Integer>> suffixes = new HashMap<>();
+//        Set<InscriptionID> illegalMods = new HashSet<>();
+//        ItemBuilder.fillAllPrerequisiteTablesFor(itemData.getCategory(), subType, itemData.getIlvl(), prefixes, suffixes, illegalMods);
+//
+//        List<Inscription> itemMods = itemData.getInscriptionList();
+//
+//        switch (itemData.getRarity()){
+//            case MAGIC -> {
+//                if (itemMods.size() >= ItemRarities.MAGIC.getMaxMods()){
+//                    return false;
+//                }
+//                if (ItemBuilder.isPrefix()){
+//                    ItemBuilder.addModTo(itemData, prefixes, illegalMods);
+//                } else {
+//                    ItemBuilder.addModTo(itemData, suffixes, illegalMods);
+//                }
+//                return true;
+//            }
+//            case RARE -> {
+//                if (itemMods.size() >= ItemRarities.RARE.getMaxMods()){
+//                    return false;
+//                }
+//                int p = 0;
+//                int s = 0;
+//                for (Inscription mod : itemMods){
+//                    if (mod.getInscription().getData().getAffixType().equals(Affix.PREFIX)){
+//                        p++;
+//                    } else {
+//                        s++;
+//                    }
+//                }
+//                boolean isPrefix = ItemBuilder.isPrefix();
+//                if (isPrefix && p < 3){ //If a prefix is chosen and theyre not full
+//                    ItemBuilder.addModTo(itemData, prefixes, illegalMods);
+//                } else if (isPrefix) { //If its a prefix and theyre full, add a suffix
+//                    ItemBuilder.addModTo(itemData, suffixes, illegalMods);
+//                } else if (s < 3) { //If its not a prefix, add a suffix if theyre not full
+//                    ItemBuilder.addModTo(itemData, suffixes, illegalMods);
+//                } else {//If its not a prefix and suffixes are full, add a prefix anyway
+//                    ItemBuilder.addModTo(itemData, prefixes, illegalMods);
+//                }
+//                return true;
+//            }
+//        }
+//        //Functionality not mapped, thus invalid
+//        return false;
         return false;
     }
 

@@ -190,6 +190,10 @@ public class Utils {
         return x1*(1.0 - normalizedRand) + x2*normalizedRand; //Parametric mapping between x1 and x2
     }
 
+    public static int getRandomIntBetween(int max, int min){
+        return (int) ((Math.random() * ((max - min)+1)) + min);
+    }
+
     public static double getNormalizedValue(){
         return Math.random()/Math.nextDown(1.0);
         //nextDown(1) é o valor máximo de Math.random(), que não inclui 1.

@@ -4,8 +4,8 @@ import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
-import com.amorabot.inscripted.components.Items.Files.ResourcesJSONReader;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
+import com.amorabot.inscripted.inscriptions.InscriptionTable;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Material;
@@ -17,18 +17,14 @@ import java.util.*;
 public enum ArmorTypes implements ItemSubtype {
 
     HEAVY_PLATING("Heavy",TrimMaterial.REDSTONE),
-    CARVED_PLATING("Carved",TrimMaterial.GOLD),
+    CARVED_PLATING("Ornate",TrimMaterial.GOLD),
     LIGHT_CLOTH("Cloth",TrimMaterial.EMERALD),
     RUNIC_LEATHER("Pelt",TrimMaterial.NETHERITE),
     ENCHANTED_SILK("Silk",TrimMaterial.LAPIS),
     RUNIC_STEEL("Runisteel",TrimMaterial.AMETHYST);
 
 
-    private Map<String, Map<String, Map<Integer, Integer>>> helmetAffixes;
-    private Map<String, Map<String, Map<Integer, Integer>>> chestplateAffixes;
-    private Map<String, Map<String, Map<Integer, Integer>>> leggingsAffixes;
-    private Map<String, Map<String, Map<Integer, Integer>>> bootsAffixes;
-
+    private final InscriptionTable itemInscriptionTable;
 
     private static final double HELMET_MAIN_STAT_WEIGHT = 0.8;
     private static final double CHESTPLATE_MAIN_STAT_WEIGHT = 1.3;
@@ -50,11 +46,14 @@ public enum ArmorTypes implements ItemSubtype {
             this.names.put(tier, loadTierName(tier));
             this.baseStats.put(tier, loadBaseStats(tier));
         }
-        loadAffixes();
+        this.itemInscriptionTable = new InscriptionTable(this.toString());
     }
 
     public String getSubtypePrefix() {
         return prefix;
+    }
+    public InscriptionTable getTableData(){
+        return this.itemInscriptionTable;
     }
 
     public Material mapArmorBase(Tiers tier, ItemTypes armorBase){
@@ -70,29 +69,6 @@ public enum ArmorTypes implements ItemSubtype {
     }
 
 
-
-    private void loadAffixes(){
-        this.helmetAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.HELMET, this);
-        this.chestplateAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.CHESTPLATE, this);
-        this.leggingsAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.LEGGINGS, this);
-        this.bootsAffixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.BOOTS, this);
-
-        Utils.log("Modifiers loaded successfully! (" + this + ")");
-    }
-
-
-    public Map<String, Map<String, Map<Integer, Integer>>> getHelmetAffixes(){
-        return this.helmetAffixes;
-    }
-    public Map<String, Map<String, Map<Integer, Integer>>> getChestplateAffixes(){
-        return this.chestplateAffixes;
-    }
-    public Map<String, Map<String, Map<Integer, Integer>>> getLeggingsAffixes(){
-        return this.leggingsAffixes;
-    }
-    public Map<String, Map<String, Map<Integer, Integer>>> getBootsAffixes(){
-        return this.bootsAffixes;
-    }
 
     @Override
     public String loadTierName(Tiers tier) {

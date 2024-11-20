@@ -24,6 +24,7 @@ import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ public class Armor extends Item implements ItemCategory {
 
     public Armor(String name, int ilvl, ItemTypes slot, ArmorTypes type, int baseHealth, List<Inscription> inscriptions){ //Relic constructor
         super(ilvl, ItemRarities.RELIC, true, false, slot);
-        getModifiers().addAll(inscriptions);
+        getInscriptionList().addAll(inscriptions); //??????? wtf happened
         this.type = type;
         this.baseHealth = baseHealth;
         this.baseHealthVariance = 0;

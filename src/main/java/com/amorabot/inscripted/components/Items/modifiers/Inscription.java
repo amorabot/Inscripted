@@ -6,6 +6,7 @@ import com.amorabot.inscripted.components.Items.modifiers.data.InscriptionData;
 import com.amorabot.inscripted.components.Items.modifiers.data.ModifierData;
 import com.amorabot.inscripted.components.Items.modifiers.data.StatDefinition;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.inscriptions.InscriptionTable;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.EqualsAndHashCode;
@@ -23,6 +24,7 @@ public class Inscription implements Serializable {
 
     private InscriptionID inscription;
     private int tier; //0-maxTier
+    //Reconsider storing max tier (calculable)
     private int maxTier;
     private double basePercentile; //0-1
     private boolean imbued = false;
@@ -57,27 +59,26 @@ public class Inscription implements Serializable {
     }
 
     public int[] getMappedFinalValue(){ //Call for standard mods
-        int[] tableValues = InscriptionID.fetchValuesFor(this).clone();
+        int[] tableValues = InscriptionTable.queryValuesFor(this).clone();
         tableValues = negateValuesArrayIf(!this.getInscription().isPositive(), tableValues);
-        Utils.log("Fetched values ("+getInscription()+"): " + Arrays.toString(tableValues));
+//        Utils.log("Fetched values ("+getInscription()+"): " + Arrays.toString(tableValues));
         InscriptionData modData = (InscriptionData) getInscription().getData();
         RangeTypes range = modData.getDefinitionData().rangeType();
         return RangeTypes.mapFinalValuesFor(range, tableValues, getBasePercentile());
     }
     public int[] getMappedFinalValue(int modIndex){ //Call for hybrid mods
-        int[] tableValues = InscriptionID.fetchValuesFor(this).clone();
+        int[] tableValues = InscriptionTable.queryValuesFor(this).clone(); //Gets the raw values array to be split later
         tableValues = negateValuesArrayIf(!this.getInscription().isPositive(), tableValues);
         HybridInscriptionData modData = (HybridInscriptionData) getInscription().getData();
         StatDefinition[] defs = modData.getStatDefinitions();
         RangeTypes range = defs[modIndex].rangeType();
+        //The raw values array gets split based off "modData" internal state
         List<int[]> tableValueForCurrentMod = modData.splitValuesArray(tableValues);
         return RangeTypes.mapFinalValuesFor(range, tableValueForCurrentMod.get(modIndex), getBasePercentile());
     }
     private int[] negateValuesArrayIf(boolean isNegative ,int[] tableValues){
         if (isNegative){
-            return Arrays.stream(tableValues).map(value -> {
-                return -value;
-            }).toArray();
+            return Arrays.stream(tableValues).map(value -> -value).toArray();
         }
         return tableValues;
     }
@@ -142,15 +143,15 @@ public class Inscription implements Serializable {
         String finalDisplayName;
 
         if (modData instanceof InscriptionData inscriptionData){
-            int[] mappedValues = this.getMappedFinalValue();
+            int[] mappedImplicitValues = this.getMappedFinalValue();
             RangeTypes range = inscriptionData.getDefinitionData().rangeType();
-            String mappedDisplayName = range.substitutePlaceholders(mappedValues, rawDisplayName, "");
+            String mappedDisplayName = range.substitutePlaceholders(mappedImplicitValues, rawDisplayName, "");
             finalDisplayName = archetypeColor
                     + Utils.convertToPrettyString(Utils.decolor(mappedDisplayName).replace("&7", ""))
                     + detailsSuffix;
         }else if (modData instanceof HybridInscriptionData hybridInscriptionData){
             StatDefinition[] modDataArray = hybridInscriptionData.getStatDefinitions();
-            int numberOfMods = modDataArray.length;
+            final int numberOfMods = modDataArray.length;
             String[] templates = rawDisplayName.split(HybridInscriptionData.HYBRID_SEPARATOR);
             String[] mappedDisplayNames = new String[numberOfMods];
             for (int i = 0; i < numberOfMods; i++){

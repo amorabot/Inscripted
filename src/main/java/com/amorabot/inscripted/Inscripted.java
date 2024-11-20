@@ -2,18 +2,22 @@ package com.amorabot.inscripted;
 
 import com.amorabot.inscripted.commands.*;
 import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.inscripted.components.Items.Files.ItemModifiersConfig;
 import com.amorabot.inscripted.components.Items.Files.RelicEditor;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
 import com.amorabot.inscripted.handlers.GUI.GUIHandler;
 import com.amorabot.inscripted.handlers.Inventory.*;
 import com.amorabot.inscripted.handlers.misc.JoinQuitHandler;
 import com.amorabot.inscripted.handlers.misc.SunlightBurnHandler;
+import com.amorabot.inscripted.inscriptions.InscriptionDataManager;
+import com.amorabot.inscripted.inscriptions.InscriptionTable;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
@@ -34,9 +38,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static com.amorabot.inscripted.utils.Utils.log;
@@ -59,13 +61,13 @@ public final class Inscripted extends JavaPlugin {
         this.world = Bukkit.getWorld("world");
 
         initializeProfileJSON();
-//        initializeRelicItemData();
         reloadRoutine();
-        InscriptionID.loadModifiers();
+        InscriptionTable.loadValues();
+
         Utils.populatePrettyAlphabet();
         Utils.populateRomanChars();
 //        GlobalCooldownManager.setup();
-//        getWorld().getLivingEntities()
+
 
         commandsStartupRoutine();
         eventListenersStartupRoutine();
@@ -123,6 +125,8 @@ public final class Inscripted extends JavaPlugin {
         PlayerBuffManager.reloadOnlinePlayers();
 
         ItemModifiersConfig.setup();
+
+        InscriptionDataManager.setupFiles();
     }
 
     private void initializeProfileJSON(){

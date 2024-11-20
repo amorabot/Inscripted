@@ -1,7 +1,6 @@
 package com.amorabot.inscripted.components.Items.Abstract;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
@@ -45,7 +44,7 @@ public abstract class Item implements Serializable {
     protected String name;
     protected Material vanillaMaterial;
     protected boolean corrupted;
-    private final List<Inscription> modifiers = new ArrayList<>();
+    private final List<Inscription> inscriptions = new ArrayList<>();
 
     public Item(int ilvl, ItemTypes category){
         this.ilvl = ilvl;
@@ -121,11 +120,11 @@ public abstract class Item implements Serializable {
     }
     protected abstract void mapBase();
     public List<Inscription> getInscriptionList(){
-        return this.modifiers;
+        return this.inscriptions;
     }
     public Set<InscriptionID> getInscriptions(){
         Set<InscriptionID> auxSet = new HashSet<>();
-        for (Inscription mod : this.modifiers){
+        for (Inscription mod : this.inscriptions){
             auxSet.add(mod.getInscription());
         }
         return auxSet;

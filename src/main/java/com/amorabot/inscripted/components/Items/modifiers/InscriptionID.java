@@ -4,7 +4,6 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.RangeTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
-import com.amorabot.inscripted.components.Items.Files.ModifierEditor;
 import com.amorabot.inscripted.components.Items.modifiers.data.*;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
@@ -13,8 +12,6 @@ import lombok.Getter;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 @Getter
 public enum InscriptionID {
@@ -81,8 +78,11 @@ public enum InscriptionID {
     PERCENT_ELEMENTAL("1 PREFIX ELEMENTAL_DAMAGE %+ - +", 8, false),
     ADDED_PHYSICAL("1 PREFIX PHYSICAL_DAMAGE ++ -/- +", 9, false),
     ADDED_FIRE("1 PREFIX FIRE_DAMAGE ++ -/- +", 10, false),
+    LOCAL_FIRE_PERCENT("1 PREFIX FIRE_DAMAGE %+ - +", 5, false),
     ADDED_COLD("1 PREFIX COLD_DAMAGE ++ -/- +", 10, false),
+    LOCAL_COLD_PERCENT("1 PREFIX COLD_DAMAGE %+ - +", 5, false),
     ADDED_LIGHTNING("1 PREFIX LIGHTNING_DAMAGE ++ -/- +", 10, false),
+    LOCAL_LIGHTNING_PERCENT("1 PREFIX LIGHTNING_DAMAGE %+ - +", 5, false),
     ADDED_ABYSSAL("1 PREFIX ABYSSAL_DAMAGE ++ -/- +", 1, false),
     PHYSICAL_LIFESTEAL("1 PREFIX LIFESTEAL +% - +", 3, true),
     SHRED("1 PREFIX SHRED +% - +", 5, true),
@@ -104,11 +104,11 @@ public enum InscriptionID {
     //=====SUFFIXES=====
     //Regular suffixes
     STRENGTH("1 SUFFIX STRENGTH ++ - +", 8,true),
-    LESSER_STRENGTH("1 SUFFIX STRENGTH ++ - +", 8,true),
+//    LESSER_STRENGTH("1 SUFFIX STRENGTH ++ - +", 8,true),
     DEXTERITY("1 SUFFIX DEXTERITY ++ - +", 8,true),
-    LESSER_DEXTERITY("1 SUFFIX DEXTERITY ++ - +", 8,true),
+//    LESSER_DEXTERITY("1 SUFFIX DEXTERITY ++ - +", 8,true),
     INTELLIGENCE("1 SUFFIX INTELLIGENCE ++ - +", 8,true),
-    LESSER_INTELLIGENCE("1 SUFFIX INTELLIGENCE ++ - +", 8,true),
+//    LESSER_INTELLIGENCE("1 SUFFIX INTELLIGENCE ++ - +", 8,true),
     HEALTH_REGEN("1 SUFFIX HEALTH_REGEN ++ - +", 8, true),
     FIRE_RESISTANCE("1 SUFFIX FIRE_RESISTANCE +% - +", 8, true),
     LIGHTNING_RESISTANCE("1 SUFFIX LIGHTNING_RESISTANCE +% - +", 8, true),
@@ -119,6 +119,7 @@ public enum InscriptionID {
     STAMINA_REGEN("1 SUFFIX STAMINA %+ - +", 6, true),
     BLEEDING("1 SUFFIX BLEED +% - +", 4, true),
     CRITICAL_CHANCE("1 SUFFIX CRITICAL_CHANCE +% - +", 6, true),
+    COOLDOWN_REDUCTION("1 SUFFIX COOLDOWN_REDUCTION +% - +", 4, true),
     //Hybrid suffixes
 
     //=====IMPLICITS=====
@@ -212,11 +213,6 @@ public enum InscriptionID {
     OPPORTUNIST("* UNIQUE EFFECT OPPORTUNIST", 0, true),
     OVERDRIVE("* UNIQUE EFFECT OVERDRIVE", 0, true);
 
-
-    //TODO: modifier tables must be moved to a separate enum containing all NAMED tables and subtables
-    private static final Map<Affix, Map<InscriptionID, Map<Integer, int[]>>> MODIFIER_TABLE = new HashMap<>();
-    private static final Map<InscriptionID, Map<Integer, int[]>> IMPLICIT_TABLE = new HashMap<>();
-    private static final Map<InscriptionID, int[]> UNIQUE_MOD_TABLE = new HashMap<>();
 
     private final String definitionString;
     private final String displayName;
@@ -375,7 +371,7 @@ public enum InscriptionID {
         try {
             return PlayerStats.valueOf(statToken);
         } catch (IllegalArgumentException exception){
-            Utils.error("Invalid token for STAT on " + this.getClass().getSimpleName() + "'s definition string");
+            Utils.error("Invalid token for STAT on " + this + "'s definition string");
             return PlayerStats.HEALTH;
         }
     }
@@ -387,6 +383,7 @@ public enum InscriptionID {
     }
 
 
+    //TODO: Make polymorphic call
     private String getDisplayName(InscriptionData data){
         return data.getDefinitionData().getDisplayName(getMetaAnnotationData(), isPositive(), isGlobal());
     }
@@ -396,95 +393,5 @@ public enum InscriptionID {
         String secondDisplayName = statDefinitions[1].getDisplayName(getMetaAnnotationData(), isPositive(), isGlobal());
 
         return firstDisplayName + HybridInscriptionData.HYBRID_SEPARATOR + secondDisplayName;
-    }
-
-
-
-
-    /*
-    Modifier table methods
-    */
-    public static Map<Affix, Map<InscriptionID, Map<Integer, int[]>>> getModifierTable(){
-        return MODIFIER_TABLE;
-    }
-
-    public static Map<InscriptionID, Map<Integer, int[]>> getImplicitTable() {
-        return IMPLICIT_TABLE;
-    }
-
-    public static Map<InscriptionID, int[]> getUniqueTable() {
-        return UNIQUE_MOD_TABLE;
-    }
-
-    public static int[] fetchValuesFor(Inscription mod){
-        InscriptionID modID = mod.getInscription();
-        ModifierData data = modID.getData();
-        if (data.isUnique()){
-            return fetchUniqueValuesFor(modID);
-        } //Change the data source when the mod is unique
-        if (data.getAffixType().equals(Affix.IMPLICIT)){
-            return fetchValuesForImplicit(modID, mod.getTier());
-        }
-        return fetchValuesFor(modID, mod.getTier());
-    }
-    public static int[] fetchValuesFor(InscriptionID mod, int tier){
-        ModifierData modData = mod.getData();
-
-        Affix affixType = modData.getAffixType();
-
-        int[] values = getModifierTable().get(affixType).get(mod).get(tier);
-        if (values == null){
-            Utils.error("Invalid combination: " + mod + " & Tier " + tier);
-            return new int[4];
-        }
-        return values;
-    }
-    public static int[] fetchValuesForImplicit(InscriptionID mod, int tier){
-        int[] values = getImplicitTable().get(mod).get(tier);
-        if (values == null){
-            Utils.error("Invalid implicit combination: " + mod + " & Tier " + tier);
-            return new int[4];
-        }
-        return values;
-    }
-    public static int[] fetchUniqueValuesFor(InscriptionID mod){
-        int[] values = getUniqueTable().get(mod);
-        if (values == null){
-            Utils.error("Invalid modifier value for: " + mod);
-            return new int[2];
-        }
-        return values;
-    }
-
-    public static void loadModifiers(){
-        Map<InscriptionID, Map<Integer, int[]>> prefixModData = new HashMap<>();
-        Map<InscriptionID, Map<Integer, int[]>> suffixModData = new HashMap<>();
-
-        for (InscriptionID mod : InscriptionID.values()){
-            ModifierData modData = mod.getData();
-            Affix modAffixType = modData.getAffixType();
-
-            switch (modAffixType){
-                case PREFIX -> prefixModData.put(mod, mod.queryModifierValues());
-                case SUFFIX -> suffixModData.put(mod, mod.queryModifierValues());
-                case IMPLICIT -> IMPLICIT_TABLE.put(mod, mod.queryModifierValues());
-                case UNIQUE -> UNIQUE_MOD_TABLE.put(mod, ModifierEditor.getTableValuesFor(mod,mod.getTotalTiers()));
-            }
-        }
-        InscriptionID.MODIFIER_TABLE.put(Affix.PREFIX, prefixModData);
-        InscriptionID.MODIFIER_TABLE.put(Affix.SUFFIX, suffixModData);
-    }
-
-    public Map<Integer, int[]> queryModifierValues(){
-        ModifierData modData = getData();
-        if (modData.getAffixType().equals(Affix.UNIQUE)){
-            return null;
-        }
-        Map<Integer,int[]> tempTierValueMapping = new HashMap<>();
-        for (int i = 0; i < getTotalTiers(); i++){
-            int[] currValue = ModifierEditor.getTableValuesFor(this, i);
-            tempTierValueMapping.put(i, currValue);
-        }
-        return tempTierValueMapping;
     }
 }

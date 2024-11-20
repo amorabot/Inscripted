@@ -42,6 +42,7 @@ public enum PlayerStats {
     COLD_PENETRATION("Cold penetration"),
     WALK_SPEED("Walk speed"),
     AREA_DAMAGE("Area DMG"),
+    COOLDOWN_REDUCTION("CDR."),
     AOE("Area of Effect"),
     EXTRA_PROJECTILES("Extra proj."),
     HEALING_POWER("Healing power"),

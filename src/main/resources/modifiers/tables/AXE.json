@@ -1,0 +1,16 @@
+{
+  "specificMods": {},
+  "implicits": {
+    "MARAUDER_AXE": {
+      "0": [ 2 ],
+      "1": [ 4 ],
+      "2": [ 6 ],
+      "3": [ 8 ],
+      "4": [ 10 ]
+    }
+  },
+  "subtables": [
+    "GENERIC_WEAPON",
+    "STRENGTH_WEAPON"
+  ]
+}

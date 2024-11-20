@@ -1,0 +1,16 @@
+{
+  "specificMods": {},
+  "implicits": {
+    "MARAUDER_HEAVY_PLATING": {
+      "0": [ 6,8 ],
+      "1": [ 8,10 ],
+      "2": [ 10,12 ],
+      "3": [ 12,14 ],
+      "4": [ 14,16 ]
+    }
+  },
+  "subtables": [
+    "GENERIC_ARMOR",
+    "STRENGTH_ARMOR"
+  ]
+}

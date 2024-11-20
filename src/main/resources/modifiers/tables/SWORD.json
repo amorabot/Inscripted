@@ -1,0 +1,17 @@
+{
+  "specificMods": {},
+  "implicits": {
+    "GLADIATOR_SWORD": {
+      "0": [ 10 ],
+      "1": [ 15 ],
+      "2": [ 20 ],
+      "3": [ 25 ],
+      "4": [ 30 ]
+    }
+  },
+  "subtables": [
+    "GENERIC_WEAPON",
+    "DEXTERITY_WEAPON",
+    "STRENGTH_WEAPON"
+  ]
+}

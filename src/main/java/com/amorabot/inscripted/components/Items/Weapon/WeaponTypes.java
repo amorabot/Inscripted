@@ -5,6 +5,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.inscripted.components.Items.Files.ResourcesJSONReader;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
+import com.amorabot.inscripted.inscriptions.InscriptionTable;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Material;
@@ -31,8 +32,8 @@ public enum WeaponTypes implements ItemSubtype {
 
     private final Map<Tiers, int[]> damages = new HashMap<>();
     private final Map<Tiers, String> names = new HashMap<>();
-    @Getter
-    private Map<String, Map<String, Map<Integer, Integer>>> affixes;
+
+    private final InscriptionTable itemInscriptionTable;
 
 
     WeaponTypes(RangeCategory range, WeaponAttackSpeeds atkSpeed){
@@ -42,7 +43,11 @@ public enum WeaponTypes implements ItemSubtype {
             this.damages.put(tier, loadBaseDamages(tier));
             this.names.put(tier, loadTierName(tier));
         }
-        loadAffixes();
+        this.itemInscriptionTable = new InscriptionTable(this.toString());
+    }
+
+    public InscriptionTable getTableData(){
+        return this.itemInscriptionTable;
     }
 
 
@@ -58,12 +63,6 @@ public enum WeaponTypes implements ItemSubtype {
     }
     public Material mapWeaponBase(){
         return getRange().getItem();
-    }
-
-    private void loadAffixes(){
-        this.affixes = ResourcesJSONReader.getModifierTableFor(ItemTypes.WEAPON, this);
-
-        Utils.log("Modifiers loaded successfully!(" + this + ")");
     }
 
     @Override
