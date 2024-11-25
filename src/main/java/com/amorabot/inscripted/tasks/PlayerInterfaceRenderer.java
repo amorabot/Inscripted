@@ -6,6 +6,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.StatCompiler;
+import com.amorabot.inscripted.components.renderers.InscriptedPalette;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
 import com.amorabot.inscripted.skills.AbilityTypes;
@@ -32,10 +33,10 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             HealthComponent healthComponent = playerProfile.getHealthComponent();
             float maxHealth = healthComponent.getMaxHealth();
             float curHealth = healthComponent.getCurrentHealth();
-            String healthHex = DefenceTypes.HEALTH.getTextColorTag().replace("&", "");
+            String healthHex = InscriptedPalette.HEALTH.getColorString();
             float maxWard = healthComponent.getMaxWard();
             float curWard = healthComponent.getCurrentWard();
-            String wardHex = DefenceTypes.WARD.getTextColorTag().replace("&", "");
+            String wardHex = InscriptedPalette.WARD.getColorString();
             float dps = playerProfile.getDamageComponent().getHitData().getDPS();
             int staminaValue = (int) StatCompiler.readFinalFlatValueFrom(playerProfile.getStats().getPlayerStats(),PlayerStats.STAMINA); //TODO: put a cached value for this in some player profile component
 //            char facing = currentPlayer.getFacing().toString().charAt(0);
@@ -54,7 +55,7 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             TextComponent ward;
             if (playerProfile.hasKeystone(Keystones.FORBIDDEN_PACT)){
                 ward = Component.text(wardValues)
-                        .color(TextColor.fromHexString(DefenceTypes.ABYSSAL.getTextColorTag().replace("&","")))
+                        .color(TextColor.fromHexString(InscriptedPalette.ABYSSAL.getColorString()))
                         .decorate(TextDecoration.BOLD);
             } else {
                 ward = Component.text(wardValues).color(TextColor.fromHexString(wardHex));

@@ -2,15 +2,13 @@ package com.amorabot.inscripted;
 
 import com.amorabot.inscripted.commands.*;
 import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.inscripted.components.Items.Files.ItemModifiersConfig;
 import com.amorabot.inscripted.components.Items.Files.RelicEditor;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
-import com.amorabot.inscripted.components.Items.modifiers.Inscription;
-import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
+import com.amorabot.inscripted.components.renderers.GlyphInfo;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
 import com.amorabot.inscripted.handlers.GUI.GUIHandler;
 import com.amorabot.inscripted.handlers.Inventory.*;
@@ -125,6 +123,7 @@ public final class Inscripted extends JavaPlugin {
         PlayerBuffManager.reloadOnlinePlayers();
 
         ItemModifiersConfig.setup();
+        GlyphInfo.loadMappings();
 
         InscriptionDataManager.setupFiles();
     }
@@ -220,13 +219,13 @@ public final class Inscripted extends JavaPlugin {
         getCommand("stats").setExecutor(new StatsCommand(this));
         getCommand("generateitem").setExecutor(new GenerateItem(this));
         getCommand("identify").setExecutor(new Identify(this));
-        getCommand("recolor").setExecutor(new Recolor(this));
         getCommand("resetattributes").setExecutor(new ResetAttributes(this));
         getCommand("show").setExecutor(new Show());
         getCommand("template").setExecutor(new TemplateCommand());
 
         //Has tab executor functionality, if its all in MobCommand class, no need to setTabCompleter()
         getCommand("cast").setExecutor(new CastCommand());
+        getCommand("color").setExecutor(new ColorTestsCommand());
         getCommand("mob").setExecutor(new MobCommand());
         getCommand("orb").setExecutor(new OrbCommand());
     }

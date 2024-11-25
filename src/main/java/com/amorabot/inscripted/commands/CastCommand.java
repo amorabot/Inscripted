@@ -1,6 +1,5 @@
 package com.amorabot.inscripted.commands;
 
-import com.amorabot.inscripted.skills.AbilityRoutines;
 import com.amorabot.inscripted.skills.ParticlePlotter;
 import com.amorabot.inscripted.skills.PlayerAbilities;
 import com.amorabot.inscripted.skills.attackInstances.slam.Slam;
@@ -9,9 +8,6 @@ import com.amorabot.inscripted.skills.attackInstances.slam.SlamRenderers;
 import com.amorabot.inscripted.skills.attackInstances.slash.Slash;
 import com.amorabot.inscripted.skills.attackInstances.slash.SlashConfigDTO;
 import com.amorabot.inscripted.skills.attackInstances.slash.SlashSegment;
-import com.amorabot.inscripted.skills.math.LinalgMath;
-import com.amorabot.inscripted.utils.Utils;
-import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -24,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class CastCommand implements TabExecutor {
     @Override

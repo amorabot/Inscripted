@@ -2,12 +2,10 @@ package com.amorabot.inscripted.components;
 
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.Stats;
 import com.amorabot.inscripted.managers.JSONProfileManager;
-import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
@@ -110,11 +108,11 @@ public class Attack implements EntityComponent {
 
     public static @NotNull String getDamageString(int[] damagesArray){
         StringBuilder dmgString = new StringBuilder();
-        addDamageToString(dmgString, damagesArray[0], DamageTypes.PHYSICAL);
-        addDamageToString(dmgString, damagesArray[1], DamageTypes.FIRE);
-        addDamageToString(dmgString, damagesArray[2], DamageTypes.LIGHTNING);
-        addDamageToString(dmgString, damagesArray[3], DamageTypes.COLD);
-        addDamageToString(dmgString, damagesArray[4], DamageTypes.ABYSSAL);
+//        addDamageToString(dmgString, damagesArray[0], DamageTypes.PHYSICAL);
+//        addDamageToString(dmgString, damagesArray[1], DamageTypes.FIRE);
+//        addDamageToString(dmgString, damagesArray[2], DamageTypes.LIGHTNING);
+//        addDamageToString(dmgString, damagesArray[3], DamageTypes.COLD);
+//        addDamageToString(dmgString, damagesArray[4], DamageTypes.ABYSSAL);
         String finalDmgString = dmgString.toString().trim();
         if (finalDmgString.isEmpty()){
             return DamageTypes.PHYSICAL.getCharacter();
@@ -125,10 +123,10 @@ public class Attack implements EntityComponent {
 
     private static void addDamageToString(StringBuilder builder, int damage, DamageTypes damageType){
         if (damage > 0){
-            String damageIcon = damageType.getCharacter();
-            String damageColor = damageType.getColor();
-            builder.append(ColorUtils.translateColorCodes(damageColor + damage + damageIcon))
-                    .append(" ");
+//            String damageIcon = damageType.getCharacter();
+//            String damageColor = damageType.getColor();
+//            builder.append(ColorUtils.translateColorCodes(damageColor + damage + damageIcon))
+//                    .append(" ");
         }
     }
 }

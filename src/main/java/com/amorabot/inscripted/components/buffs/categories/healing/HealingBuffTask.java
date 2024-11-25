@@ -4,6 +4,7 @@ import com.amorabot.inscripted.components.Buff;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.buffs.Buffs;
+import com.amorabot.inscripted.components.renderers.InscriptedPalette;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
@@ -81,7 +82,7 @@ public class HealingBuffTask extends Buff {
 
     public void debugHealing(Player caster, Player target, int healedAmount){
         DefenceTypes HPDefinitions = DefenceTypes.HEALTH;
-        String healString = ColorUtils.translateColorCodes(HPDefinitions.getTextColorTag() + "+"+healedAmount+" "+ HPDefinitions.getSpecialChar()+" ");
+        String healString = ColorUtils.translateColorCodes("&"+InscriptedPalette.WARD.getColorString() + "+"+healedAmount+" "+ HPDefinitions.getSpecialChar()+" ");
         Utils.msgPlayer(caster, "&2&l-> "+ healString + ("&f("+target.getName()+")"));
 //        Utils.msgPlayer(target, "&2&l<- "+ healString + ("&f("+caster+")"));
     }

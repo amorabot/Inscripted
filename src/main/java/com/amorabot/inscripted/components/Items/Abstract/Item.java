@@ -1,22 +1,27 @@
 package com.amorabot.inscripted.components.Items.Abstract;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.components.Items.Armor.Armor;
+import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
+import com.amorabot.inscripted.components.Items.Weapon.Weapon;
+import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.components.Items.modifiers.data.HybridInscriptionData;
 import com.amorabot.inscripted.components.Items.modifiers.data.InscriptionData;
+import com.amorabot.inscripted.components.renderers.ItemInterfaceRenderer;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.Serializable;
 import java.util.*;
@@ -36,9 +41,6 @@ public abstract class Item implements Serializable {
     private int quality; //Caps at +10
     @Setter
     private Inscription implicit;
-    //TODO: Factory / Separate class for handling rendering
-    @Setter
-    protected RendererTypes renderer;
 
     @Setter
     protected String name;
@@ -59,34 +61,74 @@ public abstract class Item implements Serializable {
         this.rarity = rarity;
         this.corrupted = corrupted;
         this.category = itemCategory;
-        setInitialRenderer();
     }
     protected abstract void setup();
     //-------------------------------------------------------------------------
-    //TODO: Add a Function<Item,List<String>> that handles each section of the item's lore
-    //Based on internal factors, predefined renderers are selected to generate the lore
-    //Ex: Type -> Armor
     public <subType extends Enum<subType> & ItemSubtype> void imprint(ItemStack item, subType subType){
-        ItemMeta itemMeta = item.getItemMeta();
-        assert itemMeta != null;
-        List<String> lore = new ArrayList<>();
-        ItemRenderer currentRenderer = getRenderer(); //TODO: should be based on subtype, not "renderType"
+        final int mainStatPadding = 1;
+        final int inscriptionsPadding = 2;
+        final int highestLength = ItemInterfaceRenderer.getHighestStringLengthFor(this,inscriptionsPadding);
+        final int inscriptions = this.getInscriptions().size();
+        Component emptyLine = Component.text("");
+        Component descriptionLine;
 
-        currentRenderer.renderAllCustomLore(this, lore, subType);
+        List<Component> imprintedLore = new ArrayList<>();
 
-        itemMeta.setLore(lore);
-        itemMeta.setUnbreakable(true);
-        //TODO: add attributes so they can be hidden (mojank problem)
-        itemMeta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier("tempArmor", 0.1D, AttributeModifier.Operation.ADD_NUMBER));
-        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        item.setItemMeta(itemMeta);
+        if (subType instanceof WeaponTypes type){
+            Weapon weaponData = (Weapon) this;
+            imprintedLore.add(emptyLine);
+            imprintedLore.addAll(ItemInterfaceRenderer.renderDamage(weaponData, mainStatPadding));
+
+            descriptionLine = ItemInterfaceRenderer.renderDescription(this, type.toString(),0);
+        } else if (subType instanceof ArmorTypes type) {
+            Armor armorData = (Armor) this;
+            imprintedLore.add(emptyLine);
+            imprintedLore.addAll(ItemInterfaceRenderer.renderDefences(armorData,mainStatPadding));
+            imprintedLore.add(emptyLine);
+
+            descriptionLine = ItemInterfaceRenderer.renderDescription(this, this.getCategory().toString(),0);
+        } else {
+            //...
+            descriptionLine = ItemInterfaceRenderer.renderDescription(this, "INVALID",0);
+        }
+        imprintedLore.add(ItemInterfaceRenderer.renderImplicit(this,mainStatPadding,subType));
+        imprintedLore.add(emptyLine);
+        imprintedLore.addAll(ItemInterfaceRenderer.renderRequirements(this,3));
+
+
+        ItemRarities rarity = this.getRarity();
+        switch (rarity){
+            case AUGMENTED,RUNIC -> {
+                imprintedLore.add(emptyLine);
+                imprintedLore.add(ItemInterfaceRenderer.getRunicLine(true, inscriptions, highestLength));
+                imprintedLore.addAll(ItemInterfaceRenderer.renderInscriptions(this, inscriptionsPadding));
+                imprintedLore.add(ItemInterfaceRenderer.getRunicLine(false, inscriptions, highestLength));
+                imprintedLore.add(emptyLine);
+            }
+            case RELIC -> {
+
+            }
+            default -> imprintedLore.add(emptyLine);
+        }
+
+        imprintedLore.add(descriptionLine);
+
+        item.lore(imprintedLore);
+
+        item.editMeta((itemMeta)-> {
+            assert itemMeta != null;
+            itemMeta.setUnbreakable(true);
+            //TODO: add attributes so they can be hidden (mojank problem)
+            itemMeta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier("tempArmor", 0.1D, AttributeModifier.Operation.ADD_NUMBER));
+            itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        });
 
         if (isIdentified()){
-            currentRenderer.setDisplayName(getRarity(), getName(), item, isCorrupted(), this.quality);
+            ItemInterfaceRenderer.setDisplayName(getName(),item,getRarity(),isCorrupted(),this.quality);
             return;
         }
-        currentRenderer.setDisplayName(getRarity(), "Unidentified " + subType.toString().toLowerCase(), item, false, 0);
+        ItemInterfaceRenderer.setDisplayName("Unidentified " + subType.toString().toLowerCase(),item,getRarity(),false,0);
     }
     public abstract ItemStack getItemForm(Inscripted plugin);
     protected abstract void serializeContainers(Item itemData, ItemStack item);
@@ -97,7 +139,6 @@ public abstract class Item implements Serializable {
             return;
         }
         this.identified = true;
-        setRenderer(RendererTypes.BASIC);
     }
     public void corrupt(){
         if (isCorrupted()){
@@ -107,16 +148,6 @@ public abstract class Item implements Serializable {
     }
     protected void setTier(Tiers tier) {
         this.tier = tier;
-    }
-    public abstract ItemRenderer getRenderer();
-    private void setInitialRenderer(){ //Sets upon item creation
-        if (isIdentified()){
-            setRenderer(RendererTypes.BASIC);
-        } else if (getRarity() == ItemRarities.COMMON){
-            identify(); //
-        } else {
-            setRenderer(RendererTypes.UNIDENTIFIED);
-        }
     }
     protected abstract void mapBase();
     public List<Inscription> getInscriptionList(){

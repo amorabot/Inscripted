@@ -11,9 +11,7 @@ import com.amorabot.inscripted.components.Items.modifiers.data.StatDefinition;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
-import com.amorabot.inscripted.components.Items.Abstract.ItemRenderer;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
-import com.amorabot.inscripted.components.Items.UnidentifiedRenderer;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.inventory.ItemFlag;
@@ -24,7 +22,6 @@ import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +48,7 @@ public class Armor extends Item implements ItemCategory {
         this.baseHealthVariance = CraftingUtils.getRandomNumber(-ArmorTypes.percentHealthVariance, ArmorTypes.percentHealthVariance);
     }
 
+    //TODO: make a constructor with the key for the relic's name -> deserialize from file
     public Armor(String name, int ilvl, ItemTypes slot, ArmorTypes type, int baseHealth, List<Inscription> inscriptions){ //Relic constructor
         super(ilvl, ItemRarities.RELIC, true, false, slot);
         getInscriptionList().addAll(inscriptions); //??????? wtf happened
@@ -113,26 +111,6 @@ public class Armor extends Item implements ItemCategory {
     @Override
     protected void serializeContainers(Item itemData, ItemStack item) {
         FunctionalItemAccessInterface.serializeItem(item,this);
-    }
-
-    @Override
-    public ItemRenderer getRenderer() {
-        switch (this.renderer){
-            case UNIDENTIFIED -> {
-                return new UnidentifiedRenderer();
-            }
-            case BASIC -> {
-                return new ArmorRenderer();
-            }
-            case CORRUPTED -> {
-                Utils.log("No corruptedArmorRenderer");
-                return null;
-            }
-            default -> {
-                Utils.log("No renderer defined/No ItemRenderer class implemented for this renderer constant");
-                return null;
-            }
-        }
     }
 
     public Map<DefenceTypes, Integer> getLocalDefences(){ //Once a weapon is created, the damage map needs to be updated to contain any possible new damages
@@ -207,10 +185,5 @@ public class Armor extends Item implements ItemCategory {
         }
         int selectedStat = statMap.get(def);
         statMap.put(def, (selectedStat + value));
-    }
-
-    @Override
-    public void applyQuality() {
-
     }
 }

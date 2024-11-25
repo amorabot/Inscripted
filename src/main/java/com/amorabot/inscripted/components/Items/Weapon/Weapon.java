@@ -11,9 +11,7 @@ import com.amorabot.inscripted.components.Items.modifiers.data.StatDefinition;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
-import com.amorabot.inscripted.components.Items.Abstract.ItemRenderer;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
-import com.amorabot.inscripted.components.Items.UnidentifiedRenderer;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
@@ -196,32 +194,8 @@ public class Weapon extends Item implements ItemCategory {
         item.setItemMeta(itemMeta);
     }
 
-    public ItemRenderer getRenderer(){
-        switch (this.renderer){
-            case UNIDENTIFIED -> {
-                return new UnidentifiedRenderer();
-            }
-            case BASIC -> {
-                return new WeaponRenderer();
-            }
-            case CORRUPTED -> {
-                Utils.log("No corruptedWeaponRenderer");
-                return null;
-            }
-            default -> {
-                Utils.log("No renderer defined/No ItemRenderer class implemented for this renderer constant");
-                return null;
-            }
-        }
-    }
-
     public int[] getBaseDamage() {
         int[] basePhys = baseDamage.clone();
         return Arrays.stream(basePhys).map(currValue -> (int) ((1+((float)percentDamageVariance/100))*currValue)).toArray();
-    }
-
-    @Override
-    public void applyQuality() {
-        Utils.log("applying weapon quality");
     }
 }

@@ -2,30 +2,30 @@ package com.amorabot.inscripted.components.Items.DataStructures.Enums;
 
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
-
-import java.util.Arrays;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
 @Getter
 public enum RangeTypes {
-    SINGLE_VALUE(new int[1], "@v1@"){
+    SINGLE_VALUE(new int[1], "<v1>"){
         @Override
-        public String substitutePlaceholders(int[] mappedValues, String templateString, String valuesColor) {
-            return templateString.replace(getValuesPlaceholder(), valuesColor + Math.abs(mappedValues[0]) + "&7");
+        public Component substitutePlaceholders(int[] mappedValues, String templateString, String valuesColor) {
+            return MiniMessage.miniMessage().deserialize(templateString,Placeholder.parsed("v1", "<"+valuesColor+">" + Math.abs(mappedValues[0]) + "</"+valuesColor+">"));
         }
     },
-    SINGLE_RANGE(new int[2],"@v1@") {
+    SINGLE_RANGE(new int[2],"<v1>") {
         @Override
-        public String substitutePlaceholders(int[] mappedValues, String templateString, String valuesColor) {
-            return templateString.replace(getValuesPlaceholder(), valuesColor + Math.abs(mappedValues[0]) + "&7");
+        public Component substitutePlaceholders(int[] mappedValues, String templateString, String valuesColor) {
+            return MiniMessage.miniMessage().deserialize(templateString,Placeholder.parsed("v1", "<"+valuesColor+">" + Math.abs(mappedValues[0]) + "</"+valuesColor+">"));
         }
     },
-    DOUBLE_RANGE(new int[4], "@v1@ - @v2@") {
+    DOUBLE_RANGE(new int[4], "<v1> - <v2>") {
         @Override
-        public String substitutePlaceholders(int[] mappedValues, String templateString, String valuesColor) {
-            String replacement = getValuesPlaceholder()
-                    .replace("@v1@", valuesColor + Math.abs(mappedValues[0]) + "&7")
-                    .replace("@v2@", valuesColor + Math.abs(mappedValues[1]) + "&7");
-            return templateString.replace(getValuesPlaceholder(), replacement);
+        public Component substitutePlaceholders(int[] mappedValues, String templateString, String valuesColor) {
+            return MiniMessage.miniMessage().deserialize(templateString,
+                    Placeholder.parsed("v1", "<"+valuesColor+">" + Math.abs(mappedValues[0]) + "</"+valuesColor+">"),
+                    Placeholder.parsed("v2", "<"+valuesColor+">" + Math.abs(mappedValues[1]) + "</"+valuesColor+">"));
         }
     };
 
@@ -74,6 +74,5 @@ public enum RangeTypes {
         }
         return new int[2];
     }
-    abstract public String substitutePlaceholders(int[] mappedValues, String templateString, String valuesColor);
-
+    abstract public Component substitutePlaceholders(int[] mappedValues, String templateString, String valuesColor);
 }

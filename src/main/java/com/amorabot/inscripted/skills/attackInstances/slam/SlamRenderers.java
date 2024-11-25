@@ -31,10 +31,7 @@ public class SlamRenderers {
         World world = slam.getOwner().getWorld();
         double slamRadius = slam.getSlamData().impactRadius();
 
-        ParticlePlotter.spawnParticleAt(slamCenter.clone().add(new Vector(0,0.5,0)), world, Particle.SWEEP_ATTACK);
-        ParticlePlotter.spawnParticleAt(slamCenter, world, Particle.END_ROD);
         ParticlePlotter.dustPlumeAt(slamCenter.toLocation(world), 20, 0.12f);
         ParticlePlotter.plotColoredCircleAt(slamCenter, world, 160,160,160, 1.5F, (float) slamRadius, 16);
-        ParticlePlotter.plotDirectionalCircleAt(slamCenter,world,Particle.ELECTRIC_SPARK, (float) (slamRadius-0.1f), 16, false, 0.3f);
     }
 }

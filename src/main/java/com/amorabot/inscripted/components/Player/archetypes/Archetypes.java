@@ -6,24 +6,25 @@ import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
+import com.amorabot.inscripted.components.renderers.InscriptedPalette;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 
 @Getter
 public enum Archetypes {
-    MARAUDER("#b01330", WeaponTypes.AXE, ArmorTypes.HEAVY_PLATING),
-    GLADIATOR("#F9B147", WeaponTypes.SWORD, ArmorTypes.CARVED_PLATING),
-    MERCENARY("#89AE59", WeaponTypes.BOW, ArmorTypes.LIGHT_CLOTH),
-    ROGUE("#18A383", WeaponTypes.DAGGER, ArmorTypes.RUNIC_LEATHER),
-    SORCERER("#496FE3", WeaponTypes.WAND, ArmorTypes.ENCHANTED_SILK),
-    TEMPLAR("#A735D4", WeaponTypes.MACE, ArmorTypes.RUNIC_STEEL);
+    MARAUDER(InscriptedPalette.MARAUDER, WeaponTypes.AXE, ArmorTypes.HEAVY_PLATING),
+    GLADIATOR(InscriptedPalette.GLADIATOR, WeaponTypes.SWORD, ArmorTypes.CARVED_PLATING),
+    MERCENARY(InscriptedPalette.MERCENARY, WeaponTypes.BOW, ArmorTypes.LIGHT_CLOTH),
+    ROGUE(InscriptedPalette.ROGUE, WeaponTypes.DAGGER, ArmorTypes.RUNIC_LEATHER),
+    SORCERER(InscriptedPalette.SORCERER, WeaponTypes.WAND, ArmorTypes.ENCHANTED_SILK),
+    TEMPLAR(InscriptedPalette.TEMPLAR, WeaponTypes.MACE, ArmorTypes.RUNIC_STEEL);
 
-    private final String color;
+    private final InscriptedPalette color;
     private final WeaponTypes weaponType;
     private final ArmorTypes armorType;
 
-    Archetypes(String hexArchetypeColor, WeaponTypes weaponType, ArmorTypes armorMaterial){
-        this.color = hexArchetypeColor;
+    Archetypes(InscriptedPalette color, WeaponTypes weaponType, ArmorTypes armorMaterial){
+        this.color = color;
 
         this.weaponType = weaponType;
         this.armorType = armorMaterial;

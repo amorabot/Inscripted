@@ -16,7 +16,6 @@ import static com.amorabot.inscripted.skills.archetypes.bow.BowBasicAttacks.stan
 import static com.amorabot.inscripted.skills.archetypes.bow.BowMovement.mercenaryMovement;
 import static com.amorabot.inscripted.skills.archetypes.dagger.DaggerBasicAttacks.standardDaggerSlashBy;
 import static com.amorabot.inscripted.skills.archetypes.dagger.DaggerMovement.rogueMovement;
-import static com.amorabot.inscripted.skills.archetypes.mace.MaceBasicAttacks.newMaceBasicAttackFor;
 import static com.amorabot.inscripted.skills.archetypes.mace.MaceBasicAttacks.standardMaceSlamBy;
 import static com.amorabot.inscripted.skills.archetypes.mace.MaceMovement.templarMovement;
 import static com.amorabot.inscripted.skills.archetypes.sword.SwordBasicAttacks.standardSwordSlashBy;

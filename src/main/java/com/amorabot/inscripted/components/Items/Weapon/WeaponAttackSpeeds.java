@@ -1,6 +1,10 @@
 package com.amorabot.inscripted.components.Items.Weapon;
 
+import com.amorabot.inscripted.components.renderers.InscriptedPalette;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -34,17 +38,21 @@ public enum WeaponAttackSpeeds {
             default -> null;
         };
     }
-    public String getBarIndicator(){
-        String filledDot = "♦";
-        String emptyDot = "♢";
-        StringBuilder bar = new StringBuilder("&8[ ");
+    public Component getAttackSpeedBarComponent(){
+        final String lighterTintHex = InscriptedPalette.WHITE.getColorString();
+        final String darkerTintHex = InscriptedPalette.NEUTRAL_GRAY.getColorString();
+        String barTemplate = "<"+darkerTintHex+">[ <dots> ]"+"</"+darkerTintHex+">";
+        final String filledDot = "♦";
+        final String emptyDot = "♢";
+        StringBuilder bar = new StringBuilder("<"+lighterTintHex+">");
         int filledDots = 3 + getSwingAnimationSpeed();
         int emptyDots = 5 - filledDots;
-        String filled = "&f" + filledDot.repeat(filledDots);
-        String empty = "&8" + emptyDot.repeat(emptyDots);
-        bar.append(filled).append(empty).append(" ]  ");
+        bar.append(filledDot.repeat(filledDots));
+        bar.append("<").append(darkerTintHex).append(">");
+        bar.append(emptyDot.repeat(emptyDots));
+        String dotsBar = bar.toString();
 
-        return bar.toString();
+        return MiniMessage.miniMessage().deserialize(barTemplate, Placeholder.parsed("dots", dotsBar));
     }
     public int getAbilityCooldownModifier(){
         return 10 * (-swingAnimationSpeed); //Percentage value

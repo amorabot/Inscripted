@@ -41,12 +41,12 @@ public class Identify implements CommandExecutor {
         ItemMeta heldItemMeta = heldItem.getItemMeta();
         PersistentDataContainer dataContainer = heldItemMeta.getPersistentDataContainer();
 
-        if (isIdentified(WEAPON_TAG, dataContainer)){
-            player.sendMessage(ColorUtils.translateColorCodes(DefenceTypes.DODGE.getTextColorTag()+ "&lThis weapon is already identified!"));
-        }
-        if (isIdentified(ARMOR_TAG, dataContainer)){
-            player.sendMessage(ColorUtils.translateColorCodes(DefenceTypes.DODGE.getTextColorTag()+ "&lThis armor is already identified!"));
-        }
+//        if (isIdentified(WEAPON_TAG, dataContainer)){
+//            player.sendMessage(ColorUtils.translateColorCodes(DefenceTypes.DODGE.getTextColorTag()+ "&lThis weapon is already identified!"));
+//        }
+//        if (isIdentified(ARMOR_TAG, dataContainer)){
+//            player.sendMessage(ColorUtils.translateColorCodes(DefenceTypes.DODGE.getTextColorTag()+ "&lThis armor is already identified!"));
+//        }
 
         Currencies.SCROLL_OF_WISDOM.apply(heldItem, FunctionalItemAccessInterface.deserializeGenericItemData(dataContainer), player);
         player.getInventory().addItem(Currencies.SCROLL_OF_WISDOM.get(7));

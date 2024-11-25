@@ -5,6 +5,9 @@ api-version: 1.21
 permissions:
 
 commands:
+  color:
+    description: Command for testing color and text components
+    usage: /color
   cast:
     description: Casts the selected player ability
     usage: /cast
@@ -24,9 +27,6 @@ commands:
   stats:
     description: displays player stats in chat.
     usage: /stats
-  recolor:
-    description: recolors a item's display name.
-    usage: /recolor
   generateitem:
     description: generates a custom item.
     usage: /generateitem

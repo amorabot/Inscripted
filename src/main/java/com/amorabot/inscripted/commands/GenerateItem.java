@@ -10,14 +10,12 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRaritie
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Relics;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,7 +43,7 @@ public class GenerateItem implements TabExecutor {
             player.sendMessage("Alternate usage: /item RELIC (Opens the Relic list menu)");
             player.sendMessage("");
 
-            Utils.msgPlayer(player, "Example: "+"&c&l/item" + " 89" + " " + ItemRarities.MAGIC + " " + Archetypes.MERCENARY);
+            Utils.msgPlayer(player, "Example: "+"&c&l/item" + " 89" + " " + ItemRarities.AUGMENTED + " " + Archetypes.MERCENARY);
             Utils.msgPlayer(player, "&c  ->Would open the item generation menu for &9&lMAGIC &cMercenary items (of ilvl 89)");
             return true;
         }

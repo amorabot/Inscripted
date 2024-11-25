@@ -4,6 +4,7 @@ import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
+import com.amorabot.inscripted.components.renderers.InscriptedPalette;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.utils.Utils;
@@ -72,7 +73,7 @@ public class PlayerRegenerationTask extends BukkitRunnable {
 
             updateWardHearts(player, HPComponent);
 
-            regenString.append(" ").append(DefenceTypes.WARD.getTextColorTag()).append("&l+").append((int) (wardRegen));
+            regenString.append(" ").append("&").append(InscriptedPalette.WARD.getColorString()).append("&l+").append((int) (wardRegen));
         }
 
         if (!regenString.isEmpty()){

@@ -39,10 +39,10 @@ public class ItemBuilder {
 
         assert blankItem != null;
         switch (rarity){
-            case MAGIC -> {
+            case AUGMENTED -> {
                 generateMagicModSet(blankItem, itemInscriptionsTable, illegalMods);
             }
-            case RARE -> {
+            case RUNIC -> {
                 generateRareModSet(blankItem,itemInscriptionsTable, illegalMods);
             }
         }
@@ -57,7 +57,7 @@ public class ItemBuilder {
 
     public static void generateRareModSet(Item itemData, InscriptionTable itemInscriptionsTable, Set<InscriptionID> illegalMods){
         List<Inscription> newItemInscriptions = new ArrayList<>();
-        int inscriptionsToGenerate = CraftingUtils.getRandomNumber(3, ItemRarities.RARE.getMaxMods());
+        int inscriptionsToGenerate = CraftingUtils.getRandomNumber(3, ItemRarities.RUNIC.getMaxMods());
         final int maxPrefixes = 3;
         final int maxSuffixes = 3;
 
@@ -105,7 +105,7 @@ public class ItemBuilder {
     }
     public static void generateMagicModSet(Item itemData, InscriptionTable itemInscriptionsTable, Set<InscriptionID> illegalMods){
         List<Inscription> newItemInscriptions = new ArrayList<>();
-        int inscriptionsToGenerate = CraftingUtils.getRandomNumber(1, ItemRarities.MAGIC.getMaxMods());
+        int inscriptionsToGenerate = CraftingUtils.getRandomNumber(1, ItemRarities.AUGMENTED.getMaxMods());
         boolean hasImbuedMod = false;
         //Isolate the imbued inscription
         for (Inscription mod : itemData.getInscriptionList()){

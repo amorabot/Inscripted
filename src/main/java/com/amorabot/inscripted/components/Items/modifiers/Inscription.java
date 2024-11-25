@@ -1,17 +1,22 @@
 package com.amorabot.inscripted.components.Items.modifiers;
 
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.RangeTypes;
 import com.amorabot.inscripted.components.Items.modifiers.data.HybridInscriptionData;
 import com.amorabot.inscripted.components.Items.modifiers.data.InscriptionData;
 import com.amorabot.inscripted.components.Items.modifiers.data.ModifierData;
 import com.amorabot.inscripted.components.Items.modifiers.data.StatDefinition;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.components.renderers.InscriptedPalette;
+import com.amorabot.inscripted.components.renderers.ItemInterfaceRenderer;
 import com.amorabot.inscripted.inscriptions.InscriptionTable;
-import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -61,7 +66,6 @@ public class Inscription implements Serializable {
     public int[] getMappedFinalValue(){ //Call for standard mods
         int[] tableValues = InscriptionTable.queryValuesFor(this).clone();
         tableValues = negateValuesArrayIf(!this.getInscription().isPositive(), tableValues);
-//        Utils.log("Fetched values ("+getInscription()+"): " + Arrays.toString(tableValues));
         InscriptionData modData = (InscriptionData) getInscription().getData();
         RangeTypes range = modData.getDefinitionData().rangeType();
         return RangeTypes.mapFinalValuesFor(range, tableValues, getBasePercentile());
@@ -83,109 +87,107 @@ public class Inscription implements Serializable {
         return tableValues;
     }
 
-    public String getModifierDisplayName(String valuesColor, int padding) {
-        String rawDisplayName = getInscription().getDisplayName();
-        String detailsSuffix = getModDetails(padding);
+    public Component asComponent(int padding, Archetypes... implicitArchetype){
         InscriptionID inscription = getInscription();
         ModifierData modData = inscription.getData();
+        String rawDisplayName = inscription.getDisplayName();
 
-        String finalDisplayName;
+        boolean isImplicit = modData.getAffixType().equals(Affix.IMPLICIT);
+        Component detailsComponent = getInscriptionDetails(padding);
 
-        if (modData.isStandard()){
-            InscriptionData inscriptionData = (InscriptionData) modData;
-            int[] mappedValues = this.getMappedFinalValue();
-            RangeTypes range = inscriptionData.getDefinitionData().rangeType();
-            String mappedDisplayName = range.substitutePlaceholders(mappedValues, rawDisplayName, valuesColor);
-            if (isImbued()){
-                finalDisplayName = "&6" + ColorUtils.decolor(mappedDisplayName) + detailsSuffix;
-                return finalDisplayName.indent(padding);
-            }
-            finalDisplayName = "&7"+(mappedDisplayName + detailsSuffix);
-        }else if (modData.isHybrid()){
-            HybridInscriptionData hybridInscriptionData = (HybridInscriptionData) modData;
-            StatDefinition[] modDataArray = hybridInscriptionData.getStatDefinitions();
-            int numberOfMods = modDataArray.length;
-            String[] templates = rawDisplayName.split(HybridInscriptionData.HYBRID_SEPARATOR);
-            String[] mappedDisplayNames = new String[numberOfMods];
-            for (int i = 0; i < numberOfMods; i++){
-                StatDefinition currentInscription = modDataArray[i];
-                int[] currentMappedValues = this.getMappedFinalValue(i);
-                String currentMappedDisplayName = currentInscription.rangeType().substitutePlaceholders(currentMappedValues,templates[i],valuesColor);
-                mappedDisplayNames[i] = currentMappedDisplayName;
-            }
-            StringBuilder displayNameBuilder = new StringBuilder();
-            for (int k = 0; k<numberOfMods; k++){
-                String s = mappedDisplayNames[k];
-                displayNameBuilder.append(s);
-                if (k==numberOfMods-1){continue;}
-                displayNameBuilder.append(HybridInscriptionData.HYBRID_SEPARATOR);
-            }
-            if (isImbued()){
-                finalDisplayName = "&6" + ColorUtils.decolor(displayNameBuilder.toString()) + detailsSuffix;
-                return finalDisplayName.indent(padding);
-            }
-            finalDisplayName = "&7"+(displayNameBuilder + detailsSuffix);
+        if (modData.isStandard()){ //STANDARD INSCRIPTION COMPONENT BUILDING
+            return buildStandardInscriptionComponent((InscriptionData)modData, detailsComponent, padding,rawDisplayName,isImplicit,implicitArchetype)
+                    .decoration(TextDecoration.ITALIC,false);
+        } else if (modData.isHybrid()) {
+            return buildHybridInscription((HybridInscriptionData) modData, detailsComponent, padding,rawDisplayName,isImplicit,implicitArchetype)
+                    .decoration(TextDecoration.ITALIC,false);
         } else {
             if (modData.isKeystone() || modData.isUniqueEffect()){
-                return "";
+                return Component.text("");
             }
-            finalDisplayName = "its fucked up";
         }
-        return finalDisplayName.indent(padding);
+        return Component.text("its fucked up");
     }
-    public String getImplicitDisplayName(Archetypes archetype, int padding) {
-        String archetypeColor = "&" + archetype.getColor();
-        String rawDisplayName = getInscription().getDisplayName();
-        String detailsSuffix = getModDetails(padding);
-        InscriptionID inscription = getInscription();
-        ModifierData modData = inscription.getData();
+    private Component buildStandardInscriptionComponent(InscriptionData inscriptionData, Component inscriptionDetails, int padding, String rawDisplayName, boolean isImplicit,Archetypes... implicitArchetype){
+        RangeTypes range = inscriptionData.getDefinitionData().rangeType();
+        int[] mappedValues = this.getMappedFinalValue();
 
-        String finalDisplayName;
+        Component replacedDisplayName;
+        String valuesHex = InscriptedPalette.ITEM_VALUE.getColorString();
 
-        if (modData instanceof InscriptionData inscriptionData){
-            int[] mappedImplicitValues = this.getMappedFinalValue();
-            RangeTypes range = inscriptionData.getDefinitionData().rangeType();
-            String mappedDisplayName = range.substitutePlaceholders(mappedImplicitValues, rawDisplayName, "");
-            finalDisplayName = archetypeColor
-                    + Utils.convertToPrettyString(Utils.decolor(mappedDisplayName).replace("&7", ""))
-                    + detailsSuffix;
-        }else if (modData instanceof HybridInscriptionData hybridInscriptionData){
-            StatDefinition[] modDataArray = hybridInscriptionData.getStatDefinitions();
-            final int numberOfMods = modDataArray.length;
-            String[] templates = rawDisplayName.split(HybridInscriptionData.HYBRID_SEPARATOR);
-            String[] mappedDisplayNames = new String[numberOfMods];
-            for (int i = 0; i < numberOfMods; i++){
-                StatDefinition currentInscription = modDataArray[i];
-                int[] currentMappedValues = this.getMappedFinalValue(i);
-                String currentMappedDisplayName = currentInscription.rangeType().substitutePlaceholders(currentMappedValues,templates[i],"");
-                mappedDisplayNames[i] = currentMappedDisplayName;
-            }
-            StringBuilder displayNameBuilder = new StringBuilder();
-            for (int k = 0; k<numberOfMods; k++){
-                String s = mappedDisplayNames[k];
-                displayNameBuilder.append(s);
-                if (k==numberOfMods-1){continue;}
-                displayNameBuilder.append(HybridInscriptionData.HYBRID_SEPARATOR);
-            }
-            finalDisplayName = archetypeColor
-                    + Utils.convertToPrettyString(Utils.decolor(displayNameBuilder.toString()).replace("&7", ""))
-                    + detailsSuffix;
-        } else {
-            finalDisplayName = "its fucked up";
+        //In the particular case its a standard implicit:
+        if (isImplicit){
+            assert (implicitArchetype != null);
+            assert (implicitArchetype[0] != null);
+            //Overriding the values color to match the Archetype's color
+            valuesHex = implicitArchetype[0].getColor().getColorString();
+            //Substituting the implicit's placeholder
+            replacedDisplayName = range.substitutePlaceholders(mappedValues, rawDisplayName, valuesHex);
+
+            return buildInscriptionComponent(replacedDisplayName,inscriptionDetails,padding,implicitArchetype[0].getColor().getColor());
         }
-        return finalDisplayName;
+
+        //Its a regular standard Inscription
+        replacedDisplayName = range.substitutePlaceholders(mappedValues, rawDisplayName, valuesHex);
+        //Lets colorize the resulting component
+        if (isImbued()){
+            //The valuesHex is standard (Subject to change)
+            return buildInscriptionComponent(replacedDisplayName,inscriptionDetails,padding,InscriptedPalette.ITEM_VALUE.getColor());
+        }
+        return buildInscriptionComponent(replacedDisplayName,inscriptionDetails,padding,ItemInterfaceRenderer.highlightColor);
     }
-    private String getModDetails(int padding){
-        StringBuilder modDetails = new StringBuilder();
-        modDetails.append(" &8");
-        modDetails.append(getInscription().getData().getAffixType().getRuneIcon()).append(" ");
-        if (!this.getInscription().getData().isUnique()){
-            modDetails.append(Utils.getRomanChar(this.tier));
-            if (this.tier == this.maxTier){modDetails.append("*");}
-        }
-        modDetails.append(" ".repeat(padding));
+    private Component buildInscriptionComponent(Component displayName, Component details, int padding, TextColor textColor){
+        displayName = InscriptedPalette.colorizeComponent(displayName, textColor);
+        return Component.text(" ".repeat(padding)).append(displayName).appendSpace().append(details);
+    }
+    private Component getInscriptionDetails(int paddingRight){
+        Component runicIcon = InscriptedPalette.colorizeComponent(
+                Component.text(getInscription().getData().getAffixType().getRuneIcon()),
+                InscriptedPalette.DARK_GRAY.getColor());
+        Component uncoloredTierIndicator = Component.text(Utils.getRomanChar(this.tier));
+        if (this.tier == this.maxTier){uncoloredTierIndicator = uncoloredTierIndicator.append(Component.text("*"));}
+        Component tierIndicator = InscriptedPalette.colorizeComponent(uncoloredTierIndicator, InscriptedPalette.DARKEST_TEXT.getColor());
+        
+        return runicIcon.appendSpace().append(tierIndicator).append(Component.text(" ".repeat(paddingRight)));
+    }
 
-        return modDetails.toString();
+
+
+    private Component buildHybridInscription(HybridInscriptionData hybridInscriptionData, Component inscriptionDetails, int padding, String rawDisplayName, boolean isImplicit,Archetypes... implicitArchetype){
+        StatDefinition[] modDataArray = hybridInscriptionData.getStatDefinitions();
+        int hybridMods = modDataArray.length;
+        String[] templates = rawDisplayName.split(HybridInscriptionData.HYBRID_SEPARATOR);
+
+        Component[] replacedDisplayNames = new Component[hybridMods];
+        String valuesColorHex = InscriptedPalette.ITEM_VALUE.getColorString();
+        if (isImplicit){valuesColorHex = implicitArchetype[0].getColor().getColorString();} //If its a implicit, change the color for values
+
+        for (int i = 0; i < hybridMods; i++){
+            StatDefinition currentInscription = modDataArray[i];
+            int[] currentMappedValues = this.getMappedFinalValue(i);
+            replacedDisplayNames[i] = currentInscription.rangeType().substitutePlaceholders(currentMappedValues,templates[i],valuesColorHex);
+        }
+
+        //In the particular case its a implicit:
+        if (isImplicit){
+            assert (implicitArchetype[0] != null);
+            return buildHybridInscriptionComponent(replacedDisplayNames,inscriptionDetails,padding,implicitArchetype[0].getColor().getColor());
+        }
+
+        //There are no ways to imbue a implicit, the valuesColorHex should be standard
+        return buildHybridInscriptionComponent(replacedDisplayNames,inscriptionDetails,padding,ItemInterfaceRenderer.highlightColor);
+    }
+    private Component buildHybridInscriptionComponent(Component[] replacedDisplayNames, Component details, int padding, TextColor textColor){
+        final int mods = replacedDisplayNames.length;
+        Component finalHybridComponent = Component.text("");
+        for (int k = 0; k<mods; k++){
+            Component currentDisplayName = replacedDisplayNames[k];
+            finalHybridComponent = finalHybridComponent.append(currentDisplayName);
+            if (k==mods-1){continue;}
+            finalHybridComponent = finalHybridComponent.appendSpace().append(Component.text(HybridInscriptionData.HYBRID_SEPARATOR)).appendSpace();
+        }
+        finalHybridComponent = InscriptedPalette.colorizeComponent(finalHybridComponent, textColor);
+        return Component.text(" ".repeat(padding)).append(finalHybridComponent).appendSpace().append(details);
     }
     public void imbue(){
         this.imbued = true;

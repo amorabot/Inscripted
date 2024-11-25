@@ -70,11 +70,11 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             if (itemData instanceof Weapon){
                 WeaponTypes subType = ((Weapon)itemData).getSubtype();
                 //Orb routine
-                if (!improvedRarityOrbUsage(ItemRarities.COMMON, ItemRarities.MAGIC, itemData, subType)){return false;}
+                if (!improvedRarityOrbUsage(ItemRarities.COMMON, ItemRarities.AUGMENTED, itemData, subType)){return false;}
             } else if (itemData instanceof Armor) {
                 ArmorTypes subType = ((Armor)itemData).getSubype();
                 //Orb routine
-                if (!improvedRarityOrbUsage(ItemRarities.COMMON, ItemRarities.MAGIC, itemData, subType)){return false;}
+                if (!improvedRarityOrbUsage(ItemRarities.COMMON, ItemRarities.AUGMENTED, itemData, subType)){return false;}
             } else {
                 return false;
             }
@@ -96,7 +96,7 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             if (itemData.isCorrupted()){return false;}
             if (!itemData.isIdentified()){return false;}
 
-            if (!itemData.getRarity().equals(ItemRarities.MAGIC)){return false;}
+            if (!itemData.getRarity().equals(ItemRarities.AUGMENTED)){return false;}
             if (itemData instanceof Weapon){
                 WeaponTypes subType = ((Weapon)itemData).getSubtype();
                 //Orb routine
@@ -133,11 +133,11 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             if (itemData instanceof Weapon){
                 WeaponTypes subType = ((Weapon)itemData).getSubtype();
                 //Orb routine
-                if (!improvedRarityOrbUsage(ItemRarities.MAGIC, ItemRarities.RARE, itemData, subType)){return false;}
+                if (!improvedRarityOrbUsage(ItemRarities.AUGMENTED, ItemRarities.RUNIC, itemData, subType)){return false;}
             } else if (itemData instanceof Armor) {
                 ArmorTypes subType = ((Armor)itemData).getSubype();
                 //Orb routine
-                if (!improvedRarityOrbUsage(ItemRarities.MAGIC, ItemRarities.RARE, itemData, subType)){return false;}
+                if (!improvedRarityOrbUsage(ItemRarities.AUGMENTED, ItemRarities.RUNIC, itemData, subType)){return false;}
             } else {
                 return false;
             }
@@ -160,7 +160,7 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             if (itemData.isCorrupted()){return false;}
             if (!itemData.isIdentified()){return false;}
 
-            if (!itemData.getRarity().equals(ItemRarities.RARE)){return false;}
+            if (!itemData.getRarity().equals(ItemRarities.RUNIC)){return false;}
             if (itemData instanceof Weapon){
                 WeaponTypes subType = ((Weapon)itemData).getSubtype();
                 //Orb routine
@@ -190,7 +190,7 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             if (itemData.isCorrupted()){return false;}
             if (!itemData.isIdentified()){return false;}
 
-            if (!itemData.getRarity().equals(ItemRarities.MAGIC)){return false;}
+            if (!itemData.getRarity().equals(ItemRarities.AUGMENTED)){return false;}
             if (itemData instanceof Weapon){
                 WeaponTypes subType = ((Weapon)itemData).getSubtype();
                 //Orb routine
@@ -220,7 +220,7 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             if (itemData.isCorrupted()){return false;}
             if (!itemData.isIdentified()){return false;}
 
-            if (!itemData.getRarity().equals(ItemRarities.RARE)){return false;}
+            if (!itemData.getRarity().equals(ItemRarities.RUNIC)){return false;}
             if (itemData instanceof Weapon){
                 WeaponTypes subType = ((Weapon)itemData).getSubtype();
                 //Orb routine
@@ -252,7 +252,7 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             if (!itemData.isIdentified()){return false;}
 
             ItemRarities rarity = itemData.getRarity();
-            if (!rarity.equals(ItemRarities.MAGIC) && !rarity.equals(ItemRarities.RARE)){return false;}
+            if (!rarity.equals(ItemRarities.AUGMENTED) && !rarity.equals(ItemRarities.RUNIC)){return false;}
             if (itemData.getInscriptionList().size() == 1 && itemData.getInscriptionList().get(0).isImbued()){return false;}
 
             List<Inscription> modList = itemData.getInscriptionList();
@@ -265,7 +265,7 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             modList.clear();
             if (imbuedMod!=null){
                 modList.add(imbuedMod);
-                itemData.setRarity(ItemRarities.MAGIC);
+                itemData.setRarity(ItemRarities.AUGMENTED);
             } else {
                 itemData.setRarity(ItemRarities.COMMON);
                 itemData.getInscriptionList().clear();
@@ -291,7 +291,7 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             if (!itemData.isIdentified()){return false;}
 
             ItemRarities rarity = itemData.getRarity();
-            if (!rarity.equals(ItemRarities.MAGIC) && !rarity.equals(ItemRarities.RARE)){return false;}
+            if (!rarity.equals(ItemRarities.AUGMENTED) && !rarity.equals(ItemRarities.RUNIC)){return false;}
             List<Inscription> modList = itemData.getInscriptionList();
             for (Inscription mod : modList){//If theres a imbued mod already, invalid use
                 if (mod.isImbued()){

@@ -6,6 +6,7 @@ import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Player.Profile;
+import com.amorabot.inscripted.components.renderers.InscriptedPalette;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
@@ -37,12 +38,12 @@ public class StatsCommand implements CommandExecutor {
 
         for (int i = 0; i < defencesPrefixes.length; i++){
             DefenceTypes currDef = DefenceTypes.values()[i];
-            String defString = currDef.getTextColorTag() + currDef.getSpecialChar();
+            String defString = "&"+InscriptedPalette.ARMOR.getColorString() + currDef.getSpecialChar();
             defencesPrefixes[i] = defString;
         }
         for (int i = 0; i < attackPrefixes.length; i++){
             DamageTypes dmgDef = DamageTypes.values()[i];
-            String atkString = dmgDef.getColor() + dmgDef.getCharacter();
+            String atkString = dmgDef.getCharacter();
             attackPrefixes[i] = atkString;
         }
 

@@ -14,6 +14,7 @@ import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
 import com.amorabot.inscripted.components.buffs.categories.healing.HealingBuff;
 import com.amorabot.inscripted.components.buffs.categories.stat.StatBuff;
+import com.amorabot.inscripted.components.renderers.ItemInterfaceRenderer;
 import com.amorabot.inscripted.inscriptions.InscriptionTable;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
@@ -32,6 +33,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -82,11 +84,11 @@ public class TemplateCommand implements CommandExecutor {
                     }
                     break;
                 case "item":
-                    Weapon weapon = new Weapon(20, WeaponTypes.SWORD, ItemRarities.RARE,true, false);
-                    String impA = weapon.getImplicit().getImplicitDisplayName(Objects.requireNonNull(Archetypes.mapArchetypeFor(weapon.getSubtype())),2);
-                    Weapon item = (Weapon) ItemBuilder.randomItem(ItemTypes.WEAPON, WeaponTypes.MACE, 70, ItemRarities.MAGIC, true, false);
-                    String impB = item.getImplicit().getImplicitDisplayName(Objects.requireNonNull(Archetypes.mapArchetypeFor(item.getSubtype())),2);
-                    player.sendMessage(ColorUtils.translateColorCodes("1: " + impA + " 2: " + impB));
+//                    Weapon weapon = new Weapon(20, WeaponTypes.SWORD, ItemRarities.RUNIC,true, false);
+//                    String impA = weapon.getImplicit().getImplicitDisplayName(Objects.requireNonNull(Archetypes.mapArchetypeFor(weapon.getSubtype())),2);
+//                    Weapon item = (Weapon) ItemBuilder.randomItem(ItemTypes.WEAPON, WeaponTypes.MACE, 70, ItemRarities.AUGMENTED, true, false);
+//                    String impB = item.getImplicit().getImplicitDisplayName(Objects.requireNonNull(Archetypes.mapArchetypeFor(item.getSubtype())),2);
+//                    player.sendMessage(ColorUtils.translateColorCodes("1: " + impA + " 2: " + impB));
                     break;
                 case "toggle":
                     //Not persistent (ideal for temporary tags/ownership/toggles that are not essential in combat) -> if persistance is needed: scoreboard tags
@@ -190,6 +192,12 @@ public class TemplateCommand implements CommandExecutor {
                             Utils.log("Invalid insc. gen attempt");
                         }
                     }
+                    return true;
+                case "testColor":
+                    ItemStack heldItem = player.getInventory().getItemInMainHand();
+                    ItemInterfaceRenderer.setDisplayName("Awooga buga nuga",heldItem,ItemRarities.COMMON,false,4);
+//                    ItemInterfaceRenderer.setDisplayName("Runeec Bunguschungus",heldItem,ItemRarities.AUGMENTED,false,4);
+//                    ItemInterfaceRenderer.setDisplayName("Bingoos",heldItem,ItemRarities.RUNIC,false,7);
                     return true;
             }
         }
