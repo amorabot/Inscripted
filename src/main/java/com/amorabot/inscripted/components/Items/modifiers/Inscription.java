@@ -98,7 +98,7 @@ public class Inscription implements Serializable {
         if (modData.isStandard()){ //STANDARD INSCRIPTION COMPONENT BUILDING
             return buildStandardInscriptionComponent((InscriptionData)modData, detailsComponent, padding,rawDisplayName,isImplicit,implicitArchetype)
                     .decoration(TextDecoration.ITALIC,false);
-        } else if (modData.isHybrid()) {
+        } else if (modData.isHybrid()) {//HYBRID INSCRIPTION BUILDING
             return buildHybridInscription((HybridInscriptionData) modData, detailsComponent, padding,rawDisplayName,isImplicit,implicitArchetype)
                     .decoration(TextDecoration.ITALIC,false);
         } else {

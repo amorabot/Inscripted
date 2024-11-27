@@ -66,8 +66,7 @@ public abstract class Item implements Serializable {
     //-------------------------------------------------------------------------
     public <subType extends Enum<subType> & ItemSubtype> void imprint(ItemStack item, subType subType){
         final int mainStatPadding = 1;
-        final int inscriptionsPadding = 2;
-        final int highestLength = ItemInterfaceRenderer.getHighestStringLengthFor(this,inscriptionsPadding);
+        final int inscriptionsPadding = 3;
         final int inscriptions = this.getInscriptions().size();
         Component emptyLine = Component.text("");
         Component descriptionLine;
@@ -78,6 +77,8 @@ public abstract class Item implements Serializable {
             Weapon weaponData = (Weapon) this;
             imprintedLore.add(emptyLine);
             imprintedLore.addAll(ItemInterfaceRenderer.renderDamage(weaponData, mainStatPadding));
+            imprintedLore.add(emptyLine);
+
 
             descriptionLine = ItemInterfaceRenderer.renderDescription(this, type.toString(),0);
         } else if (subType instanceof ArmorTypes type) {
@@ -91,25 +92,34 @@ public abstract class Item implements Serializable {
             //...
             descriptionLine = ItemInterfaceRenderer.renderDescription(this, "INVALID",0);
         }
-        imprintedLore.add(ItemInterfaceRenderer.renderImplicit(this,mainStatPadding,subType));
-        imprintedLore.add(emptyLine);
-        imprintedLore.addAll(ItemInterfaceRenderer.renderRequirements(this,3));
+//        imprintedLore.add(ItemInterfaceRenderer.renderImplicit(this,mainStatPadding,subType));
+//        imprintedLore.add(emptyLine);
+//        imprintedLore.addAll(ItemInterfaceRenderer.renderRequirements(this,mainStatPadding));
 
 
         ItemRarities rarity = this.getRarity();
         switch (rarity){
             case AUGMENTED,RUNIC -> {
-                imprintedLore.add(emptyLine);
-                imprintedLore.add(ItemInterfaceRenderer.getRunicLine(true, inscriptions, highestLength));
-                imprintedLore.addAll(ItemInterfaceRenderer.renderInscriptions(this, inscriptionsPadding));
-                imprintedLore.add(ItemInterfaceRenderer.getRunicLine(false, inscriptions, highestLength));
-                imprintedLore.add(emptyLine);
+//                imprintedLore.add(emptyLine);
+//                imprintedLore.add(ItemInterfaceRenderer.getRunicLine(true, inscriptions, highestLength));
+                imprintedLore.add(ItemInterfaceRenderer.getInscriptionHeader(inscriptions,mainStatPadding+1));
+//                imprintedLore.add(emptyLine);
+                imprintedLore.addAll(ItemInterfaceRenderer.renderInscriptions(this, inscriptionsPadding+1));
+//                imprintedLore.add(ItemInterfaceRenderer.getRunicLine(false, inscriptions, highestLength));
+//                imprintedLore.add(emptyLine);
+                imprintedLore.add(ItemInterfaceRenderer.getInscriptionFooter(mainStatPadding+1));
             }
             case RELIC -> {
 
             }
             default -> imprintedLore.add(emptyLine);
         }
+
+        imprintedLore.add(emptyLine);
+        imprintedLore.add(ItemInterfaceRenderer.renderImplicit(this,mainStatPadding,subType));
+        imprintedLore.add(emptyLine);
+        imprintedLore.addAll(ItemInterfaceRenderer.renderRequirements(this,mainStatPadding));
+        imprintedLore.add(emptyLine);
 
         imprintedLore.add(descriptionLine);
 

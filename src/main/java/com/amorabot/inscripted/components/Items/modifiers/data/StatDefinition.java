@@ -18,7 +18,7 @@ public record StatDefinition(ValueTypes valueType, RangeTypes rangeType, PlayerS
         baseString.append(signIndicator);
         if (!signIndicator.isEmpty()){baseString.append(" ");}
 
-        if (!isGlobal){baseString.append("local ");}
+        if (!isGlobal){baseString.append("Local ");}
 
 
         if (metaData != null) {

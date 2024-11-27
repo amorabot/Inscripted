@@ -6,8 +6,8 @@ import lombok.Getter;
 public enum ValueTypes {
     FLAT("", "", ""),
     PERCENT("%", "", ""),
-    INCREASED("%", "incr.", "redu."),
-    MULTIPLIER("%", "more", "less");
+    INCREASED("%", "Incr.", "Redu."),
+    MULTIPLIER("%", "More", "Less");
 
     private final String iconChar;
     private final String positiveIndicator;

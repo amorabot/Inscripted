@@ -29,7 +29,22 @@ public class ItemInterfaceRenderer {
     public static final TextColor highlightColor = InscriptedPalette.NEUTRAL_GRAY.getColor();
     public static final String TOP_RUNIC_BAR = "- --=÷¦• ";
     public static final String BOT_RUNIC_BAR = "--=÷• ";
+    public static final String inscriptionsHeader = Utils.convertToPrettyString("Inscriptions: ") + "<color>•÷¦[ <n> ]¦÷=--  ";
+    public static final String inscriptionsFooter = "-   --  ---  ----=÷• ᚫ •÷=---";
     //      "¦¡!ï÷ ¨ ╜ ╙"; ᚫ
+
+    public static Component getInscriptionHeader(int numOfInscriptions, int padding){
+        Component paddingComponent = Component.text(" ".repeat(padding));
+        Component preHeaderComponent = Component.text("-•÷ ").color(InscriptedPalette.DARKEST_TEXT.getColor());
+        return paddingComponent.append(preHeaderComponent.append(MiniMessage.miniMessage().deserialize(inscriptionsHeader,
+                        Placeholder.parsed("n", String.valueOf(numOfInscriptions)),
+                        Placeholder.parsed("color", "<"+InscriptedPalette.DARKEST_TEXT.getColorString()+">")).color(highlightColor)
+                            .decoration(TextDecoration.ITALIC,false)));
+    }
+    public static Component getInscriptionFooter(int padding){
+        Component paddingComponent = Component.text(" ".repeat(padding));
+        return paddingComponent.append(Component.text(inscriptionsFooter).color(InscriptedPalette.DARKEST_TEXT.getColor()));
+    }
 
     public static void setDisplayName(String name, ItemStack item, ItemRarities rarity, boolean isCorrupted, int quality){
         Component nameComponent;
