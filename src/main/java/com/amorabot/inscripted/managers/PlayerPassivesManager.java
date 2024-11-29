@@ -2,7 +2,7 @@ package com.amorabot.inscripted.managers;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
-import com.amorabot.inscripted.components.Player.StatCompiler;
+import com.amorabot.inscripted.components.Player.stats.StatCompiler;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -70,7 +70,7 @@ public class PlayerPassivesManager {
 
         if (keystone.isStatKeystone()){
             //Once the task is cancelled and the active keystone removed from the player's profile, there's no real need for recompilation.
-            JSONProfileManager.getProfile(playerID).getStats().removeActiveStatKeystone(playerID, keystone, false);
+            JSONProfileManager.getProfile(playerID).getStatsComponent().removeActiveStatKeystone(playerID, keystone, false);
         }
 
 

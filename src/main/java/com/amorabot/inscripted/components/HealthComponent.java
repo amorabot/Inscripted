@@ -4,16 +4,13 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
-import com.amorabot.inscripted.components.Player.BaseStats;
+import com.amorabot.inscripted.components.Player.StatsComponent;
+import com.amorabot.inscripted.components.Player.stats.BaseStats;
 import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.components.Player.Stats;
+import com.amorabot.inscripted.components.Player.stats.StatPool;
 import com.amorabot.inscripted.components.buffs.Buffs;
-import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
-import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
-import com.amorabot.inscripted.utils.ColorUtils;
-import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -208,14 +205,23 @@ public class HealthComponent implements EntityComponent {
     @Override
     public void update(UUID profileID) {
         Profile profileData = JSONProfileManager.getProfile(profileID);
-        Stats playerStats = profileData.getStats();
-        setMaxHealth(playerStats.getFinalFlatValueFor(PlayerStats.HEALTH));
 
-        setMaxWard(Math.max(0, playerStats.getFinalFlatValueFor(PlayerStats.WARD)));
+        StatsComponent playerStatsComponent = profileData.getStatsComponent();
+        StatPool updatedStats = playerStatsComponent.getMergedStatsSnapshot();
+        StatPool originalPlayerStats = playerStatsComponent.getPlayerStats();
 
-        setHealthRegen((int) playerStats.getFinalFlatValueFor(PlayerStats.HEALTH_REGEN));
 
-        setWardRecovery(playerStats.getFinalPercentValueFor(PlayerStats.WARD_RECOVERY_RATE));
+        setMaxHealth(updatedStats.getFinalValueFor(PlayerStats.HEALTH,true));
+        originalPlayerStats.clearStat(PlayerStats.HEALTH);
+
+        setMaxWard(Math.max(0, updatedStats.getFinalValueFor(PlayerStats.WARD,true)));
+        originalPlayerStats.clearStat(PlayerStats.WARD);
+
+        setHealthRegen((int) updatedStats.getFinalValueFor(PlayerStats.HEALTH_REGEN,true));
+        originalPlayerStats.clearStat(PlayerStats.HEALTH_REGEN);
+
+        setWardRecovery((int) updatedStats.getFinalValueFor(PlayerStats.WARD_RECOVERY_RATE,true, ValueTypes.PERCENT));
+        originalPlayerStats.clearStat(PlayerStats.WARD_RECOVERY_RATE);
 
         //Capping current values whenever their max is updated
         if (getCurrentHealth() > getMaxHealth()){

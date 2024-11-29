@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.components.buffs.categories.stat;
 
 import com.amorabot.inscripted.components.Buff;
-import com.amorabot.inscripted.components.Player.StatCompiler;
+import com.amorabot.inscripted.components.Player.stats.StatCompiler;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.utils.Utils;

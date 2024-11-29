@@ -1,15 +1,14 @@
-package com.amorabot.inscripted.components.Player;
+package com.amorabot.inscripted.components.Player.stats;
 
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.data.KeystoneData;
 import com.amorabot.inscripted.components.Items.modifiers.data.ModifierData;
 import com.amorabot.inscripted.components.Items.modifiers.data.UniqueEffectData;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
+import com.amorabot.inscripted.components.Player.ItemSlotData;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +22,7 @@ public class PlayerEquipment {
 
     //TODO: make a super-object to encapsulate all equipment data per slot
     private final Map<ItemTypes, ItemSlotData> slots;
-    private final Map<ItemTypes, Map<PlayerStats, Map<ValueTypes, int[]>>> slotStats = new HashMap<>();
+    private final Map<ItemTypes, StatPool> slotStats = new HashMap<>();
     @Setter
     @Getter
     private Map<ItemTypes, Set<Keystones>> slotKeystones = new HashMap<>();
@@ -60,9 +59,9 @@ public class PlayerEquipment {
         }
         boolean shouldRecompileItem = selectedSlot.setItemHash(itemData);
         if (shouldRecompileItem){
-            Map<PlayerStats, Map<ValueTypes, int[]>> itemStats = new HashMap<>();
+            StatPool itemStats = new StatPool(); //Each slot will store a stat pool that can be later merged
             StatCompiler.addLocalStatsTo(itemStats, itemData);
-            StatCompiler.compileItem(itemStats, itemData);
+            StatCompiler.compileItemInscriptionStats(itemStats, itemData);
 
             slotKeystones.remove(slotType);
             metaInscriptions.remove(slotType);
@@ -81,7 +80,6 @@ public class PlayerEquipment {
                     UniqueEffectData effectData = (UniqueEffectData) inscData;
                     itemEffects.add(effectData.uniqueEffect());
                 }
-//                StatCompiler.addKeystonesFrom(inscription, itemKeystones); //Internal checks
                 if (inscription.getInscription().isMeta()){
                     metaInsc.add(inscription);
                 }
@@ -99,7 +97,7 @@ public class PlayerEquipment {
     public ItemSlotData getSlot(ItemTypes itemSlot){
         return slots.get(itemSlot);
     }
-    public Map<PlayerStats, Map<ValueTypes, int[]>> getSlotStats(ItemTypes itemSlot){
+    public StatPool getSlotStats(ItemTypes itemSlot){
         return slotStats.get(itemSlot);
     }
 

@@ -4,7 +4,8 @@ import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Buff;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
-import com.amorabot.inscripted.components.Player.StatCompiler;
+import com.amorabot.inscripted.components.Player.stats.StatCompiler;
+import com.amorabot.inscripted.components.Player.stats.StatPool;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.BuffData;
 import com.amorabot.inscripted.components.buffs.categories.damage.Damage;
@@ -163,18 +164,18 @@ public class PlayerBuffManager {
         playerBuffMap.remove(buff);
     }
 
-    public static Map<PlayerStats, Map<ValueTypes, int[]>> getBuffStatsFor(UUID playerID){
+    public static StatPool getBuffStatsFor(UUID playerID){
         Player player = Bukkit.getPlayer(playerID);
         assert player != null;
         if (!player.isOnline()){
-            return new HashMap<>();
+            return new StatPool();
         }
 
-        Map<PlayerStats, Map<ValueTypes, int[]>> buffStatsMap = new HashMap<>();
+        StatPool buffStats = new StatPool();
         Set<Buffs> playerStatBuffs = getActiveStatBuffsFor(player);
         if (playerStatBuffs.isEmpty()){
             Utils.log("No buffs to be compiled!");
-            return new HashMap<>();
+            return new StatPool();
         }
         for (Buffs statBuff : playerStatBuffs){
             Stat buffStatData = (Stat) (statBuff.getBuffAnnotationData());
@@ -184,10 +185,11 @@ public class PlayerBuffManager {
             if (statBuff.isDebuff()){
                 statValue = -statValue;
             }
-            Utils.log("Compiling " + statValue + " " + statType + " " + currentStat + "|| for buff " + statBuff);
-            StatCompiler.putSingleValueIn(buffStatsMap, currentStat, statType, statValue);
+            Utils.log("Compiling " + statValue + " " + statType + " " + currentStat + "|| Buff: " + statBuff);
+            buffStats.addStat(currentStat, statType, new int[]{statValue});
+//            StatCompiler.putSingleValueIn(buffStatsMap, currentStat, statType, statValue);
         }
-        return buffStatsMap;
+        return buffStats;
     }
 
     public static Set<Buffs> getActiveStatBuffsFor(Player player){

@@ -73,9 +73,9 @@ public abstract class Item implements Serializable {
 
         List<Component> imprintedLore = new ArrayList<>();
 
+        imprintedLore.add(emptyLine);
         if (subType instanceof WeaponTypes type){
             Weapon weaponData = (Weapon) this;
-            imprintedLore.add(emptyLine);
             imprintedLore.addAll(ItemInterfaceRenderer.renderDamage(weaponData, mainStatPadding));
             imprintedLore.add(emptyLine);
 
@@ -83,7 +83,6 @@ public abstract class Item implements Serializable {
             descriptionLine = ItemInterfaceRenderer.renderDescription(this, type.toString(),0);
         } else if (subType instanceof ArmorTypes type) {
             Armor armorData = (Armor) this;
-            imprintedLore.add(emptyLine);
             imprintedLore.addAll(ItemInterfaceRenderer.renderDefences(armorData,mainStatPadding));
             imprintedLore.add(emptyLine);
 
@@ -92,21 +91,12 @@ public abstract class Item implements Serializable {
             //...
             descriptionLine = ItemInterfaceRenderer.renderDescription(this, "INVALID",0);
         }
-//        imprintedLore.add(ItemInterfaceRenderer.renderImplicit(this,mainStatPadding,subType));
-//        imprintedLore.add(emptyLine);
-//        imprintedLore.addAll(ItemInterfaceRenderer.renderRequirements(this,mainStatPadding));
-
 
         ItemRarities rarity = this.getRarity();
         switch (rarity){
             case AUGMENTED,RUNIC -> {
-//                imprintedLore.add(emptyLine);
-//                imprintedLore.add(ItemInterfaceRenderer.getRunicLine(true, inscriptions, highestLength));
                 imprintedLore.add(ItemInterfaceRenderer.getInscriptionHeader(inscriptions,mainStatPadding+1));
-//                imprintedLore.add(emptyLine);
                 imprintedLore.addAll(ItemInterfaceRenderer.renderInscriptions(this, inscriptionsPadding+1));
-//                imprintedLore.add(ItemInterfaceRenderer.getRunicLine(false, inscriptions, highestLength));
-//                imprintedLore.add(emptyLine);
                 imprintedLore.add(ItemInterfaceRenderer.getInscriptionFooter(mainStatPadding+1));
             }
             case RELIC -> {

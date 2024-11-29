@@ -8,7 +8,7 @@ import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.components.Player.StatCompiler;
+import com.amorabot.inscripted.components.Player.stats.StatCompiler;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.inscripted.managers.JSONProfileManager;

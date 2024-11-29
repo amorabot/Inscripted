@@ -25,7 +25,7 @@ public class StatToggleMonitors {
                 Location loc = keystoneHolder.getLocation();
                 Profile playerProfile = JSONProfileManager.getProfile(playerID);
                 HealthComponent HPComponent = playerProfile.getHealthComponent();
-                boolean isActive = playerProfile.getStats().isStatKeystonePresent(Keystones.BERSERK);
+                boolean isActive = playerProfile.getStatsComponent().isStatKeystonePresent(Keystones.BERSERK);
                         /*
                         Truth table
                         LL  ACTIVE  (toggle)
@@ -42,10 +42,10 @@ public class StatToggleMonitors {
                 if (needsToggle){
                     if (isActive){ //De-activate
                         Utils.log("Toggling berserk! (OFF)");
-                        playerProfile.getStats().removeActiveStatKeystone(playerID, Keystones.BERSERK, false);
+                        playerProfile.getStatsComponent().removeActiveStatKeystone(playerID, Keystones.BERSERK, false);
                     } else { //Activate
                         Utils.log("Toggling berserk! (ON)");
-                        playerProfile.getStats().addActiveStatKeystone(playerID, Keystones.BERSERK);
+                        playerProfile.getStatsComponent().addActiveStatKeystone(playerID, Keystones.BERSERK);
                     }
                 }
             }

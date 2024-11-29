@@ -11,7 +11,7 @@
 
 ![ItemSystem](https://github.com/amorabot/Inscripted/assets/16783145/27e9172e-762a-4f3b-98c1-a1524b7c4bc1)
 
-### The item system is meant to allow for expressive build creation, mixing and matching all the different items and their stats to fit your preferred style!
+### The item system is meant to allow for expressive build creation, mixing and matching all the different items and their statsComponent to fit your preferred style!
 
 Equippable items can be one of two types: **Craftables** or **Relics**! Craftable items can have their Inscriptions modified to your needs with currencies, such as Orbs, while Relic items cannot!
 
@@ -19,7 +19,7 @@ Equippable items can be one of two types: **Craftables** or **Relics**! Craftabl
 ![image](https://github.com/amorabot/Inscripted/assets/16783145/7b42f750-ef64-418d-8563-a1750ab647e2)
 ![image](https://github.com/amorabot/Inscripted/assets/16783145/325616d1-9390-4312-b0cb-1e43f59b21a5)
 
-A Relics main purpose is to turn some of the game mechanics on their head and subvert the use of some stats, allowing for even quirkier builds!
+A Relics main purpose is to turn some of the game mechanics on their head and subvert the use of some statsComponent, allowing for even quirkier builds!
 This way you can, for instance, take advantage of the Inscription combinations available only for certain item [Archetypes](#The-Attribute-trinity), while counter-balancing the negative effects of a mighty Relic!
 
 ### One of the core principles of the item system is that obtaining a desired item is pretty much a deterministic process. Not easy. Deterministic.
@@ -86,11 +86,11 @@ You can also check out the entire [Relic item showcase](https://www.behance.net/
 -----------------------------------------------------------------------------------------------------------------
 Inscripted doesn't feature typical classes. Items are the main way for players to express themselves! Items are one of the cores of a player's build, and there are many item archetypes that can help one achieve their ideal build! Each archetype reinforces a particular playstyle and they can be mixed and matched together to fit one's needs!
 
-![STR](https://github.com/amorabot/Inscripted/assets/16783145/d3ac961a-b556-4d9e-b672-b25967463820) The strength attribute is represented by the element Fire aswell as physical stats (damage & mitigation).
+![STR](https://github.com/amorabot/Inscripted/assets/16783145/d3ac961a-b556-4d9e-b672-b25967463820) The strength attribute is represented by the element Fire aswell as physical statsComponent (damage & mitigation).
 
-![DEX](https://github.com/amorabot/Inscripted/assets/16783145/c67f9dcd-c9c3-4956-b1fa-3e7e78c6be5c) The dexterity attribute is represented by the element Lightning aswell as evasiveness and mobility stats.
+![DEX](https://github.com/amorabot/Inscripted/assets/16783145/c67f9dcd-c9c3-4956-b1fa-3e7e78c6be5c) The dexterity attribute is represented by the element Lightning aswell as evasiveness and mobility statsComponent.
 
-![INT](https://github.com/amorabot/Inscripted/assets/16783145/85a0fec7-05a0-4065-9d50-01beb940a423) The intelligence attribute is represented by the element Cold aswell as elemental and stamina stats.
+![INT](https://github.com/amorabot/Inscripted/assets/16783145/85a0fec7-05a0-4065-9d50-01beb940a423) The intelligence attribute is represented by the element Cold aswell as elemental and stamina statsComponent.
 
 Some archetypes will represent a mixture of the main 3 attribute's characteristics. For example, the Gladiator is a hybrid class that taps both into Strength and Dexterity.
 

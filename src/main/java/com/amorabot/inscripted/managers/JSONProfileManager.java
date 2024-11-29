@@ -8,7 +8,7 @@ import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Files.ItemGSONAdapter;
 import com.amorabot.inscripted.components.Player.Attributes;
 import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.components.Player.PlayerEquipment;
+import com.amorabot.inscripted.components.Player.stats.PlayerEquipment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;

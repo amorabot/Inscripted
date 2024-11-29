@@ -2,9 +2,11 @@ package com.amorabot.inscripted.components;
 
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
+import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
 import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.components.Player.Stats;
+import com.amorabot.inscripted.components.Player.StatsComponent;
+import com.amorabot.inscripted.components.Player.stats.StatPool;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
@@ -82,9 +84,12 @@ public class Attack implements EntityComponent {
     @Override
     public void update(UUID profileID) {
         Profile profile = JSONProfileManager.getProfile(profileID);
-        Stats playerStats = profile.getStats();
+        StatsComponent playerStatsComponent = profile.getStatsComponent();
+        StatPool statsSnapshot = playerStatsComponent.getMergedStatsSnapshot();
+        StatPool originalPlayerStats = playerStatsComponent.getPlayerStats();
+
         hitDamage.clear();
-        int[][] playerDamage = playerStats.getFinalDamages();
+        int[][] playerDamage = statsSnapshot.getFinalDamages();
         hitDamage.put(DamageTypes.PHYSICAL, playerDamage[0]);
         hitDamage.put(DamageTypes.FIRE, playerDamage[1]);
         hitDamage.put(DamageTypes.LIGHTNING, playerDamage[2]);
@@ -93,16 +98,17 @@ public class Attack implements EntityComponent {
 
         setDPS();
 
-        this.accuracy = playerStats.getFinalFlatValueFor(PlayerStats.ACCURACY);
-        this.critChance = 5 + playerStats.getFinalPercentValueFor(PlayerStats.CRITICAL_CHANCE);
-        this.critDamage = playerStats.getFinalPercentValueFor(PlayerStats.CRITICAL_DAMAGE);
-        this.shred = playerStats.getFinalPercentValueFor(PlayerStats.SHRED);
-        this.maelstrom = playerStats.getFinalPercentValueFor(PlayerStats.MAELSTROM);
-        this.bleedChance = playerStats.getFinalPercentValueFor(PlayerStats.BLEED);
+        this.accuracy = statsSnapshot.getFinalValueFor(PlayerStats.ACCURACY,true);
+        originalPlayerStats.clearStat(PlayerStats.ACCURACY);
+        this.critChance = (5 + getPercentFrom(statsSnapshot, PlayerStats.CRITICAL_CHANCE, originalPlayerStats));
+        this.critDamage = getPercentFrom(statsSnapshot, PlayerStats.CRITICAL_DAMAGE, originalPlayerStats);
+        this.shred = getPercentFrom(statsSnapshot, PlayerStats.SHRED, originalPlayerStats);
+        this.maelstrom = getPercentFrom(statsSnapshot, PlayerStats.SHRED, originalPlayerStats);
+        this.bleedChance = getPercentFrom(statsSnapshot, PlayerStats.SHRED, originalPlayerStats);
 
-        this.firePen = playerStats.getFinalPercentValueFor(PlayerStats.FIRE_PENETRATION);
-        this.lightningPen = playerStats.getFinalPercentValueFor(PlayerStats.LIGHTNING_PENETRATION);
-        this.coldPen = playerStats.getFinalPercentValueFor(PlayerStats.COLD_PENETRATION);
+        this.firePen = getPercentFrom(statsSnapshot, PlayerStats.SHRED, originalPlayerStats);
+        this.lightningPen = getPercentFrom(statsSnapshot, PlayerStats.SHRED, originalPlayerStats);
+        this.coldPen = getPercentFrom(statsSnapshot, PlayerStats.SHRED, originalPlayerStats);
 
     }
 
@@ -120,13 +126,19 @@ public class Attack implements EntityComponent {
             return dmgString.toString().trim();
         }
     }
-
-    private static void addDamageToString(StringBuilder builder, int damage, DamageTypes damageType){
-        if (damage > 0){
-//            String damageIcon = damageType.getCharacter();
-//            String damageColor = damageType.getColor();
-//            builder.append(ColorUtils.translateColorCodes(damageColor + damage + damageIcon))
-//                    .append(" ");
-        }
+    private int getPercentFrom(StatPool statsSnapshot, PlayerStats dmgStat, StatPool originalStatPool){
+        final int resistValue = (int) statsSnapshot.getFinalValueFor(dmgStat,true, ValueTypes.PERCENT);
+        //Clear the original pool from this stat
+        originalStatPool.clearStat(dmgStat);
+        return resistValue;
     }
+
+//    private static void addDamageToString(StringBuilder builder, int damage, DamageTypes damageType){
+//        if (damage > 0){
+////            String damageIcon = damageType.getCharacter();
+////            String damageColor = damageType.getColor();
+////            builder.append(ColorUtils.translateColorCodes(damageColor + damage + damageIcon))
+////                    .append(" ");
+//        }
+//    }
 }

@@ -4,7 +4,8 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
 import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.components.Player.Stats;
+import com.amorabot.inscripted.components.Player.StatsComponent;
+import com.amorabot.inscripted.components.Player.stats.StatPool;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -83,26 +84,37 @@ public class DefenceComponent implements EntityComponent {
     @Override
     public void update(UUID profileID) {
         Profile profileData = JSONProfileManager.getProfile(profileID);
-        Stats playerStats = profileData.getStats();
+
+        StatsComponent playerStatsComponent = profileData.getStatsComponent();
+        StatPool updatedStats = playerStatsComponent.getMergedStatsSnapshot();
+        StatPool originalPlayerStats = playerStatsComponent.getPlayerStats();
 
         //Set elemental mod caps (When implemented)
-        setFireCapMod(playerStats.getFinalPercentValueFor(PlayerStats.MAX_FIRE_RESISTANCE));
-        setLightningCapMod(playerStats.getFinalPercentValueFor(PlayerStats.MAX_LIGHTNING_RESISTANCE));
-        setColdCapMod(playerStats.getFinalPercentValueFor(PlayerStats.MAX_COLD_RESISTANCE));
+        setFireCapMod(getPercentFrom(updatedStats, PlayerStats.MAX_FIRE_RESISTANCE, originalPlayerStats));
+        setFireCapMod(getPercentFrom(updatedStats, PlayerStats.MAX_LIGHTNING_RESISTANCE, originalPlayerStats));
+        setFireCapMod(getPercentFrom(updatedStats, PlayerStats.MAX_COLD_RESISTANCE, originalPlayerStats));
 
         //Setting resistances
-        setFireResistance(playerStats.getFinalPercentValueFor(PlayerStats.FIRE_RESISTANCE));
-        setLightningResistance(playerStats.getFinalPercentValueFor(PlayerStats.LIGHTNING_RESISTANCE));
-        setColdResistance(playerStats.getFinalPercentValueFor(PlayerStats.COLD_RESISTANCE));
-        setAbyssalResistance(playerStats.getFinalPercentValueFor(PlayerStats.ABYSSAL_RESISTANCE));
+        setFireResistance(getPercentFrom(updatedStats, PlayerStats.FIRE_RESISTANCE, originalPlayerStats));
+        setLightningResistance(getPercentFrom(updatedStats, PlayerStats.LIGHTNING_RESISTANCE, originalPlayerStats));
+        setColdResistance(getPercentFrom(updatedStats, PlayerStats.COLD_RESISTANCE, originalPlayerStats));
+        setAbyssalResistance(getPercentFrom(updatedStats, PlayerStats.ABYSSAL_RESISTANCE, originalPlayerStats));
 
         //Setting defensive stats
-        setArmor(playerStats.getFinalFlatValueFor(PlayerStats.ARMOR));
+        setArmor(updatedStats.getFinalValueFor(PlayerStats.ARMOR,true));
+        originalPlayerStats.clearStat(PlayerStats.ARMOR);
 
-        setDodge((int)playerStats.getFinalFlatValueFor(PlayerStats.DODGE));
+        setDodge((int) updatedStats.getFinalValueFor(PlayerStats.DODGE,true));
+        originalPlayerStats.clearStat(PlayerStats.DODGE);
     }
     private int getCappedRes(int uncappedRes, int capMod){
         int cappedRes = Math.min(uncappedRes, baseElementalCap + capMod);
         return Math.min(cappedRes, 85);
+    }
+    private int getPercentFrom(StatPool statsSnapshot, PlayerStats resistStat, StatPool originalStatPool){
+        final int resistValue = (int) statsSnapshot.getFinalValueFor(resistStat,true, ValueTypes.PERCENT);
+        //Clear the original pool from this stat
+        originalStatPool.clearStat(resistStat);
+        return resistValue;
     }
 }

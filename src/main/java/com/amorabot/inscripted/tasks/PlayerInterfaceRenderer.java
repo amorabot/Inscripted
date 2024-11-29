@@ -5,7 +5,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceType
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.components.Player.StatCompiler;
+import com.amorabot.inscripted.components.Player.stats.StatCompiler;
 import com.amorabot.inscripted.components.renderers.InscriptedPalette;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
@@ -38,7 +38,9 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             float curWard = healthComponent.getCurrentWard();
             String wardHex = InscriptedPalette.WARD.getColorString();
             float dps = playerProfile.getDamageComponent().getHitData().getDPS();
-            int staminaValue = (int) StatCompiler.readFinalFlatValueFrom(playerProfile.getStats().getPlayerStats(),PlayerStats.STAMINA); //TODO: put a cached value for this in some player profile component
+//            int staminaValue = 100;
+            int staminaValue = (int) playerProfile.getStatsComponent().getPlayerStats().getFinalValueFor(PlayerStats.STAMINA,false);
+//            int staminaValue = (int) StatCompiler.readFinalFlatValueFrom(,PlayerStats.STAMINA); //TODO: put a cached value for this in some player profile component
 //            char facing = currentPlayer.getFacing().toString().charAt(0);
 
             Audience playerAudience = Audience.audience(currentPlayer);

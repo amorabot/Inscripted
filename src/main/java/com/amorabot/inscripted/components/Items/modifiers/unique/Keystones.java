@@ -14,7 +14,6 @@ import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
-import com.amorabot.inscripted.skills.AbilityRoutines;
 import com.amorabot.inscripted.skills.PlayerAbilities;
 import com.amorabot.inscripted.skills.item.StatToggleMonitors;
 import com.amorabot.inscripted.utils.ColorUtils;
@@ -92,12 +91,11 @@ public enum Keystones {
         }
         @Override
         public void addExternalStat(UUID playerID){
-            int[] berserkStatValues = new int[]{50};
+            int berserkStatValue = 50;
             Profile playerProfile = JSONProfileManager.getProfile(playerID);
-            playerProfile.getStats().updateExternalStat(
+            playerProfile.getStatsComponent().getExternalStats().addPercentageMultiplier(
                     PlayerStats.PHYSICAL_DAMAGE,
-                    ValueTypes.MULTIPLIER,
-                    berserkStatValues);
+                    berserkStatValue);
         }
     },
     THUNDERSTRUCK(TriggerTimes.EARLY, true, false,
@@ -220,6 +218,7 @@ public enum Keystones {
         this.description = description;
     }
 
+    //TODO: Change return to boolean to indicate aplly()'s success -> can be useful to external logic
     public abstract void apply(UUID playerID);
     public boolean needsInstantiation(UUID playerID){
         //Checking if, for that player and for this keystone, a task is already instantiated

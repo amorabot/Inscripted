@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.components.Player;
+package com.amorabot.inscripted.components.Player.stats;
 
 import com.amorabot.inscripted.components.DamageComponent;
 import com.amorabot.inscripted.components.DefenceComponent;
@@ -13,6 +13,10 @@ import com.amorabot.inscripted.components.Items.modifiers.data.*;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTimes;
+import com.amorabot.inscripted.components.Player.Attributes;
+import com.amorabot.inscripted.components.Player.ItemSlotData;
+import com.amorabot.inscripted.components.Player.Profile;
+import com.amorabot.inscripted.components.Player.StatsComponent;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
@@ -22,17 +26,16 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-import static com.amorabot.inscripted.utils.Utils.calculateFinalFlatValue;
-
 public class StatCompiler {
 
     public static void updateProfile(UUID playerID){
-        Utils.log("-----STARTING COMPILATION FOR-----");
+        Utils.log("----=| Compiling Stats |=----");
         Profile targetProfile = JSONProfileManager.getProfile(playerID);
         PlayerEquipment equipment = targetProfile.getEquipmentComponent();
 
-        Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats = new HashMap<>();
-        addBaseStatsTo(compiledStats);
+        //Compile equipment stats then compile external stats
+        StatPool playerStatPool = new StatPool();
+        addBaseStatsTo(playerStatPool);
 
         Set<Keystones> playerKeystones = compileKeystones(equipment);
         Set<Effects> playerEffects = compileUniqueEffects(equipment);
@@ -44,18 +47,19 @@ public class StatCompiler {
 
 
         //After local stats are compiled, group all equipment slots
-        groupEquipmentStats(compiledStats, equipment);
+        groupEquipmentStatsInto(playerStatPool, equipment);
 
         //Lets reset the external stat container and see what external sources of stats are valid to be recompiled
-        targetProfile.getStats().getExternalStats().clear();
+        targetProfile.getStatsComponent().getExternalStats().getStats().clear();
+        //Compiles every external stat into the corresponding statPool
         addExternalStatsFromKeystones(playerID);
-        groupExternalStats(compiledStats, playerID);
+        groupExternalStats(playerID);
 
-        //Once most stats were added, lets add the meta stat values, based on it's target mod base final value
-        addMetaStatsFrom(equipment, compiledStats);
+        //Once most stats were added, lets add the meta stats resulting values
+        addMetaStatsFrom(equipment, playerStatPool);
 
         //Compiled stats are now available for all components to consume in the build step
-        targetProfile.getStats().setPlayerStats(compiledStats);
+        targetProfile.getStatsComponent().setPlayerStats(playerStatPool);
         targetProfile.setKeystones(playerKeystones);
         targetProfile.setEffects(playerEffects);
 
@@ -65,33 +69,33 @@ public class StatCompiler {
         applyKeystones(playerID, playerKeystones, TriggerTimes.LATE);
     }
 
-    public static void addLocalStatsTo(Map<PlayerStats, Map<ValueTypes, int[]>> statMap, Item itemData){
+    public static void addLocalStatsTo(StatPool playerStats, Item itemData){
         if (itemData instanceof Weapon weaponData){
             Map<DamageTypes, int[]> localDamage = weaponData.getLocalDamage();
-            addStat(statMap, PlayerStats.PHYSICAL_DAMAGE, ValueTypes.FLAT, localDamage.get(DamageTypes.PHYSICAL));
+            playerStats.addStat(PlayerStats.PHYSICAL_DAMAGE, ValueTypes.FLAT, localDamage.get(DamageTypes.PHYSICAL));
             if (localDamage.containsKey(DamageTypes.FIRE)){
-                addStat(statMap, PlayerStats.FIRE_DAMAGE, ValueTypes.FLAT, localDamage.get(DamageTypes.FIRE));
+                playerStats.addStat(PlayerStats.FIRE_DAMAGE, ValueTypes.FLAT, localDamage.get(DamageTypes.FIRE));
             }
             if (localDamage.containsKey(DamageTypes.LIGHTNING)){
-                addStat(statMap, PlayerStats.LIGHTNING_DAMAGE, ValueTypes.FLAT, localDamage.get(DamageTypes.LIGHTNING));
+                playerStats.addStat(PlayerStats.LIGHTNING_DAMAGE, ValueTypes.FLAT, localDamage.get(DamageTypes.LIGHTNING));
             }
             if (localDamage.containsKey(DamageTypes.COLD)){
-                addStat(statMap, PlayerStats.COLD_DAMAGE, ValueTypes.FLAT, localDamage.get(DamageTypes.COLD));
+                playerStats.addStat(PlayerStats.COLD_DAMAGE, ValueTypes.FLAT, localDamage.get(DamageTypes.COLD));
             }
             if (localDamage.containsKey(DamageTypes.ABYSSAL)){
-                addStat(statMap, PlayerStats.ABYSSAL_DAMAGE, ValueTypes.FLAT, localDamage.get(DamageTypes.ABYSSAL));
+                playerStats.addStat(PlayerStats.ABYSSAL_DAMAGE, ValueTypes.FLAT, localDamage.get(DamageTypes.ABYSSAL));
             }
         }
         if (itemData instanceof Armor armorData){
             Map<DefenceTypes, Integer> localDefences = armorData.getLocalDefences();
-            addStat(statMap, PlayerStats.HEALTH, ValueTypes.FLAT, new int[]{localDefences.get(DefenceTypes.HEALTH)}); //Life should be always present
-            addStat(statMap, PlayerStats.WARD, ValueTypes.FLAT, new int[]{localDefences.getOrDefault(DefenceTypes.WARD,0)});
-            addStat(statMap, PlayerStats.ARMOR, ValueTypes.FLAT, new int[]{localDefences.getOrDefault(DefenceTypes.ARMOR,0)});
-            addStat(statMap, PlayerStats.DODGE, ValueTypes.FLAT, new int[]{localDefences.getOrDefault(DefenceTypes.DODGE,0)});
+            playerStats.addStat(PlayerStats.HEALTH, ValueTypes.FLAT, new int[]{localDefences.get(DefenceTypes.HEALTH)}); //Life should be always present
+            playerStats.addStat(PlayerStats.WARD, ValueTypes.FLAT, new int[]{localDefences.getOrDefault(DefenceTypes.WARD,0)});
+            playerStats.addStat(PlayerStats.ARMOR, ValueTypes.FLAT, new int[]{localDefences.getOrDefault(DefenceTypes.ARMOR,0)});
+            playerStats.addStat(PlayerStats.DODGE, ValueTypes.FLAT, new int[]{localDefences.getOrDefault(DefenceTypes.DODGE,0)});
         }
     }
 
-    private static void addMetaStatsFrom(PlayerEquipment equipment, Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats){
+    private static void addMetaStatsFrom(PlayerEquipment equipment, StatPool statPool){
         Map<ItemTypes, Set<Inscription>> metaInscPerSlot = equipment.getMetaInscriptions();
         for (ItemTypes slot : metaInscPerSlot.keySet()){
             if (equipment.getSlot(slot).isIgnorable()){continue;}
@@ -109,12 +113,12 @@ public class StatCompiler {
 
                     PlayerStats finalConvertedStat = definitionData.stat();
                     ValueTypes finalStatType = definitionData.valueType();
-                    if (compiledStats.containsKey(targetConvertedStat)){
-                        if (compiledStats.get(targetConvertedStat).containsKey(type)){
-                            int convertedStat = (int) readFinalFlatValueFrom(compiledStats, targetConvertedStat);
+                    if (statPool.getStats().containsKey(targetConvertedStat)){
+                        if (statPool.getStats().get(targetConvertedStat).containsKey(type)){
+                            int convertedStat = (int) statPool.getFinalValueFor(targetConvertedStat, false);
                             int[] baseMetaValue = insc.getMappedFinalValue();
                             int[] stackedMetaValue = ID.convert(convertedStat, baseMetaValue);
-                            addStat(compiledStats, finalConvertedStat, finalStatType, stackedMetaValue);
+                            statPool.addStat(finalConvertedStat, finalStatType, stackedMetaValue);
 //                            Utils.error("CONVERTED BASE STAT:" + convertedStat);
 //                            Utils.log(Arrays.toString(stackedMetaValue));
                         }
@@ -122,14 +126,6 @@ public class StatCompiler {
                 }
             }
         }
-    }
-    public static float readFinalFlatValueFrom(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats, PlayerStats stat){
-        if (!compiledStats.containsKey(stat)){return 0F;} //Invalid query
-        int baseValue = compiledStats.get(stat).getOrDefault(ValueTypes.FLAT, new int[1])[0];
-        int increasedMod = compiledStats.get(stat).getOrDefault(ValueTypes.INCREASED, new int[1])[0];
-        int multiplierMod = compiledStats.get(stat).getOrDefault(ValueTypes.MULTIPLIER, new int[1])[0];
-
-        return calculateFinalFlatValue(baseValue, increasedMod, multiplierMod);
     }
 
     private static Set<Keystones> compileKeystones(PlayerEquipment equipment) {
@@ -218,153 +214,71 @@ public class StatCompiler {
         }
     }
 
-//    public static void addKeystonesFrom(Inscription inscription, Set<Keystones> keystoneSet){
-//        ModifierData inscData = inscription.getInscription().getData();
-//        if (inscData.isKeystone()){
-//            KeystoneData keystoneData = (KeystoneData) inscData;
-//            keystoneSet.add(keystoneData.keystone());
-//        }
-//    }
 
-
-    private static void addBaseStatsTo(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats) {
-        putSingleValueIn(compiledStats, PlayerStats.HEALTH, ValueTypes.FLAT, BaseStats.HEALTH.getValue());
-        putSingleValueIn(compiledStats, PlayerStats.HEALTH_REGEN, ValueTypes.FLAT, BaseStats.HEALTH_REGEN.getValue());
-        putSingleValueIn(compiledStats, PlayerStats.WARD_RECOVERY_RATE, ValueTypes.PERCENT, BaseStats.WARD_RECOVERY_RATE.getValue());
-        putSingleValueIn(compiledStats, PlayerStats.STAMINA, ValueTypes.FLAT, BaseStats.STAMINA.getValue());
-        putSingleValueIn(compiledStats, PlayerStats.STAMINA_REGEN, ValueTypes.FLAT, BaseStats.STAMINA_REGEN.getValue());
-        putSingleValueIn(compiledStats, PlayerStats.WALK_SPEED, ValueTypes.FLAT, BaseStats.WALK_SPEED.getValue());
-    }
-    public static void putSingleValueIn(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats, PlayerStats targetStat, ValueTypes type, int value){
-        if (compiledStats.containsKey(targetStat)){
-            compiledStats.get(targetStat).put(type, new int[]{value});
-            return;
-        }
-        Map<ValueTypes, int[]> newStatMap = new HashMap<>();
-        newStatMap.put(type, new int[]{value});
-        compiledStats.put(targetStat, newStatMap);
+    private static void addBaseStatsTo(StatPool statPool) {
+        statPool.addStat(PlayerStats.HEALTH, ValueTypes.FLAT, new int[]{BaseStats.HEALTH.getValue()});
+        statPool.addStat(PlayerStats.HEALTH_REGEN, ValueTypes.FLAT, new int[]{BaseStats.HEALTH_REGEN.getValue()});
+        statPool.addStat(PlayerStats.WARD_RECOVERY_RATE, ValueTypes.PERCENT, new int[]{BaseStats.WARD_RECOVERY_RATE.getValue()});
+        statPool.addStat(PlayerStats.STAMINA, ValueTypes.FLAT, new int[]{BaseStats.STAMINA.getValue()});
+        statPool.addStat(PlayerStats.STAMINA_REGEN, ValueTypes.FLAT, new int[]{BaseStats.STAMINA_REGEN.getValue()});
+        statPool.addStat(PlayerStats.WALK_SPEED, ValueTypes.FLAT, new int[]{BaseStats.WALK_SPEED.getValue()});
     }
 
 
     private static void buildProfile(Profile targetProfile, UUID playerID){
         Attributes attributes = targetProfile.getAttributes();
-        Stats stats = targetProfile.getStats();
+        StatsComponent statsComponent = targetProfile.getStatsComponent();
         DefenceComponent defences = targetProfile.getDefenceComponent();
         HealthComponent health = targetProfile.getHealthComponent();
         DamageComponent damage = targetProfile.getDamageComponent();
 
         //The update order is defined here
         attributes.update(playerID); //Relies on the current state of the Stats object (Its already been set)
-        stats.update(playerID); //Stats is accessed directly, has a non-conventional update() and is the basis for other components states
+        statsComponent.update(playerID); //Stats is accessed directly, has a non-conventional update() and is the basis for other components states
         defences.update(playerID);
         health.update(playerID);
         damage.update(playerID);
 
-        Stats.debugStatMap(stats.getPlayerStats(), "MISC STATS (Profile build step)");
+        statsComponent.debug();
     }
-
-    public static void addStat(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats, PlayerStats stat, ValueTypes type, int[] values){
-        if (!compiledStats.containsKey(stat)){
-            Map<ValueTypes, int[]> newValueTypeMap = new HashMap<>();
-            newValueTypeMap.put(type, values);
-            compiledStats.put(stat, newValueTypeMap);
-            return;
-        }
-        if (!compiledStats.get(stat).containsKey(type)){
-            compiledStats.get(stat).put(type, values);
-            return;
-        }
-        int[] storedValues = compiledStats.get(stat).get(type).clone();
-        int[] updatedValues = Utils.vectorSum(storedValues, values);
-//        Utils.log("Prev: " + Arrays.toString(storedValues) + "/ Updt: " + Arrays.toString(updatedValues));
-
-        compiledStats.get(stat).put(type, updatedValues);
-    }
-    public static void compileItem(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats, Item item){
+    public static void compileItemInscriptionStats(StatPool statPool, Item item){
         List<Inscription> inscriptions = item.getInscriptionList();
         for (Inscription inscription : inscriptions){
             if (!inscription.getInscription().isGlobal()){continue;}
             if (inscription.getInscription().isMeta()){continue;}
-            compileIndividualInscriptionInto(compiledStats, inscription);
+            statPool.add(inscription);
         }
-        compileIndividualInscriptionInto(compiledStats, item.getImplicit());
-    }
-    private static void compileIndividualInscriptionInto(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats, Inscription inscription){
-        InscriptionID inscID = inscription.getInscription();
-        ModifierData inscData = inscID.getData();
-        if (inscData.isStandard()){
-            InscriptionData regularInsc = (InscriptionData) inscData;
-            StatDefinition def = regularInsc.getDefinitionData();
-            PlayerStats targetStat = def.stat();
-            ValueTypes type = def.valueType();
-            int[] mappedInscriptionValues = inscription.getMappedFinalValue();
-//            Utils.error("Compiling " + targetStat + ": " + Arrays.toString(mappedInscriptionValues) + " (" + type + ")");
-
-            addStat(compiledStats, targetStat, type, mappedInscriptionValues);
-            return;
-        }
-        if (inscData.isHybrid()){
-            HybridInscriptionData hybridInsc = (HybridInscriptionData) inscData;
-            StatDefinition[] definitions = hybridInsc.getStatDefinitions();
-            for (int d = 0; d < definitions.length; d++){
-                StatDefinition currentDef = definitions[d];
-                PlayerStats targetStat = currentDef.stat();
-                ValueTypes type = currentDef.valueType();
-                int[] mappedInscriptionValues = inscription.getMappedFinalValue(d);
-
-                addStat(compiledStats, targetStat, type, mappedInscriptionValues);
-            }
-            return;
-        }
+        statPool.add(item.getImplicit());
     }
 
     private static void addExternalStatsFromKeystones(UUID playerID){
         Profile playerProfile = JSONProfileManager.getProfile(playerID);
-        Stats playerStats = playerProfile.getStats();
-        for (Keystones statKeystone : playerStats.getActiveStatKeystones()){
+        StatsComponent playerStatsComponent = playerProfile.getStatsComponent();
+        for (Keystones statKeystone : playerStatsComponent.getActiveStatKeystones()){
             if (!statKeystone.isStatKeystone()){continue;}
             statKeystone.addExternalStat(playerID);
         }
     }
 
-    private static void groupEquipmentStats(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats, PlayerEquipment playerEquipment){
+    private static void groupEquipmentStatsInto(StatPool statPool, PlayerEquipment playerEquipment){
         for (ItemTypes slot : ItemTypes.values()) {
             if (playerEquipment.getSlot(slot).isIgnorable()){continue;}
             Utils.log("Grouping stats for: " + slot);
-            Map<PlayerStats, Map<ValueTypes, int[]>> slotStats = playerEquipment.getSlotStats(slot);
+            StatPool slotStats = playerEquipment.getSlotStats(slot);
             if (slotStats == null){continue;}
-            for (PlayerStats stat : slotStats.keySet()){
-                Map<ValueTypes, int[]> valueTypeMap = slotStats.get(stat);
-                for (ValueTypes type : valueTypeMap.keySet()){
-                    int[] currentValues = valueTypeMap.get(type).clone();
-//                    Utils.log("Adding " + stat + " " + type + ": " + Arrays.toString(currentValues));
-                    addStat(compiledStats, stat, type, currentValues);
-                }
-            }
+            statPool.merge(slotStats);
+            statPool.debug("After " + slot.toString());
         }
     }
-    private static void groupExternalStats(Map<PlayerStats, Map<ValueTypes, int[]>> compiledStats, UUID playerID){
+    private static void groupExternalStats(UUID playerID){
         Profile playerProfile = JSONProfileManager.getProfile(playerID);
-        Map<PlayerStats, Map<ValueTypes, int[]>> externalStats = playerProfile.getStats().getExternalStats();
-        mergeStatMaps(compiledStats, externalStats);
+        StatPool externalStats = playerProfile.getStatsComponent().getExternalStats(); //
 
         //After grouping any external stats, lets get and add all buff stats
         Utils.log("Grouping buff stats!");
-        Map<PlayerStats, Map<ValueTypes, int[]>> buffStats = PlayerBuffManager.getBuffStatsFor(playerID);
-        if (!buffStats.isEmpty()){
-            mergeStatMaps(compiledStats, buffStats);
-        }
-    }
-
-    public static void mergeStatMaps(Map<PlayerStats, Map<ValueTypes, int[]>> mainStatPool, Map<PlayerStats, Map<ValueTypes, int[]>> addedStats){
-        Utils.log("Merging statmaps!");
-        for (PlayerStats stat : addedStats.keySet()){
-            Map<ValueTypes, int[]> valueTypeMap = addedStats.get(stat);
-            for (ValueTypes type : valueTypeMap.keySet()){
-                int[] currentValues = valueTypeMap.get(type).clone();
-                Utils.log("Grouping external stat! " + stat + " " + type + ": " + Arrays.toString(currentValues));
-                addStat(mainStatPool, stat, type, currentValues);
-            }
+        StatPool buffStats = PlayerBuffManager.getBuffStatsFor(playerID);
+        if (!buffStats.getStats().isEmpty()){
+            externalStats.merge(buffStats);
         }
     }
 }

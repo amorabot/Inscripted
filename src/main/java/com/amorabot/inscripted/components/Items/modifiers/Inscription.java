@@ -65,26 +65,18 @@ public class Inscription implements Serializable {
 
     public int[] getMappedFinalValue(){ //Call for standard mods
         int[] tableValues = InscriptionTable.queryValuesFor(this).clone();
-        tableValues = negateValuesArrayIf(!this.getInscription().isPositive(), tableValues);
         InscriptionData modData = (InscriptionData) getInscription().getData();
         RangeTypes range = modData.getDefinitionData().rangeType();
         return RangeTypes.mapFinalValuesFor(range, tableValues, getBasePercentile());
     }
     public int[] getMappedFinalValue(int modIndex){ //Call for hybrid mods
         int[] tableValues = InscriptionTable.queryValuesFor(this).clone(); //Gets the raw values array to be split later
-        tableValues = negateValuesArrayIf(!this.getInscription().isPositive(), tableValues);
         HybridInscriptionData modData = (HybridInscriptionData) getInscription().getData();
         StatDefinition[] defs = modData.getStatDefinitions();
         RangeTypes range = defs[modIndex].rangeType();
         //The raw values array gets split based off "modData" internal state
         List<int[]> tableValueForCurrentMod = modData.splitValuesArray(tableValues);
         return RangeTypes.mapFinalValuesFor(range, tableValueForCurrentMod.get(modIndex), getBasePercentile());
-    }
-    private int[] negateValuesArrayIf(boolean isNegative ,int[] tableValues){
-        if (isNegative){
-            return Arrays.stream(tableValues).map(value -> -value).toArray();
-        }
-        return tableValues;
     }
 
     public Component asComponent(int padding, Archetypes... implicitArchetype){

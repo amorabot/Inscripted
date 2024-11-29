@@ -1,5 +1,7 @@
 package com.amorabot.inscripted.components.Items.Interfaces;
 
+import com.amorabot.inscripted.components.Player.stats.StatPool;
+
 import java.io.Serializable;
 import java.util.UUID;
 

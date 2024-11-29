@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.components.Player;
+package com.amorabot.inscripted.components.Player.stats;
 
 public enum BaseStats {
     HEALTH(40),

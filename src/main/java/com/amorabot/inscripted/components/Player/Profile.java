@@ -9,6 +9,8 @@ import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTimes;
 import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTypes;
+import com.amorabot.inscripted.components.Player.stats.PlayerEquipment;
+import com.amorabot.inscripted.components.Player.stats.StatCompiler;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
@@ -27,7 +29,7 @@ public class Profile {
     @Getter
     private Attributes attributes;
     @Getter
-    private Stats stats;
+    private StatsComponent statsComponent;
     private PlayerEquipment equipment;
 
     @Getter
@@ -46,7 +48,7 @@ public class Profile {
         this.defences = def;
         this.damage = dmg;
         this.attributes = att;
-        this.stats = new Stats();
+        this.statsComponent = new StatsComponent();
         this.equipment = equipment;
     }
     public PlayerEquipment getEquipmentComponent() {
