@@ -94,8 +94,8 @@ public class DefenceCalculator {
     public static boolean dodgeResult(Attack attackerDamage, float dodgeChance){
         float defenderDodgeChance = AccuracyCalculator.getFinalDefenderDodgeChance(attackerDamage, dodgeChance);
         int dodgeRoll = CraftingUtils.getRandomNumber(0, 100);
-        //If the roll is higher than the dodge chance, true (hit lands)
-        return dodgeRoll > defenderDodgeChance;
+        //If the roll is lower than the defender's dodge chance, true (dodged the hit)
+        return dodgeRoll < defenderDodgeChance;
     }
     //TODO: Lucky roll results
 }

@@ -124,7 +124,11 @@ public enum Effects {
         @Override
         public void execute(LivingEntity caster, LivingEntity target) {
             if (target instanceof Player targetCaster){
-                Profile.execute(targetCaster);
+                if (caster instanceof Player){
+                    targetCaster.setKiller((Player) caster);
+                }
+                HealthComponent.execute(targetCaster);
+//                Profile.execute(targetCaster);
             }
         }
 

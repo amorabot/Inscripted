@@ -98,7 +98,7 @@ public class Slash extends PlayerAttack {
             if (entity instanceof Player){
                 if (!((Player) slashOwner).hasLineOfSight(entity)){continue;}
                 this.getAffectedEntities().add(entity.getUniqueId());
-                DamageRouter.playerAttack((Player) slashOwner, entity, DamageSource.HIT, getContext().getSourceAbility());
+                DamageRouter.entityDamage((Player) slashOwner, entity, DamageSource.HIT, getContext().getSourceAbility());
             } else {
                 //Do whatever the other entity does :D
             }

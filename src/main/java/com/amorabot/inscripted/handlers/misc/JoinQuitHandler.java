@@ -1,5 +1,7 @@
 package com.amorabot.inscripted.handlers.misc;
 
+import com.amorabot.inscripted.APIs.EventAPI;
+import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
@@ -67,6 +69,7 @@ public class JoinQuitHandler implements Listener {
     private void initializePlayer(Player player){
         PlayerRegenManager.addPlayer(player.getUniqueId());
         PlayerBuffManager.initializePlayer(player);
+        EntityStateManager.setPlayerMetadata(player);
         //                                                          min 0  |  max 1
         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE)).setBaseValue(1);
         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_ABSORPTION)).setBaseValue(20);
@@ -95,7 +98,7 @@ public class JoinQuitHandler implements Listener {
         if (CombatLogger.isInCombat(player)) {
             if (player.hasMetadata(CombatLogger.getPvpTag())){
                 Utils.error(player.getName() + " logged out during PVP... crack his skull");
-                //TODO: play custom death event
+                EventAPI.entityDeath(player);
             }
             else if (player.hasMetadata(CombatLogger.getCombatTag())){
                 Utils.error(player.getName() + " logged out during regular combat");

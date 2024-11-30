@@ -43,7 +43,7 @@ public class InscriptionTable {
 
     public Map<Integer, Integer> getTierMappingsFor(InscriptionID inscription){
         if (!getInscriptionsTable().get(inscription.getData().getAffixType()).containsKey(inscription)){return new HashMap<>();}
-        return getInscriptionsTable().get(inscription.getData().getAffixType()).get(inscription);
+        return new HashMap<>(getInscriptionsTable().get(inscription.getData().getAffixType()).get(inscription));
     }
 
     //Returns -1 if mod is not available
@@ -139,7 +139,7 @@ public class InscriptionTable {
         for (String subtable : subtables){
             try {
                 InscriptionSubtable mappedSubtable = InscriptionSubtable.valueOf(subtable);
-                Map<Affix, Map<InscriptionID, Map<Integer, Integer>>> subtableData = mappedSubtable.getSubtableData();
+                Map<Affix, Map<InscriptionID, Map<Integer, Integer>>> subtableData = new HashMap<>(mappedSubtable.getSubtableData());
 
                 mergeTable(specificMods, subtableData, Affix.PREFIX);
                 mergeTable(specificMods, subtableData, Affix.SUFFIX);

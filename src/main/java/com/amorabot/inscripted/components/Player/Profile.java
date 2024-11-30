@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.components.Player;
 
+import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
 import com.amorabot.inscripted.components.DamageComponent;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
@@ -68,9 +69,7 @@ public class Profile {
 
         Player player = Bukkit.getPlayer(profileID);
         assert player != null;
-        double currentWardHearts = getHealthComponent().getMappedWard();
-        double currentHealthHearts = getHealthComponent().getMappedHealth();
-        setPlayerHearts(player, currentHealthHearts, currentWardHearts);
+        HealthComponent.updateHeartContainers(player,getHealthComponent());
     }
 
     public boolean updateEquipmentSlot(ItemTypes targetSlot, Item itemData, UUID profileID){
@@ -89,19 +88,6 @@ public class Profile {
         return ((weaponSlot.getItemHash()!=0) && (!weaponSlot.isIgnorable()));
     }
 
-    public void setPlayerHearts(Player player, double healthHearts, double wardHearts){
-        assert player != null;
-        //TODO: trigger death event instead if health == 0
-        player.setAbsorptionAmount(wardHearts);
-        player.setHealth(healthHearts);
-    }
-    public boolean updatePlayerHearts(Player player){
-        double updatedHealthHearts = getHealthComponent().getMappedHealth();
-        double updatedWardHearts = getHealthComponent().getMappedWard();
-        setPlayerHearts(player, updatedHealthHearts, updatedWardHearts);
-        return updatedHealthHearts == 0;
-    }
-
     public boolean hasKeystone(Keystones keystone){
         return keystones.contains(keystone);
     }
@@ -111,14 +97,5 @@ public class Profile {
             Utils.log("Checking "+effectTrigger+" effects. Current: " + effect);
             effect.check(caster,target, hit);
         }
-    }
-
-    public static void execute(Player player){
-        Profile playerProfile = JSONProfileManager.getProfile(player.getUniqueId());
-        HealthComponent HP = playerProfile.getHealthComponent();
-        HP.damageHealth((int) HP.getCurrentHealth());
-//        HP.setCurrentWard(0);
-//        HP.setCurrentHealth(0);
-//        playerProfile.updatePlayerHearts(player);
     }
 }

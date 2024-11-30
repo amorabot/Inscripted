@@ -25,7 +25,8 @@ public enum InscriptionSubtable {
 
     public Map<Affix, Map<InscriptionID, Map<Integer, Integer>>> getSubtableData(){
         if (!tableData.isEmpty()){return this.tableData;}
-        return InscriptionDataManager.loadSubtable(this.toString());
+        this.tableData = InscriptionDataManager.loadSubtable(this.toString());
+        return this.tableData;
     }
 
 }

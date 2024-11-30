@@ -16,8 +16,6 @@ import com.amorabot.inscripted.skills.PlayerAbilities;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -61,7 +59,7 @@ public class AttackProcessor {
         return (critRoll*100) <= critChance;
     }
 
-    public static void applyBleed(Player attacker, Player defender, int[] incomingHit){
+    public static void bleedAttempt(Player attacker, Player defender, int[] incomingHit){
         if (incomingHit[0]<=0){return;}
         //Min dmg threshold check
         int baseDamage = incomingHit[0]/10;

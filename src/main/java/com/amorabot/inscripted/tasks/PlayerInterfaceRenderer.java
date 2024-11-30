@@ -64,7 +64,7 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             }
 
 
-            String infoSection = "&7&l Lv19[&6&l|||&8|||||||&7&l] ";
+            String infoSection = "&7&l Lv12[&6&l|||&8|||||||&7&l] ";
             TextComponent infoComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(infoSection);
             String cooldownSection = "";
             if (dps > 1){

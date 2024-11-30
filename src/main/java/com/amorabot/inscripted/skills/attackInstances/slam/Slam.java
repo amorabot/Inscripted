@@ -71,7 +71,7 @@ public class Slam extends PlayerAttack {
                             if (entity instanceof Player){
                                 if (!((Player) slamOwner).hasLineOfSight(entity)){continue;}
                                 slamObject.getAffectedEntities().add(entity.getUniqueId());
-                                DamageRouter.playerAttack((Player) slamOwner, entity, DamageSource.HIT, getContext().getSourceAbility());
+                                DamageRouter.entityDamage((Player) slamOwner, entity, DamageSource.HIT, getContext().getSourceAbility());
                             } else {
                                 //Do whatever the other entity does :D
                             }

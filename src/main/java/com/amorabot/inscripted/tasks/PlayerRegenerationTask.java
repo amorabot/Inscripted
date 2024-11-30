@@ -40,7 +40,7 @@ public class PlayerRegenerationTask extends BukkitRunnable {
         HealthComponent HPComponent = playerProfile.getHealthComponent();
 
         //Reset food levels (TEMPORARY)!!!!!!!!!!!!!
-        player.setFoodLevel(10);
+        player.setFoodLevel(20);
         player.setSaturation(0);
 
         //If the player is pvp tagged, dont regen life

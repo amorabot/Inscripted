@@ -79,7 +79,7 @@ public class ItemPassiveAbilities {
                 //TODO: make isMob() and isPlayer() for inscripted entities
                 for (LivingEntity entity : nearbyEntities){
                     ParticlePlotter.thunderAt(entity.getLocation().clone(), 4, 16);
-                    DamageRouter.playerAttack(keystoneHolder, entity, DamageSource.HIT, PlayerAbilities.THUNDERSTRUCK_PASSIVE);
+                    DamageRouter.entityDamage(keystoneHolder, entity, DamageSource.HIT, PlayerAbilities.THUNDERSTRUCK_PASSIVE);
                 }
             }
         }.runTaskTimer(Inscripted.getPlugin(), period, period).getTaskId();

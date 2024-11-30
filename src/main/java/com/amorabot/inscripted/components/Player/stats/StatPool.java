@@ -146,7 +146,6 @@ public class StatPool {
         if (specialType != null && specialType.length==1){
             if (specialType[0].equals(ValueTypes.INCREASED)){
                 final float finalIncrease = (float) (increasedMod * multiplier);
-                Utils.log("GETTING INCREASED FINAL VALUE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! : " + finalIncrease);
                 if (clear){clearStat(stat);}
                 return finalIncrease;
             }

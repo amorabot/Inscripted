@@ -1,9 +1,13 @@
 package com.amorabot.inscripted.components;
 
+import com.amorabot.inscripted.APIs.EventAPI;
+import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
+import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTimes;
+import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTypes;
 import com.amorabot.inscripted.components.Player.StatsComponent;
 import com.amorabot.inscripted.components.Player.stats.BaseStats;
 import com.amorabot.inscripted.components.Player.Profile;
@@ -11,13 +15,17 @@ import com.amorabot.inscripted.components.Player.stats.StatPool;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
+import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.Set;
 import java.util.UUID;
+
+import static com.amorabot.inscripted.APIs.damageAPI.DamageRouter.notifyProfile;
 
 @Getter
 @Setter
@@ -57,7 +65,8 @@ public class HealthComponent implements EntityComponent {
         HealthComponent playerHP = playerProfile.getHealthComponent();
         playerHP.setCurrentHealth(playerHP.getMaxHealth());
         playerHP.setCurrentWard(playerHP.getMaxWard());
-        playerProfile.updatePlayerHearts(player);
+        HealthComponent.updateHealthHearts(player,playerHP);
+//        playerProfile.updatePlayerHearts(player);
     }
     public int regenHealth(boolean inCombat, UUID playerID){
         Player player = Bukkit.getPlayer(playerID);
@@ -158,7 +167,7 @@ public class HealthComponent implements EntityComponent {
         return Math.min(currentHealth/maxHealth, 1F);
     }
     public double getMappedHealth(){
-        int basePlayerHearts = 20;
+        final int basePlayerHearts = 20;
         if (currentHealth == 0){return 0;}
         return Math.max(0.5, getNormalizedHP()*basePlayerHearts);
     }
@@ -232,16 +241,41 @@ public class HealthComponent implements EntityComponent {
         }
     }
 
+    public static void updateHeartContainers(LivingEntity entity, HealthComponent healthComponent){
+        if (entity instanceof Player p){
+            updateHealthHearts(p,healthComponent);
+            updateWardHearts(p,healthComponent);
+            return;
+        }
+        if (EntityStateManager.isMob(entity)){
+            //Do whatever
+            return;
+        }
+    }
     public static void updateHealthHearts(Player player, HealthComponent playerHP){
         double mappedHealth = playerHP.getMappedHealth();
-        if ((mappedHealth - player.getHealth()) >= 0.5D){
+        if (mappedHealth==0){
+            execute(player);
+            return;
+        }
+        double HPDiff = Math.abs((mappedHealth - player.getHealth()));
+        if (HPDiff >= 0.5D){
             player.setHealth(mappedHealth);
         }
     }
     public static void updateWardHearts(Player player, HealthComponent playerHP){
         double mappedWard = playerHP.getMappedWard();
-        if ((mappedWard - player.getAbsorptionAmount()) >= 0.5D){
+        double wardDiff = Math.abs((mappedWard - player.getAbsorptionAmount()));
+        if (wardDiff >= 0.5D){
             player.setAbsorptionAmount(mappedWard);
         }
+    }
+    public static boolean execute(Player player){
+        EventAPI.entityDeath(player);
+        Player killer = player.getKiller();
+        if (killer!= null){ //Late death trigger (Can be a troll effect :D)
+            notifyProfile(killer,player, TriggerTypes.ON_DEATH, TriggerTimes.EARLY, new int[5]);
+        }
+        return true;
     }
 }

@@ -267,7 +267,7 @@ public class StatCompiler {
             StatPool slotStats = playerEquipment.getSlotStats(slot);
             if (slotStats == null){continue;}
             statPool.merge(slotStats);
-            statPool.debug("After " + slot.toString());
+//            statPool.debug("After " + slot.toString());
         }
     }
     private static void groupExternalStats(UUID playerID){

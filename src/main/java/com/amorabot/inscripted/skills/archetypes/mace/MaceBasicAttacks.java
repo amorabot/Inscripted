@@ -63,7 +63,7 @@ public class MaceBasicAttacks {
                 nearbyPlayers.remove(player);
 
                 for (Player p : nearbyPlayers){
-                    DamageRouter. playerAttack(player, p, DamageSource.HIT, mappedAbility);
+                    DamageRouter.entityDamage(player, p, DamageSource.HIT, mappedAbility);
                 }
             }
         }.runTaskLater(Inscripted.getPlugin(), duration).getTaskId();

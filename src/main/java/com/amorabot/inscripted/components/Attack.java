@@ -8,6 +8,7 @@ import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.StatsComponent;
 import com.amorabot.inscripted.components.Player.stats.StatPool;
 import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
@@ -103,22 +104,22 @@ public class Attack implements EntityComponent {
         this.critChance = (5 + getPercentFrom(statsSnapshot, PlayerStats.CRITICAL_CHANCE, originalPlayerStats));
         this.critDamage = getPercentFrom(statsSnapshot, PlayerStats.CRITICAL_DAMAGE, originalPlayerStats);
         this.shred = getPercentFrom(statsSnapshot, PlayerStats.SHRED, originalPlayerStats);
-        this.maelstrom = getPercentFrom(statsSnapshot, PlayerStats.SHRED, originalPlayerStats);
-        this.bleedChance = getPercentFrom(statsSnapshot, PlayerStats.SHRED, originalPlayerStats);
+        this.maelstrom = getPercentFrom(statsSnapshot, PlayerStats.MAELSTROM, originalPlayerStats);
+        this.bleedChance = getPercentFrom(statsSnapshot, PlayerStats.BLEED, originalPlayerStats);
 
-        this.firePen = getPercentFrom(statsSnapshot, PlayerStats.SHRED, originalPlayerStats);
-        this.lightningPen = getPercentFrom(statsSnapshot, PlayerStats.SHRED, originalPlayerStats);
-        this.coldPen = getPercentFrom(statsSnapshot, PlayerStats.SHRED, originalPlayerStats);
+        this.firePen = getPercentFrom(statsSnapshot, PlayerStats.FIRE_PENETRATION, originalPlayerStats);
+        this.lightningPen = getPercentFrom(statsSnapshot, PlayerStats.LIGHTNING_PENETRATION, originalPlayerStats);
+        this.coldPen = getPercentFrom(statsSnapshot, PlayerStats.COLD_PENETRATION, originalPlayerStats);
 
     }
 
     public static @NotNull String getDamageString(int[] damagesArray){
         StringBuilder dmgString = new StringBuilder();
-//        addDamageToString(dmgString, damagesArray[0], DamageTypes.PHYSICAL);
-//        addDamageToString(dmgString, damagesArray[1], DamageTypes.FIRE);
-//        addDamageToString(dmgString, damagesArray[2], DamageTypes.LIGHTNING);
-//        addDamageToString(dmgString, damagesArray[3], DamageTypes.COLD);
-//        addDamageToString(dmgString, damagesArray[4], DamageTypes.ABYSSAL);
+        addDamageToString(dmgString, damagesArray[0], DamageTypes.PHYSICAL);
+        addDamageToString(dmgString, damagesArray[1], DamageTypes.FIRE);
+        addDamageToString(dmgString, damagesArray[2], DamageTypes.LIGHTNING);
+        addDamageToString(dmgString, damagesArray[3], DamageTypes.COLD);
+        addDamageToString(dmgString, damagesArray[4], DamageTypes.ABYSSAL);
         String finalDmgString = dmgString.toString().trim();
         if (finalDmgString.isEmpty()){
             return DamageTypes.PHYSICAL.getCharacter();
@@ -133,12 +134,12 @@ public class Attack implements EntityComponent {
         return resistValue;
     }
 
-//    private static void addDamageToString(StringBuilder builder, int damage, DamageTypes damageType){
-//        if (damage > 0){
-////            String damageIcon = damageType.getCharacter();
-////            String damageColor = damageType.getColor();
-////            builder.append(ColorUtils.translateColorCodes(damageColor + damage + damageIcon))
-////                    .append(" ");
-//        }
-//    }
+    private static void addDamageToString(StringBuilder builder, int damage, DamageTypes damageType){
+        if (damage > 0){
+            String damageIcon = damageType.getCharacter();
+            String damageColor = "&#FFFFFF";
+            builder.append(ColorUtils.translateColorCodes(damageColor + damage + damageIcon))
+                    .append(" ");
+        }
+    }
 }

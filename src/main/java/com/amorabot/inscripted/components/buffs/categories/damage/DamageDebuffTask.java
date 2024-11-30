@@ -65,7 +65,8 @@ public class DamageDebuffTask extends Buff {
 //        float hurtAnimationOffset = (float)(Utils.getRandomOffset() * 90);
 //        defender.sendHurtAnimation(hurtAnimationOffset);
         defender.damage(0.01);
-        boolean killed = DamageRouter.damagePlayer(defender, damage, false, selfDamage, attacker, DamageSource.DOT);
+//        boolean killed = DamageRouter.damagePlayer(defender, damage, false, selfDamage, attacker, DamageSource.DOT);
+        boolean killed = DamageRouter.damageDefendingPlayer(defender, damage, false, selfDamage, attacker, DamageSource.DOT);
 //        if (killed){
 //            expire();
 //            return;

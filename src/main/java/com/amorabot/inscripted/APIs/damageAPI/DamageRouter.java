@@ -1,11 +1,9 @@
 package com.amorabot.inscripted.APIs.damageAPI;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
-import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Attack;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
 import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
 import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTimes;
 import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTypes;
@@ -19,7 +17,6 @@ import com.amorabot.inscripted.tasks.CombatLogger;
 import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.audience.Audience;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -30,25 +27,40 @@ import java.util.UUID;
 import static com.amorabot.inscripted.APIs.damageAPI.AttackProcessor.rollDamages;
 
 public class DamageRouter {
-    private static final NamespacedKey mobKey = new NamespacedKey(Inscripted.getPlugin(), "INSCRIPTED_MOB");
 
-    public static void playerAttack(Player player, LivingEntity defender, DamageSource source, PlayerAbilities ability){ //Rename to entityDamage??
-        defender.damage(0.01);
-        boolean playerDefender = defender instanceof Player;
-        if (playerDefender){
-            //PvP Logic
-            playerVsPlayerDamage(player, (Player) defender, source, ability);
-            if (defender.isDead()){
-                Utils.log("he ded :(");
-            }
-        } else {
-            //PvE Logic
-            //...
+    public static void entityDamage(LivingEntity attacker,LivingEntity defender, DamageSource source, PlayerAbilities ability){
+        if (attacker instanceof Player playerAttacker){
+            playerAttack(playerAttacker,defender,source,ability);
+            return;
+        }
+        if (EntityStateManager.isMob(attacker)){
+            mobAttack(attacker,defender,source);
         }
     }
 
-    public static void playerVsPlayerDamage(Player attacker, Player defender, DamageSource originalSource, PlayerAbilities ability){
-        boolean hitLanded;
+    private static void playerAttack(Player player, LivingEntity defender, DamageSource source, PlayerAbilities ability){
+        defender.damage(0.01);
+        if (defender instanceof Player def){
+            if (EntityStateManager.isDead(def)){ //If the player is recieving hits during the death invuln. period
+                Utils.log("Ignoring PvP Hits against " + def.getName());
+                return;
+            }
+            PvP(player, def,source,ability);
+            //....
+            return;
+        }
+
+        if (EntityStateManager.isMob(defender)){
+            PvE();
+            //...
+            return;
+        }
+    }
+    public static void mobAttack(LivingEntity attacker, LivingEntity defender, DamageSource source){
+
+    }
+
+    private static void PvP(Player attacker, Player defender, DamageSource originalSource, PlayerAbilities ability){
         DamageSource source = originalSource;
         if (attacker.getUniqueId().equals(defender.getUniqueId()) && !originalSource.equals(DamageSource.SELF)){
             source = DamageSource.SELF;
@@ -56,105 +68,92 @@ public class DamageRouter {
 
         Profile attackerProfile = JSONProfileManager.getProfile(attacker.getUniqueId());
         Profile defenderProfile = JSONProfileManager.getProfile(defender.getUniqueId());
+        Attack attackerHit = attackerProfile.getDamageComponent().getHitData();
+        DefenceComponent defenderDefence = defenderProfile.getDefenceComponent();
 
-        Attack atk = attackerProfile.getDamageComponent().getHitData();
-        DefenceComponent def = defenderProfile.getDefenceComponent();
+        final boolean dodged;
+        dodged = AttackProcessor.attackResult(attackerHit, defenderDefence);
 
-        hitLanded = AttackProcessor.attackResult(atk, def);
-        Attack attackerDamage = attackerProfile.getDamageComponent().getHitData();
-        int[] baseDamage = rollDamages(attackerDamage.getDamages());
-        boolean isCriticalHit = AttackProcessor.isCriticalHit(atk);
-        int[] incomingHit = AttackProcessor.processAttack(attackerProfile, defenderProfile, baseDamage, isCriticalHit, ability); //Base damage for the incoming attack
+        int[] baseDamage = rollDamages(attackerHit.getDamages());
+        final boolean isCriticalHit = AttackProcessor.isCriticalHit(attackerHit);
 
-        if (!hitLanded){
+        final boolean isSelfDamage = source.equals(DamageSource.SELF);
+
+        int[] rawHitDamage = AttackProcessor.processAttack(attackerProfile, defenderProfile, baseDamage, isCriticalHit, ability);
+
+        if (dodged){
             CombatEffects.playDodgeEffectsAt(defender, attacker);
-            AttackProcessor.dodgeAttack(incomingHit, 60);
+            AttackProcessor.dodgeAttack(rawHitDamage, 60); //Mutates rawHitDamage
         }
 
-////        Apply bleed
-//        AttackProcessor.applyBleed(attacker, defender, incomingHit);
+        damageDefendingPlayer(defender, rawHitDamage, isCriticalHit, isSelfDamage, attacker, originalSource);
+    }
+    private static void PvE(){
 
-//        debugCombat(attacker, defender, incomingHit, isCriticalHit, source.equals(DamageSource.SELF));
-//
-//        //Combat healing
-//        combatHeal(attacker);
-
-        damagePlayer(defender, incomingHit, isCriticalHit, source.equals(DamageSource.SELF), attacker, originalSource);
     }
 
-    public static boolean damagePlayer(Player defender, int[] incomingHit, boolean isCriticalHit, boolean isSelfDamage,
-                                    Player attacker,DamageSource originalSource){
+    public static boolean damageDefendingPlayer(Player defender, int[] incomingHit, boolean isCriticalHit, boolean isSelfDamage,
+                                             Player attacker,DamageSource originalSource){
 
-//        boolean isPlayerAttacker = attacker instanceof Player; TODO: implement polymorphysm
-
-        boolean isDoT = originalSource.equals(DamageSource.DOT);
         Profile defenderProfile = JSONProfileManager.getProfile(defender.getUniqueId());
 
-        if (!isDoT){ //Early hit triggers
-            notifyHitTrigger(TriggerTimes.EARLY, attacker, defender, incomingHit, isCriticalHit);
-        }
+        final boolean isDot = originalSource.equals(DamageSource.DOT);
+        //If the damage's origins is not dot, trigger early hit effects
+        if (!isDot){notifyHitTrigger(TriggerTimes.EARLY, attacker, defender, incomingHit, isCriticalHit);}
 
         /*
         COUP DE GRACE MAY cause stuff like:
             A killing blow executes the target and kills it
-            But a arbitraty damage debuff can tick on that player during the 5tick window where the they
-            are:
+            But a arbitraty damage debuff can tick on that player during the 5tick window where the they are:
             1) Dead by heart update -> 2) Health not restored yet after death (virtual HP = 0 + Remapping) -- 5 tick delay -> 3) Replenish player life
                 which can cause the dmg debuff to tick in the meantime the player isnt fully reset. a possible solution may be
                 checking whether the player's HP is 0 when the dmg buff is ticking (If a double death never happens again, delete this)
         */
-
-        boolean wasExecutedEarly = defenderProfile.getHealthComponent().getCurrentHealth() == 0;
-        if (wasExecutedEarly){
-            defender.setKiller(attacker);
-            defenderProfile.updatePlayerHearts(defender);
-//            Utils.msgPlayer(attacker,"Executed " + defender.getName());
+        double mappedHealth = defenderProfile.getHealthComponent().getMappedHealth();
+        if (mappedHealth == 0){
+            Utils.error("Early death: Attempting to damage player with 0 HP");
+            if (EntityStateManager.isPlayerDead(defender)){
+                Utils.error("he DEAD, stop!!!!!!!!!");
+            }
             return true;
-        } else {
-            //If the player was not executed immediatly, bleed can be applied
-        //        Apply bleed
-        AttackProcessor.applyBleed(attacker, defender, incomingHit);
         }
 
+        AttackProcessor.bleedAttempt(attacker, defender, incomingHit);
 
         playerDamaged(defender, incomingHit, isSelfDamage, attacker);
+        //Late hit triggers
+        if (!isDot){notifyHitTrigger(TriggerTimes.LATE, attacker, defender, incomingHit, isCriticalHit);}
+
+
         HealthComponent defHP = defenderProfile.getHealthComponent();
         double newMappedHealth = defHP.getMappedHealth();
-        double newMappedWard = defHP.getMappedWard();
-        //The damage, its triggers and consequences must be processed and then the player can actually die
 
-        //Late hit triggers
-        if (!isDoT){
-            notifyHitTrigger(TriggerTimes.LATE, attacker, defender, incomingHit, isCriticalHit);
-        }
-
-
+        final boolean diedFromDamage = newMappedHealth == 0;
         debugCombat(attacker, defender, incomingHit, isCriticalHit, isSelfDamage);
+        //The damage, its triggers and their consequences must be processed and then the player can actually die
 
         //Combat healing
-        if (!isDoT){
-            boolean isBleeding = PlayerBuffManager.hasActiveBuff(Buffs.BLEED, attacker);
-            combatHeal(attacker, isBleeding);
+        if (!isDot){ //Cannot apply on-hit heals with DoT effects
+            if (!diedFromDamage){ //And if the attacker is already effectively dead
+                boolean isBleeding = PlayerBuffManager.hasActiveBuff(Buffs.BLEED, attacker);
+                combatHeal(attacker, isBleeding);
+            }
         }
 
+        //Adds attacker to combat
+        if (!isSelfDamage){CombatLogger.addToPvPCombat(attacker, defender);}
 
-        if (!isSelfDamage){
-            //Adds attacker to combat
-            CombatLogger.addToPvPCombat(attacker, defender);
-        }
-
-        boolean died = newMappedHealth == 0;
         //Early death trigger
-        if (died){
-            notifyProfile(attacker,defender, TriggerTypes.ON_DEATH, TriggerTimes.EARLY, incomingHit);
-        }
-        //Lets get the updated health in case it's been changed
-        double updatedHealth = defHP.getMappedHealth();
-        defenderProfile.setPlayerHearts(defender, updatedHealth, newMappedWard);
-        //Late death trigger
+        if (diedFromDamage){notifyProfile(attacker,defender, TriggerTypes.ON_DEATH, TriggerTimes.EARLY, incomingHit);}
+        /*
+        If the player is effectively dead from this point on, let's update it their health and expect it to reflect eventual deaths
+            - The player could be saved from special keystones
+        */
 
-
-        return updatedHealth==0; //Updated died, basically
+        //Getting the updated health in case it's changed
+        newMappedHealth = defHP.getMappedHealth();
+        HealthComponent.updateHeartContainers(defender,defenderProfile.getHealthComponent());
+        return newMappedHealth == 0;
     }
 
     //Handles the effects of a player being hit

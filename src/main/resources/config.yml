@@ -270,8 +270,8 @@ WeaponTypes:
     T5:
       NAME: Runic-Gold axe
       BASE_DAMAGE:
-        - 80
-        - 169
+        - 340
+        - 560
   SWORD:
     T1:
       NAME: Dried spike foil

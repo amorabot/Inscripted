@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.commands;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 import com.amorabot.inscripted.components.Items.ItemBuilder;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
@@ -107,8 +108,10 @@ public class TemplateCommand implements CommandExecutor {
                     player.sendMessage(ColorUtils.translateColorCodes(temp));
                     return true;
                 case "unalive":
-                    Profile.execute(player);
-                    JSONProfileManager.getProfile(player.getUniqueId()).updatePlayerHearts(player);
+//                    Profile.execute(player);
+                    player.setKiller(player);
+                    HealthComponent.execute(player);
+//                    JSONProfileManager.getProfile(player.getUniqueId()).updatePlayerHearts(player);
                     return true;
                 case "bleed":
                     DamageBuff bleed = new DamageBuff(Buffs.BLEED);

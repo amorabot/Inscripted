@@ -37,7 +37,7 @@ public class ProjectileCollision {
 
                 if (playerAABB.overlaps(arrowAABB)){
                     if (!attacker.hasLineOfSight(p)){continue;}
-                    DamageRouter.playerAttack(attacker, p, DamageSource.HIT, projectile.getContext().getSourceAbility());
+                    DamageRouter.entityDamage(attacker, p, DamageSource.HIT, projectile.getContext().getSourceAbility());
                     projectile.getAffectedEntities().add(p.getUniqueId());
                     if (projectile.isDestroyOnContact()){projectile.setValid(false);}
                     return;

@@ -10,6 +10,7 @@ import com.amorabot.inscripted.components.Items.Files.RelicEditor;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.renderers.GlyphInfo;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
+import com.amorabot.inscripted.handlers.Combat.InscriptedPlayerDeathEventListener;
 import com.amorabot.inscripted.handlers.GUI.GUIHandler;
 import com.amorabot.inscripted.handlers.Inventory.*;
 import com.amorabot.inscripted.handlers.misc.JoinQuitHandler;
@@ -242,7 +243,8 @@ public final class Inscripted extends JavaPlugin {
         new SunlightBurnHandler();
 
         //CUSTOM EVENT LISTENERS
-        new ArmorEquipListener();
+//        new ArmorEquipListener();
+        new InscriptedPlayerDeathEventListener();
         new WeaponEquipListener();
         new CurrencyUsageListener();
     }

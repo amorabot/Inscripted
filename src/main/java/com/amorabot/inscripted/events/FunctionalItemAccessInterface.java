@@ -22,7 +22,6 @@ public class FunctionalItemAccessInterface {
     public static final NamespacedKey ARMOR_TAG = new NamespacedKey(INSCRIPTED_PLUGIN, "IS_ARMOR");
     public static final NamespacedKey ARMOR_DATA_KEY = new NamespacedKey(INSCRIPTED_PLUGIN, "ARMOR_DATA");
     private FunctionalItemAccessInterface(){
-
     }
 
     //Checks for a specific item-type key within the item's PDC
@@ -74,7 +73,7 @@ public class FunctionalItemAccessInterface {
     public static Weapon deserializeWeaponData(PersistentDataContainer dataContainer){ // Optional
         if (isItemType(WEAPON_TAG,dataContainer)){
             Weapon weaponData = dataContainer.get(WEAPON_DATA_KEY, new GenericItemContainerDataType<>(Weapon.class));
-            if (weaponData == null){ Utils.error("FunctionalItemHandler error: Null weapon deserialization"); }
+            if (weaponData == null){ Utils.error("FunctionalItemHandler error: Null weapon data deserialization"); }
             return weaponData;
         }
         Utils.error("FunctionalItemHandler error: Not a weapon");
