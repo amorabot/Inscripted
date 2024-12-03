@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.managers;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
+import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.components.Player.stats.StatCompiler;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;

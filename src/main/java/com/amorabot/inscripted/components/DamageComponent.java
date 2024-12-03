@@ -1,12 +1,13 @@
 package com.amorabot.inscripted.components;
 
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
+import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.StatsComponent;
 import com.amorabot.inscripted.components.Player.stats.StatPool;
 import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -19,7 +19,6 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -44,14 +43,13 @@ public class Inscription implements Serializable {
     public Inscription(InscriptionID uniqueMod){ //Unique constructor
         ModifierData modData = uniqueMod.getData();
         this.inscription = uniqueMod;
-        if (modData.isKeystone() || modData.isUniqueEffect()){
+        if (modData.isKeystone() || modData.isEffect()){
             this.tier = 0;
             this.maxTier = 0;
             this.basePercentile = 1;
             this.imbued = true;
             return;
         }
-        //Unique value constructor
         this.tier = uniqueMod.getTotalTiers();
         this.maxTier = uniqueMod.getTotalTiers();
         StatDefinition modDefinition = ((InscriptionData)uniqueMod.getData()).getDefinitionData();
@@ -88,18 +86,34 @@ public class Inscription implements Serializable {
         Component detailsComponent = getInscriptionDetails(padding);
 
         if (modData.isStandard()){ //STANDARD INSCRIPTION COMPONENT BUILDING
+            if (modData.isRelicInscription()){
+                return buildStandardRelicInscriptionComponent((InscriptionData)modData,padding,rawDisplayName);
+            }
             return buildStandardInscriptionComponent((InscriptionData)modData, detailsComponent, padding,rawDisplayName,isImplicit,implicitArchetype)
                     .decoration(TextDecoration.ITALIC,false);
         } else if (modData.isHybrid()) {//HYBRID INSCRIPTION BUILDING
             return buildHybridInscription((HybridInscriptionData) modData, detailsComponent, padding,rawDisplayName,isImplicit,implicitArchetype)
                     .decoration(TextDecoration.ITALIC,false);
         } else {
-            if (modData.isKeystone() || modData.isUniqueEffect()){
-                return Component.text("");
+            if (modData.isKeystone() || modData.isEffect()){
+                Component paddingComponent = Component.text(" ".repeat(padding));
+                Component specialInscComponent = Component.text(rawDisplayName).color(InscriptedPalette.RELIC.getColor()).decorate(TextDecoration.BOLD);
+                return paddingComponent.append(specialInscComponent).append(paddingComponent);
             }
         }
         return Component.text("its fucked up");
     }
+    private Component buildStandardRelicInscriptionComponent(InscriptionData inscriptionData, int padding, String rawDisplayName){
+        RangeTypes range = inscriptionData.getDefinitionData().rangeType();
+        int[] mappedValues = this.getMappedFinalValue();
+
+        String valuesHex = "#824575";
+        Component replacedDisplayName = range.substitutePlaceholders(mappedValues, rawDisplayName, valuesHex);
+        Component paddingComponent = Component.text(" ".repeat(padding));
+        return InscriptedPalette.colorizeComponent(paddingComponent.append(replacedDisplayName)
+                .append(paddingComponent), ItemInterfaceRenderer.highlightColor).decoration(TextDecoration.ITALIC,false);
+    }
+
     private Component buildStandardInscriptionComponent(InscriptionData inscriptionData, Component inscriptionDetails, int padding, String rawDisplayName, boolean isImplicit,Archetypes... implicitArchetype){
         RangeTypes range = inscriptionData.getDefinitionData().rangeType();
         int[] mappedValues = this.getMappedFinalValue();

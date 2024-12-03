@@ -3,7 +3,7 @@ package com.amorabot.inscripted.skills;
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
+import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
 import com.amorabot.inscripted.skills.item.ItemPassiveAbilities;

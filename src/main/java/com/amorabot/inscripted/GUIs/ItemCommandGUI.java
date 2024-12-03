@@ -122,7 +122,7 @@ public class ItemCommandGUI extends GUI{
         } else {
             randomItem = ItemBuilder.randomItem(slot, archetype.getArmorType(), getIlvl(), getRarity(),false, false);
         }
-        ItemStack itemIcon = randomItem.getItemForm(Inscripted.getPlugin());
+        ItemStack itemIcon = randomItem.getItemForm();
         ItemMeta iconItemMeta = itemIcon.getItemMeta();
         iconItemMeta.setDisplayName(ColorUtils.translateColorCodes(
                 getRarity().getColor()+ "&l" + getRarity().toString() +" &" +archetype.getColor()+"&l"+archetype+" "+slot));
@@ -176,7 +176,7 @@ public class ItemCommandGUI extends GUI{
     }
 
     private void giveGeneratedItem(Item item, Player player){
-        player.getInventory().addItem(item.getItemForm(Inscripted.getPlugin()));
+        player.getInventory().addItem(item.getItemForm());
     }
 
     public Archetypes getArchetype() {

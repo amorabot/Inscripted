@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.skills.attackInstances;
 
-import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
+import com.amorabot.inscripted.components.Items.relic.enums.Effects;
+import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.skills.PlayerAbilities;

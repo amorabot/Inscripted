@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.components.Items.modifiers.unique;
+package com.amorabot.inscripted.components.Items.relic.enums;
 
 import lombok.Getter;
 

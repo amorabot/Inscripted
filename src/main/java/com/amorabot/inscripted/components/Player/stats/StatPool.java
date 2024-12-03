@@ -1,6 +1,5 @@
 package com.amorabot.inscripted.components.Player.stats;
 
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
@@ -17,6 +16,8 @@ import java.util.Map;
 
 public class StatPool {
 
+    private static final boolean debugMode = true;
+
     private Map<PlayerStats, Map<ValueTypes, int[]>> playerStats;
     @Getter
     private Map<PlayerStats, Double> multipliers = new HashMap<>();
@@ -24,17 +25,17 @@ public class StatPool {
     public StatPool(){
         this.playerStats = new HashMap<>();
     }
-    public StatPool(Map<PlayerStats, Map<ValueTypes, int[]>> stats){
-        //Asserting all stats have their multipliers defined
-        for (PlayerStats stat : stats.keySet()){
-            this.multipliers.put(stat,1D);
-        }
-        this.playerStats = stats;
+    public StatPool(StatPool clonedStatPool){
+        this.playerStats = new HashMap<>(clonedStatPool.getStats());
+        this.multipliers = new HashMap<>(clonedStatPool.getMultipliers());
     }
 
 
     public Map<PlayerStats, Map<ValueTypes, int[]>> getStats(){
         return this.playerStats;
+    }
+    public double getStatMultiplierFor(PlayerStats stat){
+        return this.multipliers.getOrDefault(stat,1D);
     }
 
 
@@ -60,14 +61,14 @@ public class StatPool {
             values = Arrays.stream(values).map(value -> -value).toArray();
         }
         if (type.equals(ValueTypes.MULTIPLIER)){ //Apply exclusively to the multi. map
-            addPercentageMultiplier(targetStat,values[0]);
+            stackMultiplier(targetStat,values[0]);
             return;
         }
         addStat(targetStat, type, values);
     }
-    public void addPercentageMultiplier(PlayerStats stat, int multiplier){
+    public void stackMultiplier(PlayerStats stat, int percentualMultiplier){
         //The multi. value is decided before the call (Percentage value [-15%...72%...])
-        double newMultiplier = (100D + multiplier) / 100D;
+        double newMultiplier = (100D + percentualMultiplier) / 100D;
         if (!multipliers.containsKey(stat)){
             multipliers.put(stat, newMultiplier);
             return;
@@ -80,14 +81,14 @@ public class StatPool {
     public void addStat(PlayerStats stat, ValueTypes type, int[] values){
         if (type.equals(ValueTypes.MULTIPLIER)){
             Utils.error("Invalid Multiplier handling. (addStat@StatPool)");
-            addPercentageMultiplier(stat,values[0]);
+            stackMultiplier(stat,values[0]);
             return;}
         Map<PlayerStats, Map<ValueTypes, int[]>> statsMap = getStats();
         if (!statsMap.containsKey(stat)){ //If the stat is not present:
             Map<ValueTypes, int[]> newValueTypeMap = new HashMap<>();
             newValueTypeMap.put(type, values);
             statsMap.put(stat, newValueTypeMap);
-            multipliers.put(stat,1D);
+//            multipliers.put(stat,1D);
             return;
         }
         if (!statsMap.get(stat).containsKey(type)){
@@ -103,30 +104,33 @@ public class StatPool {
 
 
 
-    public void merge(StatPool externalStatPool){
-        Utils.log("Merging stat pools!");
+    public void merge(StatPool externalStatPool, boolean mergeMultipliers, String... mergingDescriptor){
+        if (mergingDescriptor.length>0 && debugMode){Utils.log("Merging: " + mergingDescriptor[0]);}
         Map<PlayerStats, Map<ValueTypes, int[]>> statsToCombine = externalStatPool.getStats();
         //Combine stats
         for (PlayerStats stat : statsToCombine.keySet()){
             Map<ValueTypes, int[]> valueTypeMap = statsToCombine.get(stat);
             for (ValueTypes type : valueTypeMap.keySet()){
-                if (type.equals(ValueTypes.MULTIPLIER)){continue;}
+//                if (type.equals(ValueTypes.MULTIPLIER)){continue;}
                 int[] valuesToAdd = valueTypeMap.get(type).clone();
                 addStat(stat,type, valuesToAdd);
             }
         }
-        //Combine multipliers
-        Map<PlayerStats,Double> multipliersToCombine = externalStatPool.getMultipliers();
-        for (PlayerStats multipliedStat : multipliersToCombine.keySet()){
-            double externalMultiplier = multipliersToCombine.get(multipliedStat);
-            if (!multipliers.containsKey(multipliedStat)){
-                multipliers.put(multipliedStat,externalMultiplier);
-                continue;
+        //TODO: split into -> mergeStats() & mergeMultipliers()
+        if (mergeMultipliers){
+            //Combine multipliers
+            Map<PlayerStats,Double> multipliersToCombine = externalStatPool.getMultipliers();
+            for (PlayerStats multipliedStat : multipliersToCombine.keySet()){
+                double externalMultiplier = externalStatPool.getStatMultiplierFor(multipliedStat);
+                if (!multipliers.containsKey(multipliedStat)){
+                    multipliers.put(multipliedStat,externalMultiplier);
+                    continue;
+                }
+                //The multi. map already has a multiplier defined for that stat, lets combine them
+                double storedMulti = getStatMultiplierFor(multipliedStat);
+                double newMulti = storedMulti * externalMultiplier;
+                multipliers.put(multipliedStat,newMulti);
             }
-            //The multi. map already has a multiplier defined for that stat, lets combine them
-            double storedMulti = multipliers.get(multipliedStat);
-            double newMulti = storedMulti * externalMultiplier;
-            multipliers.put(multipliedStat,newMulti);
         }
     }
 
@@ -141,7 +145,7 @@ public class StatPool {
         int baseValue = playerStats.get(stat).getOrDefault(ValueTypes.FLAT, new int[1])[0];
         int increasedMod = playerStats.get(stat).getOrDefault(ValueTypes.INCREASED, new int[1])[0];
 
-        double multiplier = multipliers.get(stat);
+        double multiplier = getStatMultiplierFor(stat);
 
         if (specialType != null && specialType.length==1){
             if (specialType[0].equals(ValueTypes.INCREASED)){
@@ -156,7 +160,7 @@ public class StatPool {
                 return finalPercentValue;
             }
         }
-        final float finalValue = (float) ((baseValue * ( 1 + (increasedMod/100F))) * multiplier);
+        final float finalValue = (float) (  (baseValue * ( 1 + (increasedMod/100F))) * multiplier);
         //Once a standard final value is fetched, it can be cleared from the map
         if (clear){clearStat(stat);}
 
@@ -167,7 +171,7 @@ public class StatPool {
         int[] baseDmg = playerStats.get(damageStat).getOrDefault(ValueTypes.FLAT, new int[2]);
         int incrDmg = playerStats.get(damageStat).getOrDefault(ValueTypes.INCREASED, new int[1])[0];
 
-        double multiplier = multipliers.get(damageStat);
+        double multiplier = getStatMultiplierFor(damageStat);
         switch (damageStat){ //Lets preserve the Ele. DMG after reading the value
             case FIRE_DAMAGE,LIGHTNING_DAMAGE,COLD_DAMAGE -> incrDmg = incrDmg + (int) getFinalValueFor(PlayerStats.ELEMENTAL_DAMAGE, false, ValueTypes.INCREASED);
         }
@@ -208,19 +212,29 @@ public class StatPool {
         multipliers.remove(stat);
     }
 
+    public void clear(){
+        getStats().clear();
+        getMultipliers().clear();
+    }
+
 
     public void debug(String debuggedMapName){
-        Utils.log("-----"+debuggedMapName+"-----\nStat values:");
+        Utils.log("-----"+debuggedMapName+"-----");
+        Utils.log("Stat values:");
         for (PlayerStats stat : playerStats.keySet()){
             Map<ValueTypes, int[]> valuesMap = playerStats.get(stat);
             Utils.log(stat.getAlias()+"-------");
+            if (valuesMap.isEmpty() && !multipliers.keySet().isEmpty()){ //In some instances, there will be only multipliers ins a stat pool
+                Utils.log("The are only multipliers: ");
+                for (PlayerStats multipliedStat : multipliers.keySet()){
+                    Utils.log(multipliedStat.getAlias()+": " + getStatMultiplierFor(stat));
+                }
+                return;
+            }
             for (ValueTypes type : valuesMap.keySet()){
                 Utils.log(type+": " + Arrays.toString(valuesMap.get(type))+"\n");
             }
-        }
-        Utils.log("Multipliers:");
-        for (PlayerStats stat : multipliers.keySet()){
-            Utils.log(stat.getAlias()+": " + multipliers.get(stat));
+            Utils.log("Multiplier:"+ getStatMultiplierFor(stat));
         }
         Utils.log("--------------------------");
     }

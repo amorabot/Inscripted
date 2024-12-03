@@ -6,8 +6,8 @@ import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.data.KeystoneData;
 import com.amorabot.inscripted.components.Items.modifiers.data.ModifierData;
 import com.amorabot.inscripted.components.Items.modifiers.data.UniqueEffectData;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
+import com.amorabot.inscripted.components.Items.relic.enums.Effects;
+import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.components.Player.ItemSlotData;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
@@ -76,7 +76,7 @@ public class PlayerEquipment {
                     KeystoneData keystoneData = (KeystoneData) inscData;
                     itemKeystones.add(keystoneData.keystone());
                 }
-                if(inscData.isUniqueEffect()){
+                if(inscData.isEffect()){
                     UniqueEffectData effectData = (UniqueEffectData) inscData;
                     itemEffects.add(effectData.uniqueEffect());
                 }

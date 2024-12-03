@@ -98,7 +98,7 @@ public class JoinQuitHandler implements Listener {
         if (CombatLogger.isInCombat(player)) {
             if (player.hasMetadata(CombatLogger.getPvpTag())){
                 Utils.error(player.getName() + " logged out during PVP... crack his skull");
-                EventAPI.entityDeath(player);
+//                EventAPI.entityDeath(player);
             }
             else if (player.hasMetadata(CombatLogger.getCombatTag())){
                 Utils.error(player.getName() + " logged out during regular combat");

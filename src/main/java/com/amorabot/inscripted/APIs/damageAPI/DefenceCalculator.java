@@ -3,11 +3,9 @@ package com.amorabot.inscripted.APIs.damageAPI;
 import com.amorabot.inscripted.components.Attack;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
+import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.utils.CraftingUtils;
-
-import java.util.Set;
 
 public class DefenceCalculator {
 

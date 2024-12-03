@@ -4,9 +4,9 @@ import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.components.Attack;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
-import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTimes;
-import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTypes;
+import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
+import com.amorabot.inscripted.components.Items.relic.enums.TriggerTimes;
+import com.amorabot.inscripted.components.Items.relic.enums.TriggerTypes;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.managers.JSONProfileManager;
@@ -152,7 +152,10 @@ public class DamageRouter {
 
         //Getting the updated health in case it's changed
         newMappedHealth = defHP.getMappedHealth();
-        HealthComponent.updateHeartContainers(defender,defenderProfile.getHealthComponent());
+        if (newMappedHealth == 0){
+            Utils.log("Defender " + defender.getName() + " actually died to damage!");
+        }
+        HealthComponent.updateHeartContainers(defender,defHP);
         return newMappedHealth == 0;
     }
 
@@ -183,6 +186,7 @@ public class DamageRouter {
         Profile defenderProfile = JSONProfileManager.getProfile(defender.getUniqueId());
         if (trigger.equals(TriggerTypes.WHEN_HIT) || trigger.equals(TriggerTypes.ON_DEATH)){
             //In those cases, the recieving end of the hit is the caster
+            //                                             caster    target
             defenderProfile.notify(trigger, triggerTiming, defender, attacker, hit);
             return;
         }

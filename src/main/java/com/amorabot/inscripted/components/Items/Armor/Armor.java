@@ -1,6 +1,5 @@
 package com.amorabot.inscripted.components.Items.Armor;
 
-import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.Abstract.ItemCategory;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
@@ -8,7 +7,9 @@ import com.amorabot.inscripted.components.Items.modifiers.data.HybridInscription
 import com.amorabot.inscripted.components.Items.modifiers.data.InscriptionData;
 import com.amorabot.inscripted.components.Items.modifiers.data.ModifierData;
 import com.amorabot.inscripted.components.Items.modifiers.data.StatDefinition;
+import com.amorabot.inscripted.components.Items.relic.RelicArmorDAO;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
@@ -48,15 +49,14 @@ public class Armor extends Item implements ItemCategory {
         this.baseHealthVariance = CraftingUtils.getRandomNumber(-ArmorTypes.percentHealthVariance, ArmorTypes.percentHealthVariance);
     }
 
-    //TODO: make a constructor with the key for the relic's name -> deserialize from file
-    public Armor(String name, int ilvl, ItemTypes slot, ArmorTypes type, int baseHealth, List<Inscription> inscriptions){ //Relic constructor
-        super(ilvl, ItemRarities.RELIC, true, false, slot);
-        getInscriptionList().addAll(inscriptions); //??????? wtf happened
-        this.type = type;
-        this.baseHealth = baseHealth;
+    public Armor(RelicArmorDAO armorData, List<Inscription> relicInscriptions){ //Relic constructor
+        super(armorData.genericData().itemLevel(), ItemRarities.RELIC, true, false, armorData.slot());
+        this.type = armorData.type();
+        this.baseHealth = armorData.baseHealth();
         this.baseHealthVariance = 0;
+        getInscriptionList().addAll(relicInscriptions);
         setTier(Tiers.mapItemLevel(getIlvl()));
-        setName(name);
+        setName(armorData.genericData().name());
         setImplicit(Archetypes.mapImplicitFor(getSubype(), getTier(), isCorrupted()));
         mapBase();
     }
@@ -93,7 +93,7 @@ public class Armor extends Item implements ItemCategory {
         return new ArmorTrim(material, pattern);
     }
     @Override
-    public ItemStack getItemForm(Inscripted plugin) {
+    public ItemStack getItemForm() {
         ItemStack armorItem = new ItemStack(this.vanillaMaterial);
 
         imprint(armorItem, type);

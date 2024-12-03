@@ -118,6 +118,6 @@ public class GenerateItem implements TabExecutor {
     }
 
     private void giveGeneratedItem(Item item, Player player){
-        player.getInventory().addItem(item.getItemForm(plugin));
+        player.getInventory().addItem(item.getItemForm());
     }
 }

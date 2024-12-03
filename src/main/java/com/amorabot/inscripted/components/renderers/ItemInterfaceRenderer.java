@@ -9,6 +9,10 @@ import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.components.Items.Weapon.RangeCategory;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
+import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
+import com.amorabot.inscripted.components.Items.modifiers.data.ModifierData;
+import com.amorabot.inscripted.components.Items.relic.enums.Effects;
+import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.text.Component;
@@ -43,7 +47,7 @@ public class ItemInterfaceRenderer {
     }
     public static Component getInscriptionFooter(int padding){
         Component paddingComponent = Component.text(" ".repeat(padding));
-        return paddingComponent.append(Component.text(inscriptionsFooter).color(InscriptedPalette.DARKEST_TEXT.getColor()));
+        return paddingComponent.append(Component.text(inscriptionsFooter).color(InscriptedPalette.DARKEST_TEXT.getColor())).decoration(TextDecoration.ITALIC,false);
     }
 
     public static void setDisplayName(String name, ItemStack item, ItemRarities rarity, boolean isCorrupted, int quality){
@@ -231,9 +235,53 @@ public class ItemInterfaceRenderer {
         List<Inscription> inscriptions = itemData.getInscriptionList();
         inscriptions.sort(getInscriptionComparator());
         for (Inscription currentInscription : inscriptions){
+            ModifierData inscData = currentInscription.getInscription().getData();
+            if (inscData.isEffect() || inscData.isKeystone()){continue;}
             renderedInscriptions.add(currentInscription.asComponent(padding));
         }
         return renderedInscriptions;
+    }
+
+    public static List<Component> renderSpecialInscriptionDescription(InscriptionID inscID, int padding){
+
+        List<Component> description = new ArrayList<>();
+
+        Component paddingComponent = Component.text(" ".repeat(padding));
+        if (inscID.getData().isKeystone()){
+            try{
+                Keystones keystone = Keystones.valueOf(inscID.toString());
+                appendDescriptionLine(description, keystone.getDescription(), paddingComponent);
+                return description;
+            } catch (IllegalArgumentException e) {
+                Utils.error("Invalid keystone mapping @ ItemInterfaceRenderer");
+            }
+        }
+        if (inscID.getData().isEffect()){
+            try{
+                Effects effect = Effects.valueOf(inscID.toString());
+                appendDescriptionLine(description, effect.getDescription(), paddingComponent);
+                return description;
+            } catch (IllegalArgumentException e) {
+                Utils.error("Invalid effect mapping @ ItemInterfaceRenderer");
+            }
+        }
+        return new ArrayList<>();
+
+    }
+    private static void appendDescriptionLine(List<Component> descriptionComponents, String[] desc, Component paddingComponent){
+        Component pointerComponent = Component.text(">| ").decorate(TextDecoration.BOLD);
+        for (int k = 0; k < desc.length; k++){
+            if (k==0){
+                Component firstLineComp = Component.text(desc[k]);
+                descriptionComponents.add(paddingComponent.append(pointerComponent)
+                        .append(firstLineComp.decoration(TextDecoration.ITALIC,false))
+                        .append(paddingComponent).color(InscriptedPalette.DARK_GRAY.getColor()));
+                continue;
+            }
+            Component lineComponent = Component.text(" " + desc[k]);
+            descriptionComponents.add(paddingComponent.append(lineComponent.decoration(TextDecoration.ITALIC,false))
+                    .append(paddingComponent).color(InscriptedPalette.DARK_GRAY.getColor()));
+        }
     }
 
 

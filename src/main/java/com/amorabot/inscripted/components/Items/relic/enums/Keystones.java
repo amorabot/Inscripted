@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.components.Items.modifiers.unique;
+package com.amorabot.inscripted.components.Items.relic.enums;
 
 
 import com.amorabot.inscripted.components.Attack;
@@ -6,8 +6,8 @@ import com.amorabot.inscripted.components.DamageComponent;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
+import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
@@ -31,8 +31,8 @@ public enum Keystones {
     //Add int[] values -> would indicate what fixed values need to be used when applying, if any
 
     FORBIDDEN_PACT(TriggerTimes.LATE, false, false,"The abyssal gaze","has changed you."," ",
-            "Become immune to","☽ Abyssal DMG",
-            "Your maximum ","❤ Health is 1") {
+            "Become immune to ","☽ Abyssal Damage  ", " ",
+            "Your maximum","❤ Health is 1  ") {
         @Override
         public void apply(UUID playerID) {
             Profile playerProfile = JSONProfileManager.getProfile(playerID);
@@ -78,8 +78,8 @@ public enum Keystones {
         }
     },
     BERSERK(TriggerTimes.EARLY, true, true,
-            "When below "+HealthComponent.LOW_LIFE_THRESHOLD+"%","❤ Health"," ",
-            "gain 50% more","physical dmg.") {
+            "When below",HealthComponent.LOW_LIFE_THRESHOLD+"%"+" ❤ Health"," ",
+            "deal 50% more","physical damage") {
         @Override
         public void apply(UUID playerID) {
             if (needsInstantiation(playerID)){
@@ -93,9 +93,11 @@ public enum Keystones {
         public void addExternalStat(UUID playerID){
             int berserkStatValue = 50;
             Profile playerProfile = JSONProfileManager.getProfile(playerID);
-            playerProfile.getStatsComponent().getExternalStats().addPercentageMultiplier(
+            playerProfile.getStatsComponent().getExternalStats().addStat(
                     PlayerStats.PHYSICAL_DAMAGE,
-                    berserkStatValue);
+                    ValueTypes.MULTIPLIER,
+                    new int[]{berserkStatValue});
+            Utils.log("Adding berserk phys multi to player: " + playerID);
         }
     },
     THUNDERSTRUCK(TriggerTimes.EARLY, true, false,
@@ -111,7 +113,7 @@ public enum Keystones {
         }
     },
     BLOOD_PACT(TriggerTimes.CONDITIONAL, false, false,
-            "Your cant rege-","nerate life.", "", "HEALS on you are", "twice as powerful") {
+            "Your cant ","regenerate life.", "", "HEALS on you are", "twice as powerful") {
         @Override
         public void apply(UUID playerID) {
         }

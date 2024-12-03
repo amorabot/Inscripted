@@ -2,11 +2,11 @@ package com.amorabot.inscripted.components.Items.modifiers;
 
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.RangeTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
+import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.modifiers.data.*;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
+import com.amorabot.inscripted.components.Items.relic.enums.Effects;
+import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 
@@ -104,11 +104,8 @@ public enum InscriptionID {
     //=====SUFFIXES=====
     //Regular suffixes
     STRENGTH("1 SUFFIX STRENGTH ++ - +", 8,true),
-//    LESSER_STRENGTH("1 SUFFIX STRENGTH ++ - +", 8,true),
     DEXTERITY("1 SUFFIX DEXTERITY ++ - +", 8,true),
-//    LESSER_DEXTERITY("1 SUFFIX DEXTERITY ++ - +", 8,true),
     INTELLIGENCE("1 SUFFIX INTELLIGENCE ++ - +", 8,true),
-//    LESSER_INTELLIGENCE("1 SUFFIX INTELLIGENCE ++ - +", 8,true),
     HEALTH_REGEN("1 SUFFIX HEALTH_REGEN ++ - +", 8, true),
     FIRE_RESISTANCE("1 SUFFIX FIRE_RESISTANCE +% - +", 8, true),
     LIGHTNING_RESISTANCE("1 SUFFIX LIGHTNING_RESISTANCE +% - +", 8, true),
@@ -137,81 +134,121 @@ public enum InscriptionID {
     SORCERER_ENCHANTED_SILK("1 IMPLICIT INTELLIGENCE ++ - +", 5, true),
     TEMPLAR_RUNIC_STEEL("2 IMPLICIT INTELLIGENCE&STRENGTH ++&++ -&- +", 5, true),
 
-    //=====UNIQUE MODS=====
-    //TODO: unique mods must have their generic unique stats defined inside the relic definition file and deserialized from there to Inscription form
-    BLEEDING_HEART_BLD_CHANCE("1 UNIQUE BLEED +% x +", 1, true),
-    BLEEDING_HEART_BLD_DMG("1 UNIQUE BLEED_DAMAGE +% - +", 1, true),
-    OMINOUS_TWIG_ABYSSAL("1 UNIQUE ABYSSAL_DAMAGE ++ -/- +", 1, false),
-    CORRUPTORS_WRAPPINGS_WARD("1 UNIQUE WARD %+ - +", 1, false),
-    CORRUPTORS_WRAPPINGS_STRENGTH("1 UNIQUE STRENGTH ++ - -", 1, true),
-    CORRUPTORS_WRAPPINGS_MORE_WARD("1 UNIQUE WARD %* - +", 1, true),
-    APPROACHING_WINTER_WALK_SPEED("1 UNIQUE WALK_SPEED ++ - -", 1, true),
-    APPROACHING_WINTER_COLD_RES("1 UNIQUE COLD_RESISTANCE +% - +", 1, true),
-    APPROACHING_WINTER_FIRE_RES("1 UNIQUE FIRE_RESISTANCE +% - -", 1, true),
-    APPROACHING_WINTER_COLD_DMG("1 UNIQUE COLD_DAMAGE %+ - +", 1, true),
-    APPROACHING_WINTER_FLAT_COLD("1 UNIQUE COLD_DAMAGE ++ -/- +", 1, true),
-    BLIND_RAGE_ACCURACY("1 UNIQUE ACCURACY ++ - -", 1, true),
-    BLIND_RAGE_LESS_HEALTH("1 UNIQUE HEALTH %* x -", 1, true),
-    EYE_OF_THE_STORM_LIGHTNING_RES("1 UNIQUE LIGHTNING_RESISTANCE +% - -", 1, true),
-    EYE_OF_THE_STORM_MAX_LIGHTNING_RES("1 UNIQUE MAX_LIGHTNING_RESISTANCE +% - +", 1, true),
-    TIN_FOIL_HELMET_INTELLIGENCE("1 UNIQUE INTELLIGENCE ++ - -", 1, true),
-    QOTF_REDU_WALK_SPEED("1 UNIQUE WALK_SPEED %+ - -", 1, true),
-    SCARLET_DANCER_PHYS("1 UNIQUE PHYSICAL_DAMAGE %+ - +", 1, false),
-    SCARLET_DANCER_LESS_ARMOR("1 UNIQUE ARMOR %* x -", 1, true),
-    SCARLET_DANCER_LIFE_ON_HIT("1 UNIQUE LIFE_ON_HIT ++ - +", 1, true),
-    IMMORTAL_FLESH_INC_REGEN("1 UNIQUE HEALTH_REGEN %+ - +", 1, true),
-    IMMORTAL_FLESH_FLAT_REGEN("1 UNIQUE HEALTH_REGEN ++ - +", 1, true),
-    GODHEAD_LESS_FIRE_RES("1 UNIQUE FIRE_RESISTANCE %* x -", 1, true),
-    GODHEAD_LESS_LIGHTNING_RES("1 UNIQUE LIGHTNING_RESISTANCE %* x -", 1, true),
-    GODHEAD_LESS_COLD_RES("1 UNIQUE COLD_RESISTANCE %* x -", 1, true),
-    TRINITY_LESS_HEALTH("1 UNIQUE HEALTH %* x -", 1, true),
-    TRINITY_LESS_WARD("1 UNIQUE WARD %* x -", 1, true),
-    THE_BODY_INC_ARMOR("1 UNIQUE ARMOR %+ - +", 1, false),
-    THE_MIND_INC_WARD("1 UNIQUE WARD %+ - +", 1, false),
-    THE_SOUL_INC_DODGE("1 UNIQUE DODGE ++ - +", 1, false),
-    MAD_BUTCHER_BLEED_CHANCE("1 UNIQUE BLEED +% - +", 1, true),
-    HEADSMAN_BLADE_BLEED_DMG("1 UNIQUE BLEED_DAMAGE +% - +", 1, true),
-    HEADSMAN_BLADE_SHRED("1 UNIQUE SHRED +% x +", 1, true),
-    EXECUTIONERS_MASK_FLAT_PHYS("1 UNIQUE PHYSICAL_DAMAGE ++ -/- +", 1, true),
-    EXECUTIONERS_MASK_SHRED("1 UNIQUE SHRED +% - +", 1, true),
-    EXECUTIONERS_MASK_CRIT_DMG("1 UNIQUE CRITICAL_DAMAGE +% - +", 1, true),
-    ELUSIVE_SHADOW_CRIT_CHANCE("1 UNIQUE CRITICAL_CHANCE +% - +", 1, true),
-    BROKEN_FAITH_ABYSS_FLAT("1 UNIQUE ABYSSAL_DAMAGE ++ -/- +", 1, false),
-    BROKEN_FAITH_ABYSS_PERCENT("1 UNIQUE ABYSSAL_DAMAGE %+ - +", 1, true),
-    BROKEN_FAITH_LESS_HPS("1 UNIQUE HEALTH_REGEN %* x -", 1, true),
-    DRUIDIC_PELTS_HEALTH_REGEN("1 UNIQUE HEALTH_REGEN ++ - +", 1, true),
+    //=====RELIC INSCRIPTIONS=====
+    //BLEEDING HEART INSCRIPTIONS
+    BLHA_BLEED_CHANCE("1 RELIC BLEED +% x +", 1, true),
+    BLHA_BLD_DMG("1 RELIC BLEED_DAMAGE +% - +", 1, true),
 
-    //META UNIQUE MODS
+    //OMINOUS TWIG INSCRIPTIONS
+    OMTW_ABYSSAL("1 RELIC ABYSSAL_DAMAGE ++ -/- +", 1, false),
+
+    //CORRUPTORS WRAPPINGS INSCRIPTIONS
+    COWR_WARD("1 RELIC WARD %+ - +", 1, false),
+    COWW_STRENGTH("1 RELIC STRENGTH ++ - -", 1, true),
+    COWR_MORE_WARD("1 RELIC WARD %* - +", 1, true),
+
+    //APPROACHING WINTER INSCRIPTIONS
+    APWI_WALK_SPEED("1 RELIC WALK_SPEED ++ - -", 1, true),
+    APWI_COLD_RES("1 RELIC COLD_RESISTANCE +% - +", 1, true),
+    APWI_FIRE_RES("1 RELIC FIRE_RESISTANCE +% - -", 1, true),
+    APWI_COLD_DMG("1 RELIC COLD_DAMAGE %+ - +", 1, true),
+    APWI_FLAT_COLD("1 RELIC COLD_DAMAGE ++ -/- +", 1, true),
+
+    //BLIND RAGE INSCRIPTIONS
+    BLRA_ACCURACY("1 RELIC ACCURACY ++ - -", 1, true),
+    BLRA_LESS_HEALTH("1 RELIC HEALTH %* x -", 1, true),
+
+    //EYE OF THE STORM INSCRIPTIONS
+    EOTS_LIGHTNING_RES("1 RELIC LIGHTNING_RESISTANCE +% - -", 1, true),
+    EOTS_MAX_LIGHTNING_RES("1 RELIC MAX_LIGHTNING_RESISTANCE +% - +", 1, true),
+
+    //TIN FOIL HELMET INSCRIPTIONS
+    TIFO_HELMET_INTELLIGENCE("1 RELIC INTELLIGENCE ++ - -", 1, true),
+
+    //QUEEN OF THE FOREST INSCRIPTIONS
+    QOTF_REDU_WALK_SPEED("1 RELIC WALK_SPEED %+ - -", 1, true),
+
+    //SCARLET DANCER INSCRIPTIONS
+    SCDA_PHYS("1 RELIC PHYSICAL_DAMAGE %+ - +", 1, false),
+    SCDA_LESS_ARMOR("1 RELIC ARMOR %* x -", 1, true),
+    SCDA_LIFE_ON_HIT("1 RELIC LIFE_ON_HIT ++ - +", 1, true),
+
+    //IMMORTAL FLESH INSCRIPTIONS
+    IMFL_INC_REGEN("1 RELIC HEALTH_REGEN %+ - +", 1, true),
+    IMFL_FLAT_REGEN("1 RELIC HEALTH_REGEN ++ - +", 1, true),
+
+    //GODHEAD SET INSCRIPTIONS
+    GODHEAD_LESS_FIRE_RES("1 RELIC FIRE_RESISTANCE %* x -", 1, true),
+    GODHEAD_LESS_LIGHTNING_RES("1 RELIC LIGHTNING_RESISTANCE %* x -", 1, true),
+    GODHEAD_LESS_COLD_RES("1 RELIC COLD_RESISTANCE %* x -", 1, true),
+
+    //TRINITY INSCRIPTIONS
+    TRINITY_LESS_HEALTH("1 RELIC HEALTH %* x -", 1, true),
+    TRINITY_LESS_WARD("1 RELIC WARD %* x -", 1, true),
+
+    //BODY INSCRIPTIONS
+    THE_BODY_INC_ARMOR("1 RELIC ARMOR %+ - +", 1, false),
+
+    //MIND INSCRIPTIONS
+    THE_MIND_INC_WARD("1 RELIC WARD %+ - +", 1, false),
+
+    //SOUL INSCRIPTIONS
+    THE_SOUL_INC_DODGE("1 RELIC DODGE ++ - +", 1, false),
+
+    //MAD BUTCHER INSCRIPTIONS
+    MABU_BLEED_CHANCE("1 RELIC BLEED +% - +", 1, true),
+
+   //HEADSMAN BLADE INSCRIPTIONS
+    HEBL_BLEED_DMG("1 RELIC BLEED_DAMAGE +% - +", 1, true),
+    HEBL_SHRED("1 RELIC SHRED +% x +", 1, true),
+
+    //EXECUTIONERS MASK INSCRIPTIONS
+    EXMA_FLAT_PHYS("1 RELIC PHYSICAL_DAMAGE ++ -/- +", 1, true),
+    EXMA_SHRED("1 RELIC SHRED +% - +", 1, true),
+    EXMA_CRIT_DMG("1 RELIC CRITICAL_DAMAGE +% - +", 1, true),
+
+    //ELUSIVE SHADOW INSCRIPTIONS
+    ELSH_CRIT_CHANCE("1 RELIC CRITICAL_CHANCE +% - +", 1, true),
+
+    //BROKEN FAITH INSCRIPTIONS
+    BRFA_ABYSS_FLAT("1 RELIC ABYSSAL_DAMAGE ++ -/- +", 1, false),
+    BRFA_ABYSS_PERCENT("1 RELIC ABYSSAL_DAMAGE %+ - +", 1, true),
+    BRFA_LESS_HPS("1 RELIC HEALTH_REGEN %* x -", 1, true),
+
+    //DRUIDIC PELTS INSCRIPTIONS
+    DRPE_HEALTH_REGEN("1 RELIC HEALTH_REGEN ++ - +", 1, true),
+
+    //META RELIC MODS
     @Meta(convertedStat = PlayerStats.STRENGTH, convertedValueType = ValueTypes.FLAT, rate = 10)
-    HELLFORGE_STRENGTH_TO_FIRE_DMG("1 UNIQUE FIRE_DAMAGE ++ -/- +", 1, true),
+    HELLFORGE_STRENGTH_TO_FIRE_DMG("1 RELIC FIRE_DAMAGE ++ -/- +", 1, true),
     @Meta(convertedStat = PlayerStats.DEXTERITY, convertedValueType = ValueTypes.FLAT, rate = 5)
-    QOTF_DEX_TO_WS("1 UNIQUE WALK_SPEED %+ x +", 1, true),
+    QOTF_DEX_TO_WS("1 RELIC WALK_SPEED %+ x +", 1, true),
     @Meta(convertedStat = PlayerStats.WARD, convertedValueType = ValueTypes.FLAT, rate = 600)
-    BROKEN_FAITH_WARD_TO_ABYSS("1 UNIQUE ABYSSAL_DAMAGE ++ -/- +", 1, true),
+    BROKEN_FAITH_WARD_TO_ABYSS("1 RELIC ABYSSAL_DAMAGE ++ -/- +", 1, true),
 
     //=====KEYSTONES=====
-    LETHAL_STRIKES("* UNIQUE KEYSTONE LETHAL_STRIKES", 0, true),
-    FORBIDDEN_PACT("* UNIQUE KEYSTONE FORBIDDEN_PACT", 0, true),
-    PERMAFROST("* UNIQUE KEYSTONE PERMAFROST", 0, true),
-    BERSERK("* UNIQUE KEYSTONE BERSERK", 0, true),
-    THUNDERSTRUCK("* UNIQUE KEYSTONE THUNDERSTRUCK", 0, true),
-    BLOOD_PACT("* UNIQUE KEYSTONE BLOOD_PACT", 0, true),
-    ORGAN_FAILURE("* UNIQUE KEYSTONE ORGAN_FAILURE", 0, true),
-    FIRE_ATTUNEMENT("* UNIQUE KEYSTONE FIRE_ATTUNEMENT", 0, true),
-    LIGHTNING_ATTUNEMENT("* UNIQUE KEYSTONE LIGHTNING_ATTUNEMENT", 0, true),
-    COLD_ATTUNEMENT("* UNIQUE KEYSTONE COLD_ATTUNEMENT", 0, true),
-    ELEMENTAL_BLESSING("* UNIQUE KEYSTONE ELEMENTAL_BLESSING", 0, true),
-    AGNOSTIC("* UNIQUE KEYSTONE AGNOSTIC", 0, true),
-    WINDS_OF_CHANGE("* UNIQUE KEYSTONE WINDS_OF_CHANGE", 0, true),
+    LETHAL_STRIKES("* RELIC KEYSTONE LETHAL_STRIKES", 0, true),
+    FORBIDDEN_PACT("* RELIC KEYSTONE FORBIDDEN_PACT", 0, true),
+    PERMAFROST("* RELIC KEYSTONE PERMAFROST", 0, true),
+    BERSERK("* RELIC KEYSTONE BERSERK", 0, true),
+    THUNDERSTRUCK("* RELIC KEYSTONE THUNDERSTRUCK", 0, true),
+    BLOOD_PACT("* RELIC KEYSTONE BLOOD_PACT", 0, true),
+    ORGAN_FAILURE("* RELIC KEYSTONE ORGAN_FAILURE", 0, true),
+    FIRE_ATTUNEMENT("* RELIC KEYSTONE FIRE_ATTUNEMENT", 0, true),
+    LIGHTNING_ATTUNEMENT("* RELIC KEYSTONE LIGHTNING_ATTUNEMENT", 0, true),
+    COLD_ATTUNEMENT("* RELIC KEYSTONE COLD_ATTUNEMENT", 0, true),
+    ELEMENTAL_BLESSING("* RELIC KEYSTONE ELEMENTAL_BLESSING", 0, true),
+    AGNOSTIC("* RELIC KEYSTONE AGNOSTIC", 0, true),
+    WINDS_OF_CHANGE("* RELIC KEYSTONE WINDS_OF_CHANGE", 0, true),
 
     //=====EFFECTS=====
-    THRILL_OF_THE_HUNT("* UNIQUE EFFECT THRILL_OF_THE_HUNT", 0, true),
-    ADRENALINE_RUSH("* UNIQUE EFFECT ADRENALINE_RUSH", 0, true),
-    GRACEFUL_LANDING("* UNIQUE EFFECT GRACEFUL_LANDING", 0, true),
-    SADISM("* UNIQUE EFFECT SADISM", 0, true),
-    COUP_DE_GRACE("* UNIQUE EFFECT COUP_DE_GRACE", 0, true),
-    OPPORTUNIST("* UNIQUE EFFECT OPPORTUNIST", 0, true),
-    OVERDRIVE("* UNIQUE EFFECT OVERDRIVE", 0, true);
+    THRILL_OF_THE_HUNT("* RELIC EFFECT THRILL_OF_THE_HUNT", 0, true),
+    ADRENALINE_RUSH("* RELIC EFFECT ADRENALINE_RUSH", 0, true),
+    GRACEFUL_LANDING("* RELIC EFFECT GRACEFUL_LANDING", 0, true),
+    SADISM("* RELIC EFFECT SADISM", 0, true),
+    COUP_DE_GRACE("* RELIC EFFECT COUP_DE_GRACE", 0, true),
+    OPPORTUNIST("* RELIC EFFECT OPPORTUNIST", 0, true),
+    OVERDRIVE("* RELIC EFFECT OVERDRIVE", 0, true);
 
 
     private final String definitionString;
@@ -223,23 +260,37 @@ public enum InscriptionID {
     private final boolean positive;
 
 
+//    private final GenericInscriptionDAO internalData;
+
+
     InscriptionID(String definitionString, int tiers, boolean isGlobal){
+        //TODO: encapsulate definition string parsing
         this.definitionString = definitionString;
         this.totalTiers = tiers;
         this.global = isGlobal;
 
+//        String displayName;
+//        ModifierData data;
+
         Meta metaData = getMetaAnnotationData();
         this.meta = (metaData!=null);
+//        boolean isMeta = (metaData!=null);
+
+//        boolean isPositive;
 
         String[] tokens = definitionString.split(" ");
         if (tokens[0].equals("*")){//Special Unique inscription handling (Keystones and Effects)
-            String uniqueRuneSuffix = " " + Affix.UNIQUE.getRuneIcon();
+            String uniqueRuneSuffix = " " + Affix.RELIC.getRuneIcon();
             this.positive = true;
+//            isPositive = true;
             switch (tokens[2]){
                 case "KEYSTONE":
-                    this.displayName = Utils.convertToPrettyString(tokens[3].toLowerCase().replace("_"," ")
-                            + " - (P)"+ uniqueRuneSuffix + "  ");
+                    this.displayName = Utils.convertToPrettyString(tokens[3].toLowerCase().replace("_"," "))
+                            + uniqueRuneSuffix + "  ";
+//                    displayName = Utils.convertToPrettyString("Passive - " + tokens[3].toLowerCase().replace("_"," "))
+//                            + " " + uniqueRuneSuffix + "  ";
                     this.data = parseKeystone(tokens[3]);
+//                    data = parseKeystone(tokens[3]);
                     break;
                 case "EFFECT":
                     Effects mappedEffect;
@@ -247,18 +298,22 @@ public enum InscriptionID {
                         mappedEffect = Effects.valueOf(tokens[3]);
                     } catch (IllegalArgumentException exception){
                         Utils.error("Unable to parse " + tokens[3] + " unique effect argument (InscriptionID)");
-                        displayName = "null effect momento";
-                        data = null;
+                        this.displayName = "null effect momento";
+                        this.data = null;
+//                        this.internalData = new GenericInscriptionDAO(displayName,null,tiers,isGlobal,isMeta,false);
                         return;
                     }
                     this.displayName = mappedEffect.getDisplayName() + uniqueRuneSuffix;
-                    this.data = new UniqueEffectData(Affix.UNIQUE, mappedEffect);
+//                    displayName = mappedEffect.getDisplayName() + uniqueRuneSuffix;
+                    this.data = new UniqueEffectData(Affix.RELIC, mappedEffect);
+//                    data = new UniqueEffectData(Affix.RELIC, mappedEffect);
                     break;
                 default:
                     this.displayName = Utils.convertToPrettyString("sample unique mod");
                     this.data = null;
                     break;
             }
+//            this.internalData = new GenericInscriptionDAO(displayName,data,tiers,isGlobal,isMeta,true);
             return;
         }
         /*
@@ -268,15 +323,35 @@ public enum InscriptionID {
         */
 
         this.positive = tokens[5].equals("+");
+//        isPositive = tokens[5].equals("+");
 
         this.data = parseDefinitionString(tokens);
+//        data = parseDefinitionString(tokens);
         this.displayName = parseDisplayName(data);
+//        displayName = parseDisplayName(data);
+
+//        this.internalData = new GenericInscriptionDAO(displayName,data,tiers,isGlobal,isMeta,isPositive);
     }
+
+//    public static GenericInscriptionDAO parseDefinitionString(String defString,int tiers, boolean isGlobal){
+//
+//    }
+
+
+
+
+
+
+
+
+
+
+
 
     private ModifierData parseKeystone(String keystone) {
         try {
             Keystones mappedKeystone =  Keystones.valueOf(keystone);
-            return new KeystoneData(Affix.UNIQUE, mappedKeystone);
+            return new KeystoneData(Affix.RELIC, mappedKeystone);
         } catch (IllegalArgumentException exception){
             Utils.error("Unable to parse " + keystone + " keystone argument (InscriptionID)");
         }
@@ -394,4 +469,23 @@ public enum InscriptionID {
 
         return firstDisplayName + HybridInscriptionData.HYBRID_SEPARATOR + secondDisplayName;
     }
+
+//    public String getDisplayName(){
+//        return internalData.displayName();
+//    }
+//    public ModifierData getData(){
+//        return internalData.data();
+//    }
+//    public int getTotalTiers(){
+//        return internalData.totalTiers();
+//    }
+//    public boolean isGlobal(){
+//        return internalData.global();
+//    }
+//    public boolean isMeta(){
+//        return internalData.meta();
+//    }
+//    public boolean isPositive(){
+//        return internalData.positive();
+//    }
 }

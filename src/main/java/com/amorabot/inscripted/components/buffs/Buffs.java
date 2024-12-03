@@ -2,7 +2,7 @@ package com.amorabot.inscripted.components.buffs;
 
 import com.amorabot.inscripted.APIs.damageAPI.CombatEffects;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
+import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.buffs.categories.damage.Damage;
 import com.amorabot.inscripted.components.buffs.categories.healing.Healing;

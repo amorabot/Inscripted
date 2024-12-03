@@ -51,6 +51,19 @@ public class InscriptionDataManager {
         Utils.log(tableName+" table successfully loaded.");
         return config;
     }
+    public static YamlConfiguration readRelicValuesTable(){
+        File file = new File(Inscripted.getPlugin().getDataFolder(), "relics/inscription_values.yml");
+        if (!file.exists()){return null;}
+        YamlConfiguration config = new YamlConfiguration();
+        config.options().parseComments(true);
+        try {
+            config.load(file);
+        } catch (IOException | InvalidConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+        Utils.log("Relic values table successfully loaded.");
+        return config;
+    }
 
 
 

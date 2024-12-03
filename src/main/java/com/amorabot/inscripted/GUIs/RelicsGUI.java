@@ -3,7 +3,7 @@ package com.amorabot.inscripted.GUIs;
 import com.amorabot.inscripted.GUIs.modules.GUI;
 import com.amorabot.inscripted.GUIs.modules.GUIButton;
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Relics;
+import com.amorabot.inscripted.components.Items.relic.enums.Relics;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -53,11 +53,11 @@ public class RelicsGUI extends GUI {
         List<GUIButton> relicButtons = new ArrayList<>();
         for (Relics relic : Relics.values()){
             ItemStack itemForm = relic.getItemForm();
-            ItemMeta relicItemMeta = itemForm.getItemMeta();
-            List<String> lore = relicItemMeta.getLore();
-            lore.add("");
-            lore.add(color("&8 >| " + convertToPrettyString("left-click to generate new relic!")));
-            itemForm.setItemMeta(relicItemMeta);
+//            ItemMeta relicItemMeta = itemForm.getItemMeta();
+//            List<String> lore = relicItemMeta.getLore();
+//            lore.add("");
+//            lore.add(color("&8 >| " + convertToPrettyString("left-click to generate new relic!")));
+//            itemForm.setItemMeta(relicItemMeta);
             relicButtons.add(new GUIButton(relic.ordinal(),itemForm) {
                 @Override
                 public void leftClick(Player playerWhoClicked) {

@@ -10,9 +10,9 @@ import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.components.Items.modifiers.data.*;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
-import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTimes;
+import com.amorabot.inscripted.components.Items.relic.enums.Effects;
+import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
+import com.amorabot.inscripted.components.Items.relic.enums.TriggerTimes;
 import com.amorabot.inscripted.components.Player.Attributes;
 import com.amorabot.inscripted.components.Player.ItemSlotData;
 import com.amorabot.inscripted.components.Player.Profile;
@@ -29,6 +29,7 @@ import java.util.*;
 public class StatCompiler {
 
     public static void updateProfile(UUID playerID){
+        //TODO fix: player profiles not compiling items between restarts (hash ignoring?) (current fix: change the equipped slot item and re-equip)
         Utils.log("----=| Compiling Stats |=----");
         Profile targetProfile = JSONProfileManager.getProfile(playerID);
         PlayerEquipment equipment = targetProfile.getEquipmentComponent();
@@ -50,7 +51,7 @@ public class StatCompiler {
         groupEquipmentStatsInto(playerStatPool, equipment);
 
         //Lets reset the external stat container and see what external sources of stats are valid to be recompiled
-        targetProfile.getStatsComponent().getExternalStats().getStats().clear();
+        targetProfile.getStatsComponent().getExternalStats().clear();
         //Compiles every external stat into the corresponding statPool
         addExternalStatsFromKeystones(playerID);
         groupExternalStats(playerID);
@@ -266,7 +267,7 @@ public class StatCompiler {
             Utils.log("Grouping stats for: " + slot);
             StatPool slotStats = playerEquipment.getSlotStats(slot);
             if (slotStats == null){continue;}
-            statPool.merge(slotStats);
+            statPool.merge(slotStats,true, "Equipment stats -> Main Pool"); //Multipliers from items should stack together
 //            statPool.debug("After " + slot.toString());
         }
     }
@@ -278,13 +279,13 @@ public class StatCompiler {
         Utils.log("Grouping buff stats!");
         StatPool buffStats = PlayerBuffManager.getBuffStatsFor(playerID);
         if (!buffStats.getStats().isEmpty()){
-            externalStats.merge(buffStats);
+            externalStats.merge(buffStats,true, "Buff stats -> External pool");
         }
     }
 }
 
         /*
-        The value that needs to be compiled comes directly from the modifiers.yml table.
+        The value that needs to be compiled comes directly from the inscription_values.yml table.
         We need to fetch the current modifier's tier from the table and map the value ranges based on the mod's
         base percentile (0-1)
         Ex:

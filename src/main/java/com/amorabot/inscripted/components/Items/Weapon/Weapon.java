@@ -1,6 +1,5 @@
 package com.amorabot.inscripted.components.Items.Weapon;
 
-import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.Abstract.ItemCategory;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
@@ -8,7 +7,9 @@ import com.amorabot.inscripted.components.Items.modifiers.data.HybridInscription
 import com.amorabot.inscripted.components.Items.modifiers.data.InscriptionData;
 import com.amorabot.inscripted.components.Items.modifiers.data.ModifierData;
 import com.amorabot.inscripted.components.Items.modifiers.data.StatDefinition;
+import com.amorabot.inscripted.components.Items.relic.RelicWeaponDAO;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
@@ -50,17 +51,16 @@ public class Weapon extends Item implements ItemCategory {
         this.atkSpeed = getSubtype().getBaseAttackSpeed();
         this.range = getSubtype().getRange();
     }
-    public Weapon(String name, int ilvl, WeaponTypes type, WeaponAttackSpeeds atkSpeed, int[] baseDmg, List<Inscription> inscriptions){ // Relic constructor
-        super(ilvl, ItemRarities.RELIC, true, false, ItemTypes.WEAPON);
-        this.type = type;
-        this.name = name;
+    public Weapon(RelicWeaponDAO relicWeaponData,List<Inscription> inscriptions){ // Relic constructor
+        super(relicWeaponData.genericData().itemLevel(), ItemRarities.RELIC, true, false, ItemTypes.WEAPON);
+        this.type = relicWeaponData.type();
+        this.name = relicWeaponData.genericData().name();
         setTier(Tiers.mapItemLevel(getIlvl()));
-        getInscriptionList().clear();
         getInscriptionList().addAll(inscriptions);
         setImplicit(Archetypes.mapImplicitFor(getSubtype(), getTier(), isCorrupted()));
-        this.baseDamage = baseDmg;
+        this.baseDamage = relicWeaponData.baseDmg();
         this.percentDamageVariance = 0;
-        this.atkSpeed = atkSpeed;
+        this.atkSpeed = relicWeaponData.atkSpeed();
         this.range = getSubtype().getRange();
         mapBase();
     }
@@ -173,7 +173,7 @@ public class Weapon extends Item implements ItemCategory {
     }
     //-------------------------------------------------------------------------
     @Override
-    public ItemStack getItemForm(Inscripted plugin) {
+    public ItemStack getItemForm() {
         ItemStack weaponItem = new ItemStack(this.vanillaMaterial);
         imprint(weaponItem,type);
 

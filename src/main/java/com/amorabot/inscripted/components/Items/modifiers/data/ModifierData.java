@@ -6,9 +6,9 @@ public interface ModifierData {
     Affix getAffixType();
     default boolean isStandard(){return (this instanceof InscriptionData);}
     default boolean isHybrid(){return (this instanceof HybridInscriptionData);}
-    default boolean isUnique(){
-        return getAffixType().equals(Affix.UNIQUE);
+    default boolean isRelicInscription(){
+        return getAffixType().equals(Affix.RELIC);
     }
     default boolean isKeystone(){return (this instanceof KeystoneData);}
-    default boolean isUniqueEffect(){return (this instanceof UniqueEffectData);}
+    default boolean isEffect(){return (this instanceof UniqueEffectData);}
 }

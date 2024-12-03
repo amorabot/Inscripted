@@ -2,13 +2,10 @@ package com.amorabot.inscripted.components.Items.Files;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ItemModifiersConfig {
@@ -51,10 +48,10 @@ public class ItemModifiersConfig {
 
     //Finds or generates the config file.
     public static void setup(){
-        file = new File(Inscripted.getPlugin().getDataFolder(), "modifiers.yml");
+        file = new File(Inscripted.getPlugin().getDataFolder(), "relics/inscription_values.yml");
 
         if (!file.exists()){
-            Inscripted.getPlugin().saveResource("modifiers.yml", false);
+            Inscripted.getPlugin().saveResource("relics/inscription_values.yml", false);
         }
 
         config = new YamlConfiguration();
@@ -65,7 +62,7 @@ public class ItemModifiersConfig {
         } catch (IOException | InvalidConfigurationException e) {
             throw new RuntimeException(e);
         }
-        Utils.log("Loading modifiers config");
+        Utils.log("Loading relic values yaml config");
         }
 
 

@@ -1,20 +1,20 @@
-package com.amorabot.inscripted.components.Items.modifiers.unique;
+package com.amorabot.inscripted.components.Items.relic.enums;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.inscripted.components.Items.Files.RelicArmorDAO;
+import com.amorabot.inscripted.components.Items.relic.RelicArmorDAO;
 import com.amorabot.inscripted.components.Items.Files.RelicEditor;
-import com.amorabot.inscripted.components.Items.Files.RelicWeaponDAO;
+import com.amorabot.inscripted.components.Items.relic.RelicWeaponDAO;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
-import com.amorabot.inscripted.utils.ColorUtils;
-import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,11 +39,11 @@ public enum Relics {
     THE_SOUL(ItemTypes.BOOTS,"The freedom of a","soul can bring","inner peace.","","But alone... it can't","be whole."),
     TRINITY(ItemTypes.LEGGINGS,"One must seek balance","at all costs."),
     EXECUTIONERS_MASK(ItemTypes.HELMET,"The merciful face","of death shall","remain concealed."),
-    HEADSMAN_BLADE(ItemTypes.WEAPON,"No victim is","unworthy of mercy.","Thy death will","shall be quick","and painless."),
+    HEADSMAN_BLADE(ItemTypes.WEAPON,"No victim is","unworthy of mercy.","Thy death ","shall be quick","and painless."),
     MAD_BUTCHER(ItemTypes.WEAPON,"dihgubsduygahsuidy","","- A once wise and sane", "butcher."),
     ELUSIVE_SHADOW(ItemTypes.WEAPON,"Check every corner.","","Every. Shadow."),
     BROKEN_FAITH(ItemTypes.WEAPON,"Whatever watches","over us must be","completely ignorant","or blind to the","horrors of this land..."),
-//    UNWAVERING_FAITH(ItemTypes.WEAPON,"Check every corner.","","Every. Shadow."),
+////    UNWAVERING_FAITH(ItemTypes.WEAPON,"Check every corner.","","Every. Shadow."),
     DRUIDIC_PELTS(ItemTypes.CHESTPLATE,"Nature's beautiful","cycle...","To be wounded","To be healed"),
     HELLFORGE(ItemTypes.WEAPON,"This glowing-hot","cleaver seems","to sap it's user's", "might to grow even", "stronger...");
 
@@ -51,6 +51,9 @@ public enum Relics {
     private static final Map<Relics, RelicArmorDAO> relicArmorsData = RelicEditor.loadAllArmors();
     @Getter
     private static final Map<Relics, RelicWeaponDAO> relicWeaponsData = RelicEditor.loadAllWeapons();
+
+//    private static Map<Relics, Map<InscriptionID, int[]>> relicStatValues = new HashMap<>();
+
     private final ItemTypes slot;
     private final String[] flavorText;
 
@@ -61,22 +64,20 @@ public enum Relics {
 
     public ItemStack getItemForm(){
         Item relicItem = generate();
-        ItemStack relicItemStack = relicItem.getItemForm(Inscripted.getPlugin());
+        ItemStack relicItemStack = relicItem.getItemForm();
         ItemMeta relicItemMeta = relicItemStack.getItemMeta();
-        List<String> lore = relicItemMeta.getLore();
-        assert lore != null;
-//        String itemTag = lore.remove(lore.size()-1);
-        //TODO: Implement flavor text rendering at a Item (class) level -> item updating doest render the flavor text
-        lore.add("");
-        lore.add(Utils.color("&8──────✎──────    ").indent(4));
-        for (String flavorLine : flavorText){
-            String finalLine = ColorUtils.translateColorCodes("&8"+Utils.convertToPrettyString(flavorLine).indent(4));
-            lore.add(finalLine);
+        StringBuilder flavorTextBuilder = new StringBuilder();
+        List<String> rawFlavorText = getFlavorText();
+
+        for (String s : rawFlavorText){
+            flavorTextBuilder.append(s).append("<br>");
         }
-        lore.add(Utils.color("&8─────────────    ").indent(4));
-        lore.add("");
-//        lore.add(itemTag);
-        relicItemMeta.setLore(lore);
+        relicItemMeta.getPersistentDataContainer().set(
+                new NamespacedKey(Inscripted.getPlugin(),"flavor"),
+                PersistentDataType.STRING,
+                flavorTextBuilder.toString()
+        );
+
         relicItemStack.setItemMeta(relicItemMeta);
         return relicItemStack;
     }
@@ -85,21 +86,35 @@ public enum Relics {
     private Item generate(){
         if (slot.equals(ItemTypes.WEAPON)){
             RelicWeaponDAO weaponDAO = getRelicWeaponsData().get(this);
-            List<Inscription> newlyGeneratedInscriptions = generateNewInscriptions(weaponDAO.inscriptions());
-            return new Weapon(weaponDAO.name(),weaponDAO.ilvl(),weaponDAO.type(),weaponDAO.atkSpeed(),weaponDAO.baseDmg(),newlyGeneratedInscriptions);
+            List<InscriptionID> relicInscriptionIDs = new ArrayList<>(weaponDAO.genericData().specialInscriptions());
+            relicInscriptionIDs.addAll(weaponDAO.genericData().inscriptions());
+            List<Inscription> newlyGeneratedInscriptions = generateNewRelicInscriptionList(relicInscriptionIDs);
+            return new Weapon(weaponDAO, newlyGeneratedInscriptions);
         } else { //Relic Armor generation
             RelicArmorDAO armorDAO = getRelicArmorsData().get(this);
-            List<Inscription> newlyGeneratedInscriptions = generateNewInscriptions(armorDAO.inscriptions());
-            return new Armor(armorDAO.name(),armorDAO.ilvl(),armorDAO.slot(),armorDAO.type(),armorDAO.baseHealth(),newlyGeneratedInscriptions);
+            List<InscriptionID> relicInscriptionIDs =  new ArrayList<>(armorDAO.genericData().specialInscriptions());
+            relicInscriptionIDs.addAll(armorDAO.genericData().inscriptions());
+            List<Inscription> newlyGeneratedInscriptions = generateNewRelicInscriptionList(relicInscriptionIDs);
+            return new Armor(armorDAO,newlyGeneratedInscriptions);
         }
     }
-    private List<Inscription> generateNewInscriptions(List<InscriptionID> inscIDs){
+    private List<Inscription> generateNewRelicInscriptionList(List<InscriptionID> inscIDs){
         List<Inscription> newlyGeneratedInscriptions = new ArrayList<>();
         for (InscriptionID ID : inscIDs){
+
             newlyGeneratedInscriptions.add(new Inscription(ID));
         }
         return newlyGeneratedInscriptions;
     }
 
+    private List<String> getFlavorText(){
+        if (relicWeaponsData.containsKey(this)){
+            return relicWeaponsData.get(this).genericData().flavorText();
+        }
+        if (relicArmorsData.containsKey(this)){
+            return relicArmorsData.get(this).genericData().flavorText();
+        }
+        return new ArrayList<>();
+    }
 
 }

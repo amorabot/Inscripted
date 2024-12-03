@@ -1,9 +1,8 @@
 package com.amorabot.inscripted.components.Player;
 
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
+import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
+import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.components.Player.stats.StatCompiler;
 import com.amorabot.inscripted.components.Player.stats.StatPool;
 import com.amorabot.inscripted.utils.Utils;
@@ -13,8 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
-
-import static com.amorabot.inscripted.utils.Utils.calculateFinalFlatValue;
 
 @Setter
 @Getter
@@ -66,8 +63,8 @@ public class StatsComponent implements EntityComponent {
 
     //Combined, playerStats and externalStats represent the statPool that components should sample to
     public StatPool getMergedStatsSnapshot(){
-        StatPool clonedPlayerStats = new StatPool(new HashMap<>(getPlayerStats().getStats()));
-        clonedPlayerStats.merge(getExternalStats());
+        StatPool clonedPlayerStats = new StatPool(getPlayerStats());
+        clonedPlayerStats.merge(getExternalStats(),true,"Snapshotting");
         return clonedPlayerStats;
     }
 
@@ -76,11 +73,14 @@ public class StatsComponent implements EntityComponent {
         activeStatKeystones.add(keystone);
         StatCompiler.updateProfile(playerID);
     }
-    public void removeActiveStatKeystone(UUID playerID, Keystones keystone, boolean supressCompiling){ //TODO: make boolean optional [boolean...]
+    public void removeActiveStatKeystone(UUID playerID, Keystones keystone, boolean supressCompiling){
         activeStatKeystones.remove(keystone);
         if (!supressCompiling){
+            Utils.log("Removing " + keystone + " and updating player profile!");
             StatCompiler.updateProfile(playerID);
+            return;
         }
+        Utils.log("Removing " + keystone + "and ignoring recompilation");
     }
     public boolean isStatKeystonePresent(Keystones keystone){
         return activeStatKeystones.contains(keystone);
@@ -89,5 +89,9 @@ public class StatsComponent implements EntityComponent {
     public void debug(){
         playerStats.debug("Regular Stats");
         externalStats.debug("External Stats");
+    }
+    public void clear(){
+        playerStats.clear();
+        externalStats.clear();
     }
 }

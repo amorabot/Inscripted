@@ -1,6 +1,5 @@
 package com.amorabot.inscripted.components.Items.Abstract;
 
-import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
 import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
@@ -84,9 +83,9 @@ public abstract class Item implements Serializable {
         } else if (subType instanceof ArmorTypes type) {
             Armor armorData = (Armor) this;
             imprintedLore.addAll(ItemInterfaceRenderer.renderDefences(armorData,mainStatPadding));
-            imprintedLore.add(emptyLine);
 
             descriptionLine = ItemInterfaceRenderer.renderDescription(this, this.getCategory().toString(),0);
+            imprintedLore.add(emptyLine);
         } else {
             //...
             descriptionLine = ItemInterfaceRenderer.renderDescription(this, "INVALID",0);
@@ -100,9 +99,28 @@ public abstract class Item implements Serializable {
                 imprintedLore.add(ItemInterfaceRenderer.getInscriptionFooter(mainStatPadding+1));
             }
             case RELIC -> {
+                List<Inscription> keystones = getInscriptionList().stream().filter(inscription -> inscription.getInscription().getData().isKeystone()).toList();
+                List<Inscription> effects = getInscriptionList().stream().filter(inscription -> inscription.getInscription().getData().isEffect()).toList();
+                for (Inscription keystoneInsc : keystones){
+                    imprintedLore.add(keystoneInsc.asComponent(mainStatPadding));
+                    imprintedLore.addAll(ItemInterfaceRenderer.renderSpecialInscriptionDescription(keystoneInsc.getInscription(),mainStatPadding+1));
+                    imprintedLore.add(emptyLine);
+                }
+                for (Inscription effectInscr : effects){
+                    imprintedLore.add(effectInscr.asComponent(mainStatPadding));
+                    imprintedLore.addAll(ItemInterfaceRenderer.renderSpecialInscriptionDescription(effectInscr.getInscription(),mainStatPadding+1));
+                    imprintedLore.add(emptyLine);
+                }
 
+                if (keystones.isEmpty() && effects.isEmpty()){imprintedLore.add(emptyLine);}
+
+                imprintedLore.add(ItemInterfaceRenderer.getInscriptionHeader(inscriptions,mainStatPadding+1));
+                imprintedLore.addAll(ItemInterfaceRenderer.renderInscriptions(this, inscriptionsPadding+1));
+                imprintedLore.add(ItemInterfaceRenderer.getInscriptionFooter(mainStatPadding+1));
+
+                //TODO: fetch and render lore data from PDC (key: relicLore)
             }
-            default -> imprintedLore.add(emptyLine);
+//            default -> imprintedLore.add(emptyLine);
         }
 
         imprintedLore.add(emptyLine);
@@ -130,7 +148,7 @@ public abstract class Item implements Serializable {
         }
         ItemInterfaceRenderer.setDisplayName("Unidentified " + subType.toString().toLowerCase(),item,getRarity(),false,0);
     }
-    public abstract ItemStack getItemForm(Inscripted plugin);
+    public abstract ItemStack getItemForm();
     protected abstract void serializeContainers(Item itemData, ItemStack item);
     //-------------------------------------------------------------------------
 
@@ -168,7 +186,7 @@ public abstract class Item implements Serializable {
         int invalidMods = 0;
         for (Inscription mod : getInscriptionList()){
             InscriptionID inscID = mod.getInscription();
-            if (inscID.getData().isKeystone() || inscID.getData().isUniqueEffect()){
+            if (inscID.getData().isKeystone() || inscID.getData().isEffect()){
                 invalidMods++;
                 continue;
             }

@@ -123,10 +123,12 @@ public final class Inscripted extends JavaPlugin {
         PlayerPassivesManager.reloadOnlinePlayers();
         PlayerBuffManager.reloadOnlinePlayers();
 
-        ItemModifiersConfig.setup();
+        InscriptionDataManager.setupFiles();
         GlyphInfo.loadMappings();
 
-        InscriptionDataManager.setupFiles();
+        ItemModifiersConfig.setup();
+
+//        initializeRelicItemData();
     }
 
     private void initializeProfileJSON(){

@@ -2,12 +2,12 @@ package com.amorabot.inscripted.components;
 
 import com.amorabot.inscripted.APIs.EventAPI;
 import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
+import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
-import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTimes;
-import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTypes;
+import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
+import com.amorabot.inscripted.components.Items.relic.enums.TriggerTimes;
+import com.amorabot.inscripted.components.Items.relic.enums.TriggerTypes;
 import com.amorabot.inscripted.components.Player.StatsComponent;
 import com.amorabot.inscripted.components.Player.stats.BaseStats;
 import com.amorabot.inscripted.components.Player.Profile;
@@ -15,7 +15,6 @@ import com.amorabot.inscripted.components.Player.stats.StatPool;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
-import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -66,7 +65,7 @@ public class HealthComponent implements EntityComponent {
         playerHP.setCurrentHealth(playerHP.getMaxHealth());
         playerHP.setCurrentWard(playerHP.getMaxWard());
         HealthComponent.updateHealthHearts(player,playerHP);
-//        playerProfile.updatePlayerHearts(player);
+        HealthComponent.updateWardHearts(player,playerHP);
     }
     public int regenHealth(boolean inCombat, UUID playerID){
         Player player = Bukkit.getPlayer(playerID);
@@ -205,8 +204,8 @@ public class HealthComponent implements EntityComponent {
             return (int) (maxHealth - currentHealth);
         }
         if (currentHealth+finalAmount <= maxHealth){
-            updateHealthHearts(target, this);
             this.currentHealth += finalAmount;
+            updateHealthHearts(target, this);
         }
         return finalAmount;
     }

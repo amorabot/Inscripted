@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.components.Items.modifiers.data;
 
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
+import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.RangeTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 

@@ -2,7 +2,7 @@ package com.amorabot.inscripted.managers;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Buff;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.PlayerStats;
+import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Player.stats.StatCompiler;
 import com.amorabot.inscripted.components.Player.stats.StatPool;

@@ -1,18 +1,16 @@
 package com.amorabot.inscripted.components.Player;
 
-import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
 import com.amorabot.inscripted.components.DamageComponent;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Effects;
-import com.amorabot.inscripted.components.Items.modifiers.unique.Keystones;
-import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTimes;
-import com.amorabot.inscripted.components.Items.modifiers.unique.TriggerTypes;
+import com.amorabot.inscripted.components.Items.relic.enums.Effects;
+import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
+import com.amorabot.inscripted.components.Items.relic.enums.TriggerTimes;
+import com.amorabot.inscripted.components.Items.relic.enums.TriggerTypes;
 import com.amorabot.inscripted.components.Player.stats.PlayerEquipment;
 import com.amorabot.inscripted.components.Player.stats.StatCompiler;
-import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;

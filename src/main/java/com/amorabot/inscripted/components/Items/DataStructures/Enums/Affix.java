@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum Affix {
     PREFIX("ᚴ"),
     SUFFIX("ᚭ"),
-    UNIQUE("ᛟ"),
+    RELIC("ᛟ"),
     IMPLICIT("⸸");
 
     private final String runeIcon;

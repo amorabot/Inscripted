@@ -1,0 +1,306 @@
+{
+  "TRAINING_DUMMY_ARMOR": {
+    "slot": "CHESTPLATE",
+    "type": "HEAVY_PLATING",
+    "baseHealth": 10,
+    "genericData": {
+      "name": "Dummy Armor",
+      "itemLevel": 1,
+      "specialInscriptions": [
+        "FORBIDDEN_PACT"
+      ],
+      "inscriptions": [
+        "BLHA_BLEED_CHANCE"
+      ],
+      "flavorText": [
+        "This severed, yet",
+        "pulsating heart",
+        "gives you a unending",
+        "desire for carnage."
+      ]
+    }
+  },
+  "BLEEDING_HEART": {
+    "slot": "CHESTPLATE",
+    "type": "HEAVY_PLATING",
+    "baseHealth": 400,
+    "genericData": {
+      "name": "Bleeding Heart",
+      "itemLevel": 42,
+      "specialInscriptions": [
+        "LETHAL_STRIKES"
+      ],
+      "inscriptions": [
+        "BLHA_BLEED_CHANCE",
+        "BLHA_BLD_DMG"
+      ],
+      "flavorText": [
+        "This severed, yet",
+        "pulsating heart",
+        "gives you a unending",
+        "desire for carnage."
+      ]
+    }
+  },
+  "CORRUPTORS_WRAPPINGS": {
+    "slot": "CHESTPLATE",
+    "type": "ENCHANTED_SILK",
+    "baseHealth": 1,
+    "genericData": {
+      "name": "The Corruptor's Wrappings",
+      "itemLevel": 70,
+      "specialInscriptions": [
+        "FORBIDDEN_PACT"
+      ],
+      "inscriptions": [
+        "COWR_WARD",
+        "COWW_STRENGTH",
+        "COWR_MORE_WARD"
+      ],
+      "flavorText": [
+        "This old tunic",
+        "once belonged to",
+        "a powerful sage",
+        "that stared too",
+        "long into the abyss."
+      ]
+    }
+  },
+  "APPROACHING_WINTER": {
+    "slot": "BOOTS",
+    "type": "ENCHANTED_SILK",
+    "baseHealth": 200,
+    "genericData": {
+      "name": "The Approaching Winter",
+      "itemLevel": 90,
+      "specialInscriptions": [
+        "PERMAFROST"
+      ],
+      "inscriptions": [
+        "APWI_WALK_SPEED",
+        "APWI_COLD_RES",
+        "APWI_FIRE_RES",
+        "APWI_COLD_DMG",
+        "APWI_FLAT_COLD"
+      ],
+      "flavorText": [
+        "Winter's cold","embrace is slowly","approaching."
+      ]
+    }
+  },
+  "BLIND_RAGE": {
+    "slot": "HELMET",
+    "type": "HEAVY_PLATING",
+    "baseHealth": 666,
+    "genericData": {
+      "name": "Blind Rage",
+      "itemLevel": 40,
+      "specialInscriptions": [
+        "BERSERK"
+      ],
+      "inscriptions": [
+        "BLRA_ACCURACY",
+        "BLRA_LESS_HEALTH"
+      ],
+      "flavorText": [
+        "This cursed helmet",
+        "once belonged to",
+        "a mysterious ske-",
+        "letal and silent","protector."
+      ]
+    }
+  },
+  "EYE_OF_THE_STORM": {
+    "slot": "CHESTPLATE",
+    "type": "ENCHANTED_SILK",
+    "baseHealth": 1000,
+    "genericData": {
+      "name": "Eye of The Storm",
+      "itemLevel": 75,
+      "specialInscriptions": [
+        "THUNDERSTRUCK"
+      ],
+      "inscriptions": [
+        "EOTS_LIGHTNING_RES",
+        "EOTS_MAX_LIGHTNING_RES"
+      ],
+      "flavorText": [
+        "This heavenly curse","can be a powerful","boon in the right", "hands."
+      ]
+    }
+  },
+  "TIN_FOIL_HELMET": {
+    "slot": "HELMET",
+    "type": "HEAVY_PLATING",
+    "baseHealth": 100,
+    "genericData": {
+      "name": "Tin Foil Helmet",
+      "itemLevel": 42,
+      "specialInscriptions": [
+        "OVERDRIVE"
+      ],
+      "inscriptions": [
+        "TIFO_HELMET_INTELLIGENCE"
+      ],
+      "flavorText": [
+        "Can protect you","against conspiracies,","but certainly not", "against electricity!"
+      ]
+    }
+  },
+  "QUEEN_OF_THE_FOREST": {
+    "slot": "LEGGINGS",
+    "type": "LIGHT_CLOTH",
+    "baseHealth": 1200,
+    "genericData": {
+      "name": "Queen of The Forest",
+      "itemLevel": 90,
+      "specialInscriptions": [
+        "THRILL_OF_THE_HUNT"
+      ],
+      "inscriptions": [
+        "QOTF_DEX_TO_WS",
+        "QOTF_REDU_WALK_SPEED"
+      ],
+      "flavorText": [
+        "Oh, the thrill of dancing","to a battle's rhythm...","","The thrill of flirting","with death..."
+      ]
+    }
+  },
+  "IMMORTAL_FLESH": {
+    "slot": "CHESTPLATE",
+    "type": "HEAVY_PLATING",
+    "baseHealth": 5000,
+    "genericData": {
+      "name": "Immortal Flesh",
+      "itemLevel": 90,
+      "specialInscriptions": [
+        "ORGAN_FAILURE"
+      ],
+      "inscriptions": [
+        "BLRA_LESS_HEALTH",
+        "IMFL_INC_REGEN",
+        "IMFL_FLAT_REGEN"
+      ],
+      "flavorText": [
+        "The cycle of carnage","is the only constant","in life."
+      ]
+    }
+  },
+  "THE_BODY": {
+    "slot": "CHESTPLATE",
+    "type": "HEAVY_PLATING",
+    "baseHealth": 4000,
+    "genericData": {
+      "name": "The Body",
+      "itemLevel": 100,
+      "specialInscriptions": [
+        "FIRE_ATTUNEMENT"
+      ],
+      "inscriptions": [
+        "GODHEAD_LESS_LIGHTNING_RES",
+        "GODHEAD_LESS_COLD_RES",
+        "THE_BODY_INC_ARMOR"
+      ],
+      "flavorText": [
+        "The resilience of","a body can reach","impressive heights.","","But alone... it can't","be whole."
+      ]
+    }
+  },
+  "THE_MIND": {
+    "slot": "HELMET",
+    "type": "ENCHANTED_SILK",
+    "baseHealth": 1000,
+    "genericData": {
+      "name": "The Mind",
+      "itemLevel": 100,
+      "specialInscriptions": [
+        "COLD_ATTUNEMENT"
+      ],
+      "inscriptions": [
+        "GODHEAD_LESS_LIGHTNING_RES",
+        "GODHEAD_LESS_FIRE_RES",
+        "THE_MIND_INC_WARD"
+      ],
+      "flavorText": [
+        "The strength of","mind can bring","enlightenment.","","But alone... it can't","be whole."
+      ]
+    }
+  },
+  "THE_SOUL": {
+    "slot": "BOOTS",
+    "type": "LIGHT_CLOTH",
+    "baseHealth": 2500,
+    "genericData": {
+      "name": "The Soul",
+      "itemLevel": 100,
+      "specialInscriptions": [
+        "LIGHTNING_ATTUNEMENT"
+      ],
+      "inscriptions": [
+        "GODHEAD_LESS_COLD_RES",
+        "GODHEAD_LESS_FIRE_RES",
+        "THE_SOUL_INC_DODGE"
+      ],
+      "flavorText": [
+        "The freedom of a","soul can bring","inner peace.","","But alone... it can't","be whole."
+      ]
+    }
+  },
+  "TRINITY": {
+    "slot": "LEGGINGS",
+    "type": "RUNIC_STEEL",
+    "baseHealth": 3333,
+    "genericData": {
+      "name": "Trinity",
+      "itemLevel": 77,
+      "specialInscriptions": [
+        "ELEMENTAL_BLESSING"
+      ],
+      "inscriptions": [
+        "TRINITY_LESS_HEALTH",
+        "TRINITY_LESS_WARD"
+      ],
+      "flavorText": [
+        "One must seek balance","at all costs."
+      ]
+    }
+  },
+  "EXECUTIONERS_MASK": {
+    "slot": "HELMET",
+    "type": "RUNIC_LEATHER",
+    "baseHealth": 1900,
+    "genericData": {
+      "name": "The Executioner's mask",
+      "itemLevel": 90,
+      "specialInscriptions": [
+        "COUP_DE_GRACE"
+      ],
+      "inscriptions": [
+        "EXMA_FLAT_PHYS",
+        "EXMA_SHRED",
+        "EXMA_CRIT_DMG"
+      ],
+      "flavorText": [
+        "The merciful face","of death shall","remain concealed."
+      ]
+    }
+  },
+  "DRUIDIC_PELTS": {
+    "slot": "CHESTPLATE",
+    "type": "RUNIC_LEATHER",
+    "baseHealth": 1200,
+    "genericData": {
+      "name": "Druidic Pelts",
+      "itemLevel": 64,
+      "specialInscriptions": [
+        "WINDS_OF_CHANGE"
+      ],
+      "inscriptions": [
+        "DRPE_HEALTH_REGEN"
+      ],
+      "flavorText": [
+        "Nature's beautiful","cycle...","To be wounded","To be healed"
+      ]
+    }
+  }
+}

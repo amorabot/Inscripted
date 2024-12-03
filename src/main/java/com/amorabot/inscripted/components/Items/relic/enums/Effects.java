@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.components.Items.modifiers.unique;
+package com.amorabot.inscripted.components.Items.relic.enums;
 
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
@@ -65,18 +65,25 @@ public enum Effects {
         }
     },
     ADRENALINE_RUSH(TriggerTypes.ON_DEATH, TriggerTimes.EARLY, 120,
-            "Upon taking a killing", "blow, instead heal", "10% ❤ Health", "", "⏳ 2m cooldown") {
+            "Upon taking a killing blow,", "instead heal 10% ❤ Health", "", "⏳ 2m cooldown") {
         @Override
         public void execute(LivingEntity caster, LivingEntity target) {
             if (caster instanceof Player playerCaster){
-                if (!GlobalCooldownManager.effecTriggered(caster.getUniqueId(),this)){return;}
+                Utils.log(this + " trigger for " + playerCaster.getName());
+                if (!GlobalCooldownManager.effecTriggered(caster.getUniqueId(),this)){
+                    Utils.error("Its on cooldown!!!");
+                    return;
+                }
                 Profile casterProfile = JSONProfileManager.getProfile(playerCaster.getUniqueId());
                 HealthComponent casterHP = casterProfile.getHealthComponent();
                 int healedAmount = (int) (casterHP.getMaxHealth() * 0.1);
                 boolean isBleeding = PlayerBuffManager.hasActiveBuff(Buffs.BLEED, playerCaster);
-                int finalHealedAmount = casterHP.healHealth(healedAmount, isBleeding, (Player) target,casterProfile.getKeystones());
+                int finalHealedAmount = casterHP.healHealth(healedAmount, isBleeding, playerCaster,casterProfile.getKeystones());
+//                Utils.error("HEALED AMOUNT ON ADREN. RUSH PROC: " + finalHealedAmount);
+                HealthComponent.updateHeartContainers(caster,casterHP);
                 CombatHologramsDepleter.getInstance().instantiateRegenHologram(caster.getLocation(),
                         "&c&lA. rush: "+"&2&l"+finalHealedAmount);
+                //TODO: Add particle effects
             }
         }
 
@@ -172,6 +179,7 @@ public enum Effects {
     };
 
 
+    @Getter
     private final TriggerTypes trigger;
     private final TriggerTimes timing;
     private final long cooldownInSeconds;
@@ -192,6 +200,6 @@ public enum Effects {
         return caster instanceof Player == target instanceof Player;
     }
     public String getDisplayName(){
-        return this.toString().replace("_"," ") + " - " + this.trigger.getIcon();
+        return (this.trigger + ": " + this).replace("_"," ");
     }
 }

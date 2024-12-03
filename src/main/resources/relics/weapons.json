@@ -1,0 +1,144 @@
+{
+  "OMINOUS_TWIG": {
+    "type": "WAND",
+    "atkSpeed": "SLOW",
+    "baseDmg": [3, 7],
+    "genericData": {
+      "name": "Ominous twig",
+      "itemLevel": 3,
+      "specialInscriptions": [],
+      "inscriptions": [
+        "OMTW_ABYSSAL"
+      ],
+      "flavorText": [
+        "Amidst a wasteland,",
+        "a single tree remains.",
+        "From it's wretched",
+        "form, a single",
+        "branch lives on."
+      ]
+    }
+  },
+  "SCARLET_DANCER": {
+    "type": "SWORD",
+    "atkSpeed": "NORMAL",
+    "baseDmg": [150, 220],
+    "genericData": {
+      "name": "The Scarlet Dancer",
+      "itemLevel": 90,
+      "specialInscriptions": ["BLOOD_PACT", "ADRENALINE_RUSH"],
+      "inscriptions": [
+        "SCDA_PHYS",
+        "SCDA_LESS_ARMOR",
+        "SCDA_LIFE_ON_HIT"
+      ],
+      "flavorText": [
+        "Oh, the thrill of dancing",
+        "to a battle's rhythm...",
+        "",
+        "The thrill of flirting",
+        "with death..."
+      ]
+    }
+  },
+  "HELLFORGE": {
+    "type": "AXE",
+    "atkSpeed": "HEAVY",
+    "baseDmg": [15, 35],
+    "genericData": {
+      "name": "The Hellforge",
+      "itemLevel": 45,
+      "specialInscriptions": [],
+      "inscriptions": [
+        "HELLFORGE_STRENGTH_TO_FIRE_DMG"
+      ],
+      "flavorText": [
+        "This glowing-hot","cleaver seems","to sap it's user's", "might to grow even", "stronger..."
+      ]
+    }
+  },
+  "MAD_BUTCHER": {
+    "type": "AXE",
+    "atkSpeed": "NORMAL",
+    "baseDmg": [100, 170],
+    "genericData": {
+      "name": "The Mad Butcher's cleaver",
+      "itemLevel": 70,
+      "specialInscriptions": ["SADISM"],
+      "inscriptions": [
+        "MABU_BLEED_CHANCE"
+      ],
+      "flavorText": [
+        "dihgubsduygahsuidy","","- A once wise and sane", "butcher."
+      ]
+    }
+  },
+  "FEATHERED_BOW": {
+    "type": "BOW",
+    "atkSpeed": "FAST",
+    "baseDmg": [9, 20],
+    "genericData": {
+      "name": "Feathered bow",
+      "itemLevel": 22,
+      "specialInscriptions": ["GRACEFUL_LANDING"],
+      "inscriptions": [
+      ],
+      "flavorText": [
+        "Reflecting the local","fauna's elegance,","the user can't","help but to feel","graceful aswell."
+      ]
+    }
+  },
+  "HEADSMAN_BLADE": {
+    "type": "SWORD",
+    "atkSpeed": "HEAVY",
+    "baseDmg": [260, 320],
+    "genericData": {
+      "name": "The Headsman blade",
+      "itemLevel": 110,
+      "specialInscriptions": ["AGNOSTIC","COUP_DE_GRACE"],
+      "inscriptions": [
+        "SCDA_PHYS",
+        "SCDA_LESS_ARMOR",
+        "SCDA_LIFE_ON_HIT"
+      ],
+      "flavorText": [
+        "No victim is","unworthy of mercy.","Thy death ","shall be quick","and painless."
+      ]
+    }
+  },
+  "ELUSIVE_SHADOW": {
+    "type": "DAGGER",
+    "atkSpeed": "NORMAL",
+    "baseDmg": [123, 197],
+    "genericData": {
+      "name": "Elusive Shadow",
+      "itemLevel": 93,
+      "specialInscriptions": ["OPPORTUNIST"],
+      "inscriptions": [
+        "ELSH_CRIT_CHANCE"
+      ],
+      "flavorText": [
+        "Check every corner.","","Every. Shadow."
+      ]
+    }
+  },
+  "BROKEN_FAITH": {
+    "type": "MACE",
+    "atkSpeed": "NORMAL",
+    "baseDmg": [100, 130],
+    "genericData": {
+      "name": "Broken Faith",
+      "itemLevel": 99,
+      "specialInscriptions": ["AGNOSTIC"],
+      "inscriptions": [
+        "BROKEN_FAITH_WARD_TO_ABYSS",
+        "BRFA_ABYSS_FLAT",
+        "BRFA_ABYSS_PERCENT",
+        "BRFA_LESS_HPS"
+      ],
+      "flavorText": [
+        "Whatever watches","over us must be","completely ignorant","or blind to the","horrors of this land..."
+      ]
+    }
+  }
+}

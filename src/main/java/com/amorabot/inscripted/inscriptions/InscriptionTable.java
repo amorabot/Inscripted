@@ -12,7 +12,9 @@ import java.util.*;
 
 public class InscriptionTable {
     private static Map<Affix, Map<InscriptionID, Map<Integer, int[]>>> PROCEDURAL_VALUES;
+
     private static final Map<InscriptionID, Map<Integer, int[]>> IMPLICIT_VALUES = new HashMap<>();
+    private static Map<InscriptionID, int[]> RELIC_VALUES;
 
 
     private final Map<Affix, Map<InscriptionID, Map<Integer, Integer>>> itemInscriptions;
@@ -50,7 +52,7 @@ public class InscriptionTable {
     public int getHighestTierFor(InscriptionID inscription, int itemLevel){
         assert itemLevel>=1;
         ModifierData modData = inscription.getData();
-        if (modData.isUnique() || modData.isKeystone() || modData.isUniqueEffect()){return -1;}
+        if (modData.isRelicInscription() || modData.isKeystone() || modData.isEffect()){return -1;}
         Map<Integer, Integer> tierMappings = getTierMappingsFor(inscription);
         if (tierMappings.isEmpty()){
             Utils.log("Empty mapping for: " + inscription);
@@ -199,8 +201,13 @@ public class InscriptionTable {
         return queryValuesFor(inscription.getInscription(), inscription.getTier());
     }
     public static int[] queryValuesFor(InscriptionID mod, int tier){
-        if (mod.getData().getAffixType().equals(Affix.IMPLICIT)){return getImplicitValuesArray(mod,tier);}
-        return PROCEDURAL_VALUES.get(mod.getData().getAffixType()).get(mod).get(tier).clone();
+        ModifierData modifierData = mod.getData();
+        Affix modAffixType = modifierData.getAffixType();
+        if (modAffixType.equals(Affix.RELIC)){//Consult the relic values table
+            return RELIC_VALUES.get(mod).clone();
+        }
+        if (modAffixType.equals(Affix.IMPLICIT)){return getImplicitValuesArray(mod,tier);}
+        return PROCEDURAL_VALUES.get(modAffixType).get(mod).get(tier).clone();
     }
 
     public static void loadValues(){
@@ -208,6 +215,7 @@ public class InscriptionTable {
         loadProceduralValues(valuesTable, Affix.PREFIX);
         loadProceduralValues(valuesTable, Affix.SUFFIX);
         InscriptionTable.PROCEDURAL_VALUES = valuesTable;
+        InscriptionTable.RELIC_VALUES = loadRelicValuesTable();
     }
     //Mutates the base map with all tables mixed together
     private static void loadProceduralValues(Map<Affix, Map<InscriptionID, Map<Integer, int[]>>> valuesTable, Affix affixTableToLoad){
@@ -242,5 +250,30 @@ public class InscriptionTable {
         }
 //        Utils.log("Successfully fetched values for T" + tier + " " + mod + ": " + Arrays.toString(valuesArray));
         return valuesArray;
+    }
+
+    private static Map<InscriptionID, int[]> loadRelicValuesTable(){
+        List<InscriptionID> relicInscriptions = scanForRelicInscriptions();
+        Map<InscriptionID, int[]> valuesTable = new HashMap<>();
+        YamlConfiguration relicValuesConfig = InscriptionDataManager.readRelicValuesTable();
+        assert relicValuesConfig != null;
+        for (InscriptionID relicInscription : relicInscriptions){
+            List<Integer> values = relicValuesConfig.getIntegerList(relicInscription.toString());
+            int[] valuesArray = new int[values.size()];
+            for (int i = 0; i< valuesArray.length; i++){
+                valuesArray[i] = values.get(i);
+            }
+            valuesTable.put(relicInscription,valuesArray);
+        }
+        return valuesTable;
+    }
+    private static List<InscriptionID> scanForRelicInscriptions(){
+        List<InscriptionID> list = new ArrayList<>();
+        for (InscriptionID insc : InscriptionID.values()){
+            if (insc.getData().isRelicInscription()){
+                list.add(insc);
+            }
+        }
+        return list;
     }
 }
