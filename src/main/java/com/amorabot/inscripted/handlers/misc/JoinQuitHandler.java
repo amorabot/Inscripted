@@ -8,6 +8,7 @@ import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.tasks.CombatLogger;
+import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
 import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
@@ -68,6 +69,7 @@ public class JoinQuitHandler implements Listener {
 
     private void initializePlayer(Player player){
         PlayerRegenManager.addPlayer(player.getUniqueId());
+        PlayerInterfaceRenderer.createHPDisplayFor(player);
         PlayerBuffManager.initializePlayer(player);
         EntityStateManager.setPlayerMetadata(player);
         //                                                          min 0  |  max 1
@@ -82,6 +84,7 @@ public class JoinQuitHandler implements Listener {
         PlayerRegenManager.removePlayer(playerID);
         PlayerPassivesManager.removePlayer(playerID);
         PlayerBuffManager.expirePlayerStatBuffs(player);
+        PlayerInterfaceRenderer.destroyHPDisplayFor(player);
     }
 
     private void showTitleTo(Player player, String mainTitle, String subtitle){

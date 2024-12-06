@@ -28,12 +28,15 @@ import com.amorabot.inscripted.skills.archetypes.bow.BowBasicAttacks;
 import com.amorabot.inscripted.skills.math.OrientedBoundingBox;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Display;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
@@ -84,12 +87,19 @@ public class TemplateCommand implements CommandExecutor {
                         player.sendMessage(inscription.getDisplayName() + "   " + inscription.getTotalTiers());
                     }
                     break;
-                case "item":
-//                    Weapon weapon = new Weapon(20, WeaponTypes.SWORD, ItemRarities.RUNIC,true, false);
-//                    String impA = weapon.getImplicit().getImplicitDisplayName(Objects.requireNonNull(Archetypes.mapArchetypeFor(weapon.getSubtype())),2);
-//                    Weapon item = (Weapon) ItemBuilder.randomItem(ItemTypes.WEAPON, WeaponTypes.MACE, 70, ItemRarities.AUGMENTED, true, false);
-//                    String impB = item.getImplicit().getImplicitDisplayName(Objects.requireNonNull(Archetypes.mapArchetypeFor(item.getSubtype())),2);
-//                    player.sendMessage(ColorUtils.translateColorCodes("1: " + impA + " 2: " + impB));
+                case "bar":
+                    Component bar = JSONProfileManager.getProfile(player.getUniqueId()).getHealthComponent().getHealthBarComponent();
+//                    player.sendMessage(bar);
+                    Inscripted.getPlugin().getWorld().spawn(player.getLocation(), TextDisplay.class, textDisplay -> {
+                        textDisplay.text(bar);
+                        textDisplay.setBillboard(Display.Billboard.CENTER);
+                        textDisplay.setAlignment(TextDisplay.TextAlignment.CENTER);
+                        textDisplay.setTextOpacity((byte) 255);
+
+//                        textDisplay.setInterpolationDelay(1);
+//                        textDisplay.setInterpolationDuration(14);
+                        textDisplay.setPersistent(false);
+                    });
                     break;
                 case "toggle":
                     //Not persistent (ideal for temporary tags/ownership/toggles that are not essential in combat) -> if persistance is needed: scoreboard tags

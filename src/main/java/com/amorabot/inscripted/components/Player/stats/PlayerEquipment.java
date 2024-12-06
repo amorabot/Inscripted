@@ -21,6 +21,7 @@ import java.util.Set;
 public class PlayerEquipment {
 
     //TODO: make a super-object to encapsulate all equipment data per slot
+    //ItemSlotData+StatPool+Keystones+Inscriptions+Effects
     private final Map<ItemTypes, ItemSlotData> slots;
     private final Map<ItemTypes, StatPool> slotStats = new HashMap<>();
     @Setter
@@ -46,19 +47,21 @@ public class PlayerEquipment {
             Utils.error("Invalid slotType trying to be equipped (null)");
             return false;
         }
-        //Slot type is set, data can be null
+        //Slot type is defined, item data can be null
         ItemSlotData selectedSlot = slots.get(slotType);
         if (itemData == null){
             selectedSlot.setItemHash(null);
+            Utils.error("No item data to equip!");
             return true;
         }
-        //Data is not null and can be further checked
+        //Item data is not null and can be further checked
         if (!slotType.equals(itemData.getCategory())){
             Utils.error("Slot type: " + slotType + " doesn't match item: " + itemData.getCategory());
             return false;
         }
-        boolean shouldRecompileItem = selectedSlot.setItemHash(itemData);
-        if (shouldRecompileItem){
+//        boolean shouldRecompileItem = selectedSlot.setItemHash(itemData);
+        selectedSlot.setItemHash(itemData);
+        if (!selectedSlot.isIgnorable()){
             StatPool itemStats = new StatPool(); //Each slot will store a stat pool that can be later merged
             StatCompiler.addLocalStatsTo(itemStats, itemData);
             StatCompiler.compileItemInscriptionStats(itemStats, itemData);

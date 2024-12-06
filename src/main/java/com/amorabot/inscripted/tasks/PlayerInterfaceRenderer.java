@@ -1,14 +1,17 @@
 package com.amorabot.inscripted.tasks;
 
+import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
+import com.amorabot.inscripted.components.renderers.CustomUnicodeTable;
 import com.amorabot.inscripted.components.renderers.InscriptedPalette;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
 import com.amorabot.inscripted.skills.AbilityTypes;
+import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -17,10 +20,15 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.Color;
+import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.*;
+
 public class PlayerInterfaceRenderer extends BukkitRunnable {
+
+    private static final Map<UUID, TextDisplay> hpDisplays = new HashMap<>();
 
     private static final PlayerInterfaceRenderer INSTANCE = new PlayerInterfaceRenderer();
     private PlayerInterfaceRenderer(){
@@ -30,6 +38,13 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
         for (Player currentPlayer : Bukkit.getOnlinePlayers()){
             Profile playerProfile = JSONProfileManager.getProfile(currentPlayer.getUniqueId());
             HealthComponent healthComponent = playerProfile.getHealthComponent();
+
+            TextDisplay hpDisplay = getHPDisplayFor(currentPlayer);
+//            String negSpace = ""+CustomUnicodeTable.M7 + CustomUnicodeTable.M32;
+//            String negSpace = "";
+//            hpDisplay.text(Component.text(negSpace).append(healthComponent.getHealthBarComponent()).appendNewline());
+            hpDisplay.text(healthComponent.getHealthBarComponent().appendNewline().appendNewline());
+
             float maxHealth = healthComponent.getMaxHealth();
             float curHealth = healthComponent.getCurrentHealth();
             String healthHex = InscriptedPalette.HEALTH.getColorString();
@@ -79,7 +94,7 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             } else {
                 cooldownSection += "&a⏳M ";
             }
-            cooldownSection += " &7\uD83E\uDDEA12";
+//            cooldownSection += " &7\uD83E\uDDEA12";
             TextComponent cooldownCoomponent = LegacyComponentSerializer.legacyAmpersand().deserialize(cooldownSection);
 
             TextComponent ABComponent;
@@ -90,28 +105,52 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             }
             playerAudience.sendActionBar(ABComponent);
             //Health display renderer above player
-            renderCustomNametagsFor(currentPlayer, (int) curHealth, (int) curWard);
-
         }
     }
 
-    private void renderCustomNametagsFor(Player player,int curHealth, int curWard){
-//        TabAPI.getInstance().getNameTagManager();
-//        if (TabAPI.getInstance().getNameTagManager() instanceof UnlimitedNameTagManager){
-//            UnlimitedNameTagManager unm = (UnlimitedNameTagManager) TabAPI.getInstance().getNameTagManager();
-//
-//            String healthString = ColorUtils.translateColorCodes(DefenceTypes.HEALTH.getTextColorTag() + curHealth + DefenceTypes.HEALTH.getSpecialChar());
-//            String wardString = ColorUtils.translateColorCodes(DefenceTypes.WARD.getTextColorTag() + curWard + DefenceTypes.WARD.getSpecialChar());
-//            String finalString;
-//            if (curWard == 0){
-//                finalString = healthString;
-//            } else {
-//                finalString = healthString + " " + wardString;
-//            }
-//
-//            TabPlayer tabPlayer = TabAPI.getInstance().getPlayer(player.getUniqueId());
-//            unm.setLine(tabPlayer, "abovename", finalString);
-//        }
+    public static TextDisplay getHPDisplayFor(LivingEntity entity){
+        UUID entityID = entity.getUniqueId();
+        if (!hpDisplays.containsKey(entityID)){
+            return createHPDisplayFor(entity);
+        }
+        return hpDisplays.get(entityID);
+    }
+
+    public static TextDisplay createHPDisplayFor(LivingEntity entity){
+        TextDisplay display = Inscripted.getPlugin().getWorld().spawn(entity.getLocation().clone().add(0,2.5,0), TextDisplay.class, textDisplay -> {
+            textDisplay.setBillboard(Display.Billboard.CENTER);
+            textDisplay.setAlignment(TextDisplay.TextAlignment.LEFT);
+            textDisplay.setTextOpacity((byte) (255*0.70));
+            textDisplay.setLineWidth(900);
+            textDisplay.setBackgroundColor(Color.fromARGB(10,30,10,10));
+            textDisplay.setPersistent(false);
+            textDisplay.text(Component.text("Not initialized!"));
+        });
+        entity.addPassenger(display);
+        if (entity instanceof Player){((Player)entity).hideEntity(Inscripted.getPlugin(),display);}
+        hpDisplays.put(entity.getUniqueId(),display);
+        return display;
+    }
+    public static void destroyHPDisplayFor(LivingEntity entity){
+        TextDisplay hpDisplay = getHPDisplayFor(entity);
+        entity.removePassenger(hpDisplay);
+        hpDisplay.remove();
+        hpDisplays.remove(entity.getUniqueId());
+        Utils.log("Sucessfully removed hp display!");
+    }
+
+    public static void reloadHPDisplays(){
+        //Assumes the only entity riding the player is their hp display
+        for (Player currentPlayer : Bukkit.getOnlinePlayers()){
+            try{
+                Entity display = currentPlayer.getPassengers().get(0);
+                currentPlayer.removePassenger(display);
+                display.remove();
+                createHPDisplayFor(currentPlayer);
+            } catch (IndexOutOfBoundsException ex){
+                Utils.error("Invalid passenger removal attempt");
+            }
+        }
     }
 
     public static PlayerInterfaceRenderer getInstance() {

@@ -123,6 +123,8 @@ public final class Inscripted extends JavaPlugin {
         PlayerPassivesManager.reloadOnlinePlayers();
         PlayerBuffManager.reloadOnlinePlayers();
 
+        PlayerInterfaceRenderer.reloadHPDisplays();
+
         InscriptionDataManager.setupFiles();
         GlyphInfo.loadMappings();
 

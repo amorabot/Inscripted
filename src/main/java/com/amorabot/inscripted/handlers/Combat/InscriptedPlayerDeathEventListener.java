@@ -10,6 +10,7 @@ import com.amorabot.inscripted.components.Player.stats.StatCompiler;
 import com.amorabot.inscripted.events.death.InscriptedPlayerDeathEvent;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.utils.DelayedTask;
+import io.papermc.paper.entity.TeleportFlag;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -37,7 +38,7 @@ public class InscriptedPlayerDeathEventListener implements Listener {
     public void onCustomPlayerDeath(InscriptedPlayerDeathEvent event){
         Player deadPlayer = event.getDeadPlayer();
         Location respawnLoc = new Location(deadPlayer.getWorld(),-1399,65,-622);
-        deadPlayer.teleport(respawnLoc);
+        deadPlayer.teleport(respawnLoc, TeleportFlag.EntityState.RETAIN_PASSENGERS);
         PotionEffect blindness = new PotionEffect(PotionEffectType.BLINDNESS, 30, 10, true, false, false);
         blindness.apply(deadPlayer);
         PlayerBuffManager.clearAllBuffsFor(deadPlayer);
