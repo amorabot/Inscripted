@@ -3,42 +3,33 @@ package com.amorabot.inscripted.components.Mobs;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Attack;
+import com.amorabot.inscripted.utils.Utils;
+import lombok.Getter;
 
 import java.io.Serializable;
 
-public class MobStats implements Serializable {
+@Getter
+public class MobStats implements Serializable,Cloneable {
 
     private final int mobLevel;
     private final Attack mobHit;
     private final HealthComponent mobHealth;
     private final DefenceComponent mobDefence;
+    //TODO: Mob keystones
 
-    public MobStats(Attack mobHit, HealthComponent mobHP, DefenceComponent mobDef){
-        this.mobLevel = 1;
+    public MobStats(int mobLevel, Attack mobHit, HealthComponent mobHP, DefenceComponent mobDef){
+        this.mobLevel = mobLevel;
         this.mobHit = mobHit;
         this.mobHealth = mobHP;
         this.mobDefence = mobDef;
     }
-    public MobStats(int mobLevel, Attack mobHit, HealthComponent mobHP, DefensePresets mobDef){
-        this.mobLevel = mobLevel;
-        this.mobHit = mobHit;
-        this.mobHealth = mobHP;
-        this.mobDefence = mobDef.getDefense();
-    }
 
-    public int getMobLevel() {
-        return mobLevel;
-    }
-
-    public Attack getMobHit() {
-        return mobHit;
-    }
-
-    public HealthComponent getMobHealth() {
-        return mobHealth;
-    }
-
-    public DefenceComponent getMobDefence() {
-        return mobDefence;
+    public MobStats clone() {
+        try{
+            return (MobStats) super.clone();
+        } catch (CloneNotSupportedException e) {
+            Utils.error("Unsupported clone() call on MobStats.");
+            throw new RuntimeException(e);
+        }
     }
 }

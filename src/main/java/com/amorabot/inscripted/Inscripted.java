@@ -17,15 +17,13 @@ import com.amorabot.inscripted.handlers.misc.JoinQuitHandler;
 import com.amorabot.inscripted.handlers.misc.SunlightBurnHandler;
 import com.amorabot.inscripted.inscriptions.InscriptionDataManager;
 import com.amorabot.inscripted.inscriptions.InscriptionTable;
-import com.amorabot.inscripted.managers.JSONProfileManager;
-import com.amorabot.inscripted.managers.PlayerBuffManager;
-import com.amorabot.inscripted.managers.PlayerPassivesManager;
-import com.amorabot.inscripted.managers.PlayerRegenManager;
+import com.amorabot.inscripted.managers.*;
 import com.amorabot.inscripted.tasks.CombatLogger;
 import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -129,6 +127,8 @@ public final class Inscripted extends JavaPlugin {
         GlyphInfo.loadMappings();
 
         ItemModifiersConfig.setup();
+
+        MobManager.reloadAllMobsIntoMemory();
 
 //        initializeRelicItemData();
     }

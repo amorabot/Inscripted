@@ -31,7 +31,7 @@ import static com.amorabot.inscripted.APIs.damageAPI.DamageRouter.notifyProfile;
 
 @Getter
 @Setter
-public class HealthComponent implements EntityComponent {
+public class HealthComponent implements EntityComponent,Cloneable {
 
     public static final int LOW_LIFE_THRESHOLD = 20;
 
@@ -359,5 +359,15 @@ public class HealthComponent implements EntityComponent {
         wardBar.append((CustomUnicodeTable.P8.toString()).repeat(emptySegments-2));
 //        wardBar.append((CustomUnicodeTable.P16));
         return wardBar.toString();
+    }
+
+    @Override
+    public HealthComponent clone() {
+        try {
+            HealthComponent clone = (HealthComponent) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

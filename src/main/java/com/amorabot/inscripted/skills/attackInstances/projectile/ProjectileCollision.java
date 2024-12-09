@@ -4,6 +4,7 @@ import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
 import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -24,24 +25,30 @@ public class ProjectileCollision {
 
         World projWorld = projectile.getProjectileWorld();
         double detectionRange = projectile.getDetectionRange();
-        List<Player> nearbyPlayers = (List<Player>) currentPosition.toLocation(projWorld).getNearbyPlayers(detectionRange);
+        List<LivingEntity> nearbyEntities = (List<LivingEntity>) currentPosition.toLocation(projWorld).getNearbyLivingEntities(detectionRange);
 
-        if (!nearbyPlayers.isEmpty()){
-            for (Player p : nearbyPlayers){
-                if (projectile.getBlacklistedEntities().contains(p.getUniqueId())){continue;}
-                if (projectile.getAffectedEntities().contains(p.getUniqueId())){continue;}
-                BoundingBox playerAABB = getLargeHitbox(p);
-                BoundingBox arrowAABB = new BoundingBox(currentPosition.getX(), currentPosition.getY(), currentPosition.getZ(),
-                        currentPosition.getX(), currentPosition.getY(), currentPosition.getZ());
-                arrowAABB.expand(detectionRange/4);
+        if (!nearbyEntities.isEmpty()){
+            for (LivingEntity e : nearbyEntities){
+                if (projectile.getBlacklistedEntities().contains(e.getUniqueId())){continue;}
+                if (projectile.getAffectedEntities().contains(e.getUniqueId())){continue;}
 
-                if (playerAABB.overlaps(arrowAABB)){
-                    if (!attacker.hasLineOfSight(p)){continue;}
-                    DamageRouter.entityDamage(attacker, p, DamageSource.HIT, projectile.getContext().getSourceAbility());
-                    projectile.getAffectedEntities().add(p.getUniqueId());
-                    if (projectile.isDestroyOnContact()){projectile.setValid(false);}
-                    return;
+                if (e instanceof Player p){
+                    BoundingBox playerAABB = getLargeHitbox(p);
+                    BoundingBox arrowAABB = new BoundingBox(currentPosition.getX(), currentPosition.getY(), currentPosition.getZ(),
+                            currentPosition.getX(), currentPosition.getY(), currentPosition.getZ());
+                    arrowAABB.expand(detectionRange/4);
+
+                    if (playerAABB.overlaps(arrowAABB)){
+                        if (!attacker.hasLineOfSight(e)){continue;}
+                        DamageRouter.entityDamage(attacker, e, DamageSource.HIT, projectile.getContext().getSourceAbility());
+                        projectile.getAffectedEntities().add(e.getUniqueId());
+                        if (projectile.isDestroyOnContact()){projectile.setValid(false);}
+                        return;
+                    }
+                    continue;
                 }
+                //Its a regular mob/living entity
+
             }
         }
     }

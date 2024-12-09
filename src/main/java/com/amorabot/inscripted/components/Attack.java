@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class Attack implements EntityComponent {
+public class Attack implements EntityComponent,Cloneable {
 
     private float DPS;
 
@@ -38,23 +38,37 @@ public class Attack implements EntityComponent {
 
     public Attack(){
         hitDamage.put(DamageTypes.PHYSICAL, new int[]{1,1});
+        this.accuracy = 0;
+        this.critChance = 0;
+        this.critDamage = 0;
+        this.shred = 0;
+        this.maelstrom = 0;
+        this.firePen = 0;
+        this.lightningPen = 0;
+        this.coldPen = 0;
+        this.bleedChance = 0;
         setDPS();
     }
 
     //For mobs
-    public Attack(int[] phys, int[] fire, int[] light, int[] cold, int[] abyss, int critChance, int critDamage, int shred, int maelstrom, int bleedChance){
+    public Attack(int[] phys, int[] fire, int[] light, int[] cold, int[] abyss, float accuracy, int critChance, int critDamage, int shred, int maelstrom, int bleedChance,
+                  int firePen, int coldPen, int lightningPen){
         this.hitDamage = new HashMap<>();
         hitDamage.put(DamageTypes.PHYSICAL, phys);
         hitDamage.put(DamageTypes.FIRE, fire);
         hitDamage.put(DamageTypes.LIGHTNING, light);
         hitDamage.put(DamageTypes.COLD, cold);
         hitDamage.put(DamageTypes.ABYSSAL, abyss);
+        this.accuracy = accuracy;
         this.critChance = critChance;
         this.critDamage = critDamage;
         this.shred = shred;
         this.maelstrom = maelstrom;
         this.bleedChance = bleedChance;
 
+        this.firePen = firePen;
+        this.coldPen = coldPen;
+        this.lightningPen = lightningPen;
         setDPS();
     }
 
@@ -140,6 +154,17 @@ public class Attack implements EntityComponent {
             String damageColor = "&#FFFFFF";
             builder.append(ColorUtils.translateColorCodes(damageColor + damage + damageIcon))
                     .append(" ");
+        }
+    }
+
+    @Override
+    public Attack clone() {
+        try {
+            Attack clone = (Attack) super.clone();
+            clone.setHitDamage(new HashMap<>(getDamages()));
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
         }
     }
 }

@@ -43,7 +43,7 @@ public class EntityStateManager {
     public static boolean isMob(LivingEntity l){
         return l.hasMetadata(INSCRIPTED_MOB);
     }
-    public static String getMobMetadataValue(LivingEntity l){
+    public static String getMobSpawnerID(LivingEntity l){
         if (!isMob(l)){return "No internal data";}
         return l.getMetadata(INSCRIPTED_MOB).get(0).asString();
     }

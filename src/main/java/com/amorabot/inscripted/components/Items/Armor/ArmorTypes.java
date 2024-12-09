@@ -16,11 +16,18 @@ import java.util.*;
 
 public enum ArmorTypes implements ItemSubtype {
 
+    //TODO: Rename enum constants and remove prefixes when changing item naming
+    //Armored
     HEAVY_PLATING("Heavy",TrimMaterial.REDSTONE),
+    //Ornate
     CARVED_PLATING("Ornate",TrimMaterial.GOLD),
+    //Cloth
     LIGHT_CLOTH("Cloth",TrimMaterial.EMERALD),
+    //Pelt
     RUNIC_LEATHER("Pelt",TrimMaterial.NETHERITE),
+    //Silk
     ENCHANTED_SILK("Silk",TrimMaterial.LAPIS),
+    //Runisteel
     RUNIC_STEEL("Runisteel",TrimMaterial.AMETHYST);
 
 

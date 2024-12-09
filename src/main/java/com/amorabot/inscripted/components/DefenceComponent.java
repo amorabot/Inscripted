@@ -13,7 +13,7 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Setter
-public class DefenceComponent implements EntityComponent {
+public class DefenceComponent implements EntityComponent,Cloneable {
     @Getter
     private final int baseElementalCap;
     @Getter
@@ -116,5 +116,16 @@ public class DefenceComponent implements EntityComponent {
         //Clear the original pool from this stat
         originalStatPool.clearStat(resistStat);
         return resistValue;
+    }
+
+    @Override
+    public DefenceComponent clone() {
+        try {
+            DefenceComponent clone = (DefenceComponent) super.clone();
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

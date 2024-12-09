@@ -57,8 +57,10 @@ public enum CustomMob { // TODO: redesign da estrutura dos mobs
     public LivingEntity spawn(Location location){
         LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, type);
         entity.setCustomNameVisible(true);
+
         entity.setCustomName(color(name + "&r&c [" + (int) maxHealth + "/" + (int) maxHealth + "♥]"));
         entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth); //set base value
+        entity.getAttribute(Attribute.GENERIC_SCALE).setBaseValue(3);
         entity.setHealth(maxHealth); //set current value
         EntityEquipment entityInv = entity.getEquipment();
 
