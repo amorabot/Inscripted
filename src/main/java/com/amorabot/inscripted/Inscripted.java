@@ -8,6 +8,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.inscripted.components.Items.Files.ItemModifiersConfig;
 import com.amorabot.inscripted.components.Items.Files.RelicEditor;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.components.Mobs.Spawners;
 import com.amorabot.inscripted.components.renderers.GlyphInfo;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
 import com.amorabot.inscripted.handlers.Combat.InscriptedPlayerDeathEventListener;
@@ -23,7 +24,6 @@ import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -128,7 +128,13 @@ public final class Inscripted extends JavaPlugin {
 
         ItemModifiersConfig.setup();
 
-        MobManager.reloadAllMobsIntoMemory();
+        if (MobManager.spawningEnabled()){
+            log("RegisteredSpawners");
+            for (Spawners s : Spawners.values()){
+                log(s.toString());
+            }
+            MobManager.reinstantiateMobSpawners();
+        }
 
 //        initializeRelicItemData();
     }

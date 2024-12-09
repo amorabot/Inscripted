@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.components.Mobs;
 
+import com.amorabot.inscripted.APIs.MedicalCareAPI;
 import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Attack;
@@ -27,7 +28,7 @@ public enum Bestiary {
             new HealthComponent(400,0),
             new DefenceComponent(0,20,20,30,50,20),
             List.of(),
-            List.of(),
+            List.of("minecraft:climb_on_top_of_powder_snow","minecraft:silverfish_merge_with_stone","minecraft:silverfish_wake_up_friends"),
             6,0.3);
 
 
@@ -41,6 +42,9 @@ public enum Bestiary {
     private final EntityType type;
     private final Component displayName;
     private final MobStats stats;
+
+    private final List<String> customAddedGoals;
+    private final List<String> removedGoals;
 
     private final double sizeMod;
     private final double speedMod;
@@ -60,6 +64,9 @@ public enum Bestiary {
                 defensePreset);
         this.displayName = Component.text(displayName).appendSpace().append(Component.text("[Lv."+level+"]").color(NamedTextColor.GRAY));
 
+        this.customAddedGoals = addGoals;
+        this.removedGoals = removeGoals;
+
         this.sizeMod = sizeMod;
         this.speedMod = speedMod;
     }
@@ -77,11 +84,18 @@ public enum Bestiary {
 
         EntityStateManager.setInscriptedMobMeta(mob,spawnerData);
         //Keeping stat data in memory might be more advantageous for mobs
-        //The Bestiary entry can be stored so the stat data can be restored on restarts
+        //The Bestiary entry and SpawnerID can both be stored on the PDC so the stat data can be restored on restarts
         mob.getPersistentDataContainer().set(getMobPDCKey(), PersistentDataType.STRING, this.toString());
         mob.getPersistentDataContainer().set(getIdPDCKey(), PersistentDataType.STRING, spawnerData);
 
-        //With PDC approach, the mob state persists through restarts! + Stat data doesn't need to be restarted on server reset
+        //Adding custom AI goals
+        //...
+
+        //Removing any unwanted AI goals
+        MedicalCareAPI.removeMobGoals(mob, getRemovedGoals());
+
+
+        //With PDC approach for mob stat storage the mob state persists through restarts! + Stat data doesn't need to be restarted on server reset
 //        mob.getPersistentDataContainer().set(getMobPDCKey(), new MobStatsContainer(), stats);
         return mob;
     }
@@ -94,6 +108,9 @@ public enum Bestiary {
             Utils.error("Unable to map bestiary entry: " + bestiaryEntry);
             throw new RuntimeException(e);
         }
+    }
+    public static String getSpawnerIdFor(LivingEntity mob){
+        return mob.getPersistentDataContainer().getOrDefault(Bestiary.getIdPDCKey(), PersistentDataType.STRING, "INVALID MOB");
     }
 
 
