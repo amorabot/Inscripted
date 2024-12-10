@@ -24,12 +24,12 @@ import java.util.List;
 public enum Bestiary {
 
     RATAO(EntityType.SILVERFISH, 30, "Ratão",
-            new int[]{20,40,  0,0,  0,0,  0,0,  0,0}, 60, 5, 0, 0, 0, 0, 0, 0,0,
+            new int[]{60,120,  0,0,  0,0,  0,0,  0,0}, 110, 5, 0, 0, 0, 0, 0, 0,0,
             new HealthComponent(400,0),
-            new DefenceComponent(0,20,20,30,50,20),
+            new DefenceComponent(0,20,20,30,70,20),
             List.of(),
             List.of("minecraft:climb_on_top_of_powder_snow","minecraft:silverfish_merge_with_stone","minecraft:silverfish_wake_up_friends"),
-            6,0.3);
+            5,0.3);
 
 
 
@@ -80,6 +80,7 @@ public enum Bestiary {
 
         mob.setCustomNameVisible(true);
         mob.setMaximumNoDamageTicks(1);
+        mob.setPersistent(false);
         mob.setHealth(1);
 
         EntityStateManager.setInscriptedMobMeta(mob,spawnerData);

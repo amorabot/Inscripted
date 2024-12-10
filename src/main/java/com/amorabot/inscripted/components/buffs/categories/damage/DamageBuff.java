@@ -5,6 +5,7 @@ import com.amorabot.inscripted.components.Buff;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.BuffData;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class DamageBuff implements BuffData {
@@ -89,7 +90,7 @@ public class DamageBuff implements BuffData {
         return finalHitDmg;
     }
 
-    public void createDamageTask(int[] dot, Player defender, boolean isSelfDamage, Player attacker){
+    public void createDamageTask(int[] dot, Player defender, boolean isSelfDamage, LivingEntity attacker){
         this.dotTask = new DamageDebuffTask(this.buff, dot, defender, isSelfDamage, attacker);
     }
 }

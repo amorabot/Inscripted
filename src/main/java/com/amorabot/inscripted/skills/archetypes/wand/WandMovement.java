@@ -2,6 +2,7 @@ package com.amorabot.inscripted.skills.archetypes.wand;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.skills.ParticlePlotter;
+import io.papermc.paper.entity.TeleportFlag;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -30,6 +31,6 @@ public class WandMovement {
         }
         ParticlePlotter.coloredParticleLerp(initialPosition, targetPosition, 0.6F, playerWorld, 50, 129, 168, 1.4F);
 
-        player.teleport(targetPosition.toLocation(playerWorld).setDirection(playerLocation.getDirection()));
+        player.teleport(targetPosition.toLocation(playerWorld).setDirection(playerLocation.getDirection()), TeleportFlag.EntityState.RETAIN_PASSENGERS);
     }
 }

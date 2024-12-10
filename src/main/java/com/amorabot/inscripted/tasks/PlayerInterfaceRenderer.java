@@ -119,7 +119,7 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
     public static TextDisplay createHPDisplayFor(LivingEntity entity){
         TextDisplay display = Inscripted.getPlugin().getWorld().spawn(entity.getLocation().clone().add(0,2.5,0), TextDisplay.class, textDisplay -> {
             textDisplay.setBillboard(Display.Billboard.CENTER);
-            textDisplay.setAlignment(TextDisplay.TextAlignment.LEFT);
+            textDisplay.setAlignment(TextDisplay.TextAlignment.CENTER);
             textDisplay.setTextOpacity((byte) (255*0.70));
             textDisplay.setLineWidth(900);
             textDisplay.setBackgroundColor(Color.fromARGB(10,30,10,10));
@@ -127,8 +127,10 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             textDisplay.text(Component.text("Not initialized!"));
         });
         entity.addPassenger(display);
-        if (entity instanceof Player){((Player)entity).hideEntity(Inscripted.getPlugin(),display);}
-        hpDisplays.put(entity.getUniqueId(),display);
+        if (entity instanceof Player){
+            ((Player)entity).hideEntity(Inscripted.getPlugin(),display);
+            hpDisplays.put(entity.getUniqueId(),display);
+        }
         return display;
     }
     public static void destroyHPDisplayFor(LivingEntity entity){

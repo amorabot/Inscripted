@@ -2,6 +2,7 @@ package com.amorabot.inscripted.managers;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Mobs.Bestiary;
+import com.amorabot.inscripted.components.Mobs.InscriptedMob;
 import com.amorabot.inscripted.components.Mobs.MobSpawner;
 import com.amorabot.inscripted.components.Mobs.Spawners;
 import com.amorabot.inscripted.utils.Utils;
@@ -12,7 +13,27 @@ import org.bukkit.entity.LivingEntity;
 import java.util.*;
 
 public class MobManager {
+
+
     private static final Map<String, MobSpawner> spawnerMap = new HashMap<>();
+
+
+
+
+    //Nullable
+    public static InscriptedMob getMobData(LivingEntity mob){
+        String spawnerKey = Bestiary.getSpawnerIdFor(mob);
+        if (!spawnerMap.containsKey(spawnerKey)){
+            Utils.error("Spawner key ("+spawnerKey+") not initialized.");
+            return null;
+        }
+
+        MobSpawner loadedSpawner = spawnerMap.get(spawnerKey);
+        return loadedSpawner.getMobByID(mob.getUniqueId());
+    }
+
+
+
 
     public static void putSpawner(String spawnerID, MobSpawner spawner){
         spawnerMap.putIfAbsent(spawnerID,spawner);

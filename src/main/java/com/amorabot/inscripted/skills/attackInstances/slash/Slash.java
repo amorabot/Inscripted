@@ -16,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -93,15 +94,22 @@ public class Slash extends PlayerAttack {
         double attackRadius = getSlashData().baseRadius();
         final List<LivingEntity> nearbyEntities = (List<LivingEntity>) slashOwner.getLocation().getNearbyLivingEntities(finalOffset+attackRadius+2);
         List<LivingEntity> affectedEntities = checkCollisions(nearbyEntities);
+
         for (LivingEntity entity : affectedEntities){
             if (this.getBlacklistedEntities().contains(entity.getUniqueId())){continue;}
-            if (entity instanceof Player){
-                if (!((Player) slashOwner).hasLineOfSight(entity)){continue;}
-                this.getAffectedEntities().add(entity.getUniqueId());
-                DamageRouter.entityDamage((Player) slashOwner, entity, DamageSource.HIT, getContext().getSourceAbility());
-            } else {
-                //Do whatever the other entity does :D
-            }
+
+            if (!((Player) slashOwner).hasLineOfSight(entity)){continue;}
+            this.getAffectedEntities().add(entity.getUniqueId());
+            DamageRouter.entityDamage((Player) slashOwner, entity, DamageSource.HIT, getContext().getSourceAbility());
+
+
+//            if (entity instanceof Player){
+//                if (!((Player) slashOwner).hasLineOfSight(entity)){continue;}
+//                this.getAffectedEntities().add(entity.getUniqueId());
+//                DamageRouter.entityDamage((Player) slashOwner, entity, DamageSource.HIT, getContext().getSourceAbility());
+//            } else {
+//                //Do whatever the other entity does :D
+//            }
         }
 
     }
@@ -149,6 +157,11 @@ public class Slash extends PlayerAttack {
             if (entity instanceof Player){
                 if (getHitbox().intersects(getLargeHitbox((Player) entity))){
                     affectedEntities.add(entity);
+                }
+            }
+            if (entity instanceof Mob mob){
+                if (getHitbox().intersects(mob.getBoundingBox())){
+                    affectedEntities.add(mob);
                 }
             }
             //Different entity handling...

@@ -32,21 +32,24 @@ public class ProjectileCollision {
                 if (projectile.getBlacklistedEntities().contains(e.getUniqueId())){continue;}
                 if (projectile.getAffectedEntities().contains(e.getUniqueId())){continue;}
 
+                BoundingBox entityAABB;
                 if (e instanceof Player p){
-                    BoundingBox playerAABB = getLargeHitbox(p);
-                    BoundingBox arrowAABB = new BoundingBox(currentPosition.getX(), currentPosition.getY(), currentPosition.getZ(),
-                            currentPosition.getX(), currentPosition.getY(), currentPosition.getZ());
-                    arrowAABB.expand(detectionRange/4);
-
-                    if (playerAABB.overlaps(arrowAABB)){
-                        if (!attacker.hasLineOfSight(e)){continue;}
-                        DamageRouter.entityDamage(attacker, e, DamageSource.HIT, projectile.getContext().getSourceAbility());
-                        projectile.getAffectedEntities().add(e.getUniqueId());
-                        if (projectile.isDestroyOnContact()){projectile.setValid(false);}
-                        return;
-                    }
-                    continue;
+                    entityAABB = getLargeHitbox(p);
+                } else { //Its a mob
+                    entityAABB = e.getBoundingBox();
                 }
+                BoundingBox arrowAABB = new BoundingBox(currentPosition.getX(), currentPosition.getY(), currentPosition.getZ(),
+                        currentPosition.getX(), currentPosition.getY(), currentPosition.getZ());
+                arrowAABB.expand(detectionRange/4);
+
+                if (entityAABB.overlaps(arrowAABB)){
+                    if (!attacker.hasLineOfSight(e)){continue;}
+                    DamageRouter.entityDamage(attacker, e, DamageSource.HIT, projectile.getContext().getSourceAbility());
+                    projectile.getAffectedEntities().add(e.getUniqueId());
+                    if (projectile.isDestroyOnContact()){projectile.setValid(false);}
+                    return;
+                }
+                continue;
                 //Its a regular mob/living entity
 
             }

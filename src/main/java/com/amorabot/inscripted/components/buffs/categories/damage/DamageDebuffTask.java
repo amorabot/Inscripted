@@ -7,6 +7,7 @@ import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.utils.Utils;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
@@ -17,7 +18,7 @@ public class DamageDebuffTask extends Buff {
 
     private final int totalTicks;
     private final Player defender;
-    private final Player attacker;
+    private final LivingEntity attacker;
     private final int[] damage;
     private final boolean selfDamage;
 
@@ -25,7 +26,7 @@ public class DamageDebuffTask extends Buff {
     private int ticks = 0;
     private int skips = 0;
 
-    public DamageDebuffTask(Buffs buff, int[] dot, Player defender, boolean isSelfDamage, Player attacker){
+    public DamageDebuffTask(Buffs buff, int[] dot, Player defender, boolean isSelfDamage, LivingEntity attacker){
         if (!buff.isDamageBuff()){
             //Invalid object, then
             this.buff = null;

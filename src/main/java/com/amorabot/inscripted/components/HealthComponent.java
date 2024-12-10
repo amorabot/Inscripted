@@ -52,7 +52,14 @@ public class HealthComponent implements EntityComponent,Cloneable {
         this.healthRegen = 0;
         this.wardRecovery = BaseStats.WARD_RECOVERY_RATE.getValue();
     }
-
+    public HealthComponent(HealthComponent clonedHealth){
+        this.maxHealth = clonedHealth.getMaxHealth();
+        this.currentHealth = clonedHealth.getMaxHealth();
+        this.maxWard = clonedHealth.getMaxWard();
+        this.currentWard = clonedHealth.getMaxWard();
+        this.healthRegen = clonedHealth.getHealthRegen();
+        this.wardRecovery = clonedHealth.getWardRecovery();
+    }
     public HealthComponent(int maxHealth, int maxWard){
         setMaxHealth((float) maxHealth);
         setCurrentHealth(maxHealth);

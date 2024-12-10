@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -22,9 +23,9 @@ public class CombatEffects {
         SoundAPI.playDodgeFor(targetAudience, dodgeEntity.getLocation().clone());
     }
 
-    public static void deathEffect(Player killedPlayer){
-        Location loc = killedPlayer.getEyeLocation();
-        World world = killedPlayer.getWorld();
+    public static void deathEffect(LivingEntity killedEntity){
+        Location loc = killedEntity.getEyeLocation();
+        World world = killedEntity.getWorld();
         ItemStack itemCrackData = new ItemStack(Material.NETHER_WART_BLOCK);
         ParticlePlotter.spawnBlockCrackPartileAt(loc.toVector(), world, itemCrackData.getType(),20,4.9);
     }

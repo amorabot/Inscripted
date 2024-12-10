@@ -68,13 +68,18 @@ public class Slam extends PlayerAttack {
                                 .getNearbyLivingEntities(impactRadius+0.3);
                         for (LivingEntity entity : nearbyEntities){
                             if (slamObject.getBlacklistedEntities().contains(entity.getUniqueId())){continue;}
-                            if (entity instanceof Player){
-                                if (!((Player) slamOwner).hasLineOfSight(entity)){continue;}
-                                slamObject.getAffectedEntities().add(entity.getUniqueId());
-                                DamageRouter.entityDamage((Player) slamOwner, entity, DamageSource.HIT, getContext().getSourceAbility());
-                            } else {
-                                //Do whatever the other entity does :D
-                            }
+
+                            if (!((Player) slamOwner).hasLineOfSight(entity)){continue;}
+                            slamObject.getAffectedEntities().add(entity.getUniqueId());
+                            DamageRouter.entityDamage((Player) slamOwner, entity, DamageSource.HIT, getContext().getSourceAbility());
+
+//                            if (entity instanceof Player){
+//                                if (!((Player) slamOwner).hasLineOfSight(entity)){continue;}
+//                                slamObject.getAffectedEntities().add(entity.getUniqueId());
+//                                DamageRouter.entityDamage((Player) slamOwner, entity, DamageSource.HIT, getContext().getSourceAbility());
+//                            } else {
+//                                //Do whatever the other entity does :D
+//                            }
                         }
                         //Post-slam effects can go here
                     }

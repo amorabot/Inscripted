@@ -7,7 +7,9 @@ import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
 import com.amorabot.inscripted.skills.item.ItemPassiveAbilities;
+import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import static com.amorabot.inscripted.skills.archetypes.axe.AxeBasicAttacks.standardAxeSlashBy;
@@ -25,6 +27,13 @@ import static com.amorabot.inscripted.skills.archetypes.wand.WandMovement.sorcer
 
 @Getter
 public enum PlayerAbilities {
+    FIST(new int[5], new float[]{1F,1,1,1,1},0, AbilityTypes.NEUTRAL, HitTypes.MELEE) {
+        @Override
+        public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
+            caster.sendMessage(Component.text("casTING a fist"));
+        }
+    },
+
     BASIC_AXE_SLASH(new int[5], new float[]{1.1F,1,1,1,1},0, AbilityTypes.BASIC_ATTACK, HitTypes.MELEE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {

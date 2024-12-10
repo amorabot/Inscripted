@@ -3,13 +3,17 @@ package com.amorabot.inscripted.APIs.damageAPI;
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.components.Attack;
 import com.amorabot.inscripted.components.DefenceComponent;
+import com.amorabot.inscripted.components.EntityProfile;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.components.Items.relic.enums.TriggerTimes;
 import com.amorabot.inscripted.components.Items.relic.enums.TriggerTypes;
+import com.amorabot.inscripted.components.Mobs.InscriptedMob;
+import com.amorabot.inscripted.components.Mobs.MobStats;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.managers.MobManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.skills.PlayerAbilities;
@@ -18,6 +22,7 @@ import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -34,41 +39,90 @@ public class DamageRouter {
             return;
         }
         if (EntityStateManager.isMob(attacker)){
-            mobAttack(attacker,defender,source);
+            Utils.log("Mob attack!!");
+            mobAttack(attacker,defender);
         }
     }
 
     private static void playerAttack(Player player, LivingEntity defender, DamageSource source, PlayerAbilities ability){
-        defender.damage(0.01);
+        defender.damage(0.001);
         if (defender instanceof Player def){
             if (EntityStateManager.isDead(def)){ //If the player is recieving hits during the death invuln. period
                 Utils.log("Ignoring PvP Hits against " + def.getName());
                 return;
             }
-            PvP(player, def,source,ability);
+            versusPlayer(player, def,source,ability);
             //....
             return;
         }
 
         if (EntityStateManager.isMob(defender)){
-            PvE();
+            versusEntity(player,defender,source,ability);
             //...
             return;
         }
     }
-    public static void mobAttack(LivingEntity attacker, LivingEntity defender, DamageSource source){
-
+    public static void mobAttack(LivingEntity attacker, LivingEntity defender){
+        defender.damage(0.001);
+        if (defender instanceof Player def){
+            if (EntityStateManager.isDead(def)){ //If the player is recieving hits during the death invuln. period
+                Utils.log("Ignoring PvP Hits against " + def.getName());
+                return;
+            }
+            //Ability is only accessed if it was a player attack, can be whatever
+            versusPlayer(attacker, def,DamageSource.HIT, PlayerAbilities.FIST);
+            //....
+            return;
+        }
+        //EvE not a thing for now
     }
+//    private static void EvP(LivingEntity attacker, Player defender, DamageSource originalSource){
+//        InscriptedMob mobInstance = MobManager.getMobData(defender);
+//        assert mobInstance != null;
+//        MobStats mobStats = mobInstance.getStats();
+//        Profile defenderProfile = JSONProfileManager.getProfile(defender.getUniqueId());
+//
+////        final boolean dodged;
+////        dodged = AttackProcessor.attackResult(attackerHit, defenderDefence);
+////
+////        int[] baseDamage = rollDamages(attackerHit.getDamages());
+////        final boolean isCriticalHit = AttackProcessor.isCriticalHit(attackerHit);
+////
+////        final boolean isSelfDamage = source.equals(DamageSource.SELF);
+////
+////        int[] rawHitDamage = AttackProcessor.processAttack(attackerProfile, defenderProfile, baseDamage, isCriticalHit, ability);
+//
+////        if (dodged){
+////            CombatEffects.playDodgeEffectsAt(defender, attacker);
+////            AttackProcessor.dodgeAttack(rawHitDamage, 60); //Mutates rawHitDamage
+////        }
+////
+////        damageDefendingPlayer(defender, rawHitDamage, isCriticalHit, isSelfDamage, attacker, originalSource);
+//    }
 
-    private static void PvP(Player attacker, Player defender, DamageSource originalSource, PlayerAbilities ability){
+
+    private static void versusPlayer(LivingEntity attacker, Player defender, DamageSource originalSource, PlayerAbilities ability){
         DamageSource source = originalSource;
         if (attacker.getUniqueId().equals(defender.getUniqueId()) && !originalSource.equals(DamageSource.SELF)){
             source = DamageSource.SELF;
         }
 
-        Profile attackerProfile = JSONProfileManager.getProfile(attacker.getUniqueId());
+
+        Attack attackerHit;
+        EntityProfile attackerProfile;
+
+//        if (attacker instanceof Player p){
+//            attackerProfile = JSONProfileManager.getProfile(p.getUniqueId());
+//        } else { //Its a mob profile
+//            InscriptedMob mobInstance = MobManager.getMobData(defender);
+//            assert mobInstance != null;
+//            attackerProfile = mobInstance.getStats();
+//        }
+        attackerProfile = Profile.getEntityProfile(attacker);
+        attackerHit = attackerProfile.getAttackData();
+
+
         Profile defenderProfile = JSONProfileManager.getProfile(defender.getUniqueId());
-        Attack attackerHit = attackerProfile.getDamageComponent().getHitData();
         DefenceComponent defenderDefence = defenderProfile.getDefenceComponent();
 
         final boolean dodged;
@@ -88,13 +142,99 @@ public class DamageRouter {
 
         damageDefendingPlayer(defender, rawHitDamage, isCriticalHit, isSelfDamage, attacker, originalSource);
     }
-    private static void PvE(){
+    private static void versusEntity(Player attacker, LivingEntity defender, DamageSource originalSource, PlayerAbilities ability){
+        DamageSource source = originalSource;
 
+        Profile playerProfile = JSONProfileManager.getProfile(attacker.getUniqueId());
+        InscriptedMob mobInstance = MobManager.getMobData(defender);
+        assert mobInstance != null;
+        MobStats mobStats = mobInstance.getStats();
+
+        Attack attackerHit = playerProfile.getDamageComponent().getHitData();
+        DefenceComponent defenderDefence = mobStats.getMobDefence();
+
+        final boolean dodged;
+        dodged = AttackProcessor.attackResult(attackerHit, defenderDefence);
+
+        int[] baseDamage = rollDamages(attackerHit.getDamages());
+        final boolean isCriticalHit = AttackProcessor.isCriticalHit(attackerHit);
+
+        final boolean isSelfDamage = source.equals(DamageSource.SELF);
+
+        int[] rawHitDamage = AttackProcessor.processAttack(playerProfile, mobStats, baseDamage, isCriticalHit, ability);
+
+        if (dodged){
+            CombatEffects.playDodgeEffectsAt(defender, attacker);
+            AttackProcessor.dodgeAttack(rawHitDamage, 60); //Mutates rawHitDamage
+        }
+
+        damageDefendingMob(defender, rawHitDamage, isCriticalHit, false, attacker, originalSource);
     }
 
-    public static boolean damageDefendingPlayer(Player defender, int[] incomingHit, boolean isCriticalHit, boolean isSelfDamage,
-                                             Player attacker,DamageSource originalSource){
 
+
+
+
+    public static void damageDefendingMob(LivingEntity defender, int[] incomingHit, boolean isCriticalHit, boolean isSelfDamage,
+                                                Player attacker,DamageSource originalSource){
+        if (defender.isDead()){return;}
+        final boolean isDot = originalSource.equals(DamageSource.DOT);
+        //If the damage's origins is not dot, trigger early hit effects
+        if (!isDot){notifyHitTrigger(TriggerTimes.EARLY, attacker, defender, incomingHit, isCriticalHit);}
+
+        //TODO: buff/debuffs for mobs
+        //        AttackProcessor.bleedAttempt(attacker, defender, incomingHit);
+
+        mobDamaged(defender,incomingHit,isSelfDamage,attacker);
+
+        //Late hit triggers
+        if (!isDot){notifyHitTrigger(TriggerTimes.LATE, attacker, defender, incomingHit, isCriticalHit);}
+    }
+    public static boolean mobDamaged(LivingEntity mob, int[] incomingHit, boolean isSelfDamage, LivingEntity attacker){
+        InscriptedMob mobInstance = MobManager.getMobData(mob);
+        assert mobInstance != null;
+
+        Set<Keystones> atkrKeystones = new HashSet<>();
+
+        boolean died = mobInstance.takeDamage(incomingHit,atkrKeystones);
+        if (attacker instanceof Player player){
+            CombatLogger.addToCombat(player);
+        }
+        return died;
+    }
+
+    public static boolean evpOutcome(Player defender, int[] incomingHit, boolean isCriticalHit, boolean isSelfDamage,
+                                     LivingEntity attacker, DamageSource originalSource){
+        Profile defenderProfile = JSONProfileManager.getProfile(defender.getUniqueId());
+
+        final boolean isDot = originalSource.equals(DamageSource.DOT);
+        //Early hit triggers
+        if (!isDot){notifyHitTrigger(TriggerTimes.EARLY, attacker, defender, incomingHit, isCriticalHit);}
+
+        //TODO:
+        AttackProcessor.bleedAttemptOnPlayer(attacker, defender, incomingHit);
+
+        playerDamaged(defender, incomingHit, isSelfDamage, attacker);
+
+        //Late hit triggers
+        if (!isDot){notifyHitTrigger(TriggerTimes.LATE, attacker, defender, incomingHit, isCriticalHit);}
+
+        HealthComponent defHP = defenderProfile.getHealthComponent();
+        double newMappedHealth = defHP.getMappedHealth();
+
+        final boolean diedFromDamage = newMappedHealth == 0;
+
+        //No combat healing for mobs
+
+        //Early death trigger
+        if (diedFromDamage){notifyProfile(attacker,defender, TriggerTypes.ON_DEATH, TriggerTimes.EARLY, incomingHit);}
+
+
+        HealthComponent.updateHeartContainers(defender,defHP);
+        return newMappedHealth == 0;
+    }
+    public static boolean pvpOutcome(Player defender, int[] incomingHit, boolean isCriticalHit, boolean isSelfDamage,
+                                     Player attacker, DamageSource originalSource){
         Profile defenderProfile = JSONProfileManager.getProfile(defender.getUniqueId());
 
         final boolean isDot = originalSource.equals(DamageSource.DOT);
@@ -118,7 +258,7 @@ public class DamageRouter {
             return true;
         }
 
-        AttackProcessor.bleedAttempt(attacker, defender, incomingHit);
+        AttackProcessor.bleedAttemptOnPlayer(attacker, defender, incomingHit);
 
         playerDamaged(defender, incomingHit, isSelfDamage, attacker);
         //Late hit triggers
@@ -159,6 +299,16 @@ public class DamageRouter {
         return newMappedHealth == 0;
     }
 
+    public static boolean damageDefendingPlayer(Player defender, int[] incomingHit, boolean isCriticalHit, boolean isSelfDamage,
+                                             LivingEntity attacker,DamageSource originalSource){
+        if (attacker instanceof Mob mobAttacker){
+            return evpOutcome(defender,incomingHit,isCriticalHit,isSelfDamage,mobAttacker,originalSource);
+        }
+        Player playerAttacker = (Player) attacker;
+        return pvpOutcome(defender,incomingHit,isCriticalHit,isSelfDamage,playerAttacker,originalSource);
+    }
+
+
     //Handles the effects of a player being hit
     public static void playerDamaged(Player player, int[] incomingHit, boolean isSelfDamage, LivingEntity attacker){
         UUID playerID = player.getUniqueId();
@@ -181,16 +331,37 @@ public class DamageRouter {
         }
     }
 
-    public static void notifyProfile(Player attacker, Player defender, TriggerTypes trigger, TriggerTimes triggerTiming, int[] hit){
-        Profile attackerProfile = JSONProfileManager.getProfile(attacker.getUniqueId());
-        Profile defenderProfile = JSONProfileManager.getProfile(defender.getUniqueId());
+    public static void notifyProfile(LivingEntity attacker, LivingEntity defender, TriggerTypes trigger, TriggerTimes triggerTiming, int[] hit){
+//        Profile attackerProfile = JSONProfileManager.getProfile(attacker.getUniqueId());
+//        Profile defenderProfile = JSONProfileManager.getProfile(defender.getUniqueId());
+
+
+        EntityProfile genericAttackerProfile = Profile.getEntityProfile(attacker);
+//        if (attacker instanceof Player atk){
+//            genericAttackerProfile = JSONProfileManager.getProfile(atk.getUniqueId());
+//        } else {//Its a mob
+//            InscriptedMob mobInstance = MobManager.getMobData(attacker);
+//            assert mobInstance != null;
+//            genericAttackerProfile =  mobInstance.getStats();
+//        }
+
+        EntityProfile genericDefenderProfile = Profile.getEntityProfile(defender);
+//        if (defender instanceof Player def){
+//            genericDefenderProfile = JSONProfileManager.getProfile(def.getUniqueId());
+//        } else {//Its a mob
+//            InscriptedMob mobInstance = MobManager.getMobData(defender);
+//            assert mobInstance != null;
+//            genericDefenderProfile =  mobInstance.getStats();
+//        }
+
+
         if (trigger.equals(TriggerTypes.WHEN_HIT) || trigger.equals(TriggerTypes.ON_DEATH)){
             //In those cases, the recieving end of the hit is the caster
             //                                             caster    target
-            defenderProfile.notify(trigger, triggerTiming, defender, attacker, hit);
+            genericDefenderProfile.notify(trigger, triggerTiming, defender, attacker, hit);
             return;
         }
-        attackerProfile.notify(trigger, triggerTiming, attacker, defender, hit);
+        genericAttackerProfile.notify(trigger, triggerTiming, attacker, defender, hit);
     }
 
 
@@ -229,7 +400,7 @@ public class DamageRouter {
         Utils.msgPlayer(attacker ,attackerDebug.toString());
     }
 
-    private static void notifyHitTrigger(TriggerTimes timing, Player attacker, Player defender, int[] incomingHit, boolean isCriticalHit){
+    private static void notifyHitTrigger(TriggerTimes timing, LivingEntity attacker, LivingEntity defender, int[] incomingHit, boolean isCriticalHit){
         notifyProfile(attacker, defender, TriggerTypes.ON_HIT, timing, incomingHit);
         notifyProfile(attacker, defender, TriggerTypes.WHEN_HIT, timing, incomingHit);
         if (isCriticalHit){notifyProfile(attacker, defender, TriggerTypes.ON_CRIT, timing ,incomingHit);}

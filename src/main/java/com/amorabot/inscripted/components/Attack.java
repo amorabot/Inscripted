@@ -71,6 +71,20 @@ public class Attack implements EntityComponent,Cloneable {
         this.lightningPen = lightningPen;
         setDPS();
     }
+    public Attack(Attack clonedAttack){
+        this.hitDamage = new HashMap<>(clonedAttack.getDamages());
+        this.accuracy = clonedAttack.getAccuracy();
+        this.critChance = clonedAttack.getCritChance();
+        this.critDamage = clonedAttack.getCritDamage();
+        this.shred = clonedAttack.getShred();
+        this.maelstrom = clonedAttack.getMaelstrom();
+        this.bleedChance = clonedAttack.getBleedChance();
+
+        this.firePen = clonedAttack.getFirePen();
+        this.coldPen = clonedAttack.getColdPen();
+        this.lightningPen = clonedAttack.getLightningPen();
+        setDPS();
+    }
 
     public Map<DamageTypes, int[]> getDamages() {
         return hitDamage;

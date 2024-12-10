@@ -3,6 +3,8 @@ package com.amorabot.inscripted.handlers.Combat;
 import com.amorabot.inscripted.APIs.MessageAPI;
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.APIs.damageAPI.CombatEffects;
+import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
+import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
@@ -13,12 +15,14 @@ import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
+import com.amorabot.inscripted.skills.PlayerAbilities;
 import com.amorabot.inscripted.utils.DelayedTask;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -50,7 +54,15 @@ public class DamageHandler implements Listener {
 
         Entity attacker = event.getDamager();
         Entity defender = event.getEntity();
-        event.setCancelled(true);
+
+        if (attacker instanceof Mob m){
+            if (defender instanceof Player p){
+                DamageRouter.entityDamage(m,p, DamageSource.HIT, PlayerAbilities.FIST);
+                return;
+            }
+        } else {
+            event.setCancelled(true);
+        }
 
         if (attacker instanceof Player){
             Player p = (Player) attacker;

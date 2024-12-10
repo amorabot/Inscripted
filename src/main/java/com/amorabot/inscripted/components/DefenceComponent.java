@@ -34,9 +34,6 @@ public class DefenceComponent implements EntityComponent,Cloneable {
     @Getter
     private float armor;
 
-    //TODO: ON HIT TRIGGERS (make notify() as a EntityComponent method)
-    //Set<ItemModifier> specialModList; // (effects calculations in a specific way)
-
     //Player constructor
     public DefenceComponent(int elementalResCap){
         this.fireResistance = 15;
@@ -50,6 +47,21 @@ public class DefenceComponent implements EntityComponent,Cloneable {
 
         this.dodge = 0;
         this.armor = 0;
+    }
+
+    public DefenceComponent(DefenceComponent clonedDefence){
+        this.fireResistance = clonedDefence.getFireResistance();
+        this.lightningResistance = clonedDefence.getLightningResistance();
+        this.coldResistance = clonedDefence.getColdResistance();
+        this.abyssalResistance = clonedDefence.getAbyssalResistance();
+
+        this.baseElementalCap = clonedDefence.getBaseElementalCap();
+        this.fireCapMod = clonedDefence.getFireCapMod();
+        this.lightningCapMod = clonedDefence.getLightningCapMod();
+        this.coldCapMod = clonedDefence.getColdCapMod();
+
+        this.dodge = clonedDefence.getDodge();
+        this.armor = clonedDefence.getArmor();
     }
     //Mob constructor
     public DefenceComponent(int fireRes, int coldRes, int lightRes, int abyssRes, int dodge, int finalArmor){

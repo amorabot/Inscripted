@@ -2,8 +2,10 @@ package com.amorabot.inscripted.APIs.damageAPI;
 
 import com.amorabot.inscripted.components.Attack;
 import com.amorabot.inscripted.components.DefenceComponent;
+import com.amorabot.inscripted.components.EntityProfile;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
+import com.amorabot.inscripted.components.Mobs.MobStats;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.utils.CraftingUtils;
 
@@ -38,8 +40,8 @@ public class DefenceCalculator {
         */
     }
 
-    public static int[] applyDefences(int[] incomingHit, Profile attackerProfile, Profile defenderProfile){
-        Attack attackerDamage = attackerProfile.getDamageComponent().getHitData();
+    public static int[] applyDefences(int[] incomingHit, EntityProfile attackerProfile, EntityProfile defenderProfile){
+        Attack attackerDamage = attackerProfile.getAttackData();
         DefenceComponent defenderDefences = defenderProfile.getDefenceComponent();
         if (incomingHit[0] > 0 && defenderDefences.getArmor()>0){ //Physical mitigation
             incomingHit[0] = resultingPhysical(incomingHit[0], attackerDamage, defenderDefences.getArmor());
@@ -55,6 +57,8 @@ public class DefenceCalculator {
 
         return incomingHit;
     }
+
+
     private static int resultingPhysical(int rawPhysicalDamage, Attack attackerDamage, float defenderArmor){
         float damageReduction = getDefenderPhysicalMitigation(defenderArmor);
         float resultingReduction = shredArmorMitigation(damageReduction, attackerDamage.getShred());
