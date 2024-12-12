@@ -1,4 +1,18 @@
-![logoextended](https://github.com/amorabot/Inscripted/assets/16783145/3af46604-2387-4459-9f58-179b6564f0b8)
+![logoextended2](https://github.com/user-attachments/assets/429ff53e-89d1-4c67-a5ec-6bd421ae5789)
+
+Hey there, I'm Daniel (or Amora)! Inscripted is a Minecraft Java Plug-in that aims to implement Action-RPG elements into the game. I started this project mainly as way to learn and deeply understand the Java language and game programming in general (with the challenges of coding for a game server)!
+
+
+Taking inspiration from other RPGs (and other custom Minecraft RPG servers) I've played before, I wanted to see if I could make a game of my own inside Minecraft and face (and overcome) some of the design and technical challenges that come with it!
+
+
+I mainly wanted to create a item system that felt alive and dynamic, taking massive inspiration from games like Path of Exile, and a combat system that enables a diverse Player vs. Player experience and where every class (or Archetype, in Inscripted's case) has a clear purpose (inspired by Tibia in some aspects), while taking a "You-are-what-you-wear" approach to character customization.
+
+Down below is a showcase of the project's Minimum Viable Product (MVP) features and inner workings. Feel free to build the plugin .jar yourself and check it out (contains lots of jank!!!)! I'd love to hear any feedback!
+
+### If you want to contact me, you can do so via:
+  - Discord: <b>@amorabot</b>
+  - E-mail: daniel.amorim@alu.ufc.br
 
 -----------------------------------------------------------------------------------------------------------------
 
