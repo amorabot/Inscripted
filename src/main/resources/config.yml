@@ -270,8 +270,8 @@ WeaponTypes:
     T5:
       NAME: Runic-Gold axe
       BASE_DAMAGE:
-        - 340
-        - 560
+        - 240
+        - 370
   SWORD:
     T1:
       NAME: Dried spike foil
@@ -296,8 +296,8 @@ WeaponTypes:
     T5:
       NAME: Ornate greatsword
       BASE_DAMAGE:
-        - 80
-        - 169
+        - 120
+        - 190
   BOW:
     T1:
       NAME: Twig shortbow
@@ -400,5 +400,5 @@ WeaponTypes:
     T5:
       NAME: Runic-gold mace
       BASE_DAMAGE:
-        - 80
-        - 169
+        - 160
+        - 240

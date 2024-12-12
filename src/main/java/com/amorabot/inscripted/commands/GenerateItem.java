@@ -11,7 +11,10 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.components.renderers.InscriptedPalette;
 import com.amorabot.inscripted.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -39,12 +42,22 @@ public class GenerateItem implements TabExecutor {
         Player player = (Player) sender;
 
         if (args.length == 0){
-            player.sendMessage("Usage: /item ItemLevel Rarity Archetype");
-            player.sendMessage("Alternate usage: /item RELIC (Opens the Relic list menu)");
+            player.sendMessage("Usage: /item itemTier itemRarity itemArchetype");
             player.sendMessage("");
 
-            Utils.msgPlayer(player, "Example: "+"&c&l/item" + " 89" + " " + ItemRarities.AUGMENTED + " " + Archetypes.MERCENARY);
-            Utils.msgPlayer(player, "&c  ->Would open the item generation menu for &9&lMAGIC &cMercenary items (of ilvl 89)");
+            Utils.msgPlayer(player, "Example: "+"&c&l/item" + " T4" + " " + ItemRarities.AUGMENTED + " " + Archetypes.MERCENARY);
+            Utils.msgPlayer(player, "&c  ->Would open the item generation menu for Tier 4 &lAUGMENTED&c(have up to 2 modifiers) Mercenary items");
+            Utils.msgPlayer(player, "Item tiers: T1 T2 T3 T4 T5 & RELIC");
+            Utils.msgPlayer(player, "Item Rarities: COMMON (0 modifiers),   AUGMENTED (up to 2),     RUNIC (up to 6)");
+            Utils.msgPlayer(player, "Item Archetypes:");
+            player.sendMessage(Component.text(""+Archetypes.MARAUDER).color(Archetypes.MARAUDER.getColor().getColor()).decorate(TextDecoration.BOLD));
+            player.sendMessage(Component.text(""+Archetypes.GLADIATOR).color(Archetypes.GLADIATOR.getColor().getColor()).decorate(TextDecoration.BOLD));
+            player.sendMessage(Component.text(""+Archetypes.MERCENARY).color(Archetypes.MERCENARY.getColor().getColor()).decorate(TextDecoration.BOLD));
+            player.sendMessage(Component.text(""+Archetypes.ROGUE).color(Archetypes.ROGUE.getColor().getColor()).decorate(TextDecoration.BOLD));
+            player.sendMessage(Component.text(""+Archetypes.SORCERER).color(Archetypes.SORCERER.getColor().getColor()).decorate(TextDecoration.BOLD));
+            player.sendMessage(Component.text(""+Archetypes.TEMPLAR).color(Archetypes.TEMPLAR.getColor().getColor()).decorate(TextDecoration.BOLD));
+            Utils.msgPlayer(player, "");
+            Utils.msgPlayer(player, "You can also modify your non-Relic items with currencies from /orb!");
             return true;
         }
         if (args.length == 1){//manually getting Relics
@@ -58,7 +71,10 @@ public class GenerateItem implements TabExecutor {
             return true;
         }
 
-        int ilvl = Integer.parseInt(args[0]);
+        
+//        int ilvl = Integer.parseInt(args[0]);
+        Tiers tier = Tiers.valueOf(args[0]);
+        int ilvl = tier.getMaxLevel();
         ItemRarities rarity = ItemRarities.valueOf(args[1]);
         Archetypes archetype = Archetypes.valueOf(args[2]);
 
@@ -66,20 +82,6 @@ public class GenerateItem implements TabExecutor {
 
             ItemCommandGUI itemGUI = new ItemCommandGUI(player, archetype, ilvl, rarity, 6, false, true);
             player.openInventory(itemGUI.getInventory());
-            return true;
-        }
-
-        if (args[3].equals("SET")){
-            Weapon weapon = ( Weapon ) ItemBuilder.randomItem(ItemTypes.WEAPON, archetype.getWeaponType(), ilvl, rarity,  true, false);
-            Armor helmet = ( Armor ) ItemBuilder.randomItem(ItemTypes.HELMET,archetype.getArmorType(), ilvl, rarity, true, false);
-            Armor chestplate = ( Armor ) ItemBuilder.randomItem(ItemTypes.CHESTPLATE,archetype.getArmorType(), ilvl, rarity, true, false);
-            Armor leggings = ( Armor ) ItemBuilder.randomItem(ItemTypes.LEGGINGS,archetype.getArmorType(), ilvl, rarity, true, false);
-            Armor boots = ( Armor ) ItemBuilder.randomItem(ItemTypes.BOOTS,archetype.getArmorType(), ilvl, rarity, true, false);
-            giveGeneratedItem(weapon, player);
-            giveGeneratedItem(helmet, player);
-            giveGeneratedItem(chestplate, player);
-            giveGeneratedItem(leggings, player);
-            giveGeneratedItem(boots, player);
             return true;
         }
         return true;
@@ -90,11 +92,12 @@ public class GenerateItem implements TabExecutor {
 
         List<String> options = new ArrayList<>();
         if (strings.length == 1){ //Level argument
-            options.add("RELIC");
             for (Tiers tier : Tiers.values()){
-                int tierMaxLevel = tier.getMaxLevel();
-                options.add(String.valueOf(tierMaxLevel));
+                options.add(tier.toString());
+//                int tierMaxLevel = tier.getMaxLevel();
+//                options.add(String.valueOf(t));
             }
+            options.add("RELIC");
             return options;
         } else if (strings.length == 2) { // Rarity
             for (ItemRarities rarity : ItemRarities.values()){
@@ -105,12 +108,6 @@ public class GenerateItem implements TabExecutor {
         } else if (strings.length == 3) { //Archetype
             for (Archetypes archetype : Archetypes.values()){
                 options.add(archetype.toString());
-            }
-            return options;
-        } else if (strings.length == 4) { //Equipment type (ItemTypes)
-            options.add("SET");
-            for (ItemTypes type : ItemTypes.values()){
-                options.add(type.toString());
             }
             return options;
         }

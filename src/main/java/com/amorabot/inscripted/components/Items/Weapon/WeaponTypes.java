@@ -19,7 +19,7 @@ public enum WeaponTypes implements ItemSubtype {
 
     AXE(RangeCategory.MELEE,WeaponAttackSpeeds.SLOW),
     SWORD(RangeCategory.MELEE,WeaponAttackSpeeds.NORMAL),
-    BOW(RangeCategory.RANGED,WeaponAttackSpeeds.NORMAL),
+    BOW(RangeCategory.RANGED,WeaponAttackSpeeds.SLOW),
     DAGGER(RangeCategory.MELEE,WeaponAttackSpeeds.QUICK),
     WAND(RangeCategory.RANGED,WeaponAttackSpeeds.SLOW),
     MACE(RangeCategory.MELEE,WeaponAttackSpeeds.SLOW);
