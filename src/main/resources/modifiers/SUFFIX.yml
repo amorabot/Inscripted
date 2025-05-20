@@ -1,4 +1,4 @@
-STRENGTH:
+FLAT_STRENGTH:
   '0':
     - 3
     - 6
@@ -23,7 +23,7 @@ STRENGTH:
   '7':
     - 41
     - 50
-DEXTERITY:
+FLAT_DEXTERITY:
   '0':
     - 3
     - 6
@@ -48,7 +48,7 @@ DEXTERITY:
   '7':
     - 41
     - 50
-INTELLIGENCE:
+FLAT_INTELLIGENCE:
   '0':
     - 3
     - 6

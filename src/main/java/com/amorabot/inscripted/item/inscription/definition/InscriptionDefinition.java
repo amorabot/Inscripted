@@ -3,10 +3,12 @@ package com.amorabot.inscripted.item.inscription.definition;
 import com.amorabot.inscripted.item.inscription.language.AffixType;
 import com.amorabot.inscripted.item.inscription.language.RollType;
 import com.amorabot.inscripted.item.inscription.language.ValueType;
+import lombok.Getter;
 
 
 import java.io.Serializable;
 
+@Getter
 public abstract class InscriptionDefinition implements Serializable {
 
     private String displayName;
@@ -16,13 +18,6 @@ public abstract class InscriptionDefinition implements Serializable {
     public abstract boolean isGlobal();
     private void setDisplayName(String displayName){
         this.displayName = displayName;
-    }
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public AffixType getAffix() {
-        return affix;
     }
 
     public InscriptionDefinition(AffixType affixType){
@@ -39,6 +34,7 @@ public abstract class InscriptionDefinition implements Serializable {
 
     public record BaseInscription(ValueType type, RollType roll, Stats stat) { }
 
+    @Getter
     public static class Regular extends InscriptionDefinition{
         private final boolean positive;
         private final boolean global;
@@ -61,14 +57,9 @@ public abstract class InscriptionDefinition implements Serializable {
         public boolean isGlobal() {
             return this.global;
         }
-        public boolean isPositive(){
-            return positive;
-        }
-        public BaseInscription getBaseData() {
-            return baseData;
-        }
     }
 
+    @Getter
     public static class Hybrid extends InscriptionDefinition{
         private final boolean positive;
         private final boolean global;
@@ -93,14 +84,9 @@ public abstract class InscriptionDefinition implements Serializable {
         public boolean isGlobal() {
             return false;
         }
-        public BaseInscription getPrimaryData() {
-            return this.primaryData;
-        }
-        public BaseInscription getSecondaryData(){
-            return this.secondaryData;
-        }
     }
 
+    @Getter
     public static class Meta extends InscriptionDefinition{
         private final boolean positive;
         private final Stats convertedStat;
@@ -126,9 +112,6 @@ public abstract class InscriptionDefinition implements Serializable {
         }
         @Override
         public boolean isGlobal() {return true;}
-        public BaseInscription getBaseData(){
-            return this.baseData;
-        }
         public Stats getMetaStat(){
             return this.convertedStat;
         }
@@ -140,6 +123,7 @@ public abstract class InscriptionDefinition implements Serializable {
         }
     }
 
+    @Getter
     public static class Effect extends InscriptionDefinition{
         private final EffectIDs effectID;
 
@@ -157,6 +141,7 @@ public abstract class InscriptionDefinition implements Serializable {
         @Override
         public boolean isGlobal() {return true;}
     }
+    @Getter
     public static class Keystone extends InscriptionDefinition{
         private final KeystoneIDs keystoneID;
 

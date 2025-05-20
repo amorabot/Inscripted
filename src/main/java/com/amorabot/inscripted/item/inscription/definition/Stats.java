@@ -11,7 +11,7 @@ public enum Stats {
     STAMINA_REGEN("Stamina Regen."),
     HEALTH("Health"),
     HEALTH_REGEN("Health Regen."),
-    WARD("Ward"),
+    SOUL("Soul"),
     DODGE("Dodge"),
     ARMOR("Armor"),
     FIRE_RESISTANCE("Fire Resistance"),
@@ -42,11 +42,11 @@ public enum Stats {
     COLD_PENETRATION("Cold Penetration"),
     WALK_SPEED("Walk Speed"),
     AREA_DAMAGE("Area Damage"),
-    COOLDOWN_REDUCTION("CDR."),
+    COOLDOWN_REDUCTION("Cooldown Reduction"),
     AOE("Area of Effect"),
     EXTRA_PROJECTILES("Additional Proj."),
     HEALING_POWER("Healing Power"),
-    WARD_RECOVERY_RATE("Ward Recovery Rate");
+    SOUL_RECOVERY_RATE("Soul Recovery Rate");
 
     private final String alias;
 

@@ -136,7 +136,7 @@ DODGE:
   '3':
     - 35
     - 50
-WARD:
+SOUL:
   '0':
     - 5
     - 19
@@ -173,7 +173,7 @@ WARD:
   '11':
     - 180
     - 200
-WARD_PERCENT:
+SOUL_PERCENT:
   '0':
     - 2
     - 9
@@ -213,7 +213,7 @@ ARMOR_HEALTH:
     - 14
     - 35
     - 43
-WARD_HEALTH:
+SOUL_HEALTH:
   '0':
     - 9
     - 11
@@ -255,7 +255,7 @@ DODGE_HEALTH:
     - 20
     - 35
     - 43
-ARMOR_WARD:
+ARMOR_SOUL:
   '0':
     - 1
     - 2
@@ -297,7 +297,7 @@ ARMOR_DODGE:
     - 14
     - 18
     - 20
-DODGE_WARD:
+DODGE_SOUL:
   '0':
     - 9
     - 11
