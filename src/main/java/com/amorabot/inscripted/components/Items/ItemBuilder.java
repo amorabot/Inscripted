@@ -11,7 +11,7 @@ import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
-import com.amorabot.inscripted.inscriptions.InscriptionTable;
+import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
 import com.amorabot.inscripted.utils.CraftingUtils;
 
 import java.util.*;
@@ -83,19 +83,19 @@ public class ItemBuilder {
             if (isPrefix()){
                 //Prefixes are open
                 if (currentPrefixes < maxPrefixes){
-                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.PREFIX, itemData.getIlvl(),illegalMods));
+//                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.PREFIX, itemData.getIlvl(),illegalMods));
                     currentPrefixes++;
                 } else { //If a prefix attempt was unsuccessful, generate a suffix instead
-                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.SUFFIX, itemData.getIlvl(),illegalMods));
+//                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.SUFFIX, itemData.getIlvl(),illegalMods));
                     currentSuffixes++;
                 }
             }else {
                 //Suffixes are open
                 if (currentSuffixes < maxSuffixes){
-                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.SUFFIX, itemData.getIlvl(),illegalMods));
+//                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.SUFFIX, itemData.getIlvl(),illegalMods));
                     currentSuffixes++;
                 } else { //If a suffix attempt was unsuccessful, generate a prefix instead
-                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.PREFIX, itemData.getIlvl(),illegalMods));
+//                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.PREFIX, itemData.getIlvl(),illegalMods));
                     currentPrefixes++;
                 }
             }
@@ -114,9 +114,9 @@ public class ItemBuilder {
                 hasImbuedMod = true;
                 newItemInscriptions.add(mod);
                 if (isPrefix()){
-                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.PREFIX, itemData.getIlvl(),illegalMods));
+//                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.PREFIX, itemData.getIlvl(),illegalMods));
                 } else {
-                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.SUFFIX, itemData.getIlvl(),illegalMods));
+//                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.SUFFIX, itemData.getIlvl(),illegalMods));
                 }
             }
         }
@@ -129,9 +129,9 @@ public class ItemBuilder {
         //In case it doesnt have a imbued mod, lets generate them normally
         for (int i = 0; i<inscriptionsToGenerate; i++){
             if (isPrefix()){
-                newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.PREFIX, itemData.getIlvl(),illegalMods));
+//                newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.PREFIX, itemData.getIlvl(),illegalMods));
             } else { //Its a suffix
-                newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.SUFFIX, itemData.getIlvl(),illegalMods));
+//                newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.SUFFIX, itemData.getIlvl(),illegalMods));
             }
         }
 

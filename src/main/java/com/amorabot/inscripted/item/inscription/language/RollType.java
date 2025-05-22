@@ -4,28 +4,17 @@ import lombok.Getter;
 
 @Getter
 public enum RollType {
-    CONSTANT(1) {
-        @Override
-        public String getValuesTemplate() {
-            return "<v1>";
-        }
-    },
-    SINGLE_ROLL(2) {
-        @Override
-        public String getValuesTemplate() {
-            return "<v1>";
-        }
-    },
-    DOUBLE_ROLL(4) {
-        @Override
-        public String getValuesTemplate() {
-            return "<v1> - <v2>";
-        }
-    };
+    CONSTANT(1,"<const>"),
+    SINGLE_ROLL(2,"<value>"),
+    DOUBLE_ROLL(4,"<v1> - <v2>");
 
     private final int preRollSize;
-    RollType(int size){
+    private final String templateString;
+    RollType(int size, String template){
         this.preRollSize = size;
+        this.templateString = template;
     }
-    public abstract String getValuesTemplate();
+    public String getValuesTemplate(){
+        return templateString;
+    }
 }

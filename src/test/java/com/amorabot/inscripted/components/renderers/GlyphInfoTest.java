@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.components.renderers;
 
+import com.amorabot.inscripted.item.render.GlyphInfo;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

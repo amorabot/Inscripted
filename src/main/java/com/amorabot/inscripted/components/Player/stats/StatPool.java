@@ -44,13 +44,13 @@ public class StatPool {
         ModifierData inscData = inscID.getData();
         if (inscData.isStandard()){
             InscriptionData regularInsc = (InscriptionData) inscData;
-            addValues(regularInsc.getDefinitionData(),inscription.getMappedFinalValue(), inscID.isPositive());
+//            addValues(regularInsc.getDefinitionData(),inscription.getMappedFinalValue(), inscID.isPositive());
             return;
         }
         if (inscData.isHybrid()){
             HybridInscriptionData hybridInsc = (HybridInscriptionData) inscData;
             StatDefinition[] definitions = hybridInsc.getStatDefinitions();
-            for (int d = 0; d < definitions.length; d++){addValues(definitions[d],inscription.getMappedFinalValue(d), inscID.isPositive());}
+//            for (int d = 0; d < definitions.length; d++){addValues(definitions[d],inscription.getMappedFinalValue(d), inscID.isPositive());}
             return;
         }
     }

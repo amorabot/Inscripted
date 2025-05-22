@@ -1,8 +1,8 @@
-package com.amorabot.inscripted.inscriptions;
+package com.amorabot.inscripted.item.inscription.table;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
-import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
+import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
+import com.amorabot.inscripted.item.inscription.language.AffixType;
 import com.amorabot.inscripted.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,20 +23,19 @@ public class InscriptionDataManager {
     public static void setupFiles(){
         Utils.log("Setting up Inscription local files");
         setupJSONTables();
-        setupValuesTable(Affix.PREFIX.name());
-        setupValuesTable(Affix.SUFFIX.name());
-
+        setupValuesTable(AffixType.PREFIX.name());
+        setupValuesTable(AffixType.SUFFIX.name());
     }
 
     private static void setupValuesTable(String tableName){
-        File file = new File(Inscripted.getPlugin().getDataFolder(), "modifiers/"+ tableName +".yml");
+        File file = new File(Inscripted.getPlugin().getDataFolder().getAbsolutePath(), "modifiers/"+ tableName +".yml");
 
         if (!file.exists()){
             Inscripted.getPlugin().saveResource("modifiers/"+ tableName +".yml", false);
         }
     }
     public static YamlConfiguration readValuesTableData(String tableName){
-        File file = new File(Inscripted.getPlugin().getDataFolder(), "modifiers/"+ tableName +".yml");
+        File file = new File(Inscripted.getPlugin().getDataFolder().getAbsolutePath(), "/modifiers/"+ tableName +".yml");
 
         if (!file.exists()){return null;}
 
@@ -52,7 +51,7 @@ public class InscriptionDataManager {
         return config;
     }
     public static YamlConfiguration readRelicValuesTable(){
-        File file = new File(Inscripted.getPlugin().getDataFolder(), "relics/inscription_values.yml");
+        File file = new File(Inscripted.getPlugin().getDataFolder().getAbsolutePath(), "relics/inscription_values.yml");
         if (!file.exists()){return null;}
         YamlConfiguration config = new YamlConfiguration();
         config.options().parseComments(true);
@@ -87,15 +86,15 @@ public class InscriptionDataManager {
         Utils.error("Table does not exist. ("+itemName+")");
         return null;
     }
-    public static Map<Affix, Map<InscriptionID, Map<Integer, Integer>>> loadSubtable(String subtableName){
+    public static Map<AffixType, Map<InscriptionIDs, Map<Integer, Integer>>> loadSubtable(String subtableName){
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         File file = new File(Inscripted.getPlugin().getDataFolder().getAbsolutePath() + "/modifiers/subtables/"+subtableName+".json");
         if (file.exists()){
             try {
                 Reader reader = new FileReader(file);
-                TypeToken<Map<Affix, Map<InscriptionID, Map<Integer, Integer>>>> subtableTypeToken
-                        = new TypeToken<Map<Affix, Map<InscriptionID, Map<Integer, Integer>>>>(){};
+                TypeToken<Map<AffixType, Map<InscriptionIDs, Map<Integer, Integer>>>> subtableTypeToken
+                        = new TypeToken<Map<AffixType, Map<InscriptionIDs, Map<Integer, Integer>>>>(){};
 
                 log("Subtable loaded: " + subtableName);
                 return gson.fromJson(reader, subtableTypeToken);
@@ -119,16 +118,16 @@ public class InscriptionDataManager {
                 file.createNewFile();
                 Writer writer = new FileWriter(file, false);
 
-                Map<Affix, Map<InscriptionID, Map<Integer, Integer>>> specificMods = new HashMap<>();
+                Map<AffixType, Map<InscriptionIDs, Map<Integer, Integer>>> specificMods = new HashMap<>();
 
-                Map<InscriptionID, Map<Integer, int[]>> implicitData = new HashMap<>();
+                Map<InscriptionIDs, Map<Integer, int[]>> implicitData = new HashMap<>();
                 Map<Integer, int[]> tierData = new HashMap<>();
                 tierData.put(0, new int[1]);
                 tierData.put(1, new int[1]);
                 tierData.put(2, new int[1]);
                 tierData.put(3, new int[1]);
                 tierData.put(4, new int[1]);
-                implicitData.put(InscriptionID.MARAUDER_AXE, tierData);
+                implicitData.put(InscriptionIDs.MARAUDER_AXE, tierData);
 
                 String[] subtables = new String[]{"GENERIC_WEAPON","STRENGTH_WEAPON"};
 
@@ -192,12 +191,13 @@ public class InscriptionDataManager {
         }
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        File file = new File(Inscripted.getPlugin().getDataFolder().getAbsolutePath() + "/modifiers/"+tableType+"/"+tableName+".json");
-        file.getParentFile().mkdir();
+        String filepath = Inscripted.getPlugin().getDataFolder().getAbsolutePath() + "/modifiers/"+tableType+"/"+tableName+".json";
+        File file = new File(filepath);
+        file.getParentFile().mkdirs();
         //Check if the accessed file path exists:
         try {
             if (!file.exists()){
-                file.createNewFile();
+                if (file.createNewFile()){Utils.log("Successfully created: " + filepath);}
                 Writer writer = new FileWriter(file, false);
 
                 gson.toJson(jsonData, writer);
@@ -210,19 +210,29 @@ public class InscriptionDataManager {
     }
 
     //Used for tests
-    public static Map<Affix, Map<InscriptionID, Map<Integer, Integer>>> getSubtableResourceData(String subtableName){
-        InputStream jsonData = getResourceJSONAt("/modifiers/subtables/"+subtableName+".json");
-        if (jsonData == null){return null;}
+    public static Map<AffixType, Map<InscriptionIDs, Map<Integer, Integer>>> getSubtableResourceData(String subtableName){
+        String resourcePath = "/modifiers/subtables/"+subtableName+".json";
+        Utils.log("Fetching subtable @"+resourcePath);
+        InputStream jsonData = getResourceJSONAt(resourcePath);
+        if (jsonData == null){
+            Utils.error("Invalid JSON data stream from filepath(subtable) -> " + resourcePath);
+            return null;
+        }
 
         Reader reader = new InputStreamReader(jsonData);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        TypeToken<Map<Affix, Map<InscriptionID, Map<Integer, Integer>>>> mapType = new TypeToken<Map<Affix, Map<InscriptionID, Map<Integer, Integer>>>>(){};
+        TypeToken<Map<AffixType, Map<InscriptionIDs, Map<Integer, Integer>>>> mapType = new TypeToken<Map<AffixType, Map<InscriptionIDs, Map<Integer, Integer>>>>(){};
         return gson.fromJson(reader, mapType);
     }
     //Used for tests
     public static InscriptionTableDTO getTableResourceDataFor(String itemName){
-        InputStream jsonData = getResourceJSONAt("/modifiers/tables/"+itemName+".json");
-        if (jsonData == null){return null;}
+        String resourcePath = "/modifiers/tables/"+itemName+".json";
+        Utils.log("Fetching table @"+resourcePath);
+        InputStream jsonData = getResourceJSONAt(resourcePath);
+        if (jsonData == null){
+            Utils.error("Invalid JSON data stream from filepath(table) -> " + resourcePath);
+            return null;
+        }
 
         Reader reader = new InputStreamReader(jsonData);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();

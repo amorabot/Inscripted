@@ -3,20 +3,16 @@ package com.amorabot.inscripted.commands;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
-import com.amorabot.inscripted.components.Items.ItemBuilder;
-import com.amorabot.inscripted.components.Items.Weapon.Weapon;
-import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.components.Items.modifiers.data.Meta;
-import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
 import com.amorabot.inscripted.components.buffs.categories.healing.HealingBuff;
 import com.amorabot.inscripted.components.buffs.categories.stat.StatBuff;
 import com.amorabot.inscripted.components.renderers.ItemInterfaceRenderer;
-import com.amorabot.inscripted.inscriptions.InscriptionTable;
+import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.skills.math.LinalgMath;
@@ -43,7 +39,6 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 public class TemplateCommand implements CommandExecutor {
@@ -181,30 +176,31 @@ public class TemplateCommand implements CommandExecutor {
                     if (spreadOBB.intersects(player.getBoundingBox())){Utils.msgPlayer(player, "CollisioN!");}
                     return true;
                 case "modGen":
-                    InscriptionTable axeTable = new InscriptionTable("AXE");
-                    axeTable.debug();
-
-                    for (int i = 0; i< 5; i++){
-                        final int ilvl = Utils.getRandomIntBetween(0,100);
-                        Utils.log("Batch: " + i + " =========("+ilvl+")=========");
-                        Set<InscriptionID> blockedPrefixes = new HashSet<>();
-                        Inscription prefixA = axeTable.getRandomInscription(Affix.PREFIX, ilvl, blockedPrefixes);
-                        Inscription prefixB = axeTable.getRandomInscription(Affix.PREFIX, ilvl, blockedPrefixes);
-
-                        Set<InscriptionID> blockedSuffixes = new HashSet<>();
-                        Inscription suffixA = axeTable.getRandomInscription(Affix.SUFFIX, ilvl, blockedSuffixes);
-                        Inscription suffixB = axeTable.getRandomInscription(Affix.SUFFIX, ilvl, blockedSuffixes);
-
-                        try {
-                            Utils.log("prefix A: " + prefixA.getInscription() + " tier: " + prefixA.getTier());
-                            Utils.log("prefix B: " + prefixB.getInscription() + " tier: " + prefixB.getTier());
-
-                            Utils.log("suffix A: " + suffixA.getInscription() + " tier: " + suffixA.getTier());
-                            Utils.log("suffix B: " + suffixB.getInscription() + " tier: " + suffixB.getTier());
-                        } catch (NullPointerException ex){
-                            Utils.log("Invalid insc. gen attempt");
-                        }
-                    }
+//                    InscriptionTable axeTable = new InscriptionTable("AXE");
+//                    axeTable.debug();
+//
+//                    for (int i = 0; i< 5; i++){
+//                        final int ilvl = Utils.getRandomIntBetween(0,100);
+//                        Utils.log("Batch: " + i + " =========("+ilvl+")=========");
+//                        Set<InscriptionID> blockedPrefixes = new HashSet<>();
+//                        Inscription prefixA = axeTable.getRandomInscription(Affix.PREFIX, ilvl, blockedPrefixes);
+//
+//                        Inscription prefixB = axeTable.getRandomInscription(Affix.PREFIX, ilvl, blockedPrefixes);
+//
+//                        Set<InscriptionID> blockedSuffixes = new HashSet<>();
+//                        Inscription suffixA = axeTable.getRandomInscription(Affix.SUFFIX, ilvl, blockedSuffixes);
+//                        Inscription suffixB = axeTable.getRandomInscription(Affix.SUFFIX, ilvl, blockedSuffixes);
+//
+//                        try {
+//                            Utils.log("prefix A: " + prefixA.getInscription() + " tier: " + prefixA.getTier());
+//                            Utils.log("prefix B: " + prefixB.getInscription() + " tier: " + prefixB.getTier());
+//
+//                            Utils.log("suffix A: " + suffixA.getInscription() + " tier: " + suffixA.getTier());
+//                            Utils.log("suffix B: " + suffixB.getInscription() + " tier: " + suffixB.getTier());
+//                        } catch (NullPointerException ex){
+//                            Utils.log("Invalid insc. gen attempt");
+//                        }
+//                    }
                     return true;
                 case "testColor":
                     ItemStack heldItem = player.getInventory().getItemInMainHand();

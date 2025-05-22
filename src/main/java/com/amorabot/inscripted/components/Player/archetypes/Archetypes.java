@@ -6,7 +6,7 @@ import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
-import com.amorabot.inscripted.components.renderers.InscriptedPalette;
+import com.amorabot.inscripted.item.render.InscriptedPalette;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 

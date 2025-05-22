@@ -1,12 +1,9 @@
 package com.amorabot.inscripted.components.Items.Weapon;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
-import com.amorabot.inscripted.components.Items.Files.ResourcesJSONReader;
 import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
-import com.amorabot.inscripted.inscriptions.InscriptionTable;
-import com.amorabot.inscripted.utils.Utils;
+import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;

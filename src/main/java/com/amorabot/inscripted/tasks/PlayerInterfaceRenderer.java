@@ -6,8 +6,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceType
 import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.components.renderers.CustomUnicodeTable;
-import com.amorabot.inscripted.components.renderers.InscriptedPalette;
+import com.amorabot.inscripted.item.render.InscriptedPalette;
 import com.amorabot.inscripted.managers.JSONProfileManager;
 import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
 import com.amorabot.inscripted.skills.AbilityTypes;

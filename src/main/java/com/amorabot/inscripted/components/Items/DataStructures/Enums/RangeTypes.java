@@ -46,33 +46,33 @@ public enum RangeTypes {
             default -> SINGLE_RANGE;
         };
     }
-    public static int[] mapFinalValuesFor(RangeTypes range, int[] tableValues, double basePercentile){
-        switch (range){
-            case SINGLE_VALUE -> {
-                return tableValues.clone();
-            }
-            case SINGLE_RANGE -> {
-                int valA = tableValues[0];
-                int valB = tableValues[1];
-                int offset = -1;
-                if (valA < 0){offset = 1;}
-                return new int[]{Utils.getRoundedParametricValue(valA+offset, valB, basePercentile)};
-            }
-            case DOUBLE_RANGE -> {
-                int valA = tableValues[0];
-                int valB = tableValues[1];
-                int valM = tableValues[2];
-                int valN = tableValues[3];
-                int offset = -1;
-                if (valA < 0){offset = 1;}
-                return new int[]
-                        {
-                                Utils.getRoundedParametricValue(valA+offset, valB, basePercentile),
-                                Utils.getRoundedParametricValue(valM+offset, valN, basePercentile)
-                        };
-            }
-        }
-        return new int[2];
-    }
+//    public static int[] mapFinalValuesFor(RangeTypes range, int[] tableValues, double basePercentile){
+//        switch (range){
+//            case SINGLE_VALUE -> {
+//                return tableValues.clone();
+//            }
+//            case SINGLE_RANGE -> {
+//                int valA = tableValues[0];
+//                int valB = tableValues[1];
+//                int offset = -1;
+//                if (valA < 0){offset = 1;}
+//                return new int[]{Utils.getRoundedParametricValue(valA+offset, valB, basePercentile)};
+//            }
+//            case DOUBLE_RANGE -> {
+//                int valA = tableValues[0];
+//                int valB = tableValues[1];
+//                int valM = tableValues[2];
+//                int valN = tableValues[3];
+//                int offset = -1;
+//                if (valA < 0){offset = 1;}
+//                return new int[]
+//                        {
+//                                Utils.getRoundedParametricValue(valA+offset, valB, basePercentile),
+//                                Utils.getRoundedParametricValue(valM+offset, valN, basePercentile)
+//                        };
+//            }
+//        }
+//        return new int[2];
+//    }
     abstract public Component substitutePlaceholders(int[] mappedValues, String templateString, String valuesColor);
 }

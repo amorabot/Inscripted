@@ -63,7 +63,22 @@ public enum InscriptionIDs {
     STAMINA_REGEN("+ global SUFFIX: increased single_roll stamina_regen", 6),
     BLEEDING("+ global SUFFIX: percentage single_roll bleed", 4),
     CRITICAL_CHANCE("+ global SUFFIX: percentage single_roll critical_chance", 6),
-    COOLDOWN_REDUCTION("+ global SUFFIX: percentage single_roll cooldown_reduction", 4);
+    COOLDOWN_REDUCTION("+ global SUFFIX: percentage single_roll cooldown_reduction", 4),
+
+    //=====IMPLICITS=====
+    MARAUDER_AXE("+ global IMPLICIT: percentage single_roll shred", 5),
+    GLADIATOR_SWORD("+ global IMPLICIT: increased single_roll accuracy", 5),
+    MERCENARY_BOW("+ global IMPLICIT: flat single_roll dodge", 5),
+    ROGUE_DAGGER("+ global IMPLICIT: percentage single_roll critical_damage", 5),
+    SORCERER_WAND("+ global IMPLICIT: percentage single_roll maelstrom", 5),
+    TEMPLAR_MACE("+ global IMPLICIT: increased single_roll elemental_damage", 5),
+
+    MARAUDER_HEAVY_PLATING("+ global IMPLICIT: flat single_roll strength", 5),
+    GLADIATOR_CARVED_PLATING("+ global IMPLICIT: flat single_roll strength & flat single_roll dexterity", 5),
+    MERCENARY_LIGHT_CLOTH("+ global IMPLICIT: flat single_roll dexterity", 5),
+    ROGUE_RUNIC_LEATHER("+ global IMPLICIT: flat single_roll dexterity & flat single_roll intelligence", 5),
+    SORCERER_ENCHANTED_SILK("+ global IMPLICIT: flat single_roll intelligence", 5),
+    TEMPLAR_RUNIC_STEEL("+ global IMPLICIT: flat single_roll intelligence & flat single_roll strength", 5);
 
 
     private final InscriptionDefinition definitionData;
@@ -103,4 +118,10 @@ public enum InscriptionIDs {
         return builder.toString();
     }
 
+    public boolean isEffect(){
+        return getDefinitionData() instanceof InscriptionDefinition.Effect;
+    }
+    public boolean isKeystone(){
+        return getDefinitionData() instanceof InscriptionDefinition.Keystone;
+    }
 }

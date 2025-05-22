@@ -116,12 +116,10 @@ public class StatCompiler {
                     ValueTypes finalStatType = definitionData.valueType();
                     if (statPool.getStats().containsKey(targetConvertedStat)){
                         if (statPool.getStats().get(targetConvertedStat).containsKey(type)){
-                            int convertedStat = (int) statPool.getFinalValueFor(targetConvertedStat, false);
-                            int[] baseMetaValue = insc.getMappedFinalValue();
-                            int[] stackedMetaValue = ID.convert(convertedStat, baseMetaValue);
-                            statPool.addStat(finalConvertedStat, finalStatType, stackedMetaValue);
-//                            Utils.error("CONVERTED BASE STAT:" + convertedStat);
-//                            Utils.log(Arrays.toString(stackedMetaValue));
+//                            int convertedStat = (int) statPool.getFinalValueFor(targetConvertedStat, false);
+//                            int[] baseMetaValue = insc.getMappedFinalValue();
+//                            int[] stackedMetaValue = ID.convert(convertedStat, baseMetaValue);
+//                            statPool.addStat(finalConvertedStat, finalStatType, stackedMetaValue);
                         }
                     }
                 }

@@ -93,26 +93,26 @@ public class Weapon extends Item implements ItemCategory {
             }
         }
 
-        for (Inscription mod : getInscriptionList()){
-            //Local mod mapping
-            Utils.error("Local mod mapping for " + mod.getInscription());
-            InscriptionID weaponModifier = mod.getInscription();
-            if (weaponModifier.isGlobal()){continue;}
-            ModifierData modData = weaponModifier.getData();
-            if (modData instanceof InscriptionData inscriptionData){
-                int[] mappedValues = mod.getMappedFinalValue();
-                StatDefinition statDef = inscriptionData.getDefinitionData();
-                mapLocalMods(baseDmg, incPecentages, statDef, mappedValues);
-            } else if (modData instanceof HybridInscriptionData hybridInscriptionData) {
-                StatDefinition[] defs = hybridInscriptionData.getStatDefinitions();
-                for (int d = 0; d < defs.length; d++){
-                    int[] currentMappedVal = mod.getMappedFinalValue(d);
-                    mapLocalMods(baseDmg, incPecentages, defs[d], currentMappedVal);
-                }
-            } else {
-                continue;
-            }
-        }
+//        for (Inscription mod : getInscriptionList()){
+//            //Local mod mapping
+//            Utils.error("Local mod mapping for " + mod.getInscription());
+//            InscriptionID weaponModifier = mod.getInscription();
+//            if (weaponModifier.isGlobal()){continue;}
+//            ModifierData modData = weaponModifier.getData();
+//            if (modData instanceof InscriptionData inscriptionData){
+//                int[] mappedValues = mod.getMappedFinalValue();
+//                StatDefinition statDef = inscriptionData.getDefinitionData();
+//                mapLocalMods(baseDmg, incPecentages, statDef, mappedValues);
+//            } else if (modData instanceof HybridInscriptionData hybridInscriptionData) {
+//                StatDefinition[] defs = hybridInscriptionData.getStatDefinitions();
+//                for (int d = 0; d < defs.length; d++){
+//                    int[] currentMappedVal = mod.getMappedFinalValue(d);
+//                    mapLocalMods(baseDmg, incPecentages, defs[d], currentMappedVal);
+//                }
+//            } else {
+//                continue;
+//            }
+//        }
 
         for (DamageTypes dmg : DamageTypes.values()){
             int[] currFlatDMG = baseDmg.getOrDefault(dmg,new int[2]).clone();

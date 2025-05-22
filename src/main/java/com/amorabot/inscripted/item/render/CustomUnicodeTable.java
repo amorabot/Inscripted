@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.components.renderers;
+package com.amorabot.inscripted.item.render;
 
 import lombok.Getter;
 

@@ -47,10 +47,10 @@ public enum Relics {
     DRUIDIC_PELTS(ItemTypes.CHESTPLATE,"Nature's beautiful","cycle...","To be wounded","To be healed"),
     HELLFORGE(ItemTypes.WEAPON,"This glowing-hot","cleaver seems","to sap it's user's", "might to grow even", "stronger...");
 
-    @Getter
-    private static final Map<Relics, RelicArmorDAO> relicArmorsData = RelicEditor.loadAllArmors();
-    @Getter
-    private static final Map<Relics, RelicWeaponDAO> relicWeaponsData = RelicEditor.loadAllWeapons();
+//    @Getter
+//    private static final Map<Relics, RelicArmorDAO> relicArmorsData = RelicEditor.loadAllArmors();
+//    @Getter
+//    private static final Map<Relics, RelicWeaponDAO> relicWeaponsData = RelicEditor.loadAllWeapons();
 
 //    private static Map<Relics, Map<InscriptionID, int[]>> relicStatValues = new HashMap<>();
 
@@ -84,19 +84,20 @@ public enum Relics {
 
     //TODO: relic constructors should deserialize data from the relic definition file
     private Item generate(){
-        if (slot.equals(ItemTypes.WEAPON)){
-            RelicWeaponDAO weaponDAO = getRelicWeaponsData().get(this);
-            List<InscriptionID> relicInscriptionIDs = new ArrayList<>(weaponDAO.genericData().specialInscriptions());
-            relicInscriptionIDs.addAll(weaponDAO.genericData().inscriptions());
-            List<Inscription> newlyGeneratedInscriptions = generateNewRelicInscriptionList(relicInscriptionIDs);
-            return new Weapon(weaponDAO, newlyGeneratedInscriptions);
-        } else { //Relic Armor generation
-            RelicArmorDAO armorDAO = getRelicArmorsData().get(this);
-            List<InscriptionID> relicInscriptionIDs =  new ArrayList<>(armorDAO.genericData().specialInscriptions());
-            relicInscriptionIDs.addAll(armorDAO.genericData().inscriptions());
-            List<Inscription> newlyGeneratedInscriptions = generateNewRelicInscriptionList(relicInscriptionIDs);
-            return new Armor(armorDAO,newlyGeneratedInscriptions);
-        }
+//        if (slot.equals(ItemTypes.WEAPON)){
+//            RelicWeaponDAO weaponDAO = getRelicWeaponsData().get(this);
+//            List<InscriptionID> relicInscriptionIDs = new ArrayList<>(weaponDAO.genericData().specialInscriptions());
+//            relicInscriptionIDs.addAll(weaponDAO.genericData().inscriptions());
+//            List<Inscription> newlyGeneratedInscriptions = generateNewRelicInscriptionList(relicInscriptionIDs);
+//            return new Weapon(weaponDAO, newlyGeneratedInscriptions);
+//        } else { //Relic Armor generation
+//            RelicArmorDAO armorDAO = getRelicArmorsData().get(this);
+//            List<InscriptionID> relicInscriptionIDs =  new ArrayList<>(armorDAO.genericData().specialInscriptions());
+//            relicInscriptionIDs.addAll(armorDAO.genericData().inscriptions());
+//            List<Inscription> newlyGeneratedInscriptions = generateNewRelicInscriptionList(relicInscriptionIDs);
+//            return new Armor(armorDAO,newlyGeneratedInscriptions);
+//        }
+        return null;
     }
     private List<Inscription> generateNewRelicInscriptionList(List<InscriptionID> inscIDs){
         List<Inscription> newlyGeneratedInscriptions = new ArrayList<>();
@@ -108,12 +109,12 @@ public enum Relics {
     }
 
     private List<String> getFlavorText(){
-        if (relicWeaponsData.containsKey(this)){
-            return relicWeaponsData.get(this).genericData().flavorText();
-        }
-        if (relicArmorsData.containsKey(this)){
-            return relicArmorsData.get(this).genericData().flavorText();
-        }
+//        if (relicWeaponsData.containsKey(this)){
+//            return relicWeaponsData.get(this).genericData().flavorText();
+//        }
+//        if (relicArmorsData.containsKey(this)){
+//            return relicArmorsData.get(this).genericData().flavorText();
+//        }
         return new ArrayList<>();
     }
 

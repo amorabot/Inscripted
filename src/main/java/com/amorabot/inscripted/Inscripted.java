@@ -5,19 +5,20 @@ import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
-import com.amorabot.inscripted.components.Items.Files.ItemModifiersConfig;
 import com.amorabot.inscripted.components.Items.Files.RelicEditor;
 import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Mobs.Spawners;
-import com.amorabot.inscripted.components.renderers.GlyphInfo;
+import com.amorabot.inscripted.item.render.GlyphInfo;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
 import com.amorabot.inscripted.handlers.Combat.InscriptedPlayerDeathEventListener;
 import com.amorabot.inscripted.handlers.GUI.GUIHandler;
 import com.amorabot.inscripted.handlers.Inventory.*;
 import com.amorabot.inscripted.handlers.misc.JoinQuitHandler;
 import com.amorabot.inscripted.handlers.misc.SunlightBurnHandler;
-import com.amorabot.inscripted.inscriptions.InscriptionDataManager;
-import com.amorabot.inscripted.inscriptions.InscriptionTable;
+import com.amorabot.inscripted.item.inscription.Inscription;
+import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
+import com.amorabot.inscripted.item.inscription.table.InscriptionDataManager;
+import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
 import com.amorabot.inscripted.managers.*;
 import com.amorabot.inscripted.tasks.CombatLogger;
 import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
@@ -59,12 +60,17 @@ public final class Inscripted extends JavaPlugin {
 
         initializeProfileJSON();
         reloadRoutine();
-        InscriptionTable.loadValues();
+        InscriptionTable.loadRawValues();
 
         Utils.populatePrettyAlphabet();
         Utils.populateRomanChars();
 //        GlobalCooldownManager.setup();
-
+        Inscription newInscription = new Inscription(InscriptionIDs.ADDED_FIRE, 2, 1D);
+        Inscription shred = new Inscription(InscriptionIDs.SHRED, 0, 0.5D);
+        Inscription hybrid = new Inscription(InscriptionIDs.ARMOR_SOUL, 2, 1D);
+        Utils.log(newInscription.getDisplayName());
+        Utils.log(shred.getDisplayName());
+        Utils.log(hybrid.getDisplayName());
 
         commandsStartupRoutine();
         eventListenersStartupRoutine();
@@ -126,7 +132,7 @@ public final class Inscripted extends JavaPlugin {
         InscriptionDataManager.setupFiles();
         GlyphInfo.loadMappings();
 
-        ItemModifiersConfig.setup();
+//        ItemModifiersConfig.setup();
 
         if (MobManager.spawningEnabled()){
             log("RegisteredSpawners");

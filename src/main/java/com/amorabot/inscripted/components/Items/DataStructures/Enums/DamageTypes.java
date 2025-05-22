@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.components.Items.DataStructures.Enums;
 
-import com.amorabot.inscripted.components.renderers.InscriptedPalette;
+import com.amorabot.inscripted.item.render.InscriptedPalette;
 import lombok.Getter;
 
 @Getter

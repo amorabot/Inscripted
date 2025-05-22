@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.components.Items.Weapon;
 
-import com.amorabot.inscripted.components.renderers.InscriptedPalette;
+import com.amorabot.inscripted.item.render.InscriptedPalette;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;

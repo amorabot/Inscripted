@@ -126,22 +126,22 @@ public class Armor extends Item implements ItemCategory {
 
         for (Inscription mod : getInscriptionList()){
             //Local mod mapping
-            InscriptionID armorMod = mod.getInscription();
-            if (armorMod.isGlobal()){continue;}
-            ModifierData modData = armorMod.getData();
-            if (modData instanceof InscriptionData inscriptionData){
-                int[] mappedValues = mod.getMappedFinalValue();
-                StatDefinition statDef = inscriptionData.getDefinitionData();
-                mapLocalMods(defMap, incPecentages, statDef, mappedValues);
-            } else if (modData instanceof HybridInscriptionData hybridInscriptionData) {
-                StatDefinition[] defs = hybridInscriptionData.getStatDefinitions();
-                for (int d = 0; d < defs.length; d++){
-                    int[] currentMappedVal = mod.getMappedFinalValue(d);
-                    mapLocalMods(defMap, incPecentages, defs[d], currentMappedVal);
-                }
-            } else {
-                continue;
-            }
+//            InscriptionID armorMod = mod.getInscription();
+//            if (armorMod.isGlobal()){continue;}
+//            ModifierData modData = armorMod.getData();
+//            if (modData instanceof InscriptionData inscriptionData){
+//                int[] mappedValues = mod.getMappedFinalValue();
+//                StatDefinition statDef = inscriptionData.getDefinitionData();
+//                mapLocalMods(defMap, incPecentages, statDef, mappedValues);
+//            } else if (modData instanceof HybridInscriptionData hybridInscriptionData) {
+//                StatDefinition[] defs = hybridInscriptionData.getStatDefinitions();
+//                for (int d = 0; d < defs.length; d++){
+//                    int[] currentMappedVal = mod.getMappedFinalValue(d);
+//                    mapLocalMods(defMap, incPecentages, defs[d], currentMappedVal);
+//                }
+//            } else {
+//                continue;
+//            }
         }
 
         for (DefenceTypes dmg : DefenceTypes.values()){
