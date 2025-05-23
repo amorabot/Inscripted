@@ -3,7 +3,7 @@ package com.amorabot.inscripted.item.inscription.definition;
 import com.amorabot.inscripted.item.inscription.language.RollType;
 import com.amorabot.inscripted.item.inscription.language.ValueType;
 
-public class InscriptionNameBuilder implements InscriptionDefinition.InscriptionVisitor<String> {
+public class InscriptionTemplateBuilder implements InscriptionDefinition.InscriptionDefinitionVisitor<String> {
 
     @Override
     public String visitRegularInsc(InscriptionDefinition.Regular inscription) {

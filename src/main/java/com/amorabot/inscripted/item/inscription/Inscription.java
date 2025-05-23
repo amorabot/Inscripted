@@ -1,6 +1,5 @@
 package com.amorabot.inscripted.item.inscription;
 
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.RangeTypes;
 import com.amorabot.inscripted.item.generation.ValuesTableSizeExtractor;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionDefinition;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
@@ -140,5 +139,10 @@ public class Inscription implements Serializable {
             variableSize+= Math.floorDiv(i,2);
         }
         return baseSize+variableSize;
+    }
+
+    public boolean isSpecial(){
+        InscriptionDefinition internalData = inscription.getDefinitionData();
+        return (inscription.isEffect() || inscription.isKeystone());
     }
 }

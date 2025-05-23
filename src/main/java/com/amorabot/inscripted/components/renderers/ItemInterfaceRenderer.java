@@ -344,35 +344,14 @@ public class ItemInterfaceRenderer {
         }
     }
 
-
-
-    public static Component getRunicLine(boolean top, int... args){
-        final int numberOfMods = args[0];
-        final int longestLineLength = args[1];
-        final int minPadding = 2;
-
-        if (top){
-            StringBuilder headerBar = new StringBuilder(TOP_RUNIC_BAR);
-            Component topBarComponent = Component.text(headerBar +  String.valueOf(numberOfMods)  + headerBar.reverse());
-            final int offset = Math.max(minPadding,(longestLineLength/2)-TOP_RUNIC_BAR.length());
-            Component topOffset = Component.text(" ".repeat(offset));
-            return InscriptedPalette.colorizeComponent(topOffset.append(topBarComponent), InscriptedPalette.DARK_GRAY.getColor()).decoration(TextDecoration.ITALIC,false);
-        }
-        StringBuilder footerBar = new StringBuilder(BOT_RUNIC_BAR);
-        Component botBarComponent = Component.text(footerBar + "ᚫ" + footerBar.reverse());
-        final int offset = Math.max(minPadding+3,(longestLineLength/2)-BOT_RUNIC_BAR.length());
-        Component botOffset = Component.text(" ".repeat(offset));
-        return InscriptedPalette.colorizeComponent(botOffset.append(botBarComponent), InscriptedPalette.DARK_GRAY.getColor()).decoration(TextDecoration.ITALIC,false);
-    }
-
     public static int getHighestStringLengthFor(Item itemData, int inscriptionsPadding){
         int highestInscriptionSize = itemData.getName().length();
         int addedSize = (2*inscriptionsPadding) + 2; //Lateral padding + rune icon
         for (Inscription insc : itemData.getInscriptionList()){
-            final int displayNameLineLength = insc.getInscription().getDisplayName().length() + addedSize + Utils.getRomanChar(insc.getTier()).length();
-            if (displayNameLineLength > (highestInscriptionSize)){
-                highestInscriptionSize = displayNameLineLength;
-            }
+//            final int displayNameLineLength = insc.getInscription().getDisplayName().length() + addedSize + Utils.getRomanChar(insc.getTier()).length();
+//            if (displayNameLineLength > (highestInscriptionSize)){
+//                highestInscriptionSize = displayNameLineLength;
+//            }
         }
         return highestInscriptionSize;
     }

@@ -63,14 +63,7 @@ public final class Inscripted extends JavaPlugin {
         InscriptionTable.loadRawValues();
 
         Utils.populatePrettyAlphabet();
-        Utils.populateRomanChars();
 //        GlobalCooldownManager.setup();
-        Inscription newInscription = new Inscription(InscriptionIDs.ADDED_FIRE, 2, 1D);
-        Inscription shred = new Inscription(InscriptionIDs.SHRED, 0, 0.5D);
-        Inscription hybrid = new Inscription(InscriptionIDs.ARMOR_SOUL, 2, 1D);
-        Utils.log(newInscription.getDisplayName());
-        Utils.log(shred.getDisplayName());
-        Utils.log(hybrid.getDisplayName());
 
         commandsStartupRoutine();
         eventListenersStartupRoutine();

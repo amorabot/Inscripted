@@ -14,7 +14,7 @@ public abstract class InscriptionDefinition implements Serializable {
     private String displayName;
     private final AffixType affix;
 
-    public abstract <R> R accept(InscriptionVisitor<R> visitor);
+    public abstract <R> R accept(InscriptionDefinitionVisitor<R> visitor);
     public abstract boolean isGlobal();
     private void setDisplayName(String displayName){
         this.displayName = displayName;
@@ -24,7 +24,7 @@ public abstract class InscriptionDefinition implements Serializable {
         this.affix = affixType;
     }
 
-    public interface InscriptionVisitor<R>{
+    public interface InscriptionDefinitionVisitor<R>{
         R visitRegularInsc(InscriptionDefinition.Regular inscription);
         R visitHybridInsc(InscriptionDefinition.Hybrid inscription);
         R visitMetaInsc(InscriptionDefinition.Meta inscription);
@@ -46,11 +46,11 @@ public abstract class InscriptionDefinition implements Serializable {
             this.global = isGlobal;
             this.baseData = data;
             //After data initialization, set the inscriptions display name based on that
-            super.setDisplayName(accept(new InscriptionNameBuilder()));
+            super.setDisplayName(accept(new InscriptionTemplateBuilder()));
         }
 
         @Override
-        public <R> R accept(InscriptionVisitor<R> visitor) {
+        public <R> R accept(InscriptionDefinitionVisitor<R> visitor) {
             return visitor.visitRegularInsc(this);
         }
         @Override
@@ -72,12 +72,12 @@ public abstract class InscriptionDefinition implements Serializable {
             this.secondaryData = secondaryData;
             this.positive = isPositive;
             this.global = isGlobal;
-            super.setDisplayName(accept(new InscriptionNameBuilder()));
+            super.setDisplayName(accept(new InscriptionTemplateBuilder()));
         }
 
 
         @Override
-        public <R> R accept(InscriptionVisitor<R> visitor) {
+        public <R> R accept(InscriptionDefinitionVisitor<R> visitor) {
             return visitor.visitHybridInsc(this);
         }
         @Override
@@ -103,11 +103,11 @@ public abstract class InscriptionDefinition implements Serializable {
             this.valueType = valueType;
             this.conversionRate = conversionRate;
 
-            super.setDisplayName(accept(new InscriptionNameBuilder()));
+            super.setDisplayName(accept(new InscriptionTemplateBuilder()));
         }
 
         @Override
-        public <R> R accept(InscriptionVisitor<R> visitor) {
+        public <R> R accept(InscriptionDefinitionVisitor<R> visitor) {
             return visitor.visitMetaInsc(this);
         }
         @Override
@@ -131,11 +131,11 @@ public abstract class InscriptionDefinition implements Serializable {
             super(AffixType.UNIQUE);
             this.effectID = effect;
 
-            super.setDisplayName(accept(new InscriptionNameBuilder()));
+            super.setDisplayName(accept(new InscriptionTemplateBuilder()));
         }
 
         @Override
-        public <R> R accept(InscriptionVisitor<R> visitor) {
+        public <R> R accept(InscriptionDefinitionVisitor<R> visitor) {
             return visitor.visitEffect(this);
         }
         @Override
@@ -149,11 +149,11 @@ public abstract class InscriptionDefinition implements Serializable {
             super(AffixType.UNIQUE);
             this.keystoneID = keystone;
 
-            super.setDisplayName(accept(new InscriptionNameBuilder()));
+            super.setDisplayName(accept(new InscriptionTemplateBuilder()));
         }
 
         @Override
-        public <R> R accept(InscriptionVisitor<R> visitor) {
+        public <R> R accept(InscriptionDefinitionVisitor<R> visitor) {
             return visitor.visitKeystone(this);
         }
         @Override

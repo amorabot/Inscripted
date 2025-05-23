@@ -101,28 +101,6 @@ public class Utils {
         }
         return convertedStringBuilder.toString();
     }
-    public static void populateRomanChars(){
-        ROMAN_CHAR.put("0","∅");
-        ROMAN_CHAR.put("1", "I");
-        ROMAN_CHAR.put("2", "II");
-        ROMAN_CHAR.put("3", "III");
-        ROMAN_CHAR.put("4", "IV");
-        ROMAN_CHAR.put("5", "V");
-        ROMAN_CHAR.put("6", "VI");
-        ROMAN_CHAR.put("7", "VII");
-        ROMAN_CHAR.put("8", "VIII");
-        ROMAN_CHAR.put("9", "IX");
-        ROMAN_CHAR.put("10", "X");
-        ROMAN_CHAR.put("11", "XI");
-        ROMAN_CHAR.put("12", "XII");
-    }
-    public static String getRomanChar(int value){
-        String stringValue = String.valueOf(value);
-        if (!ROMAN_CHAR.containsKey(stringValue)){
-            return "*";
-        }
-        return ROMAN_CHAR.get(stringValue);
-    }
 
     public static ItemStack createItem(Material type, int amount, boolean enchanted, boolean unbreakable, boolean hideUnbreakable
     , String name, String... lore){

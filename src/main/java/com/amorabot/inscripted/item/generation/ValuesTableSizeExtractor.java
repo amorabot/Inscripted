@@ -3,7 +3,7 @@ package com.amorabot.inscripted.item.generation;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionDefinition;
 import com.amorabot.inscripted.item.inscription.language.RollType;
 
-public class ValuesTableSizeExtractor implements InscriptionDefinition.InscriptionVisitor<Integer[]> {
+public class ValuesTableSizeExtractor implements InscriptionDefinition.InscriptionDefinitionVisitor<Integer[]> {
     @Override
     public Integer[] visitRegularInsc(InscriptionDefinition.Regular inscription) {
         // [12] -> [1]   |   [1,3, 5,7] -> [4]   |   ...
