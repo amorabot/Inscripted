@@ -3,6 +3,7 @@ package com.amorabot.inscripted.managers;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.components.Player.stats.StatCompiler;
+import com.amorabot.inscripted.file.JSONProfileManager;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -26,7 +27,7 @@ public class PlayerPassivesManager {
         passiveTasks.clear();
         for (Player player : Bukkit.getOnlinePlayers()){
             UUID playerID = player.getUniqueId();
-            StatCompiler.manageKeystoneTasks(playerID,JSONProfileManager.getProfile(playerID).getKeystones());
+            StatCompiler.manageKeystoneTasks(playerID, JSONProfileManager.getProfile(playerID).getKeystones());
         }
     }
     public static void removePlayer(UUID playerID){

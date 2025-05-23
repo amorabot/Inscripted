@@ -12,7 +12,7 @@ import com.amorabot.inscripted.components.Mobs.InscriptedMob;
 import com.amorabot.inscripted.components.Mobs.MobStats;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.buffs.Buffs;
-import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.file.JSONProfileManager;
 import com.amorabot.inscripted.managers.MobManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;

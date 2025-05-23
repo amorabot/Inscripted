@@ -7,7 +7,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.item.render.InscriptedPalette;
-import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.file.JSONProfileManager;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.command.Command;

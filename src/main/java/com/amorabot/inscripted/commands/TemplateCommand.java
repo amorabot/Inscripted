@@ -3,7 +3,6 @@ package com.amorabot.inscripted.commands;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
-import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.components.Items.modifiers.data.Meta;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
@@ -12,8 +11,7 @@ import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
 import com.amorabot.inscripted.components.buffs.categories.healing.HealingBuff;
 import com.amorabot.inscripted.components.buffs.categories.stat.StatBuff;
 import com.amorabot.inscripted.components.renderers.ItemInterfaceRenderer;
-import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
-import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.file.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.skills.math.LinalgMath;
 import com.amorabot.inscripted.skills.ParticlePlotter;
@@ -37,9 +35,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class TemplateCommand implements CommandExecutor {
 

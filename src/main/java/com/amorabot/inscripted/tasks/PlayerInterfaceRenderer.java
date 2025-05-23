@@ -7,7 +7,7 @@ import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.item.render.InscriptedPalette;
-import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.file.JSONProfileManager;
 import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
 import com.amorabot.inscripted.skills.AbilityTypes;
 import com.amorabot.inscripted.utils.Utils;

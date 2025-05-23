@@ -4,7 +4,7 @@ import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Items.Interfaces.EntityComponent;
 import com.amorabot.inscripted.components.Player.stats.StatPool;
-import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.file.JSONProfileManager;
 import lombok.Getter;
 import lombok.Setter;
 

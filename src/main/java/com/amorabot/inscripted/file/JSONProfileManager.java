@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.managers;
+package com.amorabot.inscripted.file;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.DamageComponent;
@@ -185,5 +185,20 @@ public class JSONProfileManager {
         }
         log("The profiles.JSON file is currently unavailable.");
         return false;
+    }
+
+    public static void initializeProfilesJSON(){
+        if (!new File(Inscripted.getPlugin().getDataFolder().getAbsolutePath() + "/profiles.json").exists()){
+            try {
+                String uuid = UUID.randomUUID().toString();
+                JSONProfileManager.createProfile(uuid);
+                log("creating dummy profile: " + uuid);
+                log("attempting to do the save operation");
+                JSONProfileManager.saveAllToJSON(); //vai criar o arquivo se ele não existe
+                log("initial JSON saving complete.");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

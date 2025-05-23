@@ -1,8 +1,9 @@
-package com.amorabot.inscripted.item.inscription.table;
+package com.amorabot.inscripted.file;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.inscription.language.AffixType;
+import com.amorabot.inscripted.item.inscription.table.InscriptionTableDTO;
 import com.amorabot.inscripted.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

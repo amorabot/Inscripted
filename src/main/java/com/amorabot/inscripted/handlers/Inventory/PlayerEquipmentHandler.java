@@ -12,7 +12,7 @@ import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.events.ItemUsage;
-import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.file.JSONProfileManager;
 import com.amorabot.inscripted.skills.AbilityTypes;
 import com.amorabot.inscripted.skills.AbilityRoutines;
 import com.amorabot.inscripted.utils.DelayedTask;

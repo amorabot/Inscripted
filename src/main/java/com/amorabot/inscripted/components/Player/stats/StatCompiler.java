@@ -17,7 +17,7 @@ import com.amorabot.inscripted.components.Player.Attributes;
 import com.amorabot.inscripted.components.Player.ItemSlotData;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.StatsComponent;
-import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.file.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.utils.Utils;

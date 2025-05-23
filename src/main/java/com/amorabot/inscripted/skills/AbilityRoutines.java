@@ -6,7 +6,7 @@ import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.relic.enums.Effects;
 import com.amorabot.inscripted.components.Items.relic.enums.TriggerTimes;
 import com.amorabot.inscripted.components.Items.relic.enums.TriggerTypes;
-import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.file.JSONProfileManager;
 import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
 import com.amorabot.inscripted.skills.math.LinalgMath;
 import com.amorabot.inscripted.utils.Utils;

@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.item.inscription.table;
 
+import com.amorabot.inscripted.file.InscriptionDataManager;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.inscription.language.AffixType;
 import com.amorabot.inscripted.utils.Utils;

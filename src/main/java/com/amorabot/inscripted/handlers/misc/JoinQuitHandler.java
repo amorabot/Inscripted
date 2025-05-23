@@ -1,9 +1,8 @@
 package com.amorabot.inscripted.handlers.misc;
 
-import com.amorabot.inscripted.APIs.EventAPI;
 import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.managers.JSONProfileManager;
+import com.amorabot.inscripted.file.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
