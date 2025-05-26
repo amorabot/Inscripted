@@ -14,6 +14,9 @@ import com.amorabot.inscripted.components.renderers.ItemInterfaceRenderer;
 import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.item.inscription.Inscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
+import com.amorabot.inscripted.item.structure.Armor.Armor;
+import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
+import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.Weapon.Weapon;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
@@ -186,10 +189,21 @@ public class TemplateCommand implements CommandExecutor {
 
                     ItemStack weaponItem = testWeapon.getItemForm();
                     player.getInventory().addItem(weaponItem);
+
+                    Armor testArmor = new Armor(86, ArmorTypes.ARMORED, ItemRarities.COMMON,true, false, EquipmentSlots.CHESTPLATE);
+                    ItemStack armorItemStack = testArmor.getItemForm();
+                    Armor hybridArmor = new Armor(86, ArmorTypes.ORNATE, ItemRarities.COMMON,true, false, EquipmentSlots.LEGGINGS);
+                    ItemStack hybItemStack = hybridArmor.getItemForm();
+                    Armor soulArmor = new Armor(40, ArmorTypes.RUNISTEEL, ItemRarities.COMMON,true, false, EquipmentSlots.CHESTPLATE);
+                    ItemStack soulItemStack = soulArmor.getItemForm();
+
+                    player.getInventory().addItem(armorItemStack);
+                    player.getInventory().addItem(hybItemStack);
+                    player.getInventory().addItem(soulItemStack);
                     return true;
                 case "testColor":
-                    ItemStack heldItem = player.getInventory().getItemInMainHand();
-                    ItemInterfaceRenderer.setDisplayName("Awooga buga nuga",heldItem, ItemRarities.COMMON,false,4);
+//                    ItemStack heldItem = player.getInventory().getItemInMainHand();
+//                    ItemInterfaceRenderer.setDisplayName("Awooga buga nuga",heldItem, ItemRarities.COMMON,false,4);
 //                    ItemInterfaceRenderer.setDisplayName("Runeec Bunguschungus",heldItem,ItemRarities.AUGMENTED,false,4);
 //                    ItemInterfaceRenderer.setDisplayName("Bingoos",heldItem,ItemRarities.RUNIC,false,7);
                     return true;

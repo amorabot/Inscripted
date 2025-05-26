@@ -34,7 +34,7 @@ public enum InscriptedPalette {
 
     //DEF Colors
     HEALTH("#ed2f5f"),
-    WARD("#73bab5"),
+    SOUL("#73bab5"),
     ARMOR("#9996b5"),
     DODGE("#9dc797"),
 

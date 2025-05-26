@@ -43,18 +43,6 @@ public class Armor extends Item {
 //        this.baseHealthVariance = CraftingUtils.getRandomNumber(-ArmorTypes.BASE_VARIANCE, ArmorTypes.BASE_VARIANCE);
     }
 
-//    public Armor(RelicArmorDAO armorData, List<Inscription> relicInscriptions){ //Relic constructor
-//        super(armorData.genericData().itemLevel(), ItemRarities.RELIC, true, false, armorData.slot());
-//        this.type = armorData.type();
-//        this.baseHealth = armorData.baseHealth();
-//        this.baseHealthVariance = 0;
-//        getInscriptionList().addAll(relicInscriptions);
-//        setTier(Tiers.mapItemLevel(getIlvl()));
-//        setName(armorData.genericData().name());
-//        setImplicit(Archetypes.mapImplicitFor(getSubype(), getTier(), isCorrupted()));
-//        mapBase();
-//    }
-
     @Override
     protected void setup(){
         setTier(Tiers.mapItemLevel(getIlvl()));
@@ -71,21 +59,6 @@ public class Armor extends Item {
     public ArmorTypes getSubype() {
         return type;
     }
-//    public int getBaseHealth() {
-//        return (int) ( baseHealth * ( 1 + ( (float) baseHealthVariance/100 ) ) );
-//    }
-//    private ArmorTrim defineArmorTrim(){
-//        TrimPattern pattern;
-//        TrimMaterial material = getSubype().getTrimMaterial();
-//        switch (getCategory()){
-//            case HELMET -> pattern = TrimPattern.HOST;
-//            case CHESTPLATE -> pattern = TrimPattern.SHAPER;
-//            case LEGGINGS -> pattern = TrimPattern.SILENCE;
-//            case BOOTS -> pattern = TrimPattern.HOST;
-//            default -> pattern = TrimPattern.EYE; //Signals error
-//        }
-//        return new ArmorTrim(material, pattern);
-//    }
     @Override
     public ItemStack getItemForm() {
         ItemStack armorItem = new ItemStack(this.vanillaMaterial);
@@ -108,78 +81,6 @@ public class Armor extends Item {
     }
 
     public Map<DefenceTypes, Integer> getLocalDefences(){ //Once a weapon is created, the damage map needs to be updated to contain any possible new damages
-//        Map<DefenceTypes, Integer> defMap = getSubype().buildArmorDefences(this); //Newly reset defMap
-        Map<DefenceTypes, Integer> incPecentages = new HashMap<>();
-
-        int qualityIncrease = 5*getQuality();
-        if (qualityIncrease>0){
-            for (DefenceTypes dmg : DefenceTypes.values()){
-                incPecentages.put(dmg, qualityIncrease);
-            }
-        }
-
-        for (Inscription mod : getInscriptionList()){
-            //Local mod mapping
-//            InscriptionID armorMod = mod.getInscription();
-//            if (armorMod.isGlobal()){continue;}
-//            ModifierData modData = armorMod.getData();
-//            if (modData instanceof InscriptionData inscriptionData){
-//                int[] mappedValues = mod.getMappedFinalValue();
-//                StatDefinition statDef = inscriptionData.getDefinitionData();
-//                mapLocalMods(defMap, incPecentages, statDef, mappedValues);
-//            } else if (modData instanceof HybridInscriptionData hybridInscriptionData) {
-//                StatDefinition[] defs = hybridInscriptionData.getStatDefinitions();
-//                for (int d = 0; d < defs.length; d++){
-//                    int[] currentMappedVal = mod.getMappedFinalValue(d);
-//                    mapLocalMods(defMap, incPecentages, defs[d], currentMappedVal);
-//                }
-//            } else {
-//                continue;
-//            }
-        }
-
-//        for (DefenceTypes dmg : DefenceTypes.values()){
-//            int currDefence = defMap.getOrDefault(dmg,0);
-//            int currIncValue = incPecentages.getOrDefault(dmg,0);
-//            int updatedDefence = (int) Utils.applyPercentageTo(currDefence, currIncValue);
-//            if (updatedDefence == 0){continue;}
-//            defMap.put(dmg, updatedDefence);
-//        }
-//
-//        return defMap;
-
         return null;
-    }
-    private void mapLocalMods(Map<DefenceTypes, Integer> baseDefs, Map<DefenceTypes, Integer> percentages, StatDefinition statDef, int[] mappedValues){
-        PlayerStats targetStat = statDef.stat();
-        ValueTypes valueType = statDef.valueType();
-        switch (targetStat){
-            case ARMOR -> redirectValue(valueType, DefenceTypes.ARMOR, baseDefs, percentages, mappedValues);
-            case DODGE -> redirectValue(valueType, DefenceTypes.DODGE, baseDefs, percentages, mappedValues);
-            case WARD -> redirectValue(valueType, DefenceTypes.SOUL, baseDefs, percentages, mappedValues);
-            case HEALTH -> redirectValue(valueType, DefenceTypes.HEALTH, baseDefs, percentages, mappedValues);
-        }
-    }
-    private void redirectValue
-            (
-                    ValueTypes valueType,
-                    DefenceTypes defType,
-                    Map<DefenceTypes, Integer> baseDefs,
-                    Map<DefenceTypes, Integer> percentages,
-                    int[] mappedValues
-            )
-    {
-        switch (valueType){
-            case FLAT -> addDefTypeToMap(defType, mappedValues[0], baseDefs);
-            case INCREASED -> addDefTypeToMap(defType, mappedValues[0], percentages);
-        }
-    }
-    private void addDefTypeToMap(DefenceTypes def, int value, Map<DefenceTypes, Integer> statMap){
-        if (!statMap.containsKey(def)){
-            statMap.put(def, value);
-            return;
-        }
-        int selectedStat = statMap.get(def);
-        statMap.put(def, (selectedStat + value));
     }
 }

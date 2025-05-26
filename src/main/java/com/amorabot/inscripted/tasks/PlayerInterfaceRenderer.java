@@ -49,7 +49,7 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             String healthHex = InscriptedPalette.HEALTH.getColorString();
             float maxWard = healthComponent.getMaxWard();
             float curWard = healthComponent.getCurrentWard();
-            String wardHex = InscriptedPalette.WARD.getColorString();
+            String wardHex = InscriptedPalette.SOUL.getColorString();
             float dps = playerProfile.getDamageComponent().getHitData().getDPS();
 //            int staminaValue = 100;
             int staminaValue = (int) playerProfile.getStatsComponent().getPlayerStats().getFinalValueFor(PlayerStats.STAMINA,false);

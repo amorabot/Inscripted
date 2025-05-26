@@ -82,7 +82,7 @@ public class HealingBuffTask extends Buff {
 
     public void debugHealing(Player caster, Player target, int healedAmount){
         DefenceTypes HPDefinitions = DefenceTypes.HEALTH;
-        String healString = ColorUtils.translateColorCodes("&"+InscriptedPalette.WARD.getColorString() + "+"+healedAmount+" "+ HPDefinitions.getSpecialChar()+" ");
+        String healString = ColorUtils.translateColorCodes("&"+InscriptedPalette.SOUL.getColorString() + "+"+healedAmount+" "+ HPDefinitions.getSpecialChar()+" ");
         Utils.msgPlayer(caster, "&2&l-> "+ healString + ("&f("+target.getName()+")"));
 //        Utils.msgPlayer(target, "&2&l<- "+ healString + ("&f("+caster+")"));
     }

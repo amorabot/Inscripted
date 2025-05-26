@@ -4,6 +4,7 @@ import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.item.structure.EquipmentSlots;
+import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.item.structure.Tiers;
 import com.amorabot.inscripted.item.structure.ItemSubtype;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
@@ -188,8 +189,10 @@ public enum ArmorTypes implements ItemSubtype {
     }
 
     @Override
-    public String getSubtypeDisplayName() {
-        return this.name();
+    public String getSubtypeDisplayName(Item itemData) {
+        //Its safe to assume itemData is a ArmorInstance
+        Armor armorData = (Armor) itemData;
+        return armorData.getSlot().name();
     }
 
     @Override

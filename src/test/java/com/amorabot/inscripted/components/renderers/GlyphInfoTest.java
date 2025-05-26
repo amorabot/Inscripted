@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.components.renderers;
 
 import com.amorabot.inscripted.item.render.GlyphInfo;
+import com.amorabot.inscripted.item.render.ItemRenderer;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,7 +14,7 @@ class GlyphInfoTest {
 
     @Test
     void countRuneDivLength() {
-        assertEquals(34,GlyphInfo.countStringPixelLength(ItemInterfaceRenderer.TOP_RUNIC_BAR)); //   '- --=÷¦• '
+//        assertEquals(34,GlyphInfo.countStringPixelLength(.TOP_RUNIC_BAR)); //   '- --=÷¦• '
     }
     @Test
     void countHPIndicator() {

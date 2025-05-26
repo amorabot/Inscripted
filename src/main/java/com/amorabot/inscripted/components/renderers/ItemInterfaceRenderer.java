@@ -2,11 +2,8 @@ package com.amorabot.inscripted.components.renderers;
 
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
-import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.ItemSubtype;
-import com.amorabot.inscripted.item.structure.Weapon.RangeCategory;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.components.Items.relic.enums.Effects;
@@ -17,9 +14,6 @@ import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,85 +22,86 @@ import java.util.Map;
 public class ItemInterfaceRenderer {
 
     public static final TextColor highlightColor = InscriptedPalette.NEUTRAL_GRAY.getColor();
-    public static final String TOP_RUNIC_BAR = "- --=÷¦• ";
-    public static final String BOT_RUNIC_BAR = "--=÷• ";
-    public static final String inscriptionsHeader = Utils.convertToPrettyString("Inscriptions: ") + "<color>•÷¦[ <n> ]¦÷=--  ";
-    public static final String inscriptionsFooter = "-   --  ---  ----=÷• ᚫ •÷=---";
+//    public static final String TOP_RUNIC_BAR = "- --=÷¦• ";
+//    public static final String BOT_RUNIC_BAR = "--=÷• ";
+//    public static final String inscriptionsHeader = Utils.convertToPrettyString("Inscriptions: ") + "<color>•÷¦[ <n> ]¦÷=--  ";
+//    public static final String inscriptionsFooter = "-   --  ---  ----=÷• ᚫ •÷=---";
     //      "¦¡!ï÷ ¨ ╜ ╙"; ᚫ
 
-    public static Component getInscriptionHeader(int numOfInscriptions, int padding){
-        return null;
+//    public static Component getInscriptionHeader(int numOfInscriptions, int padding){
+//        return null;
+////        Component paddingComponent = Component.text(" ".repeat(padding));
+////        Component preHeaderComponent = Component.text("-•÷ ").color(InscriptedPalette.DARKEST_TEXT.getColor());
+////        return paddingComponent.append(preHeaderComponent.append(MiniMessage.miniMessage().deserialize(inscriptionsHeader,
+////                        Placeholder.parsed("n", String.valueOf(numOfInscriptions)),
+////                        Placeholder.parsed("color", "<"+InscriptedPalette.DARKEST_TEXT.getColorString()+">")).color(highlightColor)
+////                            .decoration(TextDecoration.ITALIC,false)));
+//    }
+//    public static Component getInscriptionFooter(int padding){
 //        Component paddingComponent = Component.text(" ".repeat(padding));
-//        Component preHeaderComponent = Component.text("-•÷ ").color(InscriptedPalette.DARKEST_TEXT.getColor());
-//        return paddingComponent.append(preHeaderComponent.append(MiniMessage.miniMessage().deserialize(inscriptionsHeader,
-//                        Placeholder.parsed("n", String.valueOf(numOfInscriptions)),
-//                        Placeholder.parsed("color", "<"+InscriptedPalette.DARKEST_TEXT.getColorString()+">")).color(highlightColor)
-//                            .decoration(TextDecoration.ITALIC,false)));
-    }
-    public static Component getInscriptionFooter(int padding){
-        Component paddingComponent = Component.text(" ".repeat(padding));
-        return paddingComponent.append(Component.text(inscriptionsFooter).color(InscriptedPalette.DARKEST_TEXT.getColor())).decoration(TextDecoration.ITALIC,false);
-    }
+//        return paddingComponent.append(Component.text(inscriptionsFooter).color(InscriptedPalette.DARKEST_TEXT.getColor())).decoration(TextDecoration.ITALIC,false);
+//    }
 
-    public static void setDisplayName(String name, ItemStack item, ItemRarities rarity, boolean isCorrupted, int quality){
-        Component nameComponent;
-        Component qualityComponent;
-        if (quality>0){
-            qualityComponent = MiniMessage.miniMessage().deserialize(" <white>[<qual><white>]", Placeholder.parsed("qual", "<red>+"+quality));
-        } else {qualityComponent = Component.text("");}
-        if (isCorrupted){
-            String originalHex = rarity.getColorComponent().getColorString();
-            String corruptedHex = InscriptedPalette.CORRUPTED.getColor().asHexString();
-
-            String openTag = "<gradient:@Hex1@:@Hex2@>";
-            String closeTag = "</gradient>";
-            String finalOpenTag = openTag.replace("@Hex1@",corruptedHex).replace("@Hex2@", originalHex);
-
-            MiniMessage mmBuilder = MiniMessage.builder().build();
-            nameComponent = mmBuilder.deserialize(finalOpenTag+name+closeTag);
-
-            Component gradientName = nameComponent.append(qualityComponent).decoration(TextDecoration.ITALIC, false);
-            item.editMeta((itemMeta)-> itemMeta.displayName(gradientName));
-        } else {
-            Component regularDisplayName = Component.text(name).color(rarity.getColorComponent().getColor()).append(qualityComponent).decoration(TextDecoration.ITALIC, false);
-            item.editMeta((itemMeta)->itemMeta.displayName(regularDisplayName));
-        }
-    }
+//    public static void setDisplayName(String name, ItemStack item, ItemRarities rarity, boolean isCorrupted, int quality){
+//        Component nameComponent;
+//        Component qualityComponent;
+//        if (quality>0){
+//            qualityComponent = MiniMessage.miniMessage().deserialize(" <white>[<qual><white>]", Placeholder.parsed("qual", "<red>+"+quality));
+//        } else {qualityComponent = Component.text("");}
+//        if (isCorrupted){
+//            String originalHex = rarity.getColorComponent().getColorString();
+//            String corruptedHex = InscriptedPalette.CORRUPTED.getColor().asHexString();
+//
+//            String openTag = "<gradient:@Hex1@:@Hex2@>";
+//            String closeTag = "</gradient>";
+//            String finalOpenTag = openTag.replace("@Hex1@",corruptedHex).replace("@Hex2@", originalHex);
+//
+//            MiniMessage mmBuilder = MiniMessage.builder().build();
+//            nameComponent = mmBuilder.deserialize(finalOpenTag+name+closeTag);
+//
+//            Component gradientName = nameComponent.append(qualityComponent).decoration(TextDecoration.ITALIC, false);
+//            item.editMeta((itemMeta)-> itemMeta.displayName(gradientName));
+//        } else {
+//            Component regularDisplayName = Component.text(name).color(rarity.getColorComponent().getColor()).append(qualityComponent).decoration(TextDecoration.ITALIC, false);
+//            item.editMeta((itemMeta)->itemMeta.displayName(regularDisplayName));
+//        }
+//    }
 
 
     public static List<Component> renderDamage(Weapon weaponData, int indent){
-        List<Component> damageComponent = new ArrayList<>();
-        Component indentComponent = Component.text(" ".repeat(indent));
-        //Render Damages
-        Map<DamageTypes, int[]> damages = weaponData.getLocalDamage();
-        if (damages.isEmpty()){return damageComponent;}
-        for (DamageTypes dmgType : DamageTypes.values()){
-            if (!damages.containsKey(dmgType)){continue;}
-
-            String icon = dmgType.getCharacter();
-            int[] dmgValues = damages.get(dmgType);
-            if (dmgType.equals(DamageTypes.PHYSICAL)){
-                if (weaponData.getRange().equals(RangeCategory.RANGED)){icon = "\uD83C\uDFF9";}
-                final String dmgElement = Utils.convertToPrettyString("DMG:");
-                Component dmgComponent = Component.text(dmgElement).appendSpace().color(highlightColor);
-                final String physicalLine = (icon+ " " + dmgValues[0] + " - " + dmgValues[1]);
-                Component coloredDmgComponent = Component.text(physicalLine).color(dmgType.getDmgColor().getColor());
-                damageComponent.add(indentComponent.append(dmgComponent).append(coloredDmgComponent).decoration(TextDecoration.ITALIC,false));
-                continue;
-            }
-            final String dmgLine = (icon+ " " + dmgValues[0] + " - " + dmgValues[1]);
-            damageComponent.add(Component.text(" ".repeat(indent+6)).append(Component.text(dmgLine).color(dmgType.getDmgColor().getColor()).decoration(TextDecoration.ITALIC,false)));
-        }
-        //Empty line spacing
-        damageComponent.add(Component.text(""));
-
-        //Render Atk speed line
-        Component barComponent = weaponData.getAtkSpeed().getAttackSpeedBarComponent();
-        String atkSpeedElement = Utils.convertToPrettyString("Atk Speed:");
-        Component atkSpeedLine = Component.text(atkSpeedElement).color(highlightColor).appendSpace().append(barComponent);
-        damageComponent.add(indentComponent.append(atkSpeedLine.decoration(TextDecoration.ITALIC,false)));
-
-        return damageComponent;
+        return null;
+//        List<Component> damageComponent = new ArrayList<>();
+//        Component indentComponent = Component.text(" ".repeat(indent));
+//        //Render Damages
+//        Map<DamageTypes, int[]> damages = weaponData.getLocalDamage();
+//        if (damages.isEmpty()){return damageComponent;}
+//        for (DamageTypes dmgType : DamageTypes.values()){
+//            if (!damages.containsKey(dmgType)){continue;}
+//
+//            String icon = dmgType.getCharacter();
+//            int[] dmgValues = damages.get(dmgType);
+//            if (dmgType.equals(DamageTypes.PHYSICAL)){
+//                if (weaponData.getRange().equals(RangeCategory.RANGED)){icon = "\uD83C\uDFF9";}
+//                final String dmgElement = Utils.convertToPrettyString("DMG:");
+//                Component dmgComponent = Component.text(dmgElement).appendSpace().color(highlightColor);
+//                final String physicalLine = (icon+ " " + dmgValues[0] + " - " + dmgValues[1]);
+//                Component coloredDmgComponent = Component.text(physicalLine).color(dmgType.getDmgColor().getColor());
+//                damageComponent.add(indentComponent.append(dmgComponent).append(coloredDmgComponent).decoration(TextDecoration.ITALIC,false));
+//                continue;
+//            }
+//            final String dmgLine = (icon+ " " + dmgValues[0] + " - " + dmgValues[1]);
+//            damageComponent.add(Component.text(" ".repeat(indent+6)).append(Component.text(dmgLine).color(dmgType.getDmgColor().getColor()).decoration(TextDecoration.ITALIC,false)));
+//        }
+//        //Empty line spacing
+//        damageComponent.add(Component.text(""));
+//
+//        //Render Atk speed line
+//        Component barComponent = weaponData.getAtkSpeed().getAttackSpeedBarComponent();
+//        String atkSpeedElement = Utils.convertToPrettyString("Atk Speed:");
+//        Component atkSpeedLine = Component.text(atkSpeedElement).color(highlightColor).appendSpace().append(barComponent);
+//        damageComponent.add(indentComponent.append(atkSpeedLine.decoration(TextDecoration.ITALIC,false)));
+//
+//        return damageComponent;
     }
     public static List<Component> renderDefences(Armor armorData, int padding){
         List<Component> renderedDefences = new ArrayList<>();
@@ -173,7 +168,7 @@ public class ItemInterfaceRenderer {
         if (has2ndLine){
             if (hasWard){
                 Component secondLinePadding = getDefencePadding(maxLength, wardLength, !noDefences);
-                secondStatLine = Component.text(wardString).color(InscriptedPalette.WARD.getColor())
+                secondStatLine = Component.text(wardString).color(InscriptedPalette.SOUL.getColor())
                         .append(secondLinePadding);
                 if (noDefences){
                     renderedDefences.add(lineStartPadding.append(fixedStatLine.decoration(TextDecoration.ITALIC,false)));

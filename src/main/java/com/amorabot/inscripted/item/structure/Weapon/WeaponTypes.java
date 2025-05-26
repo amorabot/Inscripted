@@ -2,6 +2,7 @@ package com.amorabot.inscripted.item.structure.Weapon;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.item.structure.Tiers;
 import com.amorabot.inscripted.item.structure.ItemSubtype;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
@@ -98,7 +99,7 @@ public enum WeaponTypes implements ItemSubtype {
     }
 
     @Override
-    public String getSubtypeDisplayName() {
+    public String getSubtypeDisplayName(Item itemData) {
         return this.name();
     }
 }

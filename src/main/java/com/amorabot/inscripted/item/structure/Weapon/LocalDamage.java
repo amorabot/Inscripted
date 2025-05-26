@@ -17,6 +17,15 @@ import java.util.Map;
 @Getter
 public class LocalDamage {
 
+    /*
+    private static final Set<InscriptionIDs> locallyCompiledStats;
+    Same logic for LocalDefence component
+    TODO: Global set that is loaded whenever a local damage inscription found (For ignoring them in the compilation step)
+        When getting FLAT_FIRE_DAMAGE and INCREASED_FIRE on a weapon's LocalDamage, those stats are implicitly for local compilation (this step)
+        Then in this case, when those stats are found, load them into the static set
+        Whenever we are compiling, check if the compiled inscription is inside this set AND if that inscription is local
+            If the set does contain that insc. but the insc. is not local, then compile
+    */
     private final Map<DamageTypes, int[]> weaponDamage = new HashMap<>();
 
     public LocalDamage(Weapon weapon){
@@ -33,13 +42,15 @@ public class LocalDamage {
 
         //Adding local flats to baseDamage
         for (DamageTypes dmg : addedDamages.keySet()){
+            Utils.log(dmg.name());
             addFlatDamage(baseDamage,dmg, addedDamages.get(dmg));
         }
 
         //Getting final values
         for (DamageTypes finalDmg : baseDamage.keySet()){
             final int[] baseDmg = baseDamage.get(finalDmg);
-            final int totalIncrease = localIncreases.get(finalDmg) + qualityIncrease;
+//            Utils.log(Arrays.toString(baseDmg));
+            final int totalIncrease = localIncreases.getOrDefault(finalDmg,0) + qualityIncrease;
             final int[] finalValues = Arrays.stream(baseDmg).map(currValue -> (int) ((1+((float)totalIncrease/100))*currValue)).toArray();
             weaponDamage.put(finalDmg,finalValues);
         }
@@ -64,8 +75,7 @@ public class LocalDamage {
             if (insc.isSpecial()){continue;}
             if (definition.isGlobal()){continue;}
             if (definition instanceof InscriptionDefinition.Regular regularDef){
-
-                if (!regularDef.getBaseData().type().equals(ValueType.INCREASED)){
+                if (!regularDef.getBaseData().type().equals(ValueType.FLAT)){
                     continue;
                 }
                 DamageTypes damageToAdd = mapFlatDamageTypes(regularDef.getBaseData().stat());

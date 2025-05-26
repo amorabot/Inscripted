@@ -18,7 +18,7 @@ import java.util.List;
 
 public class ItemRenderer {
     public static final String inscriptionsHeader = Utils.convertToPrettyString("Inscriptions: ") + "<color>•÷¦[ <n> ]¦÷=--  ";
-    public static final String inscriptionsFooter = "-   --  ---  ----=÷• ᚫ •÷=---";
+    public static final String inscriptionsFooter = "-   --  ---   ----=÷• ᚫ •÷=---";
 
     public static void imprintLore(ItemStack item, Item itemData, List<Component> lore, boolean identified){
         item.lore(lore);
@@ -34,7 +34,7 @@ public class ItemRenderer {
             setDisplayName(itemData.getName(),item,itemData.getRarity(),itemData.isCorrupted(),itemData.getQuality());
             return;
         }
-        setDisplayName("Unidentified " + itemData.getGenericSubtype().getSubtypeDisplayName(),item,itemData.getRarity(),false,0);
+        setDisplayName("Unidentified " + itemData.getGenericSubtype().getSubtypeDisplayName(itemData),item,itemData.getRarity(),false,0);
     }
 
     public static List<Component> render(Item itemData){
@@ -91,14 +91,12 @@ public class ItemRenderer {
         return renderedRequirements;
     }
     private static Component renderDescription(Item itemData){
-        final int defaultDescPadding = 1;
         ItemRarities rarity = itemData.getRarity();
-        Component paddingComponent = Component.text(" ".repeat(defaultDescPadding));
         Component tagsComponent = renderDescriptionTags(itemData.getStarRating(), itemData.isCorrupted());
-        Component descriptionComponent = Component.text(rarity.toString()+ " " + itemData.getGenericSubtype().getSubtypeDisplayName())
+        Component descriptionComponent = Component.text(rarity.toString()+ " " + itemData.getGenericSubtype().getSubtypeDisplayName(itemData))
                 .decorate(TextDecoration.BOLD).color(rarity.getColorComponent().getColor());
 
-        return paddingComponent.append(descriptionComponent).appendSpace().append(tagsComponent).decoration(TextDecoration.ITALIC,false);
+        return descriptionComponent.appendSpace().append(tagsComponent).decoration(TextDecoration.ITALIC,false);
     }
     private static Component renderDescriptionTags(double starRating, boolean corrupted){
         Component starRatingIcon = getStarIcon(starRating);

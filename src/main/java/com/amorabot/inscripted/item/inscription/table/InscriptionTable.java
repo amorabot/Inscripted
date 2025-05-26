@@ -147,7 +147,9 @@ public class InscriptionTable {
         if (inscriptionAffix.equals(AffixType.UNIQUE)){//Consult the relic values table
             return RELIC_VALUES.get(mod).clone();
         }
-        if (inscriptionAffix.equals(AffixType.IMPLICIT)){return getImplicitValuesArray(mod,tier);}
+        if (inscriptionAffix.equals(AffixType.IMPLICIT)){
+            return getImplicitValuesArray(mod,tier);
+        }
         int [] fetchedValue = MAPPED_AFFIX_TIER_VALUES.get(inscriptionAffix).get(mod).get(tier).clone();
         if (fetchedValue == null){
             Utils.error("Invalid inscription mapping. Possible causes:"+

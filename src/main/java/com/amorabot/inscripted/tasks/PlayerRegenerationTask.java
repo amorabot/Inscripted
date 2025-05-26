@@ -72,7 +72,7 @@ public class PlayerRegenerationTask extends BukkitRunnable {
 
             updateWardHearts(player, HPComponent);
 
-            regenString.append(" ").append("&").append(InscriptedPalette.WARD.getColorString()).append("&l+").append((int) (wardRegen));
+            regenString.append(" ").append("&").append(InscriptedPalette.SOUL.getColorString()).append("&l+").append((int) (wardRegen));
         }
 
         if (!regenString.isEmpty()){

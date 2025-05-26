@@ -16,6 +16,7 @@ public abstract class InscriptionDefinition implements Serializable {
 
     public abstract <R> R accept(InscriptionDefinitionVisitor<R> visitor);
     public abstract boolean isGlobal();
+    public abstract boolean isConstant();
     private void setDisplayName(String displayName){
         this.displayName = displayName;
     }
@@ -57,6 +58,10 @@ public abstract class InscriptionDefinition implements Serializable {
         public boolean isGlobal() {
             return this.global;
         }
+        @Override
+        public boolean isConstant() {
+            return this.baseData.roll.equals(RollType.CONSTANT);
+        }
     }
 
     @Getter
@@ -82,7 +87,12 @@ public abstract class InscriptionDefinition implements Serializable {
         }
         @Override
         public boolean isGlobal() {
-            return false;
+            return global;
+        }
+
+        @Override
+        public boolean isConstant() {
+            return (this.primaryData.roll.equals(RollType.CONSTANT) && this.secondaryData.roll.equals(RollType.CONSTANT));
         }
     }
 
@@ -112,6 +122,12 @@ public abstract class InscriptionDefinition implements Serializable {
         }
         @Override
         public boolean isGlobal() {return true;}
+
+        @Override
+        public boolean isConstant() {
+            return this.baseData.roll.equals(RollType.CONSTANT);
+        }
+
         public Stats getMetaStat(){
             return this.convertedStat;
         }
@@ -140,6 +156,10 @@ public abstract class InscriptionDefinition implements Serializable {
         }
         @Override
         public boolean isGlobal() {return true;}
+        @Override
+        public boolean isConstant() {
+            return true;
+        }
     }
     @Getter
     public static class Keystone extends InscriptionDefinition{
@@ -158,5 +178,9 @@ public abstract class InscriptionDefinition implements Serializable {
         }
         @Override
         public boolean isGlobal() {return true;}
+        @Override
+        public boolean isConstant() {
+            return true;
+        }
     }
 }

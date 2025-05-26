@@ -36,7 +36,7 @@ public class LocalDefence {
         // Getting final values(flat+inc) and storing them
         for (DefenceTypes defence : baseDefences.keySet()){
             final int baseDefValue = baseDefences.get(defence);
-            final int totalIncrease = localIncreases.get(defence) + qualityIncrease;
+            final int totalIncrease = localIncreases.getOrDefault(defence,0) + qualityIncrease;
             final int finalValue = (int) Utils.applyPercentageTo(baseDefValue, totalIncrease);
             armorDefences.put(defence,finalValue);
         }

@@ -21,14 +21,16 @@ public class Inscription implements Serializable {
 
     private final InscriptionIDs inscription;
     private int tier;
-    private double basePercentile; //0-1
+    private double basePercentile;
     private boolean modifiable = true;
+
+    //TODO: add a debugMode static var on various classes that need it
 
 
     public Inscription(InscriptionIDs inscription, int tier, double basePercentile) {
         this.inscription = inscription;
         this.tier = Math.min(tier, inscription.getTiers());
-        this.basePercentile = basePercentile;
+        this.basePercentile = Math.min(Math.max(0,basePercentile),basePercentile); //0-1
     }
 
     public String getDisplayName(String valuesHex){
@@ -74,7 +76,8 @@ public class Inscription implements Serializable {
 
 
     public int[] getMappedFinalValues(){
-        int[] tableValues = InscriptionTable.queryValuesFor(this).clone();
+        int[] tableValues = InscriptionTable.queryValuesFor(this);
+        //Utils.log(Arrays.toString(tableValues));
         return mapFinalValues(tableValues);
     }
     private int[] mapFinalValues(int[] tableValues){
@@ -100,7 +103,8 @@ public class Inscription implements Serializable {
                 // Get the offset values on the raw value table
                 final int v1 = tableValues[rawOffset];
                 final int v2 = tableValues[rawOffset+1];
-                final int m1 = Utils.getRoundedParametricValue(v1, v2, basePercentile);
+                //Utils.log("v1: " + v1 + " " + "v2: " + v2 + "  BP:" + getBasePercentile());
+                final int m1 = Utils.getRoundedParametricValue(v1, v2, getBasePercentile());
                 mappedValues[mappedValuesArrayIndex] = m1;
 
                 mappedOffset+= 1;
@@ -111,7 +115,7 @@ public class Inscription implements Serializable {
             if (currentSizing == RollType.DOUBLE_ROLL.getPreRollSize()){
                 final int v1 = tableValues[i+rawOffset];
                 final int v2 = tableValues[i+rawOffset+1];
-                final int m1 = Utils.getRoundedParametricValue(v1, v2, basePercentile);
+                final int m1 = Utils.getRoundedParametricValue(v1, v2, getBasePercentile());
                 final int v3 = tableValues[i+rawOffset+2];
                 final int v4 = tableValues[i+rawOffset+3];
                 final int m2 = Utils.getRoundedParametricValue(v3, v4, basePercentile);

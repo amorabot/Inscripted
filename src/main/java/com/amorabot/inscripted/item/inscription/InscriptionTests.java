@@ -10,5 +10,8 @@ public class InscriptionTests {
 //        InscriptionTable.loadRawValues();
 //        Inscription newInscription = new Inscription(InscriptionIDs.ADDED_FIRE, 2, 1D);
 //        System.out.println(newInscription.getDisplayName());
+        for (InscriptionIDs insc : InscriptionIDs.values()){
+            System.out.println(insc.getDefinitionData().getDisplayName());
+        }
     }
 }

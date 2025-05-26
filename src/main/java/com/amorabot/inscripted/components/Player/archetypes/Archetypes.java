@@ -10,6 +10,8 @@ import com.amorabot.inscripted.item.render.InscriptedPalette;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 
+import static com.amorabot.inscripted.utils.Utils.getNormalizedValue;
+
 @Getter
 public enum Archetypes {
     NONE(InscriptedPalette.TINTED_BEIGE, null,null),
@@ -39,7 +41,7 @@ public enum Archetypes {
         String implicitID = this + "_" + itemSubtype.name();
         try {
             InscriptionIDs implicit = InscriptionIDs.valueOf(implicitID);
-            return new Inscription(implicit, tier.ordinal(), Tiers.values().length-1);
+            return new Inscription(implicit, tier.ordinal(), getNormalizedValue());
         } catch (IllegalArgumentException exception){
             Utils.error("Invalid implicit fetch for: " + implicitID);
         }

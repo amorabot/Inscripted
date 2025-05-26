@@ -41,6 +41,9 @@ public class Weapon extends Item {
 
 
 
+    public LocalDamage getDamage(){
+        return new LocalDamage(this);
+    }
     public int[] getBaseDamage() {
         int[] basePhys = baseDamage.clone();
         return Arrays.stream(basePhys).map(currValue -> (int) ((1+((float)damageVariance/100))*currValue)).toArray();

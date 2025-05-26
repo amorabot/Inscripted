@@ -64,89 +64,6 @@ public abstract class Item implements Serializable {
     protected abstract void setup();
     //-------------------------------------------------------------------------
     public <subType extends Enum<subType> & ItemSubtype> void imprint(ItemStack item, subType subType){
-        final int mainStatPadding = 1;
-        final int inscriptionsPadding = 3;
-        final int inscriptions = this.getInscriptions().size();
-        Component emptyLine = Component.text("");
-//        Component descriptionLine;
-
-        List<Component> imprintedLore = new ArrayList<>();
-
-        imprintedLore.add(emptyLine);
-//        if (subType instanceof WeaponTypes type){
-//            Weapon weaponData = (Weapon) this;
-//            imprintedLore.addAll(ItemInterfaceRenderer.renderDamage(weaponData, mainStatPadding));
-//            imprintedLore.add(emptyLine);
-//
-//
-////            descriptionLine = ItemInterfaceRenderer.renderDescription(this, type.toString(),0);
-//        } else if (subType instanceof ArmorTypes type) {
-//            Armor armorData = (Armor) this;
-//            imprintedLore.addAll(ItemInterfaceRenderer.renderDefences(armorData,mainStatPadding));
-//
-////            descriptionLine = ItemInterfaceRenderer.renderDescription(this, this.getCategory().toString(),0);
-//            imprintedLore.add(emptyLine);
-//        } else {
-//            //...
-////            descriptionLine = ItemInterfaceRenderer.renderDescription(this, "INVALID",0);
-//        }
-
-        ItemRarities rarity = this.getRarity();
-        switch (rarity){
-            case AUGMENTED,RUNIC -> {
-                imprintedLore.add(ItemInterfaceRenderer.getInscriptionHeader(inscriptions,mainStatPadding+1));
-                imprintedLore.addAll(ItemInterfaceRenderer.renderInscriptions(this, inscriptionsPadding+1));
-                imprintedLore.add(ItemInterfaceRenderer.getInscriptionFooter(mainStatPadding+1));
-            }
-            case RELIC -> {
-                List<Inscription> keystones = getInscriptionList().stream().filter(inscription -> inscription.getInscription().getData().isKeystone()).toList();
-                List<Inscription> effects = getInscriptionList().stream().filter(inscription -> inscription.getInscription().getData().isEffect()).toList();
-                for (Inscription keystoneInsc : keystones){
-                    imprintedLore.add(keystoneInsc.asComponent(mainStatPadding));
-                    imprintedLore.addAll(ItemInterfaceRenderer.renderSpecialInscriptionDescription(keystoneInsc.getInscription(),mainStatPadding+1));
-                    imprintedLore.add(emptyLine);
-                }
-                for (Inscription effectInscr : effects){
-                    imprintedLore.add(effectInscr.asComponent(mainStatPadding));
-                    imprintedLore.addAll(ItemInterfaceRenderer.renderSpecialInscriptionDescription(effectInscr.getInscription(),mainStatPadding+1));
-                    imprintedLore.add(emptyLine);
-                }
-
-                if (keystones.isEmpty() && effects.isEmpty()){imprintedLore.add(emptyLine);}
-
-                imprintedLore.add(ItemInterfaceRenderer.getInscriptionHeader(inscriptions,mainStatPadding+1));
-                imprintedLore.addAll(ItemInterfaceRenderer.renderInscriptions(this, inscriptionsPadding+1));
-                imprintedLore.add(ItemInterfaceRenderer.getInscriptionFooter(mainStatPadding+1));
-
-                //TODO: fetch and render lore data from PDC (key: relicLore)
-            }
-//            default -> imprintedLore.add(emptyLine);
-        }
-
-        imprintedLore.add(emptyLine);
-        imprintedLore.add(ItemInterfaceRenderer.renderImplicit(this,mainStatPadding,subType));
-        imprintedLore.add(emptyLine);
-        imprintedLore.addAll(ItemInterfaceRenderer.renderRequirements(this,mainStatPadding));
-        imprintedLore.add(emptyLine);
-
-//        imprintedLore.add(descriptionLine);
-
-        item.lore(imprintedLore);
-
-        item.editMeta((itemMeta)-> {
-            assert itemMeta != null;
-            itemMeta.setUnbreakable(true);
-//            //TODO: add attributes so they can be hidden (mojank problem)
-//            itemMeta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier("tempArmor", 0.1D, AttributeModifier.Operation.ADD_NUMBER));
-            itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        });
-
-        if (isIdentified()){
-            ItemInterfaceRenderer.setDisplayName(getName(),item,getRarity(),isCorrupted(),this.quality);
-            return;
-        }
-        ItemInterfaceRenderer.setDisplayName("Unidentified " + subType.toString().toLowerCase(),item,getRarity(),false,0);
     }
     public abstract ItemStack getItemForm();
     protected abstract void serializeContainers(Item itemData, ItemStack item);
@@ -182,35 +99,6 @@ public abstract class Item implements Serializable {
         getInscriptionList().add(newMod);
     }
     public double getStarRating() { //Voltar pra acesso protected, so pra uso interno
-        double percentileSum = 0;
-        int invalidMods = 0;
-        for (Inscription mod : getInscriptionList()){
-            InscriptionID inscID = mod.getInscription();
-            if (inscID.getData().isKeystone() || inscID.getData().isEffect()){
-                invalidMods++;
-                continue;
-            }
-            boolean invertValue = !inscID.isPositive();
-            RangeTypes range = null;
-            if (inscID.getData() instanceof InscriptionData){
-                range = ((InscriptionData)inscID.getData()).getDefinitionData().rangeType();
-            } else if (inscID.getData() instanceof HybridInscriptionData) {
-                range = RangeTypes.SINGLE_VALUE; //Ignore SR calc for Hybrid insc for now
-            }
-            if (range.equals(RangeTypes.SINGLE_VALUE)){
-                //Even if it's negative, it's max rolled so it doesnt count towards SR
-                invalidMods+=1;
-                continue;
-            }
-            double inscBP = mod.getBasePercentile();
-            if (invertValue){inscBP = (1D-inscBP);}
-            percentileSum += inscBP;
-        }
-        if (!getInscriptionList().isEmpty()){
-            double percentileAvg = percentileSum/ (getInscriptionList().size()-invalidMods);
-            Utils.log("SR: " + percentileAvg);
-            return percentileAvg;
-        }
         return 0;
     }
     //-1, 0, 1 Return values (Fail, neutral, success)
