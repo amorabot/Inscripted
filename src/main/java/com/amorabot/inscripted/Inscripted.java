@@ -2,7 +2,7 @@ package com.amorabot.inscripted;
 
 import com.amorabot.inscripted.commands.*;
 import com.amorabot.inscripted.components.Mobs.Spawners;
-import com.amorabot.inscripted.file.JSONProfileManager;
+import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.item.render.GlyphInfo;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
 import com.amorabot.inscripted.handlers.Combat.InscriptedPlayerDeathEventListener;
@@ -10,7 +10,7 @@ import com.amorabot.inscripted.handlers.GUI.GUIHandler;
 import com.amorabot.inscripted.handlers.Inventory.*;
 import com.amorabot.inscripted.handlers.misc.JoinQuitHandler;
 import com.amorabot.inscripted.handlers.misc.SunlightBurnHandler;
-import com.amorabot.inscripted.file.InscriptionDataManager;
+import com.amorabot.inscripted.file.item.InscriptionDataManager;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
 import com.amorabot.inscripted.managers.*;
 import com.amorabot.inscripted.tasks.CombatLogger;

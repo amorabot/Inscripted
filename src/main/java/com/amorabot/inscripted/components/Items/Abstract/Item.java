@@ -1,24 +1,24 @@
 package com.amorabot.inscripted.components.Items.Abstract;
 
 import com.amorabot.inscripted.components.Items.Armor.Armor;
-import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
+import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
-import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
+import com.amorabot.inscripted.item.structure.ItemSubtype;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
-import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.components.Items.modifiers.data.HybridInscriptionData;
 import com.amorabot.inscripted.components.Items.modifiers.data.InscriptionData;
 import com.amorabot.inscripted.components.renderers.ItemInterfaceRenderer;
+import com.amorabot.inscripted.item.structure.ItemRarities;
+import com.amorabot.inscripted.item.structure.Tiers;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
@@ -68,28 +68,28 @@ public abstract class Item implements Serializable {
         final int inscriptionsPadding = 3;
         final int inscriptions = this.getInscriptions().size();
         Component emptyLine = Component.text("");
-        Component descriptionLine;
+//        Component descriptionLine;
 
         List<Component> imprintedLore = new ArrayList<>();
 
         imprintedLore.add(emptyLine);
-        if (subType instanceof WeaponTypes type){
-            Weapon weaponData = (Weapon) this;
-            imprintedLore.addAll(ItemInterfaceRenderer.renderDamage(weaponData, mainStatPadding));
-            imprintedLore.add(emptyLine);
-
-
-            descriptionLine = ItemInterfaceRenderer.renderDescription(this, type.toString(),0);
-        } else if (subType instanceof ArmorTypes type) {
-            Armor armorData = (Armor) this;
-            imprintedLore.addAll(ItemInterfaceRenderer.renderDefences(armorData,mainStatPadding));
-
-            descriptionLine = ItemInterfaceRenderer.renderDescription(this, this.getCategory().toString(),0);
-            imprintedLore.add(emptyLine);
-        } else {
-            //...
-            descriptionLine = ItemInterfaceRenderer.renderDescription(this, "INVALID",0);
-        }
+//        if (subType instanceof WeaponTypes type){
+//            Weapon weaponData = (Weapon) this;
+//            imprintedLore.addAll(ItemInterfaceRenderer.renderDamage(weaponData, mainStatPadding));
+//            imprintedLore.add(emptyLine);
+//
+//
+////            descriptionLine = ItemInterfaceRenderer.renderDescription(this, type.toString(),0);
+//        } else if (subType instanceof ArmorTypes type) {
+//            Armor armorData = (Armor) this;
+//            imprintedLore.addAll(ItemInterfaceRenderer.renderDefences(armorData,mainStatPadding));
+//
+////            descriptionLine = ItemInterfaceRenderer.renderDescription(this, this.getCategory().toString(),0);
+//            imprintedLore.add(emptyLine);
+//        } else {
+//            //...
+////            descriptionLine = ItemInterfaceRenderer.renderDescription(this, "INVALID",0);
+//        }
 
         ItemRarities rarity = this.getRarity();
         switch (rarity){
@@ -129,15 +129,15 @@ public abstract class Item implements Serializable {
         imprintedLore.addAll(ItemInterfaceRenderer.renderRequirements(this,mainStatPadding));
         imprintedLore.add(emptyLine);
 
-        imprintedLore.add(descriptionLine);
+//        imprintedLore.add(descriptionLine);
 
         item.lore(imprintedLore);
 
         item.editMeta((itemMeta)-> {
             assert itemMeta != null;
             itemMeta.setUnbreakable(true);
-            //TODO: add attributes so they can be hidden (mojank problem)
-            itemMeta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier("tempArmor", 0.1D, AttributeModifier.Operation.ADD_NUMBER));
+//            //TODO: add attributes so they can be hidden (mojank problem)
+//            itemMeta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier("tempArmor", 0.1D, AttributeModifier.Operation.ADD_NUMBER));
             itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
         });

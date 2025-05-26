@@ -136,7 +136,7 @@ public enum GlyphInfo {
     UNICODE_1D22('ᴢ', 5),
 
     SHIELD(DefenceTypes.ARMOR.getSpecialChar().charAt(0), 7),
-    WARD(DefenceTypes.WARD.getSpecialChar().charAt(0), 7),
+    WARD(DefenceTypes.SOUL.getSpecialChar().charAt(0), 7),
     FIRE(DefenceTypes.FIRE.getSpecialChar().charAt(0), 7),
     MOON(DefenceTypes.ABYSSAL.getSpecialChar().charAt(0), 7),
     DODGE('✦', 7);

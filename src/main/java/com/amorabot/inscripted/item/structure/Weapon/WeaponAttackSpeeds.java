@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.components.Items.Weapon;
+package com.amorabot.inscripted.item.structure.Weapon;
 
 import com.amorabot.inscripted.item.render.InscriptedPalette;
 import lombok.Getter;

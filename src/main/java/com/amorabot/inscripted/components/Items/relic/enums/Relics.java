@@ -2,15 +2,9 @@ package com.amorabot.inscripted.components.Items.relic.enums;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
-import com.amorabot.inscripted.components.Items.Armor.Armor;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.inscripted.components.Items.relic.RelicArmorDAO;
-import com.amorabot.inscripted.components.Items.Files.RelicEditor;
-import com.amorabot.inscripted.components.Items.relic.RelicWeaponDAO;
-import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
-import lombok.Getter;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -18,7 +12,6 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public enum Relics {
 

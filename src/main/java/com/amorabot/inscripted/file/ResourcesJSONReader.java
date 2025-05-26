@@ -1,18 +1,11 @@
-package com.amorabot.inscripted.components.Items.Files;
+package com.amorabot.inscripted.file;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
-import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.item.structure.ItemSubtype;
 import com.amorabot.inscripted.utils.Utils;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Map;
 
 public class ResourcesJSONReader {

@@ -3,7 +3,7 @@ package com.amorabot.inscripted.skills.attackInstances;
 import com.amorabot.inscripted.components.Items.relic.enums.Effects;
 import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.file.JSONProfileManager;
+import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.skills.PlayerAbilities;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

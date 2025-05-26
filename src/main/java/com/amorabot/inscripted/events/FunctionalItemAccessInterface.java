@@ -3,7 +3,7 @@ package com.amorabot.inscripted.events;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
-import com.amorabot.inscripted.components.Items.DataStructures.GenericItemContainerDataType;
+import com.amorabot.inscripted.file.item.serialization.GenericItemContainerDataType;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.utils.Utils;

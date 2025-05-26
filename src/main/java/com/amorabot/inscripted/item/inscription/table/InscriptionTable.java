@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.item.inscription.table;
 
-import com.amorabot.inscripted.file.InscriptionDataManager;
+import com.amorabot.inscripted.file.item.InscriptionDataManager;
 import com.amorabot.inscripted.item.inscription.Inscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.inscription.language.AffixType;
@@ -148,7 +148,13 @@ public class InscriptionTable {
             return RELIC_VALUES.get(mod).clone();
         }
         if (inscriptionAffix.equals(AffixType.IMPLICIT)){return getImplicitValuesArray(mod,tier);}
-        return MAPPED_AFFIX_TIER_VALUES.get(inscriptionAffix).get(mod).get(tier).clone();
+        int [] fetchedValue = MAPPED_AFFIX_TIER_VALUES.get(inscriptionAffix).get(mod).get(tier).clone();
+        if (fetchedValue == null){
+            Utils.error("Invalid inscription mapping. Possible causes:"+
+                    "\nInscription not available on item table"+
+                    "\nInvalid tier");
+        }
+        return fetchedValue;
     }
 
     public static void loadRawValues(){

@@ -7,7 +7,7 @@ import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.item.render.InscriptedPalette;
-import com.amorabot.inscripted.file.JSONProfileManager;
+import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
 import com.amorabot.inscripted.skills.AbilityTypes;
 import com.amorabot.inscripted.utils.Utils;
@@ -66,7 +66,7 @@ public class PlayerInterfaceRenderer extends BukkitRunnable {
             TextComponent health = Component.text((int) curHealth + "/" + (int) maxHealth)
                             .append(Component.text(DefenceTypes.HEALTH.getSpecialChar()))
                             .color(TextColor.fromHexString(healthHex));
-            String wardValues = ((int) curWard + "/" + (int) maxWard) + DefenceTypes.WARD.getSpecialChar();
+            String wardValues = ((int) curWard + "/" + (int) maxWard) + DefenceTypes.SOUL.getSpecialChar();
             TextComponent ward;
             if (playerProfile.hasKeystone(Keystones.FORBIDDEN_PACT)){
                 ward = Component.text(wardValues)

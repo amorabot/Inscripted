@@ -4,7 +4,7 @@ import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.file.JSONProfileManager;
+import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.skills.ParticlePlotter;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Location;

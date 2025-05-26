@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.file;
+package com.amorabot.inscripted.file.item;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
@@ -14,7 +14,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.*;
 import java.util.*;
 
-import static com.amorabot.inscripted.components.Items.Files.ResourcesJSONReader.getResourceJSONAt;
+import static com.amorabot.inscripted.file.ResourcesJSONReader.getResourceJSONAt;
 import static com.amorabot.inscripted.utils.Utils.log;
 
 public class InscriptionDataManager {
@@ -159,12 +159,12 @@ public class InscriptionDataManager {
         setupTable("tables","WAND");
         setupTable("tables","MACE");
 
-        setupTable("tables", "HEAVY_PLATING");
-        setupTable("tables", "CARVED_PLATING");
-        setupTable("tables", "LIGHT_CLOTH");
-        setupTable("tables", "RUNIC_LEATHER");
-        setupTable("tables", "ENCHANTED_SILK");
-        setupTable("tables", "RUNIC_STEEL");
+        setupTable("tables", "ARMORED");
+        setupTable("tables", "ORNATE");
+        setupTable("tables", "CLOTH");
+        setupTable("tables", "PELT");
+        setupTable("tables", "SILK");
+        setupTable("tables", "RUNISTEEL");
 
         setupTable("subtables","GENERIC_WEAPON");
         setupTable("subtables","STRENGTH_WEAPON");

@@ -3,7 +3,7 @@
     "SUFFIX": {
     },
     "PREFIX": {
-      "ARMOR_SOUL": {
+      "DODGE_SOUL": {
         "15": 0,
         "30": 1,
         "50": 2,
@@ -12,7 +12,7 @@
     }
   },
   "implicits": {
-    "TEMPLAR_RUNIC_STEEL": {
+    "ROGUE_PELT": {
       "0": [ 2,4,   2,4 ],
       "1": [ 4,6,   4,6 ],
       "2": [ 6,8,   6,8 ],
@@ -22,7 +22,7 @@
   },
   "subtables": [
     "GENERIC_ARMOR",
-    "STRENGTH_ARMOR",
+    "DEXTERITY_ARMOR",
     "INTELLIGENCE_ARMOR"
   ]
 }

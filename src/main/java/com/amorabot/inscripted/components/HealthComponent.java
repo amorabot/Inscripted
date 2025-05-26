@@ -14,7 +14,7 @@ import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.stats.StatPool;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.item.render.CustomUnicodeTable;
-import com.amorabot.inscripted.file.JSONProfileManager;
+import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import lombok.Getter;
 import lombok.Setter;

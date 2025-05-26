@@ -1,10 +1,11 @@
-package com.amorabot.inscripted.components.Items.Armor;
+package com.amorabot.inscripted.item.structure.Armor;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
-import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
+import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.item.structure.EquipmentSlots;
+import com.amorabot.inscripted.item.structure.Tiers;
+import com.amorabot.inscripted.item.structure.ItemSubtype;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
@@ -16,20 +17,12 @@ import java.util.*;
 
 public enum ArmorTypes implements ItemSubtype {
 
-    //TODO: Rename enum constants and remove prefixes when changing item naming
-    //Armored
-    HEAVY_PLATING("Heavy",TrimMaterial.REDSTONE),
-    //Ornate
-    CARVED_PLATING("Ornate",TrimMaterial.GOLD),
-    //Cloth
-    LIGHT_CLOTH("Cloth",TrimMaterial.EMERALD),
-    //Pelt
-    RUNIC_LEATHER("Pelt",TrimMaterial.NETHERITE),
-    //Silk
-    ENCHANTED_SILK("Silk",TrimMaterial.LAPIS),
-    //Runisteel
-    RUNIC_STEEL("Runisteel",TrimMaterial.AMETHYST);
-
+    ARMORED(TrimMaterial.REDSTONE),
+    ORNATE(TrimMaterial.GOLD),
+    CLOTH(TrimMaterial.EMERALD),
+    PELT(TrimMaterial.NETHERITE),
+    SILK(TrimMaterial.LAPIS),
+    RUNISTEEL(TrimMaterial.AMETHYST);
 
     private final InscriptionTable itemInscriptionTable;
 
@@ -38,61 +31,48 @@ public enum ArmorTypes implements ItemSubtype {
     private static final double LEGGINGS_MAIN_STAT_WEIGHT = 1.2;
     private static final double BOOTS_MAIN_STAT_WEIGHT = 0.7;
 
-    private final String prefix;
     @Getter
     private final TrimMaterial trimMaterial;
 
     private final Map<Tiers, String> names = new HashMap<>();
-    private final Map<Tiers, Map<ItemTypes, Map<DefenceTypes, Integer>>> baseStats = new HashMap<>();
-    public static final int percentHealthVariance = 10;
+    private final Map<Tiers, Map<EquipmentSlots, Map<DefenceTypes, Integer>>> baseStats = new HashMap<>();
+    public static final int BASE_VARIANCE = 10;
 
-    ArmorTypes(String prefix, TrimMaterial trimMaterial){
-        this.prefix = prefix;
+    ArmorTypes(TrimMaterial trimMaterial){
         this.trimMaterial = trimMaterial;
         for (Tiers tier : Tiers.values()){
             this.names.put(tier, loadTierName(tier));
             this.baseStats.put(tier, loadBaseStats(tier));
         }
         this.itemInscriptionTable = new InscriptionTable(this.toString());
+//        itemInscriptionTable.debug();
     }
 
-    public String getSubtypePrefix() {
-        return prefix;
-    }
     public InscriptionTable getTableData(){
         return this.itemInscriptionTable;
     }
 
-    public Material mapArmorBase(Tiers tier, ItemTypes armorBase){
-        if (armorBase.equals(ItemTypes.WEAPON)){
-            Utils.error("Invalid argument for armor mapping." + armorBase + " is not a armor type.");
+    public Material mapArmorBase(Tiers tier, EquipmentSlots armorSlot){
+        if (armorSlot.equals(EquipmentSlots.WEAPON)){
+            Utils.error("Invalid argument for armor mapping." + armorSlot + " is not a armor type.");
             return null;
         }
-        return getArmorMaterial(tier, armorBase);
+        return getArmorMaterial(tier, armorSlot);
     }
-    private Material getArmorMaterial(Tiers tier, ItemTypes armorBase){
-        String materialString = tier.getMaterial() + "_" + armorBase.toString();
+    private Material getArmorMaterial(Tiers tier, EquipmentSlots armorSlot){
+        String materialString = tier.getMaterial() + "_" + armorSlot.toString();
         return Material.valueOf(materialString);
     }
-
-
-
-    @Override
-    public String loadTierName(Tiers tier) {
-        String namePath = ArmorTypes.class.getSimpleName() + "." + this + "." + tier + "." + "NAME";
-        return Inscripted.getPlugin().getConfig().getString(namePath);
-    }
-    @Override
-    public String getTierName(Tiers tier){
-        return this.names.getOrDefault(tier, "INVALID ARMOR");
+    public int getBaseHealthValue(Tiers tier, EquipmentSlots slot){
+        return baseStats.get(tier).get(slot).getOrDefault(DefenceTypes.HEALTH,0);
     }
 
-    public Map<ItemTypes, Map<DefenceTypes, Integer>> loadBaseStats(Tiers tier){
+    private Map<EquipmentSlots, Map<DefenceTypes, Integer>> loadBaseStats(Tiers tier){
         FileConfiguration config = Inscripted.getPlugin().getConfig();
-        Map<ItemTypes, Map<DefenceTypes, Integer>> baseStatData = new HashMap<>();
+        Map<EquipmentSlots, Map<DefenceTypes, Integer>> baseStatData = new HashMap<>();
 
-        for (ItemTypes armorSlot : ItemTypes.values()){
-            if (armorSlot.equals(ItemTypes.WEAPON)){continue;}
+        for (EquipmentSlots armorSlot : EquipmentSlots.values()){
+            if (armorSlot.equals(EquipmentSlots.WEAPON)){continue;}
 
             //Get to the armor subtype
             String subtypePath = ArmorTypes.class.getSimpleName() + "." + this + ".";
@@ -131,7 +111,8 @@ public enum ArmorTypes implements ItemSubtype {
             }
             //Adding the health value for that armor piece, for that given tier
             String healthPath = subtypePath + tier + "." + armorSlot;
-            defMap.put(DefenceTypes.HEALTH, loadHealthValue(healthPath));
+            int healthValue = Inscripted.getPlugin().getConfig().getInt(healthPath);
+            defMap.put(DefenceTypes.HEALTH, healthValue);
 
             //Now, the defMap needs to be associated with its armorSlot
             baseStatData.put(armorSlot,defMap);
@@ -139,13 +120,11 @@ public enum ArmorTypes implements ItemSubtype {
         return baseStatData;
     }
 
-    public Map<DefenceTypes, Integer> mapBaseStats(Armor armorData){
+    public Map<DefenceTypes, Integer> buildArmorDefences(int ilvl, Tiers tier, EquipmentSlots slot, int baseArmorHealth){
         FileConfiguration config = Inscripted.getPlugin().getConfig();
         Map<DefenceTypes, Integer> defenceMap = new HashMap<>();
 
-        ItemTypes slot = armorData.getCategory();
         ArmorTypes subtype = this;
-        Tiers tier = armorData.getTier();
 
         String subtypePath = ArmorTypes.class.getSimpleName() + "." + subtype + ".";
         List<String> subtypeDefences = config.getStringList(subtypePath+DefenceTypes.class.getSimpleName());
@@ -161,7 +140,6 @@ public enum ArmorTypes implements ItemSubtype {
         }
 
         for (DefenceTypes def : mappedSubtypeDefences){
-            int ilvl = armorData.getIlvl();
             int tierMaxLevel = tier.getMaxLevel();
             Optional<Tiers> prevTier = tier.getPreviousTier();
 
@@ -193,16 +171,34 @@ public enum ArmorTypes implements ItemSubtype {
             }
             defenceMap.put(def, mappedDefenceValue);
         }
-        defenceMap.put(DefenceTypes.HEALTH, armorData.getBaseHealth());
+
+        defenceMap.put(DefenceTypes.HEALTH, baseArmorHealth);
         return defenceMap;
     }
-    public int mapHealthValue(Armor armorData){
-        Map<DefenceTypes, Integer> cacheDefMap = baseStats.get(armorData.getTier()).get(armorData.getCategory());
-        return cacheDefMap.get(DefenceTypes.HEALTH);
+
+
+    // ItemSubtype Implementations
+    @Override
+    public Archetypes mapArchetype() {
+        for (Archetypes arch : Archetypes.values()){
+            if (arch.equals(Archetypes.NONE)){continue;}
+            if (arch.getArmorType().equals(this)){return arch;}
+        }
+        return Archetypes.NONE;
     }
 
+    @Override
+    public String getSubtypeDisplayName() {
+        return this.name();
+    }
 
-    private int loadHealthValue(String path){
-        return Inscripted.getPlugin().getConfig().getInt(path);
+    @Override
+    public String loadTierName(Tiers tier) {
+        String namePath = ArmorTypes.class.getSimpleName() + "." + this + "." + tier + "." + "NAME";
+        return Inscripted.getPlugin().getConfig().getString(namePath);
+    }
+    @Override
+    public String getTierName(Tiers tier){
+        return this.names.getOrDefault(tier, "INVALID ARMOR");
     }
 }

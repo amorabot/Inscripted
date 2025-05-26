@@ -11,7 +11,12 @@ import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
 import com.amorabot.inscripted.components.buffs.categories.healing.HealingBuff;
 import com.amorabot.inscripted.components.buffs.categories.stat.StatBuff;
 import com.amorabot.inscripted.components.renderers.ItemInterfaceRenderer;
-import com.amorabot.inscripted.file.JSONProfileManager;
+import com.amorabot.inscripted.file.profile.JSONProfileManager;
+import com.amorabot.inscripted.item.inscription.Inscription;
+import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
+import com.amorabot.inscripted.item.structure.ItemRarities;
+import com.amorabot.inscripted.item.structure.Weapon.Weapon;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.skills.math.LinalgMath;
 import com.amorabot.inscripted.skills.ParticlePlotter;
@@ -102,7 +107,7 @@ public class TemplateCommand implements CommandExecutor {
                     }
                     return true;
                 case "color":
-                    String temp = "&"+ Archetypes.GLADIATOR.getColor() + " :D " + "&7testando";
+                    String temp = "&"+ Archetypes.GLADIATOR.getColorOnPalette() + " :D " + "&7testando";
                     player.sendMessage(temp);
                     player.sendMessage(ColorUtils.decolor(temp));
                     player.sendMessage(ColorUtils.translateColorCodes(temp));
@@ -171,35 +176,20 @@ public class TemplateCommand implements CommandExecutor {
                     if (spreadOBB.intersects(player.getBoundingBox())){Utils.msgPlayer(player, "CollisioN!");}
                     return true;
                 case "modGen":
-//                    InscriptionTable axeTable = new InscriptionTable("AXE");
-//                    axeTable.debug();
-//
-//                    for (int i = 0; i< 5; i++){
-//                        final int ilvl = Utils.getRandomIntBetween(0,100);
-//                        Utils.log("Batch: " + i + " =========("+ilvl+")=========");
-//                        Set<InscriptionID> blockedPrefixes = new HashSet<>();
-//                        Inscription prefixA = axeTable.getRandomInscription(Affix.PREFIX, ilvl, blockedPrefixes);
-//
-//                        Inscription prefixB = axeTable.getRandomInscription(Affix.PREFIX, ilvl, blockedPrefixes);
-//
-//                        Set<InscriptionID> blockedSuffixes = new HashSet<>();
-//                        Inscription suffixA = axeTable.getRandomInscription(Affix.SUFFIX, ilvl, blockedSuffixes);
-//                        Inscription suffixB = axeTable.getRandomInscription(Affix.SUFFIX, ilvl, blockedSuffixes);
-//
-//                        try {
-//                            Utils.log("prefix A: " + prefixA.getInscription() + " tier: " + prefixA.getTier());
-//                            Utils.log("prefix B: " + prefixB.getInscription() + " tier: " + prefixB.getTier());
-//
-//                            Utils.log("suffix A: " + suffixA.getInscription() + " tier: " + suffixA.getTier());
-//                            Utils.log("suffix B: " + suffixB.getInscription() + " tier: " + suffixB.getTier());
-//                        } catch (NullPointerException ex){
-//                            Utils.log("Invalid insc. gen attempt");
-//                        }
-//                    }
+                    Weapon testWeapon = new Weapon(50, WeaponTypes.AXE,ItemRarities.AUGMENTED,true,false);
+
+                    Inscription testIncription = new Inscription(InscriptionIDs.ADDED_FIRE,3,1D);
+                    Inscription acc = new Inscription(InscriptionIDs.STAMINA,3,0.5D);
+                    testWeapon.getInscriptions().add(testIncription);
+                    testWeapon.getInscriptions().add(acc);
+
+
+                    ItemStack weaponItem = testWeapon.getItemForm();
+                    player.getInventory().addItem(weaponItem);
                     return true;
                 case "testColor":
                     ItemStack heldItem = player.getInventory().getItemInMainHand();
-                    ItemInterfaceRenderer.setDisplayName("Awooga buga nuga",heldItem,ItemRarities.COMMON,false,4);
+                    ItemInterfaceRenderer.setDisplayName("Awooga buga nuga",heldItem, ItemRarities.COMMON,false,4);
 //                    ItemInterfaceRenderer.setDisplayName("Runeec Bunguschungus",heldItem,ItemRarities.AUGMENTED,false,4);
 //                    ItemInterfaceRenderer.setDisplayName("Bingoos",heldItem,ItemRarities.RUNIC,false,7);
                     return true;

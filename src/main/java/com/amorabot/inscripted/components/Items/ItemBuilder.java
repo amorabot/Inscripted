@@ -2,13 +2,13 @@ package com.amorabot.inscripted.components.Items;
 
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
-import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
+import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.Affix;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRarities;
+import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
+import com.amorabot.inscripted.item.structure.ItemSubtype;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
-import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;

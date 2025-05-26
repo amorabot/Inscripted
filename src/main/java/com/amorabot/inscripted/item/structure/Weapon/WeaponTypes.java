@@ -1,8 +1,9 @@
-package com.amorabot.inscripted.components.Items.Weapon;
+package com.amorabot.inscripted.item.structure.Weapon;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
-import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
+import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.item.structure.Tiers;
+import com.amorabot.inscripted.item.structure.ItemSubtype;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
 import lombok.Getter;
 import org.bukkit.Material;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 public enum WeaponTypes implements ItemSubtype {
 
-    AXE(RangeCategory.MELEE,WeaponAttackSpeeds.SLOW),
+    AXE(RangeCategory.MELEE, WeaponAttackSpeeds.SLOW),
     SWORD(RangeCategory.MELEE,WeaponAttackSpeeds.NORMAL),
     BOW(RangeCategory.RANGED,WeaponAttackSpeeds.SLOW),
     DAGGER(RangeCategory.MELEE,WeaponAttackSpeeds.QUICK),
@@ -27,8 +28,8 @@ public enum WeaponTypes implements ItemSubtype {
     private final RangeCategory range;
     private final WeaponAttackSpeeds atkSpeed;
 
-    private final Map<Tiers, int[]> damages = new HashMap<>();
-    private final Map<Tiers, String> names = new HashMap<>();
+    private final Map<Tiers, int[]> tierDamages = new HashMap<>();
+    private final Map<Tiers, String> tierNames = new HashMap<>();
 
     private final InscriptionTable itemInscriptionTable;
 
@@ -37,19 +38,19 @@ public enum WeaponTypes implements ItemSubtype {
         this.range = range;
         this.atkSpeed = atkSpeed;
         for (Tiers tier : Tiers.values()){
-            this.damages.put(tier, loadBaseDamages(tier));
-            this.names.put(tier, loadTierName(tier));
+            this.tierDamages.put(tier, loadBaseDamages(tier));
+            this.tierNames.put(tier, loadTierName(tier));
         }
         this.itemInscriptionTable = new InscriptionTable(this.toString());
+//        itemInscriptionTable.debug();
     }
-
     public InscriptionTable getTableData(){
         return this.itemInscriptionTable;
     }
 
 
     public int[] mapBaseDamage(Tiers tier){
-        return this.damages.getOrDefault(tier, new int[2]).clone();
+        return this.tierDamages.getOrDefault(tier, new int[2]).clone();
     }
     public int mapWeaponTierModel(Tiers tier){
         int modelID = (this.ordinal()+1)+(WeaponTypes.values().length*tier.ordinal());
@@ -62,6 +63,8 @@ public enum WeaponTypes implements ItemSubtype {
         return getRange().getItem();
     }
 
+
+    // ItemSubtype Implementations
     @Override
     public String loadTierName(Tiers tier) {
         String namePath = WeaponTypes.class.getSimpleName() + "." + this + "." + tier + "." + "NAME";
@@ -69,7 +72,7 @@ public enum WeaponTypes implements ItemSubtype {
     }
     @Override
     public String getTierName(Tiers tier) {
-        return this.names.getOrDefault(tier, "INVALID WEAPON");
+        return this.tierNames.getOrDefault(tier, "INVALID WEAPON");
     }
     private int[] loadBaseDamages(Tiers tier){
         FileConfiguration config = Inscripted.getPlugin().getConfig();
@@ -84,5 +87,18 @@ public enum WeaponTypes implements ItemSubtype {
             dmgArray[i] = dmgList.get(i);
         }
         return dmgArray;
+    }
+    @Override
+    public Archetypes mapArchetype() {
+        for (Archetypes arch : Archetypes.values()){
+            if (arch.equals(Archetypes.NONE)){continue;}
+            if (arch.getWeaponType().equals(this)){return arch;}
+        }
+        return Archetypes.NONE;
+    }
+
+    @Override
+    public String getSubtypeDisplayName() {
+        return this.name();
     }
 }

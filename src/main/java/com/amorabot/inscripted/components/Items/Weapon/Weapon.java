@@ -1,11 +1,6 @@
 package com.amorabot.inscripted.components.Items.Weapon;
 
-import com.amorabot.inscripted.components.Items.Abstract.ItemCategory;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
-import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
-import com.amorabot.inscripted.components.Items.modifiers.data.HybridInscriptionData;
-import com.amorabot.inscripted.components.Items.modifiers.data.InscriptionData;
-import com.amorabot.inscripted.components.Items.modifiers.data.ModifierData;
 import com.amorabot.inscripted.components.Items.modifiers.data.StatDefinition;
 import com.amorabot.inscripted.components.Items.relic.RelicWeaponDAO;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
@@ -13,6 +8,11 @@ import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
+import com.amorabot.inscripted.item.structure.ItemRarities;
+import com.amorabot.inscripted.item.structure.Tiers;
+import com.amorabot.inscripted.item.structure.Weapon.RangeCategory;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
@@ -21,7 +21,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
-public class Weapon extends Item implements ItemCategory {
+public class Weapon extends Item {
     private final WeaponTypes type;
     private final int[] baseDamage;
     @Getter
@@ -51,24 +51,24 @@ public class Weapon extends Item implements ItemCategory {
         this.atkSpeed = getSubtype().getBaseAttackSpeed();
         this.range = getSubtype().getRange();
     }
-    public Weapon(RelicWeaponDAO relicWeaponData,List<Inscription> inscriptions){ // Relic constructor
-        super(relicWeaponData.genericData().itemLevel(), ItemRarities.RELIC, true, false, ItemTypes.WEAPON);
-        this.type = relicWeaponData.type();
-        this.name = relicWeaponData.genericData().name();
-        setTier(Tiers.mapItemLevel(getIlvl()));
-        getInscriptionList().addAll(inscriptions);
-        setImplicit(Archetypes.mapImplicitFor(getSubtype(), getTier(), isCorrupted()));
-        this.baseDamage = relicWeaponData.baseDmg();
-        this.percentDamageVariance = 0;
-        this.atkSpeed = relicWeaponData.atkSpeed();
-        this.range = getSubtype().getRange();
-        mapBase();
-    }
+//    public Weapon(RelicWeaponDAO relicWeaponData,List<Inscription> inscriptions){ // Relic constructor
+////        super(relicWeaponData.genericData().itemLevel(), ItemRarities.RELIC, true, false, ItemTypes.WEAPON);
+////        this.type = relicWeaponData.type();
+////        this.name = relicWeaponData.genericData().name();
+////        setTier(Tiers.mapItemLevel(getIlvl()));
+////        getInscriptionList().addAll(inscriptions);
+////        setImplicit(Archetypes.mapImplicitFor(getSubtype(), getTier(), isCorrupted()));
+////        this.baseDamage = relicWeaponData.baseDmg();
+////        this.percentDamageVariance = 0;
+////        this.atkSpeed = relicWeaponData.atkSpeed();
+////        this.range = getSubtype().getRange();
+////        mapBase();
+//    }
 
     @Override
     protected void setup() {
-        setTier(Tiers.mapItemLevel(getIlvl()));
-        setImplicit(Archetypes.mapImplicitFor(getSubtype(), getTier(), isCorrupted()));
+//        setTier(Tiers.mapItemLevel(getIlvl()));
+//        setImplicit(Archetypes.mapImplicitFor(getSubtype(), getTier(), isCorrupted()));
         this.name = getSubtype().getTierName(getTier());
         mapBase();
     }

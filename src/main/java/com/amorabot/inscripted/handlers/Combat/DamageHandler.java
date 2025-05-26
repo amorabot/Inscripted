@@ -13,7 +13,7 @@ import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.stats.StatCompiler;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
-import com.amorabot.inscripted.file.JSONProfileManager;
+import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.skills.PlayerAbilities;
 import com.amorabot.inscripted.utils.DelayedTask;

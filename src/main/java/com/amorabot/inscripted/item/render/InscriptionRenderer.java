@@ -1,8 +1,9 @@
-package com.amorabot.inscripted.item.render.inscription;
+package com.amorabot.inscripted.item.render;
 
+import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.item.inscription.Inscription;
-import com.amorabot.inscripted.item.render.InscriptedPalette;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.util.*;
@@ -34,23 +35,28 @@ public class InscriptionRenderer {
         TIER_ICONS.put(12, "XII");
     }
 
-    public static List<Component> renderInscriptionList(List<Inscription> inscriptions, int indentation){
+    public static List<Component> renderInscriptionList(List<Inscription> inscriptions, int padding){
+        String valuesHex = InscriptedPalette.ITEM_VALUE.getColorString();
         List<Component> renderedInscriptions = new ArrayList<>();
         inscriptions.sort(SORTER);
         for (Inscription insc : inscriptions) {
             if (insc.isSpecial()){continue;}
-            renderedInscriptions.add(getComponent(insc,indentation));
+            renderedInscriptions.add(getInscriptionAsComponent(insc,padding,valuesHex));
         }
         return renderedInscriptions;
     }
-
-    public static Component getComponent(Inscription inscription, int indentation){
-        Component displayNameComponent = MiniMessage.miniMessage().deserialize(inscription.getDisplayName().indent(indentation)).color(InscriptedPalette.NEUTRAL_GRAY.getColor());
+    public static Component getImplicitComponent(Inscription implicit, Archetypes archetype){
+        InscriptedPalette archetypeColor = archetype.getColorOnPalette();
+        Component displayNameComponent = MiniMessage.miniMessage().deserialize(implicit.getDisplayName(archetypeColor.getColorString())).color(archetypeColor.getColor());
         Component spacing = Component.text(" ");
-        if (!inscription.isSpecial()){
-            return displayNameComponent.append(spacing).append(getPostfixDetails(inscription)).append(spacing);
-        }
-        return displayNameComponent.append(spacing);
+        return spacing.append(displayNameComponent.append(spacing).append(getPostfixDetails(implicit))).append(spacing);
+    }
+
+    public static Component getInscriptionAsComponent(Inscription inscription, int padding, String valuesHex){
+        Component displayNameComponent = MiniMessage.miniMessage().deserialize(inscription.getDisplayName(valuesHex)).color(InscriptedPalette.NEUTRAL_GRAY.getColor());
+        Component paddingComponent = Component.text(" ".repeat(padding));
+        Component spacing = Component.text(" ");
+        return paddingComponent.append(displayNameComponent.append(spacing).append(getPostfixDetails(inscription)).append(spacing)).decoration(TextDecoration.ITALIC,false);
     }
     public static Component getPostfixDetails(Inscription inscription){
         return Component.text(inscription.getInscription().getDefinitionData().getAffix().getRuneIcon(), InscriptedPalette.DARK_GRAY.getColor()).append(

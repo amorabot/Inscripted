@@ -10,7 +10,7 @@ import com.amorabot.inscripted.components.Items.relic.enums.Effects;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
-import com.amorabot.inscripted.file.JSONProfileManager;
+import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.skills.HitTypes;
 import com.amorabot.inscripted.skills.PlayerAbilities;

@@ -4,17 +4,13 @@ import com.amorabot.inscripted.GUIs.modules.GUI;
 import com.amorabot.inscripted.GUIs.modules.GUIButton;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
-import com.amorabot.inscripted.components.Items.Armor.Armor;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRarities;
+import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
+import com.amorabot.inscripted.item.structure.Tiers;
 import com.amorabot.inscripted.components.Items.ItemBuilder;
-import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -85,7 +81,7 @@ public class ItemCommandGUI extends GUI{
                 new ArrayList<String>(){
                     {
                         add("");
-                        add(ColorUtils.translateColorCodes(" &7-Archetype: &"+ getArchetype().getColor() + getArchetype().toString()));
+                        add(ColorUtils.translateColorCodes(" &7-Archetype: &"+ getArchetype().getColorOnPalette() + getArchetype().toString()));
                         add("");
                         add(Utils.color(" &7-Item level: &f"+ getIlvl()));
                         add("");
@@ -125,7 +121,7 @@ public class ItemCommandGUI extends GUI{
         ItemStack itemIcon = randomItem.getItemForm();
         ItemMeta iconItemMeta = itemIcon.getItemMeta();
         iconItemMeta.setDisplayName(ColorUtils.translateColorCodes(
-                getRarity().getColor()+ "&l" + getRarity().toString() +" &" +archetype.getColor()+"&l"+archetype+" "+slot));
+                getRarity().getColor()+ "&l" + getRarity().toString() +" &" +archetype.getColorOnPalette()+"&l"+archetype+" "+slot));
         List<String> lore = new ArrayList<String>(){
             {
                 add("");

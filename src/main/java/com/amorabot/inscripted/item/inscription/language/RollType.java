@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum RollType {
-    CONSTANT(1,"<const>"),
-    SINGLE_ROLL(2,"<value>"),
+    CONSTANT(1,"const"),
+    SINGLE_ROLL(2,"value"),
     DOUBLE_ROLL(4,"<v1> - <v2>");
 
     private final int preRollSize;

@@ -149,11 +149,11 @@ public class Inscription implements Serializable {
         Component runicIcon = InscriptedPalette.colorizeComponent(
                 Component.text(getInscription().getData().getAffixType().getRuneIcon()),
                 InscriptedPalette.DARK_GRAY.getColor());
-        Component uncoloredTierIndicator = Component.text(Utils.getRomanChar(this.tier));
-        if (this.tier == this.maxTier){uncoloredTierIndicator = uncoloredTierIndicator.append(Component.text("*"));}
-        Component tierIndicator = InscriptedPalette.colorizeComponent(uncoloredTierIndicator, InscriptedPalette.DARKEST_TEXT.getColor());
-        
-        return runicIcon.appendSpace().append(tierIndicator).append(Component.text(" ".repeat(paddingRight)));
+//        Component uncoloredTierIndicator = Component.text(Utils.getRomanChar(this.tier));
+//        if (this.tier == this.maxTier){uncoloredTierIndicator = uncoloredTierIndicator.append(Component.text("*"));}
+//        Component tierIndicator = InscriptedPalette.colorizeComponent(uncoloredTierIndicator, InscriptedPalette.DARKEST_TEXT.getColor());
+        return null;
+//        return runicIcon.appendSpace().append(tierIndicator).append(Component.text(" ".repeat(paddingRight)));
     }
 
 

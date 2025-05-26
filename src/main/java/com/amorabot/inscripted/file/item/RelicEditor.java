@@ -1,15 +1,16 @@
-package com.amorabot.inscripted.components.Items.Files;
+package com.amorabot.inscripted.file.item;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
+import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.inscripted.components.Items.Weapon.WeaponAttackSpeeds;
-import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.components.Items.relic.GenericRelicData;
 import com.amorabot.inscripted.components.Items.relic.RelicArmorDAO;
 import com.amorabot.inscripted.components.Items.relic.RelicWeaponDAO;
 import com.amorabot.inscripted.components.Items.relic.enums.Relics;
+import com.amorabot.inscripted.file.ResourcesJSONReader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -74,7 +75,7 @@ public class RelicEditor {
             List<String> flavor = List.of("This severed, yet","pulsating heart","gives you a unending","desire for carnage.");
 
             GenericRelicData relicData = new GenericRelicData("Dummy Armor", 1, templateInscriptions, relicStats, flavor);
-            RelicArmorDAO armorDAO = new RelicArmorDAO(ItemTypes.CHESTPLATE, ArmorTypes.HEAVY_PLATING, 10, relicData);
+            RelicArmorDAO armorDAO = new RelicArmorDAO(ItemTypes.CHESTPLATE, ArmorTypes.ARMORED, 10, relicData);
             Map<Relics,RelicArmorDAO> list = new HashMap<>();
             list.put(Relics.TRAINING_DUMMY_ARMOR, armorDAO);
             gson.toJson(list, writer);

@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.APIs;
 
-import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;

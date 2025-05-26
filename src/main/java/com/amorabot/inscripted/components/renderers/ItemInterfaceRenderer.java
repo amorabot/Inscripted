@@ -4,21 +4,17 @@ import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.Armor.Armor;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemRarities;
-import com.amorabot.inscripted.components.Items.Interfaces.ItemSubtype;
-import com.amorabot.inscripted.components.Items.Weapon.RangeCategory;
+import com.amorabot.inscripted.item.structure.ItemRarities;
+import com.amorabot.inscripted.item.structure.ItemSubtype;
+import com.amorabot.inscripted.item.structure.Weapon.RangeCategory;
 import com.amorabot.inscripted.components.Items.Weapon.Weapon;
-import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
-import com.amorabot.inscripted.components.Items.modifiers.data.ModifierData;
 import com.amorabot.inscripted.components.Items.relic.enums.Effects;
 import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
-import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.item.render.GlyphInfo;
 import com.amorabot.inscripted.item.render.InscriptedPalette;
 import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -26,7 +22,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -40,12 +35,13 @@ public class ItemInterfaceRenderer {
     //      "¦¡!ï÷ ¨ ╜ ╙"; ᚫ
 
     public static Component getInscriptionHeader(int numOfInscriptions, int padding){
-        Component paddingComponent = Component.text(" ".repeat(padding));
-        Component preHeaderComponent = Component.text("-•÷ ").color(InscriptedPalette.DARKEST_TEXT.getColor());
-        return paddingComponent.append(preHeaderComponent.append(MiniMessage.miniMessage().deserialize(inscriptionsHeader,
-                        Placeholder.parsed("n", String.valueOf(numOfInscriptions)),
-                        Placeholder.parsed("color", "<"+InscriptedPalette.DARKEST_TEXT.getColorString()+">")).color(highlightColor)
-                            .decoration(TextDecoration.ITALIC,false)));
+        return null;
+//        Component paddingComponent = Component.text(" ".repeat(padding));
+//        Component preHeaderComponent = Component.text("-•÷ ").color(InscriptedPalette.DARKEST_TEXT.getColor());
+//        return paddingComponent.append(preHeaderComponent.append(MiniMessage.miniMessage().deserialize(inscriptionsHeader,
+//                        Placeholder.parsed("n", String.valueOf(numOfInscriptions)),
+//                        Placeholder.parsed("color", "<"+InscriptedPalette.DARKEST_TEXT.getColorString()+">")).color(highlightColor)
+//                            .decoration(TextDecoration.ITALIC,false)));
     }
     public static Component getInscriptionFooter(int padding){
         Component paddingComponent = Component.text(" ".repeat(padding));
@@ -127,11 +123,11 @@ public class ItemInterfaceRenderer {
         final String healthString = ' ' + DefenceTypes.HEALTH.getSpecialChar() + ' ' + health + " Health";
         final int healthLength = GlyphInfo.countStringPixelLength(healthString);
 
-        final int ward = updatedArmorDefences.getOrDefault(DefenceTypes.WARD, 0);
+        final int ward = updatedArmorDefences.getOrDefault(DefenceTypes.SOUL, 0);
         String wardString = "";
         boolean hasWard = ward>0;
         if (hasWard){
-            wardString = ' ' + DefenceTypes.WARD.getSpecialChar() + ' ' + ward + " Ward";
+            wardString = ' ' + DefenceTypes.SOUL.getSpecialChar() + ' ' + ward + " Ward";
         }
         final int wardLength = GlyphInfo.countStringPixelLength(wardString);
 
@@ -232,16 +228,17 @@ public class ItemInterfaceRenderer {
 
 
     public static List<Component> renderInscriptions(Item itemData, int padding){
-        List<Component> renderedInscriptions = new ArrayList<>();
-
-        List<Inscription> inscriptions = itemData.getInscriptionList();
-        inscriptions.sort(getInscriptionComparator());
-        for (Inscription currentInscription : inscriptions){
-            ModifierData inscData = currentInscription.getInscription().getData();
-            if (inscData.isEffect() || inscData.isKeystone()){continue;}
-            renderedInscriptions.add(currentInscription.asComponent(padding));
-        }
-        return renderedInscriptions;
+        return null;
+//        List<Component> renderedInscriptions = new ArrayList<>();
+//
+//        List<Inscription> inscriptions = itemData.getInscriptionList();
+//        inscriptions.sort(getInscriptionComparator());
+//        for (Inscription currentInscription : inscriptions){
+//            ModifierData inscData = currentInscription.getInscription().getData();
+//            if (inscData.isEffect() || inscData.isKeystone()){continue;}
+//            renderedInscriptions.add(currentInscription.asComponent(padding));
+//        }
+//        return renderedInscriptions;
     }
 
     public static List<Component> renderSpecialInscriptionDescription(InscriptionID inscID, int padding){
@@ -305,68 +302,42 @@ public class ItemInterfaceRenderer {
         return renderedRequirements;
     }
     public static <subType extends Enum<subType> & ItemSubtype> Component renderImplicit(Item itemData, int padding, subType itemSubtype){
-        Component passiveIndicator = Component.text(Utils.convertToPrettyString("Passive:"));
-        Component paddingComponent = Component.text(" ".repeat(padding));
-        Archetypes itemArchetype = Archetypes.mapArchetypeFor(itemSubtype);
-        assert itemArchetype!=null;
-        Component implicitComponent = itemData.getImplicit().asComponent(0,itemArchetype);
-        return InscriptedPalette.colorizeComponent(
-                paddingComponent.append(passiveIndicator).appendSpace().append(implicitComponent).append(paddingComponent)
-                ,highlightColor)
-                .decoration(TextDecoration.ITALIC,false);
-    }
-    public static Component renderDescription(Item itemData, String slotName, int padding){
-        ItemRarities rarity = itemData.getRarity();
-        Component paddingComponent = Component.text(" ".repeat(padding));
-        Component tagsComponent = renderDescriptionTags(itemData.getStarRating(), itemData.isCorrupted());
-        Component descriptionComponent = Component.text(rarity.toString()+ " " + slotName).decorate(TextDecoration.BOLD).color(rarity.getColorComponent().getColor());
-
-        return paddingComponent.append(descriptionComponent).appendSpace().append(tagsComponent).decoration(TextDecoration.ITALIC,false);
-    }
-    private static Component renderDescriptionTags(double starRating, boolean corrupted){
-        Component starRatingIcon = getStarIcon(starRating);
-        if(corrupted){
-            Component corruptionIcon = Component.text("☠").color(InscriptedPalette.CORRUPTED.getColor());
-            return starRatingIcon.appendSpace().append(corruptionIcon);
-        }
-        return starRatingIcon;
-    }
-    private static Component getStarIcon(double starRating){
-        Component star = Component.text("★");
-        if (starRating >= 0 && starRating<=0.5D){
-            return star.color(InscriptedPalette.DARK_GRAY.getColor());
-        } else if (starRating<=0.7D){
-            return star.color(InscriptedPalette.NEUTRAL_GRAY.getColor());
-        } else if (starRating<=0.9D) {
-            return star.color(InscriptedPalette.WHITE.getColor());
-        } else {
-            return star.color(NamedTextColor.GOLD);
-        }
+        return null;
+//        Component passiveIndicator = Component.text(Utils.convertToPrettyString("Passive:"));
+//        Component paddingComponent = Component.text(" ".repeat(padding));
+//        Archetypes itemArchetype = Archetypes.mapArchetypeFor(itemSubtype);
+//        assert itemArchetype!=null;
+//        Component implicitComponent = itemData.getImplicit().asComponent(0,itemArchetype);
+//        return InscriptedPalette.colorizeComponent(
+//                paddingComponent.append(passiveIndicator).appendSpace().append(implicitComponent).append(paddingComponent)
+//                ,highlightColor)
+//                .decoration(TextDecoration.ITALIC,false);
     }
 
-    public static int getHighestStringLengthFor(Item itemData, int inscriptionsPadding){
-        int highestInscriptionSize = itemData.getName().length();
-        int addedSize = (2*inscriptionsPadding) + 2; //Lateral padding + rune icon
-        for (Inscription insc : itemData.getInscriptionList()){
-//            final int displayNameLineLength = insc.getInscription().getDisplayName().length() + addedSize + Utils.getRomanChar(insc.getTier()).length();
-//            if (displayNameLineLength > (highestInscriptionSize)){
-//                highestInscriptionSize = displayNameLineLength;
+
+//    public static int getHighestStringLengthFor(Item itemData, int inscriptionsPadding){
+//        int highestInscriptionSize = itemData.getName().length();
+//        int addedSize = (2*inscriptionsPadding) + 2; //Lateral padding + rune icon
+//        for (Inscription insc : itemData.getInscriptionList()){
+////            final int displayNameLineLength = insc.getInscription().getDisplayName().length() + addedSize + Utils.getRomanChar(insc.getTier()).length();
+////            if (displayNameLineLength > (highestInscriptionSize)){
+////                highestInscriptionSize = displayNameLineLength;
+////            }
+//        }
+//        return highestInscriptionSize;
+//    }
+//    private static Comparator<Inscription> getInscriptionComparator(){
+//        return (o1, o2) -> {
+//            if (o2.isImbued()){
+//                return 1;
 //            }
-        }
-        return highestInscriptionSize;
-    }
-    private static Comparator<Inscription> getInscriptionComparator(){
-        return (o1, o2) -> {
-            if (o2.isImbued()){
-                return 1;
-            }
-            if (o1.equals(o2)){
-                return 0;
-            }
-            if (o1.getInscription().ordinal() < o2.getInscription().ordinal()){
-                return -1;
-            }
-            return 1;
-        };
-    }
+//            if (o1.equals(o2)){
+//                return 0;
+//            }
+//            if (o1.getInscription().ordinal() < o2.getInscription().ordinal()){
+//                return -1;
+//            }
+//            return 1;
+//        };
+//    }
 }

@@ -3,9 +3,9 @@ package com.amorabot.inscripted.item.inscription;
 import com.amorabot.inscripted.item.generation.ValuesTableSizeExtractor;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionDefinition;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
+import com.amorabot.inscripted.item.inscription.language.AffixType;
 import com.amorabot.inscripted.item.inscription.language.RollType;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
-import com.amorabot.inscripted.item.render.InscriptedPalette;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -31,8 +31,7 @@ public class Inscription implements Serializable {
         this.basePercentile = basePercentile;
     }
 
-    public String getDisplayName(){
-        String valuesHex = InscriptedPalette.ITEM_VALUE.getColorString();
+    public String getDisplayName(String valuesHex){
         String template = getTemplateDisplayName();
         Integer[] templateOrdering = getInscription().getDefinitionData().accept(new ValuesTableSizeExtractor());
         int[] mappedValues = getMappedFinalValues();
@@ -142,7 +141,9 @@ public class Inscription implements Serializable {
     }
 
     public boolean isSpecial(){
-        InscriptionDefinition internalData = inscription.getDefinitionData();
         return (inscription.isEffect() || inscription.isKeystone());
+    }
+    public boolean isImplicit(){
+        return (getInscription().getDefinitionData().getAffix().equals(AffixType.IMPLICIT));
     }
 }

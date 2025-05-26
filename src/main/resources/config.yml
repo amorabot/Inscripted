@@ -1,5 +1,5 @@
 ArmorTypes:
-  HEAVY_PLATING:
+  ARMORED:
     DefenceTypes:
       - ARMOR
     T1:
@@ -37,7 +37,7 @@ ArmorTypes:
       CHESTPLATE: 1800
       LEGGINGS: 1700
       BOOTS: 1600
-  CARVED_PLATING:
+  ORNATE:
     DefenceTypes:
       - ARMOR
       - DODGE
@@ -81,7 +81,7 @@ ArmorTypes:
       CHESTPLATE: 1600
       LEGGINGS: 1450
       BOOTS: 1200
-  LIGHT_CLOTH:
+  CLOTH:
     DefenceTypes:
       - DODGE
     T1:
@@ -119,13 +119,13 @@ ArmorTypes:
       CHESTPLATE: 1600
       LEGGINGS: 1400
       BOOTS: 1100
-  RUNIC_LEATHER:
+  PELT:
     DefenceTypes:
-      - WARD
+      - SOUL
       - DODGE
     T1:
       NAME: Magic leather
-      WARD: 60
+      SOUL: 60
       DODGE: 2
       HELMET: 50
       CHESTPLATE: 80
@@ -133,7 +133,7 @@ ArmorTypes:
       BOOTS: 50
     T2:
       NAME: Infused ringmail
-      WARD: 100
+      SOUL: 100
       DODGE: 4
       HELMET: 150
       CHESTPLATE: 190
@@ -141,7 +141,7 @@ ArmorTypes:
       BOOTS: 160
     T3:
       NAME: Magic plated
-      WARD: 200
+      SOUL: 200
       DODGE: 8
       HELMET: 350
       CHESTPLATE: 450
@@ -149,7 +149,7 @@ ArmorTypes:
       BOOTS: 350
     T4:
       NAME: Ancient strapped leather
-      WARD: 350
+      SOUL: 350
       DODGE: 12
       HELMET: 700
       CHESTPLATE: 1000
@@ -157,57 +157,57 @@ ArmorTypes:
       BOOTS: 700
     T5:
       NAME: Obscure leatherbound
-      WARD: 450
+      SOUL: 450
       DODGE: 20
       HELMET: 1100
       CHESTPLATE: 1600
       LEGGINGS: 1400
       BOOTS: 1100
-  ENCHANTED_SILK:
+  SILK:
     DefenceTypes:
-      - WARD
+      - SOUL
     T1:
       NAME: Silken
-      WARD: 69
+      SOUL: 69
       HELMET: 25
       CHESTPLATE: 60
       LEGGINGS: 35
       BOOTS: 30
     T2:
       NAME: Arcane ringmail
-      WARD: 120
+      SOUL: 120
       HELMET: 75
       CHESTPLATE: 130
       LEGGINGS: 80
       BOOTS: 70
     T3:
       NAME: Iron-plated silk
-      WARD: 200
+      SOUL: 200
       HELMET: 150
       CHESTPLATE: 350
       LEGGINGS: 190
       BOOTS: 150
     T4:
       NAME: Shining ancient silk
-      WARD: 400
+      SOUL: 400
       HELMET: 350
       CHESTPLATE: 700
       LEGGINGS: 520
       BOOTS: 300
     T5:
       NAME: Archmage wrappings
-      WARD: 650
+      SOUL: 650
       HELMET: 550
       CHESTPLATE: 1000
       LEGGINGS: 650
       BOOTS: 420
-  RUNIC_STEEL:
+  RUNISTEEL:
     DefenceTypes:
-      - WARD
+      - SOUL
       - ARMOR
     T1:
       NAME: Simple Battleplate
-      WARD: 30
+      SOUL: 30
       ARMOR: 5
       HELMET: 50
       CHESTPLATE: 80
@@ -215,7 +215,7 @@ ArmorTypes:
       BOOTS: 60
     T2:
       NAME: Battlemage ringmail
-      WARD: 50
+      SOUL: 50
       ARMOR: 10
       HELMET: 150
       CHESTPLATE: 190
@@ -223,7 +223,7 @@ ArmorTypes:
       BOOTS: 150
     T3:
       NAME: Enhanced magic steel
-      WARD: 90
+      SOUL: 90
       ARMOR: 15
       HELMET: 350
       CHESTPLATE: 500
@@ -231,7 +231,7 @@ ArmorTypes:
       BOOTS: 350
     T4:
       NAME: Ancient arcane steel
-      WARD: 180
+      SOUL: 180
       ARMOR: 25
       HELMET: 700
       CHESTPLATE: 1100
@@ -239,7 +239,7 @@ ArmorTypes:
       BOOTS: 700
     T5:
       NAME: Gilded runic steel
-      WARD: 250
+      SOUL: 250
       ARMOR: 40
       HELMET: 1500
       CHESTPLATE: 1800

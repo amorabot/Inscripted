@@ -1,13 +1,12 @@
 package com.amorabot.inscripted.skills;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
-import com.amorabot.inscripted.components.Items.Weapon.WeaponAttackSpeeds;
-import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
 import com.amorabot.inscripted.skills.item.ItemPassiveAbilities;
-import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;

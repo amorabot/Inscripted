@@ -17,7 +17,7 @@ import com.amorabot.inscripted.components.Player.Attributes;
 import com.amorabot.inscripted.components.Player.ItemSlotData;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.StatsComponent;
-import com.amorabot.inscripted.file.JSONProfileManager;
+import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.utils.Utils;
@@ -90,7 +90,7 @@ public class StatCompiler {
         if (itemData instanceof Armor armorData){
             Map<DefenceTypes, Integer> localDefences = armorData.getLocalDefences();
             playerStats.addStat(PlayerStats.HEALTH, ValueTypes.FLAT, new int[]{localDefences.get(DefenceTypes.HEALTH)}); //Life should be always present
-            playerStats.addStat(PlayerStats.WARD, ValueTypes.FLAT, new int[]{localDefences.getOrDefault(DefenceTypes.WARD,0)});
+            playerStats.addStat(PlayerStats.WARD, ValueTypes.FLAT, new int[]{localDefences.getOrDefault(DefenceTypes.SOUL,0)});
             playerStats.addStat(PlayerStats.ARMOR, ValueTypes.FLAT, new int[]{localDefences.getOrDefault(DefenceTypes.ARMOR,0)});
             playerStats.addStat(PlayerStats.DODGE, ValueTypes.FLAT, new int[]{localDefences.getOrDefault(DefenceTypes.DODGE,0)});
         }

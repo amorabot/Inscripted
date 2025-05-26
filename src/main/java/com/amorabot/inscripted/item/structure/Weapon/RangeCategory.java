@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.components.Items.Weapon;
+package com.amorabot.inscripted.item.structure.Weapon;
 
 import org.bukkit.Material;
 

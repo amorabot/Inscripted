@@ -1,7 +1,7 @@
 {
   "specificMods": {},
   "implicits": {
-    "MARAUDER_HEAVY_PLATING": {
+    "SORCERER_SILK": {
       "0": [ 6,8 ],
       "1": [ 8,10 ],
       "2": [ 10,12 ],
@@ -11,6 +11,6 @@
   },
   "subtables": [
     "GENERIC_ARMOR",
-    "STRENGTH_ARMOR"
+    "INTELLIGENCE_ARMOR"
   ]
 }

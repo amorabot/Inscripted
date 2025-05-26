@@ -4,7 +4,7 @@ import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
 import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
 import com.amorabot.inscripted.components.Buff;
 import com.amorabot.inscripted.components.buffs.Buffs;
-import com.amorabot.inscripted.file.JSONProfileManager;
+import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.entity.LivingEntity;

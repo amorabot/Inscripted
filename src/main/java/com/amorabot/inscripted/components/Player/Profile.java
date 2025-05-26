@@ -8,7 +8,7 @@ import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.components.Mobs.InscriptedMob;
 import com.amorabot.inscripted.components.Player.stats.PlayerEquipment;
 import com.amorabot.inscripted.components.Player.stats.StatCompiler;
-import com.amorabot.inscripted.file.JSONProfileManager;
+import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.MobManager;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;

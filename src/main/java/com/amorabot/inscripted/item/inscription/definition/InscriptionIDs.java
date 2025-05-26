@@ -66,19 +66,19 @@ public enum InscriptionIDs {
     COOLDOWN_REDUCTION("+ global SUFFIX: percentage single_roll cooldown_reduction", 4),
 
     //=====IMPLICITS=====
-    MARAUDER_AXE("+ global IMPLICIT: percentage single_roll shred", 5),
-    GLADIATOR_SWORD("+ global IMPLICIT: increased single_roll accuracy", 5),
-    MERCENARY_BOW("+ global IMPLICIT: flat single_roll dodge", 5),
-    ROGUE_DAGGER("+ global IMPLICIT: percentage single_roll critical_damage", 5),
-    SORCERER_WAND("+ global IMPLICIT: percentage single_roll maelstrom", 5),
-    TEMPLAR_MACE("+ global IMPLICIT: increased single_roll elemental_damage", 5),
+    MARAUDER_AXE("+ global IMPLICIT: percentage constant shred", 5),
+    GLADIATOR_SWORD("+ global IMPLICIT: increased constant accuracy", 5),
+    MERCENARY_BOW("+ global IMPLICIT: flat constant dodge", 5),
+    ROGUE_DAGGER("+ global IMPLICIT: percentage constant critical_damage", 5),
+    SORCERER_WAND("+ global IMPLICIT: percentage constant maelstrom", 5),
+    TEMPLAR_MACE("+ global IMPLICIT: increased constant elemental_damage", 5),
 
-    MARAUDER_HEAVY_PLATING("+ global IMPLICIT: flat single_roll strength", 5),
-    GLADIATOR_CARVED_PLATING("+ global IMPLICIT: flat single_roll strength & flat single_roll dexterity", 5),
-    MERCENARY_LIGHT_CLOTH("+ global IMPLICIT: flat single_roll dexterity", 5),
-    ROGUE_RUNIC_LEATHER("+ global IMPLICIT: flat single_roll dexterity & flat single_roll intelligence", 5),
-    SORCERER_ENCHANTED_SILK("+ global IMPLICIT: flat single_roll intelligence", 5),
-    TEMPLAR_RUNIC_STEEL("+ global IMPLICIT: flat single_roll intelligence & flat single_roll strength", 5);
+    MARAUDER_ARMORED("+ global IMPLICIT: flat single_roll strength", 5),
+    GLADIATOR_ORNATE("+ global IMPLICIT: flat single_roll strength & flat single_roll dexterity", 5),
+    MERCENARY_CLOTH("+ global IMPLICIT: flat single_roll dexterity", 5),
+    ROGUE_PELT("+ global IMPLICIT: flat single_roll dexterity & flat single_roll intelligence", 5),
+    SORCERER_SILK("+ global IMPLICIT: flat single_roll intelligence", 5),
+    TEMPLAR_RUNISTEEL("+ global IMPLICIT: flat single_roll intelligence & flat single_roll strength", 5);
 
 
     private final InscriptionDefinition definitionData;

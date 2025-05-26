@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.components.Items.DataStructures;
+package com.amorabot.inscripted.file.item.serialization;
 
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.utils.Utils;

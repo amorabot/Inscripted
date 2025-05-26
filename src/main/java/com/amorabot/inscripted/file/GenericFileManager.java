@@ -1,12 +1,12 @@
 package com.amorabot.inscripted.file;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.Armor.ArmorTypes;
+import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.Tiers;
-import com.amorabot.inscripted.components.Items.Files.RelicEditor;
-import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.item.structure.Tiers;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
+import com.amorabot.inscripted.file.item.RelicEditor;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -39,7 +39,7 @@ public class GenericFileManager {
 
             String defencePath = currTypeStringPath+"."+defString;
             List<String> defList = new ArrayList<>();
-            defList.add(DefenceTypes.WARD.toString());
+            defList.add(DefenceTypes.SOUL.toString());
             defList.add(DefenceTypes.ARMOR.toString());
             defList.add(DefenceTypes.DODGE.toString());
             config.set(defencePath, defList);

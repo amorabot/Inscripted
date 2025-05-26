@@ -1,12 +1,12 @@
 package com.amorabot.inscripted.skills;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.Weapon.WeaponAttackSpeeds;
-import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.relic.enums.Effects;
 import com.amorabot.inscripted.components.Items.relic.enums.TriggerTimes;
 import com.amorabot.inscripted.components.Items.relic.enums.TriggerTypes;
-import com.amorabot.inscripted.file.JSONProfileManager;
+import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
 import com.amorabot.inscripted.skills.math.LinalgMath;
 import com.amorabot.inscripted.utils.Utils;

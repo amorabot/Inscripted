@@ -11,7 +11,7 @@ import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
-import com.amorabot.inscripted.file.JSONProfileManager;
+import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.skills.PlayerAbilities;

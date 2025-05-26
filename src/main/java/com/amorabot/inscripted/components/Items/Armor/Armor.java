@@ -1,20 +1,15 @@
 package com.amorabot.inscripted.components.Items.Armor;
 
-import com.amorabot.inscripted.components.Items.Abstract.ItemCategory;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
-import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
-import com.amorabot.inscripted.components.Items.modifiers.data.HybridInscriptionData;
-import com.amorabot.inscripted.components.Items.modifiers.data.InscriptionData;
-import com.amorabot.inscripted.components.Items.modifiers.data.ModifierData;
 import com.amorabot.inscripted.components.Items.modifiers.data.StatDefinition;
-import com.amorabot.inscripted.components.Items.relic.RelicArmorDAO;
-import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
+import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
+import com.amorabot.inscripted.item.structure.ItemRarities;
+import com.amorabot.inscripted.item.structure.Tiers;
 import com.amorabot.inscripted.utils.CraftingUtils;
-import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
@@ -23,21 +18,20 @@ import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class Armor extends Item implements ItemCategory {
+public class Armor extends Item {
 
     private final ArmorTypes type;
-    private final int baseHealth;
-    private final int baseHealthVariance;
+//    private final int baseHealth;
+//    private final int baseHealthVariance;
 
     public Armor(ItemTypes armorSlot, int ilvl, ArmorTypes type, ItemRarities rarity, boolean identified, boolean corrupted){
         super(ilvl, rarity, identified, corrupted, armorSlot);
         this.type = type;
         setup();
-        this.baseHealth = getSubype().mapHealthValue(this);
-        this.baseHealthVariance = CraftingUtils.getRandomNumber(-ArmorTypes.percentHealthVariance, ArmorTypes.percentHealthVariance);
+//        this.baseHealth = getSubype().getBaseHealthValue(getTier(),armorSlot);
+//        this.baseHealthVariance = CraftingUtils.getRandomNumber(-ArmorTypes.BASE_VARIANCE, ArmorTypes.BASE_VARIANCE);
     }
     public Armor(ItemTypes armorPiece, int ilvl, ItemRarities rarity, boolean identified, boolean corrupted) { //Random generation constructor
         super(ilvl, rarity, identified, corrupted, armorPiece);
@@ -45,53 +39,53 @@ public class Armor extends Item implements ItemCategory {
         int typeIndex = CraftingUtils.getRandomNumber(0, armorTypes.length-1);
         this.type = armorTypes[typeIndex];
         setup();
-        this.baseHealth = getSubype().mapHealthValue(this);
-        this.baseHealthVariance = CraftingUtils.getRandomNumber(-ArmorTypes.percentHealthVariance, ArmorTypes.percentHealthVariance);
+//        this.baseHealth = getSubype().mapHealthValue(this);
+//        this.baseHealthVariance = CraftingUtils.getRandomNumber(-ArmorTypes.BASE_VARIANCE, ArmorTypes.BASE_VARIANCE);
     }
 
-    public Armor(RelicArmorDAO armorData, List<Inscription> relicInscriptions){ //Relic constructor
-        super(armorData.genericData().itemLevel(), ItemRarities.RELIC, true, false, armorData.slot());
-        this.type = armorData.type();
-        this.baseHealth = armorData.baseHealth();
-        this.baseHealthVariance = 0;
-        getInscriptionList().addAll(relicInscriptions);
-        setTier(Tiers.mapItemLevel(getIlvl()));
-        setName(armorData.genericData().name());
-        setImplicit(Archetypes.mapImplicitFor(getSubype(), getTier(), isCorrupted()));
-        mapBase();
-    }
+//    public Armor(RelicArmorDAO armorData, List<Inscription> relicInscriptions){ //Relic constructor
+//        super(armorData.genericData().itemLevel(), ItemRarities.RELIC, true, false, armorData.slot());
+//        this.type = armorData.type();
+//        this.baseHealth = armorData.baseHealth();
+//        this.baseHealthVariance = 0;
+//        getInscriptionList().addAll(relicInscriptions);
+//        setTier(Tiers.mapItemLevel(getIlvl()));
+//        setName(armorData.genericData().name());
+//        setImplicit(Archetypes.mapImplicitFor(getSubype(), getTier(), isCorrupted()));
+//        mapBase();
+//    }
 
     @Override
     protected void setup(){
         setTier(Tiers.mapItemLevel(getIlvl()));
         setName(getSubype().getTierName(getTier()) + " " + getCategory().toString().toLowerCase());
-        setImplicit(Archetypes.mapImplicitFor(getSubype(), getTier(), isCorrupted()));
+//        setImplicit(Archetypes.mapImplicitFor(getSubype(), getTier(), isCorrupted()));
         mapBase();
     }
 
     @Override
     protected void mapBase(){
-        this.vanillaMaterial = getSubype().mapArmorBase(getTier(), getCategory());
+//        this.vanillaMaterial = getSubype().mapArmorBase(getTier(), getCategory());
     }
 
     public ArmorTypes getSubype() {
         return type;
     }
-    public int getBaseHealth() {
-        return (int) ( baseHealth * ( 1 + ( (float) baseHealthVariance/100 ) ) );
-    }
-    private ArmorTrim defineArmorTrim(){
-        TrimPattern pattern;
-        TrimMaterial material = getSubype().getTrimMaterial();
-        switch (getCategory()){
-            case HELMET -> pattern = TrimPattern.HOST;
-            case CHESTPLATE -> pattern = TrimPattern.SHAPER;
-            case LEGGINGS -> pattern = TrimPattern.SILENCE;
-            case BOOTS -> pattern = TrimPattern.HOST;
-            default -> pattern = TrimPattern.EYE; //Signals error
-        }
-        return new ArmorTrim(material, pattern);
-    }
+//    public int getBaseHealth() {
+//        return (int) ( baseHealth * ( 1 + ( (float) baseHealthVariance/100 ) ) );
+//    }
+//    private ArmorTrim defineArmorTrim(){
+//        TrimPattern pattern;
+//        TrimMaterial material = getSubype().getTrimMaterial();
+//        switch (getCategory()){
+//            case HELMET -> pattern = TrimPattern.HOST;
+//            case CHESTPLATE -> pattern = TrimPattern.SHAPER;
+//            case LEGGINGS -> pattern = TrimPattern.SILENCE;
+//            case BOOTS -> pattern = TrimPattern.HOST;
+//            default -> pattern = TrimPattern.EYE; //Signals error
+//        }
+//        return new ArmorTrim(material, pattern);
+//    }
     @Override
     public ItemStack getItemForm() {
         ItemStack armorItem = new ItemStack(this.vanillaMaterial);
@@ -101,7 +95,7 @@ public class Armor extends Item implements ItemCategory {
         //Assuming its always a valid item (A set can be created for all possible armortypes and support custom ones)
         ArmorMeta armorMeta = (ArmorMeta) armorItem.getItemMeta();
         assert armorMeta != null;
-        armorMeta.setTrim(defineArmorTrim());
+//        armorMeta.setTrim(defineArmorTrim());
         armorMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
         armorItem.setItemMeta(armorMeta);
         serializeContainers(this, armorItem);
@@ -114,7 +108,7 @@ public class Armor extends Item implements ItemCategory {
     }
 
     public Map<DefenceTypes, Integer> getLocalDefences(){ //Once a weapon is created, the damage map needs to be updated to contain any possible new damages
-        Map<DefenceTypes, Integer> defMap = getSubype().mapBaseStats(this); //Newly reset defMap
+//        Map<DefenceTypes, Integer> defMap = getSubype().buildArmorDefences(this); //Newly reset defMap
         Map<DefenceTypes, Integer> incPecentages = new HashMap<>();
 
         int qualityIncrease = 5*getQuality();
@@ -144,15 +138,17 @@ public class Armor extends Item implements ItemCategory {
 //            }
         }
 
-        for (DefenceTypes dmg : DefenceTypes.values()){
-            int currDefence = defMap.getOrDefault(dmg,0);
-            int currIncValue = incPecentages.getOrDefault(dmg,0);
-            int updatedDefence = (int) Utils.applyPercentageTo(currDefence, currIncValue);
-            if (updatedDefence == 0){continue;}
-            defMap.put(dmg, updatedDefence);
-        }
+//        for (DefenceTypes dmg : DefenceTypes.values()){
+//            int currDefence = defMap.getOrDefault(dmg,0);
+//            int currIncValue = incPecentages.getOrDefault(dmg,0);
+//            int updatedDefence = (int) Utils.applyPercentageTo(currDefence, currIncValue);
+//            if (updatedDefence == 0){continue;}
+//            defMap.put(dmg, updatedDefence);
+//        }
+//
+//        return defMap;
 
-        return defMap;
+        return null;
     }
     private void mapLocalMods(Map<DefenceTypes, Integer> baseDefs, Map<DefenceTypes, Integer> percentages, StatDefinition statDef, int[] mappedValues){
         PlayerStats targetStat = statDef.stat();
@@ -160,7 +156,7 @@ public class Armor extends Item implements ItemCategory {
         switch (targetStat){
             case ARMOR -> redirectValue(valueType, DefenceTypes.ARMOR, baseDefs, percentages, mappedValues);
             case DODGE -> redirectValue(valueType, DefenceTypes.DODGE, baseDefs, percentages, mappedValues);
-            case WARD -> redirectValue(valueType, DefenceTypes.WARD, baseDefs, percentages, mappedValues);
+            case WARD -> redirectValue(valueType, DefenceTypes.SOUL, baseDefs, percentages, mappedValues);
             case HEALTH -> redirectValue(valueType, DefenceTypes.HEALTH, baseDefs, percentages, mappedValues);
         }
     }
