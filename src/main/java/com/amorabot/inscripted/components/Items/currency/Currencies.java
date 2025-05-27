@@ -586,8 +586,8 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
     }
 
     public static <SubType extends Enum<SubType> & ItemSubtype> void applyChanges(ItemStack item, Item itemData, SubType itemSubtype){
-        serializeItem(item, itemData);
-        itemData.imprint(item,itemSubtype);
+//        serializeItem(item, itemData);
+//        itemData.imprint(item,itemSubtype);
     }
     public static int rollCorruptionOutcome(){
         //60-20-20, 60% Nothing happens, 20% Brick, 20% Upgrade

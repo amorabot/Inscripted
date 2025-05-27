@@ -1,6 +1,6 @@
-package com.amorabot.inscripted.file.item.serialization;
+package com.amorabot.inscripted.item.structure.serialization;
 
-import com.amorabot.inscripted.components.Items.Abstract.Item;
+import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
@@ -33,7 +33,7 @@ public record GenericItemContainerDataType<T extends Item>(Class<T> type) implem
             byteOut.close();
 
         } catch (IOException exception) {
-            exception.printStackTrace();
+            throw new ItemSerializationException("Failed to serialize Item data for class " + type.getSimpleName());
         }
 
         return byteOut.toByteArray();
@@ -51,10 +51,11 @@ public record GenericItemContainerDataType<T extends Item>(Class<T> type) implem
             return (type.cast(in.readObject()));
 
         } catch (IOException | ClassNotFoundException exception) {
-            exception.printStackTrace();
+            throw new ItemSerializationException("Failed to deserialize Item data for class " + type.getSimpleName());
+//            exception.printStackTrace();
         }
 
-        Utils.log("Erro na de-serialização do container item-data");
-        return null;
+//        Utils.log("Erro na de-serialização do container item-data");
+//        return null;
     }
 }

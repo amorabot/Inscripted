@@ -19,13 +19,12 @@ import java.util.Arrays;
 @EqualsAndHashCode
 public class Inscription implements Serializable {
 
+    private static final boolean DEBUG_MODE = false;
+
     private final InscriptionIDs inscription;
-    private int tier;
+    private final int tier;
     private double basePercentile;
     private boolean modifiable = true;
-
-    //TODO: add a debugMode static var on various classes that need it
-
 
     public Inscription(InscriptionIDs inscription, int tier, double basePercentile) {
         this.inscription = inscription;
@@ -37,7 +36,6 @@ public class Inscription implements Serializable {
         String template = getTemplateDisplayName();
         Integer[] templateOrdering = getInscription().getDefinitionData().accept(new ValuesTableSizeExtractor());
         int[] mappedValues = getMappedFinalValues();
-
         return substituteTemplates(mappedValues,template,templateOrdering, valuesHex);
     }
     private String getTemplateDisplayName(){
@@ -45,7 +43,7 @@ public class Inscription implements Serializable {
     }
     private String substituteTemplates(int[] mappedValues, String templateString, Integer[] templateOrdering, String valueColorHex){
         String replacedTemplate = templateString;
-        Utils.error(Arrays.toString(mappedValues));
+        if (DEBUG_MODE){Utils.error(Arrays.toString(mappedValues));}
         RollType[] templateRolls = ValuesTableSizeExtractor.mapSizingsToRollTypes(templateOrdering);
         int mappedOffset = 0;
         for (RollType roll : templateRolls) {
@@ -77,7 +75,7 @@ public class Inscription implements Serializable {
 
     public int[] getMappedFinalValues(){
         int[] tableValues = InscriptionTable.queryValuesFor(this);
-        //Utils.log(Arrays.toString(tableValues));
+        if (DEBUG_MODE){Utils.log(Arrays.toString(tableValues));}
         return mapFinalValues(tableValues);
     }
     private int[] mapFinalValues(int[] tableValues){
@@ -103,7 +101,7 @@ public class Inscription implements Serializable {
                 // Get the offset values on the raw value table
                 final int v1 = tableValues[rawOffset];
                 final int v2 = tableValues[rawOffset+1];
-                //Utils.log("v1: " + v1 + " " + "v2: " + v2 + "  BP:" + getBasePercentile());
+                if (DEBUG_MODE){Utils.log("v1: " + v1 + " " + "v2: " + v2 + "  BP:" + getBasePercentile());}
                 final int m1 = Utils.getRoundedParametricValue(v1, v2, getBasePercentile());
                 mappedValues[mappedValuesArrayIndex] = m1;
 

@@ -85,7 +85,7 @@ public class Weapon extends Item {
     }
     @Override
     public void serializeContainers(Item itemData, ItemStack item) {
-        FunctionalItemAccessInterface.serializeItem(item, this);
+//        FunctionalItemAccessInterface.serializeItem(item, this);
     }
 
     private void setWeaponModel(ItemStack item){

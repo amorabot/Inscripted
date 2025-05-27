@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.item.structure.Weapon;
 
+import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.item.render.ItemRenderer;
 import com.amorabot.inscripted.item.render.ItemVisitor;
@@ -7,16 +8,23 @@ import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.ItemSubtype;
+import com.amorabot.inscripted.item.structure.serialization.InscriptedItem;
+import com.amorabot.inscripted.item.structure.serialization.ItemDeserializer;
+import com.amorabot.inscripted.item.structure.serialization.ItemSerializer;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class Weapon extends Item {
+
+    public static final NamespacedKey DATA_CONTAINER_KEY = new NamespacedKey(Inscripted.getPlugin(),"WPN_DATA");
 
     @Getter
     private final WeaponTypes weaponType;
@@ -74,14 +82,26 @@ public class Weapon extends Item {
     @Override
     public ItemStack getItemForm() {
         ItemStack weaponItem = new ItemStack(this.vanillaMaterial);
+        setWeaponModel(weaponItem);
+        tag(weaponItem);
 
         ItemRenderer.imprintLore(weaponItem,this,ItemRenderer.render(this),isIdentified());
 
-//        serializeContainers(this, weaponItem);
-
-        setWeaponModel(weaponItem);
+        serializeDataContainerInto(weaponItem);
         return weaponItem;
     }
+
+    @Override
+    public NamespacedKey getKey() {
+        return DATA_CONTAINER_KEY;
+    }
+
+    @Override
+    public void serializeDataContainerInto(ItemStack itemStack) {
+        ItemSerializer serializer = new ItemSerializer();
+        serializer.visitWeapon(itemStack,this);
+    }
+
     private void setWeaponModel(ItemStack item){
         int modelID = getWeaponType().mapWeaponTierModel(getTier());
         ItemMeta itemMeta = item.getItemMeta();

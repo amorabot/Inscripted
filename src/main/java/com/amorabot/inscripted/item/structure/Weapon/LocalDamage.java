@@ -9,23 +9,13 @@ import com.amorabot.inscripted.item.inscription.language.ValueType;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 public class LocalDamage {
 
-    /*
-    private static final Set<InscriptionIDs> locallyCompiledStats;
-    Same logic for LocalDefence component
-    TODO: Global set that is loaded whenever a local damage inscription found (For ignoring them in the compilation step)
-        When getting FLAT_FIRE_DAMAGE and INCREASED_FIRE on a weapon's LocalDamage, those stats are implicitly for local compilation (this step)
-        Then in this case, when those stats are found, load them into the static set
-        Whenever we are compiling, check if the compiled inscription is inside this set AND if that inscription is local
-            If the set does contain that insc. but the insc. is not local, then compile
-    */
+    private static final boolean DEBUG_MODE = false;
+    private static final Set<Integer> locallyCompiledStatIDs = new HashSet<>();
     private final Map<DamageTypes, int[]> weaponDamage = new HashMap<>();
 
     public LocalDamage(Weapon weapon){
@@ -42,15 +32,17 @@ public class LocalDamage {
 
         //Adding local flats to baseDamage
         for (DamageTypes dmg : addedDamages.keySet()){
-            Utils.log(dmg.name());
             addFlatDamage(baseDamage,dmg, addedDamages.get(dmg));
         }
 
         //Getting final values
         for (DamageTypes finalDmg : baseDamage.keySet()){
             final int[] baseDmg = baseDamage.get(finalDmg);
-//            Utils.log(Arrays.toString(baseDmg));
             final int totalIncrease = localIncreases.getOrDefault(finalDmg,0) + qualityIncrease;
+            if (DEBUG_MODE){
+                Utils.log(finalDmg.name()+": "+Arrays.toString(baseDmg));
+                Utils.log("Increase: " + totalIncrease);
+            }
             final int[] finalValues = Arrays.stream(baseDmg).map(currValue -> (int) ((1+((float)totalIncrease/100))*currValue)).toArray();
             weaponDamage.put(finalDmg,finalValues);
         }
@@ -70,14 +62,17 @@ public class LocalDamage {
         Map<DamageTypes, int[]> addedDamages = new HashMap<>();
 
         for (Inscription insc : inscriptions){
-            InscriptionIDs incriptionID = insc.getInscription();
-            InscriptionDefinition definition = incriptionID.getDefinitionData();
+            InscriptionIDs inscriptionID = insc.getInscription();
+            InscriptionDefinition definition = inscriptionID.getDefinitionData();
             if (insc.isSpecial()){continue;}
             if (definition.isGlobal()){continue;}
             if (definition instanceof InscriptionDefinition.Regular regularDef){
                 if (!regularDef.getBaseData().type().equals(ValueType.FLAT)){
                     continue;
                 }
+                // It's a locally compiled stat, lets process it:
+                registerLocallyCompiledStat(regularDef.getBaseData(), regularDef.isGlobal(), regularDef.isPositive(), inscriptionID);
+
                 DamageTypes damageToAdd = mapFlatDamageTypes(regularDef.getBaseData().stat());
                 if(damageToAdd==null){continue;}
                 addFlatDamage(addedDamages,damageToAdd, insc.getMappedFinalValues());
@@ -85,12 +80,20 @@ public class LocalDamage {
             if (definition instanceof InscriptionDefinition.Hybrid hybridDef){
                 int[] hybridValues = insc.getMappedFinalValues();
                 if (hybridDef.getPrimaryData().type().equals(ValueType.FLAT)){
+                    /*
+                    We only register this one, the other might be "Accuracy", which might be local and does not matter locally.
+                    Same logic applies to the 2nd half. It's a side effect of having arbitrary local mods and only compiling damage-related ones.
+                    */
+                    registerLocallyCompiledStat(hybridDef.getPrimaryData(), hybridDef.isGlobal(), hybridDef.isPositive(), inscriptionID);
+
                     DamageTypes damageToAdd = mapFlatDamageTypes(hybridDef.getPrimaryData().stat());
                     if(damageToAdd==null){continue;}
                     // Get the first 2 values [X, Y, ...]
                     addFlatDamage(addedDamages,damageToAdd, new int[]{hybridValues[0],hybridValues[1]});
                 }
                 if (hybridDef.getSecondaryData().type().equals(ValueType.FLAT)){
+                    registerLocallyCompiledStat(hybridDef.getSecondaryData(), hybridDef.isGlobal(), hybridDef.isPositive(), inscriptionID);
+
                     DamageTypes damageToAdd = mapFlatDamageTypes(hybridDef.getSecondaryData().stat());
                     if(damageToAdd==null){continue;}
                     final int lastIndex = hybridValues.length-1;
@@ -175,5 +178,15 @@ public class LocalDamage {
     private void addLocalncrease(Map<DamageTypes, Integer> localIncreases, DamageTypes damageToAdd, int value){
         localIncreases.put(damageToAdd,
                 localIncreases.getOrDefault(damageToAdd,0) + value);
+    }
+
+
+    private void registerLocallyCompiledStat(InscriptionDefinition.BaseInscription baseData, boolean isGlobal, boolean isPositive, InscriptionIDs sourceInscription){
+        int definitionID = baseData.id(isGlobal,isPositive);
+        if (DEBUG_MODE){Utils.log("Inscription code("+sourceInscription+"): " + definitionID);}
+        locallyCompiledStatIDs.add(definitionID);
+    }
+    public static boolean hasStatID(int statID){
+        return locallyCompiledStatIDs.contains(statID);
     }
 }

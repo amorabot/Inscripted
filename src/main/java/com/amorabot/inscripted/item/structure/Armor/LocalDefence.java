@@ -9,13 +9,13 @@ import com.amorabot.inscripted.item.inscription.language.ValueType;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 public class LocalDefence {
 
+    private static final boolean DEBUG_MODE = false;
+    private static final Set<Integer> locallyCompiledStatIDs = new HashSet<>();
     private final Map<DefenceTypes, Integer> armorDefences = new HashMap<>();
 
     public LocalDefence(Armor armor){
@@ -37,6 +37,10 @@ public class LocalDefence {
         for (DefenceTypes defence : baseDefences.keySet()){
             final int baseDefValue = baseDefences.get(defence);
             final int totalIncrease = localIncreases.getOrDefault(defence,0) + qualityIncrease;
+            if (DEBUG_MODE){
+                Utils.log(defence.name()+": "+baseDefValue);
+                Utils.log("Increase: " + totalIncrease);
+            }
             final int finalValue = (int) Utils.applyPercentageTo(baseDefValue, totalIncrease);
             armorDefences.put(defence,finalValue);
         }
@@ -57,8 +61,8 @@ public class LocalDefence {
         Map<DefenceTypes, Integer> localIncreases = new HashMap<>();
 
         for (Inscription insc : inscriptions){
-            InscriptionIDs incriptionID = insc.getInscription();
-            InscriptionDefinition definition = incriptionID.getDefinitionData();
+            InscriptionIDs inscriptionID = insc.getInscription();
+            InscriptionDefinition definition = inscriptionID.getDefinitionData();
             if (insc.isSpecial()){continue;}
             if (definition.isGlobal()){continue;}
             // Its a local armor mod, if it targets a defence type, and its a increase/flat, lets map it
@@ -70,6 +74,8 @@ public class LocalDefence {
                 if (targetFlatValues ^ isFlat){ // target & not flat || not target & flat -> Ignore (xor)
                     continue;
                 }
+
+                registerLocallyCompiledStat(regularDef.getBaseData(), regularDef.isGlobal(), regularDef.isPositive(), inscriptionID);
                 addLocalIncrease(
                         localIncreases,
                         mapStatDefence(regularDef.getBaseData().stat()),
@@ -90,6 +96,7 @@ public class LocalDefence {
                     if (targetFlatValues ^ isPrimaryFlat){
                         continue;
                     }
+                    registerLocallyCompiledStat(hybridDef.getPrimaryData(), hybridDef.isGlobal(), hybridDef.isPositive(), inscriptionID);
                     addLocalIncrease(
                             localIncreases,
                             mapStatDefence(hybridDef.getPrimaryData().stat()),
@@ -101,6 +108,7 @@ public class LocalDefence {
                     if (targetFlatValues ^ isSecondaryFlat){
                         continue;
                     }
+                    registerLocallyCompiledStat(hybridDef.getSecondaryData(), hybridDef.isGlobal(), hybridDef.isPositive(), inscriptionID);
                     addLocalIncrease(
                             localIncreases,
                             mapStatDefence(hybridDef.getSecondaryData().stat()),
@@ -136,5 +144,15 @@ public class LocalDefence {
             if (statToCheck.equals(def.getStat())){return def;}
         }
         return null;
+    }
+
+
+    private void registerLocallyCompiledStat(InscriptionDefinition.BaseInscription baseData, boolean isGlobal, boolean isPositive, InscriptionIDs sourceInscription){
+        int definitionID = baseData.id(isGlobal,isPositive);
+        if (DEBUG_MODE){Utils.log("Inscription code("+sourceInscription+"): " + definitionID);}
+        locallyCompiledStatIDs.add(definitionID);
+    }
+    public static boolean hasStatID(int statID){
+        return locallyCompiledStatIDs.contains(statID);
     }
 }

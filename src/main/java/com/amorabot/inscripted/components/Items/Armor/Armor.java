@@ -77,7 +77,7 @@ public class Armor extends Item {
 
     @Override
     protected void serializeContainers(Item itemData, ItemStack item) {
-        FunctionalItemAccessInterface.serializeItem(item,this);
+//        FunctionalItemAccessInterface.serializeItem(item,this);
     }
 
     public Map<DefenceTypes, Integer> getLocalDefences(){ //Once a weapon is created, the damage map needs to be updated to contain any possible new damages

@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.item.structure.Armor;
 
+import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.item.render.ItemRenderer;
 import com.amorabot.inscripted.item.render.ItemVisitor;
@@ -7,9 +8,13 @@ import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.ItemSubtype;
+import com.amorabot.inscripted.item.structure.serialization.InscriptedItem;
+import com.amorabot.inscripted.item.structure.serialization.ItemDeserializer;
+import com.amorabot.inscripted.item.structure.serialization.ItemSerializer;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
@@ -18,8 +23,11 @@ import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Armor extends Item {
+
+    public static final NamespacedKey DATA_CONTAINER_KEY = new NamespacedKey(Inscripted.getPlugin(),"RMR_DATA");
 
     @Getter
     private final ArmorTypes armorType;
@@ -68,6 +76,7 @@ public class Armor extends Item {
     @Override
     public ItemStack getItemForm() {
         ItemStack armorItem = new ItemStack(this.vanillaMaterial);
+        tag(armorItem);
 
         ArmorMeta armorMeta = (ArmorMeta) armorItem.getItemMeta();
         assert armorMeta != null;
@@ -77,9 +86,20 @@ public class Armor extends Item {
 
         ItemRenderer.imprintLore(armorItem,this,ItemRenderer.render(this),isIdentified());
 
-//        serializeContainers(this, armorItem);
+        serializeDataContainerInto(armorItem);
         return armorItem;
     }
+    @Override
+    public NamespacedKey getKey() {
+        return DATA_CONTAINER_KEY;
+    }
+
+    @Override
+    public void serializeDataContainerInto(ItemStack itemStack) {
+        ItemSerializer serializer = new ItemSerializer();
+        serializer.visitArmor(itemStack,this);
+    }
+
     private ArmorTrim defineArmorTrim(){
         TrimPattern pattern;
         TrimMaterial material = getArmorType().getTrimMaterial();

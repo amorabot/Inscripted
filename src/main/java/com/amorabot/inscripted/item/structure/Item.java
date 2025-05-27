@@ -4,6 +4,7 @@ import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.item.inscription.Inscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.render.ItemVisitor;
+import com.amorabot.inscripted.item.structure.serialization.InscriptedItem;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,7 +21,7 @@ import java.util.Set;
 
 @Getter
 @EqualsAndHashCode
-public abstract class Item implements Serializable {
+public abstract class Item implements Serializable, InscriptedItem {
     private final int ilvl;
     protected final EquipmentSlots slot;
     @Setter
@@ -61,8 +62,6 @@ public abstract class Item implements Serializable {
     public abstract ItemSubtype getGenericSubtype();
     protected abstract void setupInternalItemData();
     protected abstract void mapItemBase();
-    public abstract ItemStack getItemForm();
-
 
     public Archetypes getArchetype(){
         return getGenericSubtype().mapArchetype();

@@ -5,7 +5,7 @@ import com.amorabot.inscripted.components.DamageComponent;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
-import com.amorabot.inscripted.file.item.serialization.ItemGSONAdapter;
+import com.amorabot.inscripted.item.structure.serialization.ItemGSONAdapter;
 import com.amorabot.inscripted.components.Player.Attributes;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.stats.PlayerEquipment;

@@ -33,7 +33,19 @@ public abstract class InscriptionDefinition implements Serializable {
         R visitKeystone(InscriptionDefinition.Keystone inscription);
     }
 
-    public record BaseInscription(ValueType type, RollType roll, Stats stat) { }
+    public record BaseInscription(ValueType type, RollType roll, Stats stat) {
+        public int id(boolean isGlobal, boolean isPositive){
+            String positiveBit;
+            if (isPositive){positiveBit="1";}else{positiveBit="0";}
+            String scopeBit;
+            if (isGlobal){scopeBit="1";}else{scopeBit="0";}
+            String typeOrdinal = String.valueOf(type.ordinal());
+            String rollOrdinal = String.valueOf(roll.ordinal());
+            String statOrdinal = String.valueOf(stat.ordinal());
+            String codeString = typeOrdinal + rollOrdinal + statOrdinal + positiveBit + scopeBit;
+            return Integer.parseInt(codeString);
+        }
+    }
 
     @Getter
     public static class Regular extends InscriptionDefinition{
