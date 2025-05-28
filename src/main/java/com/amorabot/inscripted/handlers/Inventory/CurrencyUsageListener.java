@@ -2,13 +2,8 @@ package com.amorabot.inscripted.handlers.Inventory;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.Abstract.Item;
-import com.amorabot.inscripted.components.Items.Armor.Armor;
-//import com.amorabot.inscripted.components.Items.DataStructures.Enums.Implicits;
-import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Items.currency.Currencies;
 import com.amorabot.inscripted.events.CurrencyUsageEvent;
-import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.audience.Audience;
@@ -40,20 +35,20 @@ public class CurrencyUsageListener implements Listener {
         ItemStack currencyStack = event.getCurrencyItem();
         Player player = event.getPlayer();
 
-        Item targetItemData = FunctionalItemAccessInterface.deserializeGenericItemData(targetItem.getItemMeta().getPersistentDataContainer());
-
-        if (!event.getMappedCurrency().apply(targetItem, targetItemData, player)){
-            Utils.error("Invalid currency usage (CurrencyUsage EventListener)");
-            SoundAPI.playInvalidActionFor(player, player.getLocation());
-            event.setCancelled(true);
-            return;
-        }
-
-        if (targetItemData instanceof Weapon){
-            Currencies.applyChanges(targetItem, targetItemData, ((Weapon)targetItemData).getSubtype());
-        } else if (targetItemData instanceof Armor) {
-            Currencies.applyChanges(targetItem, targetItemData, ((Armor)targetItemData).getSubype());
-        }
-        currencyStack.setAmount(currencyStack.getAmount()-1);
+//        Item targetItemData = FunctionalItemAccessInterface.deserializeGenericItemData(targetItem.getItemMeta().getPersistentDataContainer());
+//
+//        if (!event.getMappedCurrency().apply(targetItem, targetItemData, player)){
+//            Utils.error("Invalid currency usage (CurrencyUsage EventListener)");
+//            SoundAPI.playInvalidActionFor(player, player.getLocation());
+//            event.setCancelled(true);
+//            return;
+//        }
+//
+//        if (targetItemData instanceof Weapon){
+//            Currencies.applyChanges(targetItem, targetItemData, ((Weapon)targetItemData).getSubtype());
+//        } else if (targetItemData instanceof Armor) {
+//            Currencies.applyChanges(targetItem, targetItemData, ((Armor)targetItemData).getSubype());
+//        }
+//        currencyStack.setAmount(currencyStack.getAmount()-1);
     }
 }

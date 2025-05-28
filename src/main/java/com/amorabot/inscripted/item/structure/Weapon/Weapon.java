@@ -8,10 +8,10 @@ import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.ItemSubtype;
-import com.amorabot.inscripted.item.structure.serialization.InscriptedItem;
-import com.amorabot.inscripted.item.structure.serialization.ItemDeserializer;
-import com.amorabot.inscripted.item.structure.serialization.ItemSerializer;
+import com.amorabot.inscripted.item.structure.io.InscriptedItem;
+import com.amorabot.inscripted.item.structure.io.ItemSerializer;
 import com.amorabot.inscripted.utils.CraftingUtils;
+import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
@@ -20,7 +20,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class Weapon extends Item {
 
@@ -83,7 +82,7 @@ public class Weapon extends Item {
     public ItemStack getItemForm() {
         ItemStack weaponItem = new ItemStack(this.vanillaMaterial);
         setWeaponModel(weaponItem);
-        tag(weaponItem);
+        InscriptedItem.tag(weaponItem);
 
         ItemRenderer.imprintLore(weaponItem,this,ItemRenderer.render(this),isIdentified());
 

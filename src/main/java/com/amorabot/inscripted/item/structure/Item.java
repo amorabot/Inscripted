@@ -4,14 +4,13 @@ import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.item.inscription.Inscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.render.ItemVisitor;
-import com.amorabot.inscripted.item.structure.serialization.InscriptedItem;
+import com.amorabot.inscripted.item.structure.io.InscriptedItem;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.Serializable;
 import java.util.ArrayList;

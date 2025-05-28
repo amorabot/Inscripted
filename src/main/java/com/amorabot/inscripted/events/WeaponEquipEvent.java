@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.events;
 
-import com.amorabot.inscripted.components.Items.Weapon.Weapon;
+//import com.amorabot.inscripted.components.Items.Weapon.Weapon;
+import com.amorabot.inscripted.item.structure.Weapon.Weapon;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -64,9 +65,10 @@ public class WeaponEquipEvent extends Event {
     }
 
     public Weapon getWeaponData(){
-        return FunctionalItemAccessInterface.
-                deserializeWeaponData(
-                        Objects.requireNonNull(getWeaponItem().getItemMeta()).getPersistentDataContainer());
+        return null;
+//        return FunctionalItemAccessInterface.
+//                deserializeWeaponData(
+//                        Objects.requireNonNull(getWeaponItem().getItemMeta()).getPersistentDataContainer());
     }
 
     public boolean isValid(){

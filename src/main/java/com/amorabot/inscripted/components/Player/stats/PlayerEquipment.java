@@ -73,20 +73,20 @@ public class PlayerEquipment {
             Set<Keystones> itemKeystones = new HashSet<>();
             Set<Effects> itemEffects = new HashSet<>();
             Set<Inscription> metaInsc = new HashSet<>();
-            for (Inscription inscription : itemData.getInscriptionList()){
-                ModifierData inscData = inscription.getInscription().getData();
-                if (inscData.isKeystone()){
-                    KeystoneData keystoneData = (KeystoneData) inscData;
-                    itemKeystones.add(keystoneData.keystone());
-                }
-                if(inscData.isEffect()){
-                    UniqueEffectData effectData = (UniqueEffectData) inscData;
-                    itemEffects.add(effectData.uniqueEffect());
-                }
-                if (inscription.getInscription().isMeta()){
-                    metaInsc.add(inscription);
-                }
-            }
+//            for (Inscription inscription : itemData.getInscriptionList()){
+//                ModifierData inscData = inscription.getInscription().getData();
+//                if (inscData.isKeystone()){
+//                    KeystoneData keystoneData = (KeystoneData) inscData;
+//                    itemKeystones.add(keystoneData.keystone());
+//                }
+//                if(inscData.isEffect()){
+//                    UniqueEffectData effectData = (UniqueEffectData) inscData;
+//                    itemEffects.add(effectData.uniqueEffect());
+//                }
+//                if (inscription.getInscription().isMeta()){
+//                    metaInsc.add(inscription);
+//                }
+//            }
 
             slotKeystones.put(slotType, itemKeystones);
             slotEffects.put(slotType, itemEffects);

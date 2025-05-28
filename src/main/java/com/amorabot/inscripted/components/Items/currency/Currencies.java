@@ -2,15 +2,13 @@ package com.amorabot.inscripted.components.Items.currency;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.Abstract.Item;
-import com.amorabot.inscripted.components.Items.Armor.Armor;
 import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
+import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.ItemSubtype;
-import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
-import com.amorabot.inscripted.components.Items.modifiers.Inscription;
+//import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import com.amorabot.inscripted.utils.Utils;
@@ -25,7 +23,6 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
-import static com.amorabot.inscripted.events.FunctionalItemAccessInterface.*;
 import static com.amorabot.inscripted.utils.Utils.color;
 import static com.amorabot.inscripted.utils.Utils.convertToPrettyString;
 
@@ -40,12 +37,12 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
-            if (itemData == null){return false;}
-            if (itemData.isIdentified()){return false;}
-
-            //Orb routine
-            itemData.identify();
-            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
+//            if (itemData == null){return false;}
+//            if (itemData.isIdentified()){return false;}
+//
+//            //Orb routine
+//            itemData.identify();
+//            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
             return true;
         }
     },
@@ -63,22 +60,22 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
-            if (itemData == null){return false;}
-            if (itemData.isCorrupted()){return false;}
-            if (!itemData.isIdentified()){return false;}
-
-            if (itemData instanceof Weapon){
-                WeaponTypes subType = ((Weapon)itemData).getSubtype();
-                //Orb routine
-                if (!improvedRarityOrbUsage(ItemRarities.COMMON, ItemRarities.AUGMENTED, itemData, subType)){return false;}
-            } else if (itemData instanceof Armor) {
-                ArmorTypes subType = ((Armor)itemData).getSubype();
-                //Orb routine
-                if (!improvedRarityOrbUsage(ItemRarities.COMMON, ItemRarities.AUGMENTED, itemData, subType)){return false;}
-            } else {
-                return false;
-            }
-            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
+//            if (itemData == null){return false;}
+//            if (itemData.isCorrupted()){return false;}
+//            if (!itemData.isIdentified()){return false;}
+//
+//            if (itemData instanceof Weapon){
+//                WeaponTypes subType = ((Weapon)itemData).getSubtype();
+//                //Orb routine
+//                if (!improvedRarityOrbUsage(ItemRarities.COMMON, ItemRarities.AUGMENTED, itemData, subType)){return false;}
+//            } else if (itemData instanceof Armor) {
+//                ArmorTypes subType = ((Armor)itemData).getSubype();
+//                //Orb routine
+//                if (!improvedRarityOrbUsage(ItemRarities.COMMON, ItemRarities.AUGMENTED, itemData, subType)){return false;}
+//            } else {
+//                return false;
+//            }
+//            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
             return true;
         }
     },
@@ -92,23 +89,23 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
-            if (itemData == null){return false;}
-            if (itemData.isCorrupted()){return false;}
-            if (!itemData.isIdentified()){return false;}
-
-            if (!itemData.getRarity().equals(ItemRarities.AUGMENTED)){return false;}
-            if (itemData instanceof Weapon){
-                WeaponTypes subType = ((Weapon)itemData).getSubtype();
-                //Orb routine
-                reroll(itemData, subType);
-            } else if (itemData instanceof Armor) {
-                ArmorTypes subType = ((Armor)itemData).getSubype();
-                //Orb routine
-                reroll(itemData, subType);
-            } else {
-                return false;
-            }
-            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
+//            if (itemData == null){return false;}
+//            if (itemData.isCorrupted()){return false;}
+//            if (!itemData.isIdentified()){return false;}
+//
+//            if (!itemData.getRarity().equals(ItemRarities.AUGMENTED)){return false;}
+//            if (itemData instanceof Weapon){
+//                WeaponTypes subType = ((Weapon)itemData).getSubtype();
+//                //Orb routine
+//                reroll(itemData, subType);
+//            } else if (itemData instanceof Armor) {
+//                ArmorTypes subType = ((Armor)itemData).getSubype();
+//                //Orb routine
+//                reroll(itemData, subType);
+//            } else {
+//                return false;
+//            }
+//            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
             return true;
         }
     },
@@ -126,22 +123,22 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
-            if (itemData == null){return false;}
-            if (itemData.isCorrupted()){return false;}
-            if (!itemData.isIdentified()){return false;}
-
-            if (itemData instanceof Weapon){
-                WeaponTypes subType = ((Weapon)itemData).getSubtype();
-                //Orb routine
-                if (!improvedRarityOrbUsage(ItemRarities.AUGMENTED, ItemRarities.RUNIC, itemData, subType)){return false;}
-            } else if (itemData instanceof Armor) {
-                ArmorTypes subType = ((Armor)itemData).getSubype();
-                //Orb routine
-                if (!improvedRarityOrbUsage(ItemRarities.AUGMENTED, ItemRarities.RUNIC, itemData, subType)){return false;}
-            } else {
-                return false;
-            }
-            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
+//            if (itemData == null){return false;}
+//            if (itemData.isCorrupted()){return false;}
+//            if (!itemData.isIdentified()){return false;}
+//
+//            if (itemData instanceof Weapon){
+//                WeaponTypes subType = ((Weapon)itemData).getSubtype();
+//                //Orb routine
+//                if (!improvedRarityOrbUsage(ItemRarities.AUGMENTED, ItemRarities.RUNIC, itemData, subType)){return false;}
+//            } else if (itemData instanceof Armor) {
+//                ArmorTypes subType = ((Armor)itemData).getSubype();
+//                //Orb routine
+//                if (!improvedRarityOrbUsage(ItemRarities.AUGMENTED, ItemRarities.RUNIC, itemData, subType)){return false;}
+//            } else {
+//                return false;
+//            }
+//            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
             return true;
         }
     },
@@ -156,23 +153,23 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
-            if (itemData == null){return false;}
-            if (itemData.isCorrupted()){return false;}
-            if (!itemData.isIdentified()){return false;}
-
-            if (!itemData.getRarity().equals(ItemRarities.RUNIC)){return false;}
-            if (itemData instanceof Weapon){
-                WeaponTypes subType = ((Weapon)itemData).getSubtype();
-                //Orb routine
-                reroll(itemData, subType);
-            } else if (itemData instanceof Armor) {
-                ArmorTypes subType = ((Armor)itemData).getSubype();
-                //Orb routine
-                reroll(itemData, subType);
-            } else {
-                return false;
-            }
-            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
+//            if (itemData == null){return false;}
+//            if (itemData.isCorrupted()){return false;}
+//            if (!itemData.isIdentified()){return false;}
+//
+//            if (!itemData.getRarity().equals(ItemRarities.RUNIC)){return false;}
+//            if (itemData instanceof Weapon){
+//                WeaponTypes subType = ((Weapon)itemData).getSubtype();
+//                //Orb routine
+//                reroll(itemData, subType);
+//            } else if (itemData instanceof Armor) {
+//                ArmorTypes subType = ((Armor)itemData).getSubype();
+//                //Orb routine
+//                reroll(itemData, subType);
+//            } else {
+//                return false;
+//            }
+//            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
             return true;
         }
     },
@@ -186,23 +183,23 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
     )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
-            if (itemData == null){return false;}
-            if (itemData.isCorrupted()){return false;}
-            if (!itemData.isIdentified()){return false;}
-
-            if (!itemData.getRarity().equals(ItemRarities.AUGMENTED)){return false;}
-            if (itemData instanceof Weapon){
-                WeaponTypes subType = ((Weapon)itemData).getSubtype();
-                //Orb routine
-                if (!addRandomInscriptionTo(itemData, subType)){return false;}
-            } else if (itemData instanceof Armor) {
-                ArmorTypes subType = ((Armor)itemData).getSubype();
-                //Orb routine
-                if (!addRandomInscriptionTo(itemData, subType)){return false;}
-            } else {
-                return false;
-            }
-            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
+//            if (itemData == null){return false;}
+//            if (itemData.isCorrupted()){return false;}
+//            if (!itemData.isIdentified()){return false;}
+//
+//            if (!itemData.getRarity().equals(ItemRarities.AUGMENTED)){return false;}
+//            if (itemData instanceof Weapon){
+//                WeaponTypes subType = ((Weapon)itemData).getSubtype();
+//                //Orb routine
+//                if (!addRandomInscriptionTo(itemData, subType)){return false;}
+//            } else if (itemData instanceof Armor) {
+//                ArmorTypes subType = ((Armor)itemData).getSubype();
+//                //Orb routine
+//                if (!addRandomInscriptionTo(itemData, subType)){return false;}
+//            } else {
+//                return false;
+//            }
+//            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
             return true;
         }
     },
@@ -216,23 +213,23 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
-            if (itemData == null){return false;}
-            if (itemData.isCorrupted()){return false;}
-            if (!itemData.isIdentified()){return false;}
-
-            if (!itemData.getRarity().equals(ItemRarities.RUNIC)){return false;}
-            if (itemData instanceof Weapon){
-                WeaponTypes subType = ((Weapon)itemData).getSubtype();
-                //Orb routine
-                if (!addRandomInscriptionTo(itemData, subType)){return false;}
-            } else if (itemData instanceof Armor) {
-                ArmorTypes subType = ((Armor)itemData).getSubype();
-                //Orb routine
-                if (!addRandomInscriptionTo(itemData, subType)){return false;}
-            } else {
-                return false;
-            }
-            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
+//            if (itemData == null){return false;}
+//            if (itemData.isCorrupted()){return false;}
+//            if (!itemData.isIdentified()){return false;}
+//
+//            if (!itemData.getRarity().equals(ItemRarities.RUNIC)){return false;}
+//            if (itemData instanceof Weapon){
+//                WeaponTypes subType = ((Weapon)itemData).getSubtype();
+//                //Orb routine
+//                if (!addRandomInscriptionTo(itemData, subType)){return false;}
+//            } else if (itemData instanceof Armor) {
+//                ArmorTypes subType = ((Armor)itemData).getSubype();
+//                //Orb routine
+//                if (!addRandomInscriptionTo(itemData, subType)){return false;}
+//            } else {
+//                return false;
+//            }
+//            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
             return true;
         }
     },
@@ -247,30 +244,30 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
-            if (itemData == null){return false;}
-            if (itemData.isCorrupted()){return false;}
-            if (!itemData.isIdentified()){return false;}
-
-            ItemRarities rarity = itemData.getRarity();
-            if (!rarity.equals(ItemRarities.AUGMENTED) && !rarity.equals(ItemRarities.RUNIC)){return false;}
-            if (itemData.getInscriptionList().size() == 1 && itemData.getInscriptionList().get(0).isImbued()){return false;}
-
-            List<Inscription> modList = itemData.getInscriptionList();
-            Inscription imbuedMod = null;
-            for (Inscription mod : modList){
-                if (mod.isImbued()){
-                    imbuedMod = mod;
-                }
-            }
-            modList.clear();
-            if (imbuedMod!=null){
-                modList.add(imbuedMod);
-                itemData.setRarity(ItemRarities.AUGMENTED);
-            } else {
-                itemData.setRarity(ItemRarities.COMMON);
-                itemData.getInscriptionList().clear();
-            }
-            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
+//            if (itemData == null){return false;}
+//            if (itemData.isCorrupted()){return false;}
+//            if (!itemData.isIdentified()){return false;}
+//
+//            ItemRarities rarity = itemData.getRarity();
+//            if (!rarity.equals(ItemRarities.AUGMENTED) && !rarity.equals(ItemRarities.RUNIC)){return false;}
+//            if (itemData.getInscriptionList().size() == 1 && itemData.getInscriptionList().get(0).isImbued()){return false;}
+//
+//            List<Inscription> modList = itemData.getInscriptionList();
+//            Inscription imbuedMod = null;
+//            for (Inscription mod : modList){
+//                if (mod.isImbued()){
+//                    imbuedMod = mod;
+//                }
+//            }
+//            modList.clear();
+//            if (imbuedMod!=null){
+//                modList.add(imbuedMod);
+//                itemData.setRarity(ItemRarities.AUGMENTED);
+//            } else {
+//                itemData.setRarity(ItemRarities.COMMON);
+//                itemData.getInscriptionList().clear();
+//            }
+//            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
             return true;
         }
     },
@@ -286,22 +283,22 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
-            if (itemData == null){return false;}
-            if (itemData.isCorrupted()){return false;}
-            if (!itemData.isIdentified()){return false;}
-
-            ItemRarities rarity = itemData.getRarity();
-            if (!rarity.equals(ItemRarities.AUGMENTED) && !rarity.equals(ItemRarities.RUNIC)){return false;}
-            List<Inscription> modList = itemData.getInscriptionList();
-            for (Inscription mod : modList){//If theres a imbued mod already, invalid use
-                if (mod.isImbued()){
-                    return false;
-                }
-            }
-            int chosenModIndex = CraftingUtils.getRandomNumber(0, modList.size()-1);
-            Inscription chosenMod = modList.get(chosenModIndex);
-            chosenMod.imbue();
-            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
+//            if (itemData == null){return false;}
+//            if (itemData.isCorrupted()){return false;}
+//            if (!itemData.isIdentified()){return false;}
+//
+//            ItemRarities rarity = itemData.getRarity();
+//            if (!rarity.equals(ItemRarities.AUGMENTED) && !rarity.equals(ItemRarities.RUNIC)){return false;}
+//            List<Inscription> modList = itemData.getInscriptionList();
+//            for (Inscription mod : modList){//If theres a imbued mod already, invalid use
+//                if (mod.isImbued()){
+//                    return false;
+//                }
+//            }
+//            int chosenModIndex = CraftingUtils.getRandomNumber(0, modList.size()-1);
+//            Inscription chosenMod = modList.get(chosenModIndex);
+//            chosenMod.imbue();
+//            SoundAPI.playEnchantingSoundFor(player, player.getLocation(), true);
             return true;
         }
     },
@@ -381,24 +378,24 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
-            if (itemData == null){return false;}
-            if (itemData.isCorrupted()){return false;}
-            if (!itemData.isIdentified()){return false;}
-
-            if (itemData instanceof Weapon){
-                switch (itemData.improveQuality()){
-                    case -1:
-                        return false;
-                    case 0:
-                        Utils.log("quality :D");
-                        break;
-                    case 1:
-                        break;
-                }
-            }else {
-                return false;
-            }
-            SoundAPI.playGenericSoundAtLocation(player, player.getLocation(), "item.axe.scrape", 0.5f, 1.7f);
+//            if (itemData == null){return false;}
+//            if (itemData.isCorrupted()){return false;}
+//            if (!itemData.isIdentified()){return false;}
+//
+//            if (itemData instanceof Weapon){
+//                switch (itemData.improveQuality()){
+//                    case -1:
+//                        return false;
+//                    case 0:
+//                        Utils.log("quality :D");
+//                        break;
+//                    case 1:
+//                        break;
+//                }
+//            }else {
+//                return false;
+//            }
+//            SoundAPI.playGenericSoundAtLocation(player, player.getLocation(), "item.axe.scrape", 0.5f, 1.7f);
             return true;
         }
     },
@@ -425,24 +422,24 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             )) {
         @Override
         public boolean apply(ItemStack itemStack, Item itemData, Player player) {
-            if (itemData == null){return false;}
-            if (itemData.isCorrupted()){return false;}
-            if (!itemData.isIdentified()){return false;}
-
-            if (itemData instanceof Armor){
-                switch (itemData.improveQuality()){
-                    case -1:
-                        return false;
-                    case 0:
-                        Utils.log("quality na armadura :D");
-                        break;
-                    case 1:
-                        break;
-                }
-            }else {
-                return false;
-            }
-            SoundAPI.playGenericSoundAtLocation(player, player.getLocation(), "item.axe.scrape", 0.5f, 1.7f);
+//            if (itemData == null){return false;}
+//            if (itemData.isCorrupted()){return false;}
+//            if (!itemData.isIdentified()){return false;}
+//
+//            if (itemData instanceof Armor){
+//                switch (itemData.improveQuality()){
+//                    case -1:
+//                        return false;
+//                    case 0:
+//                        Utils.log("quality na armadura :D");
+//                        break;
+//                    case 1:
+//                        break;
+//                }
+//            }else {
+//                return false;
+//            }
+//            SoundAPI.playGenericSoundAtLocation(player, player.getLocation(), "item.axe.scrape", 0.5f, 1.7f);
             return true;
         }
     };

@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.item.structure.serialization;
+package com.amorabot.inscripted.item.structure.io;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.item.structure.Armor.Armor;
@@ -45,13 +45,5 @@ public class ItemSerializer implements ItemDataContainerVisitor<Item> {
         PersistentDataContainer itemPDC = itemMeta.getPersistentDataContainer();
         itemPDC.set(IDENTIFIED, new PersistentDataType.BooleanPersistentDataType(), identified);
         item.setItemMeta(itemMeta);
-    }
-    public static boolean isIdentified(ItemStack item){
-        if (!ItemDeserializer.checkDataContainer(item,IDENTIFIED)){
-            return false;
-        }
-        ItemMeta itemMeta = item.getItemMeta();
-        PersistentDataContainer itemPDC = itemMeta.getPersistentDataContainer();
-        return Boolean.TRUE.equals(itemPDC.get(IDENTIFIED, new PersistentDataType.BooleanPersistentDataType()));
     }
 }

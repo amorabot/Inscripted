@@ -3,7 +3,7 @@ package com.amorabot.inscripted.components.Items.Armor;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.data.StatDefinition;
 import com.amorabot.inscripted.components.Player.stats.PlayerStats;
-import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
+//import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
@@ -61,24 +61,25 @@ public class Armor extends Item {
     }
     @Override
     public ItemStack getItemForm() {
-        ItemStack armorItem = new ItemStack(this.vanillaMaterial);
-
-        imprint(armorItem, type);
-
-        //Assuming its always a valid item (A set can be created for all possible armortypes and support custom ones)
-        ArmorMeta armorMeta = (ArmorMeta) armorItem.getItemMeta();
-        assert armorMeta != null;
-//        armorMeta.setTrim(defineArmorTrim());
-        armorMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
-        armorItem.setItemMeta(armorMeta);
-        serializeContainers(this, armorItem);
-        return armorItem;
+//        ItemStack armorItem = new ItemStack(this.vanillaMaterial);
+//
+//        imprint(armorItem, type);
+//
+//        //Assuming its always a valid item (A set can be created for all possible armortypes and support custom ones)
+//        ArmorMeta armorMeta = (ArmorMeta) armorItem.getItemMeta();
+//        assert armorMeta != null;
+////        armorMeta.setTrim(defineArmorTrim());
+//        armorMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
+//        armorItem.setItemMeta(armorMeta);
+//        serializeContainers(this, armorItem);
+//        return armorItem;
+        return null;
     }
 
-    @Override
-    protected void serializeContainers(Item itemData, ItemStack item) {
-//        FunctionalItemAccessInterface.serializeItem(item,this);
-    }
+//    @Override
+//    protected void serializeContainers(Item itemData, ItemStack item) {
+////        FunctionalItemAccessInterface.serializeItem(item,this);
+//    }
 
     public Map<DefenceTypes, Integer> getLocalDefences(){ //Once a weapon is created, the damage map needs to be updated to contain any possible new damages
         return null;

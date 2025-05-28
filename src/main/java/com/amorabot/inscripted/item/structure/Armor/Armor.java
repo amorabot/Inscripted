@@ -8,9 +8,8 @@ import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.ItemSubtype;
-import com.amorabot.inscripted.item.structure.serialization.InscriptedItem;
-import com.amorabot.inscripted.item.structure.serialization.ItemDeserializer;
-import com.amorabot.inscripted.item.structure.serialization.ItemSerializer;
+import com.amorabot.inscripted.item.structure.io.InscriptedItem;
+import com.amorabot.inscripted.item.structure.io.ItemSerializer;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -23,7 +22,6 @@ import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.util.List;
-import java.util.Optional;
 
 public class Armor extends Item {
 
@@ -76,7 +74,7 @@ public class Armor extends Item {
     @Override
     public ItemStack getItemForm() {
         ItemStack armorItem = new ItemStack(this.vanillaMaterial);
-        tag(armorItem);
+        InscriptedItem.tag(armorItem);
 
         ArmorMeta armorMeta = (ArmorMeta) armorItem.getItemMeta();
         assert armorMeta != null;

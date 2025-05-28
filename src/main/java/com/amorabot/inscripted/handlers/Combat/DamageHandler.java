@@ -7,11 +7,8 @@ import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
 import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.HealthComponent;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.inscripted.components.Items.Weapon.Weapon;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.stats.StatCompiler;
-import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
@@ -69,9 +66,9 @@ public class DamageHandler implements Listener {
             ItemStack heldItem = p.getInventory().getItemInMainHand();
             if (heldItem.getType().isAir()){ //If the player is punching
                 Profile playerProfile = JSONProfileManager.getProfile(p.getUniqueId());
-                if (!playerProfile.getEquipmentComponent().getSlot(ItemTypes.WEAPON).isIgnorable()){ //If punching with a equipped weapon, unequip
-                    playerProfile.getEquipmentComponent().setSlot(ItemTypes.WEAPON, null);
-                }
+//                if (!playerProfile.getEquipmentComponent().getSlot(ItemTypes.WEAPON).isIgnorable()){ //If punching with a equipped weapon, unequip
+//                    playerProfile.getEquipmentComponent().setSlot(ItemTypes.WEAPON, null);
+//                }
                 //Temporary---------------------------
                 if (defender instanceof Player){
                     event.setCancelled(true);
@@ -82,13 +79,13 @@ public class DamageHandler implements Listener {
 //                    return;
 //                }
             }
-            PersistentDataContainer dataContainer = heldItem.getItemMeta().getPersistentDataContainer();
-            boolean isWeapon = FunctionalItemAccessInterface.isItemType(FunctionalItemAccessInterface.WEAPON_TAG, dataContainer);
-            if (isWeapon){
-                Weapon weaponData = FunctionalItemAccessInterface.deserializeWeaponData(dataContainer);
-                if (weaponData == null){return;}
-                PlayerEquipmentHandler.basicAttackBy(p,heldItem,weaponData.getSubtype());
-            }
+//            PersistentDataContainer dataContainer = heldItem.getItemMeta().getPersistentDataContainer();
+//            boolean isWeapon = FunctionalItemAccessInterface.isItemType(FunctionalItemAccessInterface.WEAPON_TAG, dataContainer);
+//            if (isWeapon){
+//                Weapon weaponData = FunctionalItemAccessInterface.deserializeWeaponData(dataContainer);
+//                if (weaponData == null){return;}
+//                PlayerEquipmentHandler.basicAttackBy(p,heldItem,weaponData.getSubtype());
+//            }
         }
 
 //        com.amorabot.inscripted.APIs.damageAPI.DamageHandler.handleDamageEntityDamageEvents(event);

@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.item.structure.serialization;
+package com.amorabot.inscripted.item.structure.io;
 
 import com.amorabot.inscripted.item.structure.Armor.Armor;
 import com.amorabot.inscripted.item.structure.Item;
@@ -7,6 +7,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Optional;
 
@@ -36,8 +37,9 @@ public class ItemDeserializer implements ItemDataContainerVisitor<Optional<Item>
     public static boolean isArmor(ItemStack item){
         return checkDataContainer(item, Armor.DATA_CONTAINER_KEY);
     }
-    public Armor deserializeArmorData(ItemStack itemStack) {
-        Optional<Item> itemData = visitArmor(itemStack,null);
+    public static Armor deserializeArmorData(ItemStack itemStack) {
+        ItemDeserializer deserializer = new ItemDeserializer();
+        Optional<Item> itemData = deserializer.visitArmor(itemStack,null);
         return (Armor) itemData.orElseThrow();
     }
 
@@ -45,8 +47,19 @@ public class ItemDeserializer implements ItemDataContainerVisitor<Optional<Item>
     public static boolean isWeapon(ItemStack item){
         return checkDataContainer(item, Weapon.DATA_CONTAINER_KEY);
     }
-    public Weapon deserializeWeaponData(ItemStack itemStack) {
-        Optional<Item> itemData = visitWeapon(itemStack, null);
+    public static Weapon deserializeWeaponData(ItemStack itemStack) {
+        ItemDeserializer deserializer = new ItemDeserializer();
+        Optional<Item> itemData = deserializer.visitWeapon(itemStack, null);
         return (Weapon) itemData.orElseThrow();
+    }
+
+
+    public static boolean isIdentified(ItemStack item){
+        if (!checkDataContainer(item,ItemSerializer.IDENTIFIED)){
+            return false;
+        }
+        ItemMeta itemMeta = item.getItemMeta();
+        PersistentDataContainer itemPDC = itemMeta.getPersistentDataContainer();
+        return Boolean.TRUE.equals(itemPDC.get(ItemSerializer.IDENTIFIED, new PersistentDataType.BooleanPersistentDataType()));
     }
 }

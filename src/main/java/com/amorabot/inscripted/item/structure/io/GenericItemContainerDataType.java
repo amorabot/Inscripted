@@ -1,7 +1,6 @@
-package com.amorabot.inscripted.item.structure.serialization;
+package com.amorabot.inscripted.item.structure.io;
 
 import com.amorabot.inscripted.item.structure.Item;
-import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
 

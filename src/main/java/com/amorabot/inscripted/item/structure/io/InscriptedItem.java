@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.item.structure.serialization;
+package com.amorabot.inscripted.item.structure.io;
 
 import com.amorabot.inscripted.Inscripted;
 import org.bukkit.NamespacedKey;
@@ -11,19 +11,18 @@ public interface InscriptedItem {
     ItemStack getItemForm();
     NamespacedKey getKey();
     void serializeDataContainerInto(ItemStack itemStack);
-//    InscriptedItem deserializeGenericData(ItemStack itemStack);
 
-    default void tag(ItemStack itemToTag){
-        if (!hasInscriptedTag(itemToTag)){
+    static void tag(ItemStack itemToTag){
+        if (hasInscriptedTag(itemToTag)){
             return;
         }
         setUsableState(itemToTag,true);
     }
-    default boolean hasInscriptedTag(ItemStack item){
+    static boolean hasInscriptedTag(ItemStack item){
         NamespacedKey inscriptedTag = new NamespacedKey(Inscripted.getPlugin(),"TAG");
         return item.getItemMeta().getPersistentDataContainer().has(inscriptedTag, new PersistentDataType.BooleanPersistentDataType());
     }
-    default void setUsableState(ItemStack item, boolean usable){
+    static void setUsableState(ItemStack item, boolean usable){
         NamespacedKey inscriptedTag = new NamespacedKey(Inscripted.getPlugin(),"TAG");
         ItemMeta itemMeta = item.getItemMeta();
         PersistentDataContainer itemPDC = itemMeta.getPersistentDataContainer();

@@ -17,10 +17,6 @@ commands:
   updatenbt:
     description: Updates a item's item level NBT data.
     usage: /updatenbt
-  identify:
-    description: Identifies a custom item.
-    usage: /identify
-    aliases: [id]
   resetattributes:
     description: resets the attribute data for the sender.
     usage: /resetatt

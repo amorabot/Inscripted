@@ -241,13 +241,13 @@ public class StatCompiler {
         statsComponent.debug();
     }
     public static void compileItemInscriptionStats(StatPool statPool, Item item){
-        List<Inscription> inscriptions = item.getInscriptionList();
-        for (Inscription inscription : inscriptions){
-            if (!inscription.getInscription().isGlobal()){continue;}
-            if (inscription.getInscription().isMeta()){continue;}
-            statPool.add(inscription);
-        }
-        statPool.add(item.getImplicit());
+//        List<Inscription> inscriptions = item.getInscriptionList();
+//        for (Inscription inscription : inscriptions){
+//            if (!inscription.getInscription().isGlobal()){continue;}
+//            if (inscription.getInscription().isMeta()){continue;}
+//            statPool.add(inscription);
+//        }
+//        statPool.add(item.getImplicit());
     }
 
     private static void addExternalStatsFromKeystones(UUID playerID){

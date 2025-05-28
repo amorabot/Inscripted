@@ -1,15 +1,8 @@
 package com.amorabot.inscripted.components.Items.Weapon;
 
-import com.amorabot.inscripted.components.Items.modifiers.Inscription;
-import com.amorabot.inscripted.components.Items.modifiers.data.StatDefinition;
-import com.amorabot.inscripted.components.Items.relic.RelicWeaponDAO;
-import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
-import com.amorabot.inscripted.components.Player.stats.PlayerStats;
-import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 import com.amorabot.inscripted.item.structure.ItemRarities;
-import com.amorabot.inscripted.item.structure.Tiers;
 import com.amorabot.inscripted.item.structure.Weapon.RangeCategory;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
@@ -75,23 +68,24 @@ public class Weapon extends Item {
     //-------------------------------------------------------------------------
     @Override
     public ItemStack getItemForm() {
-        ItemStack weaponItem = new ItemStack(this.vanillaMaterial);
-        imprint(weaponItem,type);
-
-        serializeContainers(this, weaponItem);
-
-        setWeaponModel(weaponItem);
-        return weaponItem;
+        return null;
+//        ItemStack weaponItem = new ItemStack(this.vanillaMaterial);
+//        imprint(weaponItem,type);
+//
+//        serializeContainers(this, weaponItem);
+//
+//        setWeaponModel(weaponItem);
+//        return weaponItem;
     }
-    @Override
-    public void serializeContainers(Item itemData, ItemStack item) {
-//        FunctionalItemAccessInterface.serializeItem(item, this);
-    }
+//    @Override
+//    public void serializeContainers(Item itemData, ItemStack item) {
+////        FunctionalItemAccessInterface.serializeItem(item, this);
+//    }
 
-    private void setWeaponModel(ItemStack item){
-        int modelID = getSubtype().mapWeaponTierModel(getTier());
-        ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setCustomModelData(modelID);
-        item.setItemMeta(itemMeta);
-    }
+//    private void setWeaponModel(ItemStack item){
+//        int modelID = getSubtype().mapWeaponTierModel(getTier());
+//        ItemMeta itemMeta = item.getItemMeta();
+//        itemMeta.setCustomModelData(modelID);
+//        item.setItemMeta(itemMeta);
+//    }
 }

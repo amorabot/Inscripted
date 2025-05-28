@@ -64,18 +64,18 @@ public class ItemBuilder {
         int currentPrefixes = 0;
         int currentSuffixes = 0;
 
-        //Isolate the imbued inscription
-        for (Inscription mod : itemData.getInscriptionList()){
-            if (mod.isImbued()){
-                inscriptionsToGenerate--; //One is already predefined
-                newItemInscriptions.add(mod);
-                if (mod.getInscription().getData().getAffixType().equals(Affix.PREFIX)){
-                    currentPrefixes++;
-                } else {currentSuffixes++;}
-            }
-        }
-        //Clear existing Inscriptions
-        itemData.getInscriptionList().clear();
+//        //Isolate the imbued inscription
+//        for (Inscription mod : itemData.getInscriptionList()){
+//            if (mod.isImbued()){
+//                inscriptionsToGenerate--; //One is already predefined
+//                newItemInscriptions.add(mod);
+//                if (mod.getInscription().getData().getAffixType().equals(Affix.PREFIX)){
+//                    currentPrefixes++;
+//                } else {currentSuffixes++;}
+//            }
+//        }
+//        //Clear existing Inscriptions
+//        itemData.getInscriptionList().clear();
 
         //Generating mods
         for (int i = 0; i<inscriptionsToGenerate; i++){
@@ -101,40 +101,40 @@ public class ItemBuilder {
             }
         }
 
-        itemData.getInscriptionList().addAll(newItemInscriptions);
+//        itemData.getInscriptionList().addAll(newItemInscriptions);
     }
     public static void generateMagicModSet(Item itemData, InscriptionTable itemInscriptionsTable, Set<InscriptionID> illegalMods){
         List<Inscription> newItemInscriptions = new ArrayList<>();
         int inscriptionsToGenerate = CraftingUtils.getRandomNumber(1, ItemRarities.AUGMENTED.getMaxMods());
         boolean hasImbuedMod = false;
-        //Isolate the imbued inscription
-        for (Inscription mod : itemData.getInscriptionList()){
-            if (mod.isImbued()){
-                //When generating a new mod set with a imbued mod, just add 1 extra random Inscription
-                hasImbuedMod = true;
-                newItemInscriptions.add(mod);
-                if (isPrefix()){
-//                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.PREFIX, itemData.getIlvl(),illegalMods));
-                } else {
-//                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.SUFFIX, itemData.getIlvl(),illegalMods));
-                }
-            }
-        }
-        //Clear existing Inscriptions
-        itemData.getInscriptionList().clear();
-        if (hasImbuedMod){
-            itemData.getInscriptionList().addAll(newItemInscriptions);
-            return;
-        }
-        //In case it doesnt have a imbued mod, lets generate them normally
-        for (int i = 0; i<inscriptionsToGenerate; i++){
-            if (isPrefix()){
-//                newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.PREFIX, itemData.getIlvl(),illegalMods));
-            } else { //Its a suffix
-//                newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.SUFFIX, itemData.getIlvl(),illegalMods));
-            }
-        }
-
-        itemData.getInscriptionList().addAll(newItemInscriptions);
+//        //Isolate the imbued inscription
+//        for (Inscription mod : itemData.getInscriptionList()){
+//            if (mod.isImbued()){
+//                //When generating a new mod set with a imbued mod, just add 1 extra random Inscription
+//                hasImbuedMod = true;
+//                newItemInscriptions.add(mod);
+//                if (isPrefix()){
+////                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.PREFIX, itemData.getIlvl(),illegalMods));
+//                } else {
+////                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.SUFFIX, itemData.getIlvl(),illegalMods));
+//                }
+//            }
+//        }
+//        //Clear existing Inscriptions
+//        itemData.getInscriptionList().clear();
+//        if (hasImbuedMod){
+//            itemData.getInscriptionList().addAll(newItemInscriptions);
+//            return;
+//        }
+//        //In case it doesnt have a imbued mod, lets generate them normally
+//        for (int i = 0; i<inscriptionsToGenerate; i++){
+//            if (isPrefix()){
+////                newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.PREFIX, itemData.getIlvl(),illegalMods));
+//            } else { //Its a suffix
+////                newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.SUFFIX, itemData.getIlvl(),illegalMods));
+//            }
+//        }
+//
+//        itemData.getInscriptionList().addAll(newItemInscriptions);
     }
 }
