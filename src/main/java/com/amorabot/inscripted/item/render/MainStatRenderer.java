@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.item.render;
 
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
+import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
+import com.amorabot.inscripted.item.structure.Armor.DefenceTypes;
 import com.amorabot.inscripted.item.inscription.definition.Stats;
 import com.amorabot.inscripted.item.structure.Armor.Armor;
 import com.amorabot.inscripted.item.structure.Armor.LocalDefence;

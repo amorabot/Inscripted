@@ -2,7 +2,7 @@ package com.amorabot.inscripted.components.buffs.categories.damage;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Buff;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
+import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.BuffData;
 import org.bukkit.entity.LivingEntity;

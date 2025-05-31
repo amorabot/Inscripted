@@ -1,6 +1,5 @@
 package com.amorabot.inscripted.item.structure.Weapon;
 
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
 import com.amorabot.inscripted.item.inscription.Inscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionDefinition;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
@@ -15,6 +14,7 @@ import java.util.*;
 public class LocalDamage {
 
     private static final boolean DEBUG_MODE = false;
+    @Getter
     private static final Set<Integer> locallyCompiledStatIDs = new HashSet<>();
     private final Map<DamageTypes, int[]> weaponDamage = new HashMap<>();
 
@@ -153,27 +153,10 @@ public class LocalDamage {
         }
     }
     private DamageTypes mapFlatDamageTypes(Stats dmgStat){
-        //TODO: Move this functionality to DamageTypes, similar to DefenceTypes
-        switch (dmgStat){
-            case PHYSICAL_DAMAGE -> {
-                return DamageTypes.PHYSICAL;
-            }
-            case FIRE_DAMAGE -> {
-                return DamageTypes.FIRE;
-            }
-            case LIGHTNING_DAMAGE -> {
-                return DamageTypes.LIGHTNING;
-            }
-            case COLD_DAMAGE -> {
-                return DamageTypes.COLD;
-            }
-            case ABYSSAL_DAMAGE -> {
-                return DamageTypes.ABYSSAL;
-            }
-            default -> {
-                return null;
-            }
+        for (DamageTypes dmg : DamageTypes.values()){
+            if (dmg.getDmgStat().equals(dmgStat)){return dmg;}
         }
+        return null;
     }
     private void addLocalncrease(Map<DamageTypes, Integer> localIncreases, DamageTypes damageToAdd, int value){
         localIncreases.put(damageToAdd,

@@ -39,9 +39,9 @@ public abstract class InscriptionDefinition implements Serializable {
             if (isPositive){positiveBit="1";}else{positiveBit="0";}
             String scopeBit;
             if (isGlobal){scopeBit="1";}else{scopeBit="0";}
-            String typeOrdinal = String.valueOf(type.ordinal());
-            String rollOrdinal = String.valueOf(roll.ordinal());
-            String statOrdinal = String.valueOf(stat.ordinal());
+            String typeOrdinal = String.valueOf(type.ordinal()+1);
+            String rollOrdinal = String.valueOf(roll.ordinal()+1);
+            String statOrdinal = String.valueOf(stat.ordinal()+1);
             String codeString = typeOrdinal + rollOrdinal + statOrdinal + positiveBit + scopeBit;
             return Integer.parseInt(codeString);
         }
@@ -90,6 +90,25 @@ public abstract class InscriptionDefinition implements Serializable {
             this.positive = isPositive;
             this.global = isGlobal;
             super.setDisplayName(accept(new InscriptionTemplateBuilder()));
+        }
+
+        //Utility methods for fetching mapped values for hybrid inscriptions
+        public int[] getPrimaryValues(int[] rawFinalMappedValues){
+            RollType primaryRollType = primaryData.roll();
+            switch (primaryRollType){
+                case CONSTANT,SINGLE_ROLL -> {return new int[]{rawFinalMappedValues[0]};}
+                case DOUBLE_ROLL -> {return new int[]{rawFinalMappedValues[0],rawFinalMappedValues[1]};}
+                default -> {return rawFinalMappedValues;}
+            }
+        }
+        public int[] getSecondaryValues(int[] rawFinalMappedValues){
+            RollType secondaryRollType = secondaryData.roll();
+            int lastIndex = rawFinalMappedValues.length-1;
+            switch (secondaryRollType){
+                case CONSTANT,SINGLE_ROLL -> {return new int[]{rawFinalMappedValues[lastIndex]};}
+                case DOUBLE_ROLL -> {return new int[]{rawFinalMappedValues[lastIndex-1],rawFinalMappedValues[lastIndex]};}
+                default -> {return rawFinalMappedValues;}
+            }
         }
 
 

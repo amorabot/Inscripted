@@ -1,24 +1,16 @@
 package com.amorabot.inscripted.components.Items.Armor;
 
-import com.amorabot.inscripted.components.Items.modifiers.Inscription;
-import com.amorabot.inscripted.components.Items.modifiers.data.StatDefinition;
-import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 //import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
 import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
+import com.amorabot.inscripted.item.structure.Armor.DefenceTypes;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.Tiers;
 import com.amorabot.inscripted.utils.CraftingUtils;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ArmorMeta;
-import org.bukkit.inventory.meta.trim.ArmorTrim;
-import org.bukkit.inventory.meta.trim.TrimMaterial;
-import org.bukkit.inventory.meta.trim.TrimPattern;
+        import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
+        import java.util.Map;
 
 public class Armor extends Item {
 

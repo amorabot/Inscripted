@@ -2,7 +2,7 @@ package com.amorabot.inscripted.file;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
+import com.amorabot.inscripted.item.structure.Armor.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.item.structure.Tiers;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;

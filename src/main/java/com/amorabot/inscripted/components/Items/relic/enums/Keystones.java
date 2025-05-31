@@ -5,7 +5,7 @@ import com.amorabot.inscripted.components.Attack;
 import com.amorabot.inscripted.components.DamageComponent;
 import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.HealthComponent;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
+import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Player.Profile;

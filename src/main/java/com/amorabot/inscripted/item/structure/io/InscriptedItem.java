@@ -1,11 +1,15 @@
 package com.amorabot.inscripted.item.structure.io;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.item.inscription.definition.Stats;
+import com.amorabot.inscripted.profile.parsing.StatPool;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.Map;
 
 public interface InscriptedItem {
     ItemStack getItemForm();
@@ -31,4 +35,7 @@ public interface InscriptedItem {
 
         item.setItemMeta(itemMeta);
     }
+
+    Map<Stats, int[]> getLocalStats();
+    StatPool compile();
 }

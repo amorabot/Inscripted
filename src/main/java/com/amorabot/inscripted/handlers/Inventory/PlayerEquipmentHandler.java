@@ -13,6 +13,7 @@ import com.amorabot.inscripted.events.ItemUsage;
 import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.item.structure.io.InscriptedItem;
 import com.amorabot.inscripted.item.structure.io.ItemDeserializer;
+import com.amorabot.inscripted.profile.parsing.StatPool;
 import com.amorabot.inscripted.skills.AbilityTypes;
 import com.amorabot.inscripted.skills.AbilityRoutines;
 import com.amorabot.inscripted.utils.DelayedTask;
@@ -118,7 +119,7 @@ public class PlayerEquipmentHandler implements Listener {
         if (validWeapon){
             Weapon weaponData = ItemDeserializer.deserializeWeaponData(heldItem);
             player.sendMessage(weaponData.getWeaponType().name());
-
+            StatPool weaponStats = weaponData.compile();
             return;
         }
 

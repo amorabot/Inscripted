@@ -1,7 +1,6 @@
 package com.amorabot.inscripted.item.structure.Armor;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.item.structure.Item;

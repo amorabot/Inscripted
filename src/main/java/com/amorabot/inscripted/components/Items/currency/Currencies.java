@@ -2,16 +2,12 @@ package com.amorabot.inscripted.components.Items.currency;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
+import com.amorabot.inscripted.item.structure.Armor.DefenceTypes;
 import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.ItemSubtype;
-import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 //import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.utils.ColorUtils;
-import com.amorabot.inscripted.utils.CraftingUtils;
-import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

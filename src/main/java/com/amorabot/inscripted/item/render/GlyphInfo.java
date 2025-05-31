@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.item.render;
 
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
+import com.amorabot.inscripted.item.structure.Armor.DefenceTypes;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 

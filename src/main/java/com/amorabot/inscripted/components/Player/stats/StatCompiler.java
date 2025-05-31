@@ -18,6 +18,8 @@ import com.amorabot.inscripted.components.Player.ItemSlotData;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.Player.StatsComponent;
 import com.amorabot.inscripted.file.profile.JSONProfileManager;
+import com.amorabot.inscripted.item.structure.Armor.DefenceTypes;
+import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.utils.Utils;

@@ -1,6 +1,5 @@
 package com.amorabot.inscripted.item.structure.Armor;
 
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
 import com.amorabot.inscripted.item.inscription.Inscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionDefinition;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
@@ -15,6 +14,7 @@ import java.util.*;
 public class LocalDefence {
 
     private static final boolean DEBUG_MODE = false;
+    @Getter
     private static final Set<Integer> locallyCompiledStatIDs = new HashSet<>();
     private final Map<DefenceTypes, Integer> armorDefences = new HashMap<>();
 

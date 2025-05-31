@@ -2,6 +2,7 @@ package com.amorabot.inscripted.item.structure.Weapon;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.item.inscription.definition.Stats;
 import com.amorabot.inscripted.item.render.ItemRenderer;
 import com.amorabot.inscripted.item.render.ItemVisitor;
 import com.amorabot.inscripted.item.structure.EquipmentSlots;
@@ -10,16 +11,15 @@ import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.ItemSubtype;
 import com.amorabot.inscripted.item.structure.io.InscriptedItem;
 import com.amorabot.inscripted.item.structure.io.ItemSerializer;
+import com.amorabot.inscripted.profile.parsing.StatPool;
 import com.amorabot.inscripted.utils.CraftingUtils;
-import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Weapon extends Item {
 
@@ -99,6 +99,25 @@ public class Weapon extends Item {
     public void serializeDataContainerInto(ItemStack itemStack) {
         ItemSerializer serializer = new ItemSerializer();
         serializer.visitWeapon(itemStack,this);
+    }
+
+    @Override
+    public Map<Stats, int[]> getLocalStats() {
+        Map<Stats, int[]> localStats = new HashMap<>();
+        LocalDamage localWeaponDamage = getDamage();
+        localWeaponDamage.getWeaponDamage().forEach(
+                (damageType, values) -> {
+                    localStats.put(damageType.getDmgStat(),values);
+                }
+        );
+        return localStats;
+    }
+
+    @Override
+    public StatPool compile() {
+        Map<Stats, int[]> localStats = getLocalStats();
+        Set<Integer> blockedStats = LocalDamage.getLocallyCompiledStatIDs();
+        return StatPool.getItemStats(getImplicit(),getInscriptions(),localStats,blockedStats);
     }
 
     private void setWeaponModel(ItemStack item){

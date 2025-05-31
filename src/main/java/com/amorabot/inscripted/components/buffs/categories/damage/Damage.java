@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.components.buffs.categories.damage;
 
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.DamageTypes;
+import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

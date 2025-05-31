@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.components.buffs.categories.healing;
 
 import com.amorabot.inscripted.components.Buff;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.DefenceTypes;
+import com.amorabot.inscripted.item.structure.Armor.DefenceTypes;
 import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.item.render.InscriptedPalette;

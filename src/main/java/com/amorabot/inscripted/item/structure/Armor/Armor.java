@@ -2,6 +2,7 @@ package com.amorabot.inscripted.item.structure.Armor;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.item.inscription.definition.Stats;
 import com.amorabot.inscripted.item.render.ItemRenderer;
 import com.amorabot.inscripted.item.render.ItemVisitor;
 import com.amorabot.inscripted.item.structure.EquipmentSlots;
@@ -10,6 +11,7 @@ import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.ItemSubtype;
 import com.amorabot.inscripted.item.structure.io.InscriptedItem;
 import com.amorabot.inscripted.item.structure.io.ItemSerializer;
+import com.amorabot.inscripted.profile.parsing.StatPool;
 import com.amorabot.inscripted.utils.CraftingUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -21,7 +23,10 @@ import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Armor extends Item {
 
@@ -96,6 +101,22 @@ public class Armor extends Item {
     public void serializeDataContainerInto(ItemStack itemStack) {
         ItemSerializer serializer = new ItemSerializer();
         serializer.visitArmor(itemStack,this);
+    }
+
+    @Override
+    public Map<Stats, int[]> getLocalStats() {
+        Map<Stats, int[]> defStats = new HashMap<>();
+        LocalDefence localDefences = getDefences();
+        localDefences.getArmorDefences().forEach(
+                (defence, value) -> defStats.put(defence.getStat(),new int[]{value})
+        );
+        return defStats;
+    }
+    @Override
+    public StatPool compile() {
+        Map<Stats, int[]> localStats = getLocalStats();
+        Set<Integer> blockedStats = LocalDefence.getLocallyCompiledStatIDs();
+        return StatPool.getItemStats(getImplicit(),getInscriptions(),localStats, blockedStats);
     }
 
     private ArmorTrim defineArmorTrim(){
