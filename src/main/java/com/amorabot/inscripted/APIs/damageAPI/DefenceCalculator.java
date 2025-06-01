@@ -5,7 +5,7 @@ import com.amorabot.inscripted.components.DefenceComponent;
 import com.amorabot.inscripted.components.EntityProfile;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
-import com.amorabot.inscripted.utils.CraftingUtils;
+import com.amorabot.inscripted.math.MathUtils;
 
 public class DefenceCalculator {
 
@@ -93,7 +93,7 @@ public class DefenceCalculator {
 
     public static boolean dodgeResult(Attack attackerDamage, float dodgeChance){
         float defenderDodgeChance = AccuracyCalculator.getFinalDefenderDodgeChance(attackerDamage, dodgeChance);
-        int dodgeRoll = CraftingUtils.getRandomNumber(0, 100);
+        int dodgeRoll = MathUtils.getRandomNumber(0, 100);
         //If the roll is lower than the defender's dodge chance, true (dodged the hit)
         return dodgeRoll < defenderDodgeChance;
     }

@@ -120,6 +120,7 @@ public class PlayerEquipmentHandler implements Listener {
             Weapon weaponData = ItemDeserializer.deserializeWeaponData(heldItem);
             player.sendMessage(weaponData.getWeaponType().name());
             StatPool weaponStats = weaponData.compile();
+            weaponStats.debug("Weapon");
             return;
         }
 

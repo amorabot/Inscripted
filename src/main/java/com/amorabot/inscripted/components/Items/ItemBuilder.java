@@ -11,7 +11,6 @@ import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
-import com.amorabot.inscripted.utils.CraftingUtils;
 
 import java.util.*;
 
@@ -56,7 +55,7 @@ public class ItemBuilder {
 
     public static void generateRareModSet(Item itemData, InscriptionTable itemInscriptionsTable, Set<InscriptionID> illegalMods){
         List<Inscription> newItemInscriptions = new ArrayList<>();
-        int inscriptionsToGenerate = CraftingUtils.getRandomNumber(3, ItemRarities.RUNIC.getMaxMods());
+//        int inscriptionsToGenerate = CraftingUtils.getRandomNumber(3, ItemRarities.RUNIC.getMaxAffixes());
         final int maxPrefixes = 3;
         final int maxSuffixes = 3;
 
@@ -77,34 +76,34 @@ public class ItemBuilder {
 //        itemData.getInscriptionList().clear();
 
         //Generating mods
-        for (int i = 0; i<inscriptionsToGenerate; i++){
-            //Attempting to generate a prefix
-            if (isPrefix()){
-                //Prefixes are open
-                if (currentPrefixes < maxPrefixes){
-//                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.PREFIX, itemData.getIlvl(),illegalMods));
-                    currentPrefixes++;
-                } else { //If a prefix attempt was unsuccessful, generate a suffix instead
-//                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.SUFFIX, itemData.getIlvl(),illegalMods));
-                    currentSuffixes++;
-                }
-            }else {
-                //Suffixes are open
-                if (currentSuffixes < maxSuffixes){
-//                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.SUFFIX, itemData.getIlvl(),illegalMods));
-                    currentSuffixes++;
-                } else { //If a suffix attempt was unsuccessful, generate a prefix instead
-//                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.PREFIX, itemData.getIlvl(),illegalMods));
-                    currentPrefixes++;
-                }
-            }
-        }
+//        for (int i = 0; i<inscriptionsToGenerate; i++){
+//            //Attempting to generate a prefix
+//            if (isPrefix()){
+//                //Prefixes are open
+//                if (currentPrefixes < maxPrefixes){
+////                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.PREFIX, itemData.getIlvl(),illegalMods));
+//                    currentPrefixes++;
+//                } else { //If a prefix attempt was unsuccessful, generate a suffix instead
+////                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.SUFFIX, itemData.getIlvl(),illegalMods));
+//                    currentSuffixes++;
+//                }
+//            }else {
+//                //Suffixes are open
+//                if (currentSuffixes < maxSuffixes){
+////                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.SUFFIX, itemData.getIlvl(),illegalMods));
+//                    currentSuffixes++;
+//                } else { //If a suffix attempt was unsuccessful, generate a prefix instead
+////                    newItemInscriptions.add(itemInscriptionsTable.getRandomInscription(Affix.PREFIX, itemData.getIlvl(),illegalMods));
+//                    currentPrefixes++;
+//                }
+//            }
+//        }
 
 //        itemData.getInscriptionList().addAll(newItemInscriptions);
     }
     public static void generateMagicModSet(Item itemData, InscriptionTable itemInscriptionsTable, Set<InscriptionID> illegalMods){
         List<Inscription> newItemInscriptions = new ArrayList<>();
-        int inscriptionsToGenerate = CraftingUtils.getRandomNumber(1, ItemRarities.AUGMENTED.getMaxMods());
+//        int inscriptionsToGenerate = CraftingUtils.getRandomNumber(1, ItemRarities.AUGMENTED.getMaxAffixes());
         boolean hasImbuedMod = false;
 //        //Isolate the imbued inscription
 //        for (Inscription mod : itemData.getInscriptionList()){

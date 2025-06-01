@@ -4,18 +4,118 @@ import com.amorabot.inscripted.item.inscription.Inscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.inscription.language.AffixType;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
+import com.amorabot.inscripted.item.render.InscriptionRenderer;
+import com.amorabot.inscripted.item.render.ItemRenderer;
+import com.amorabot.inscripted.item.structure.Item;
+import com.amorabot.inscripted.item.structure.ItemRarities;
+import com.amorabot.inscripted.math.MathUtils;
 import com.amorabot.inscripted.utils.Utils;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class InscriptionGenerator {
+
+
+    public static List<Inscription> generateInscriptionSetFor(Item item){
+        Set<InscriptionIDs> blockedInscriptions = new HashSet<>();
+        InscriptionTable itemInscriptionsTable = item.getGenericSubtype().getTableData();
+        assert itemInscriptionsTable != null;
+        if (item.isCorrupted()){
+            Utils.error("Unable to generate new inscriptions for Corrupted Item");
+            return new ArrayList<>();
+        }
+        switch (item.getRarity()){
+            case AUGMENTED -> {return generateMagicSet(item, itemInscriptionsTable, blockedInscriptions);}
+            case RUNIC -> {return generateRunicSet(item, itemInscriptionsTable, blockedInscriptions);}
+            // Relic sets are generated in a separate method
+            default -> {return new ArrayList<>();}
+        }
+    }
+    public static List<Inscription> generateMagicSet(Item itemData, InscriptionTable table, Set<InscriptionIDs> blockedInscriptions){
+        List<Inscription> inscriptions = itemData.getInscriptions();
+        final int maxAffixes = ItemRarities.AUGMENTED.getMaxAffixes();
+        List<Inscription> fixedInscr = inscriptions.stream().filter(inscription -> !inscription.isModifiable()).toList();
+        final int inscriptionsToGenerate = MathUtils.getRandomNumber(1, maxAffixes - fixedInscr.size());
+        // Clear original set
+        inscriptions.clear();
+        // Re-Add unmodifiable inscriptions & block them
+        fixedInscr.forEach(
+                fixedInscription -> {
+                    inscriptions.add(fixedInscription);
+                    blockedInscriptions.add(fixedInscription.getInscription());
+                }
+        );
+        for (int i = 0; i < inscriptionsToGenerate; i++) {
+            if (MathUtils.fiftyFifty()){ // Prefix
+                inscriptions.add(getRandomInscription(table,AffixType.PREFIX,itemData.getIlvl(),blockedInscriptions));
+                continue;
+            }
+            // Suffix
+            inscriptions.add(getRandomInscription(table,AffixType.SUFFIX,itemData.getIlvl(),blockedInscriptions));
+        }
+        inscriptions.sort(InscriptionRenderer.SORTER);
+        return inscriptions;
+    }
+    public static List<Inscription> generateRunicSet(Item itemData, InscriptionTable table, Set<InscriptionIDs> blockedInscriptions){
+        List<Inscription> inscriptions = itemData.getInscriptions();
+        final int maxAffixes = ItemRarities.RUNIC.getMaxAffixes();
+        AtomicInteger prefixes = new AtomicInteger();
+        AtomicInteger suffixes = new AtomicInteger();
+
+        List<Inscription> fixedInscr = inscriptions.stream().filter(inscription -> !inscription.isModifiable()).toList();
+        final int inscriptionsToGenerate = MathUtils.getRandomNumber(3, maxAffixes - fixedInscr.size());
+        // Clear original set
+        inscriptions.clear();
+        // Re-Add unmodifiable inscriptions, block them and update affix count
+        fixedInscr.forEach(
+                fixedInscription -> {
+                    inscriptions.add(fixedInscription);
+                    blockedInscriptions.add(fixedInscription.getInscription());
+                    AffixType fixedAffixType = fixedInscription.getInscription().getDefinitionData().getAffix();
+                    if (fixedAffixType.equals(AffixType.PREFIX)){
+                        prefixes.getAndIncrement();
+                    }
+                    if (fixedAffixType.equals(AffixType.SUFFIX)){
+                        suffixes.getAndIncrement();
+                    }
+                }
+        );
+
+        for (int i = 0; i < inscriptionsToGenerate; i++) {
+            boolean generatePrefix = MathUtils.fiftyFifty();
+            boolean openPrefix = prefixes.intValue()<3;
+            boolean openSuffix = suffixes.intValue()<3;
+            
+            if (generatePrefix){
+                if (openPrefix){
+                    prefixes.getAndIncrement();
+                    inscriptions.add(getRandomInscription(table,AffixType.PREFIX,itemData.getIlvl(),blockedInscriptions));
+                } else {
+                    suffixes.getAndIncrement();
+                    inscriptions.add(getRandomInscription(table,AffixType.SUFFIX,itemData.getIlvl(),blockedInscriptions));
+                }
+                continue;
+            }
+            // Generate a suffix
+            if (openSuffix){
+                suffixes.getAndIncrement();
+                inscriptions.add(getRandomInscription(table,AffixType.SUFFIX,itemData.getIlvl(),blockedInscriptions));
+                continue;
+            }
+            prefixes.getAndIncrement();
+            inscriptions.add(getRandomInscription(table,AffixType.PREFIX,itemData.getIlvl(),blockedInscriptions));
+        }
+        inscriptions.sort(InscriptionRenderer.SORTER);
+        return inscriptions;
+    }
+
 
     //Returns -1 if mod is not available
     public static int getHighestTierFor(InscriptionIDs inscription, int itemLevel, Map<Integer, Integer> tierMappings){
         assert itemLevel>=1;
         if (inscription.getDefinitionData().getAffix().equals(AffixType.UNIQUE) || inscription.isKeystone() || inscription.isEffect()){return -1;}
         if (tierMappings.isEmpty()){
-//            Utils.log("Empty mapping for: " + inscription);
             return -1;
         }
 
@@ -79,6 +179,6 @@ public class InscriptionGenerator {
         }
         //Mutate the given set, so its updated and prevents selectedInscription from being generated again
         blockedInscriptions.add(selectedInscription);
-        return new Inscription(selectedInscription, selectedTier, getHighestTierFor(selectedInscription,itemLevel,tierMappings));
+        return new Inscription(selectedInscription, selectedTier, Utils.getNormalizedValue());
     }
 }

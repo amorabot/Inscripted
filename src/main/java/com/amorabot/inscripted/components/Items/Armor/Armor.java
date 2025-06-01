@@ -7,8 +7,8 @@ import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
 import com.amorabot.inscripted.item.structure.Armor.DefenceTypes;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.Tiers;
-import com.amorabot.inscripted.utils.CraftingUtils;
-        import org.bukkit.inventory.ItemStack;
+import com.amorabot.inscripted.math.MathUtils;
+import org.bukkit.inventory.ItemStack;
 
         import java.util.Map;
 
@@ -28,7 +28,7 @@ public class Armor extends Item {
     public Armor(ItemTypes armorPiece, int ilvl, ItemRarities rarity, boolean identified, boolean corrupted) { //Random generation constructor
         super(ilvl, rarity, identified, corrupted, armorPiece);
         ArmorTypes[] armorTypes = ArmorTypes.values();
-        int typeIndex = CraftingUtils.getRandomNumber(0, armorTypes.length-1);
+        int typeIndex = MathUtils.getRandomNumber(0, armorTypes.length-1);
         this.type = armorTypes[typeIndex];
         setup();
 //        this.baseHealth = getSubype().mapHealthValue(this);

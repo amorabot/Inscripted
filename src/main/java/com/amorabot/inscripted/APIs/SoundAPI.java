@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.APIs;
 
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
-import com.amorabot.inscripted.utils.CraftingUtils;
+import com.amorabot.inscripted.math.MathUtils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Location;
@@ -15,7 +15,7 @@ public class SoundAPI {
         playGenericSoundAtLocation(audience,
                 dodgeLocation,
                 "entity.bat.takeoff",
-                0.4f, 0.3f + CraftingUtils.getRandomNumber(-3,3) * 0.1f);
+                0.4f, 0.3f + MathUtils.getRandomNumber(-3,3) * 0.1f);
     }
 
     public static void playBreakSoundFor(Entity entity){

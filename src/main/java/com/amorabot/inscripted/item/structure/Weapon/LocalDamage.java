@@ -109,24 +109,27 @@ public class LocalDamage {
         Map<DamageTypes, Integer> localIncreases = new HashMap<>();
 
         for (Inscription insc : inscriptions){
-            InscriptionIDs incriptionID = insc.getInscription();
-            InscriptionDefinition definition = incriptionID.getDefinitionData();
+            InscriptionIDs inscriptionID = insc.getInscription();
+            InscriptionDefinition definition = inscriptionID.getDefinitionData();
             if (insc.isSpecial()){continue;}
             if (definition.isGlobal()){continue;}
             if (definition instanceof InscriptionDefinition.Regular regularDef){
                 if (!regularDef.getBaseData().type().equals(ValueType.INCREASED)){
                     continue;
                 }
+                registerLocallyCompiledStat(regularDef.getBaseData(), regularDef.isGlobal(), regularDef.isPositive(), inscriptionID);
                 addStatIncreases(localIncreases,regularDef.getBaseData().stat(),insc.getMappedFinalValues()[0]);
             }
             if (definition instanceof InscriptionDefinition.Hybrid hybridDef){
                 int[] hybridValues = insc.getMappedFinalValues();
                 boolean is1stIncr = hybridDef.getPrimaryData().type().equals(ValueType.INCREASED);
                 if (is1stIncr){
+                    registerLocallyCompiledStat(hybridDef.getPrimaryData(), hybridDef.isGlobal(), hybridDef.isPositive(), inscriptionID);
                     addStatIncreases(localIncreases,hybridDef.getPrimaryData().stat(),hybridValues[0]);
                 }
                 boolean is2ndIncr = hybridDef.getSecondaryData().type().equals(ValueType.INCREASED);
                 if (is2ndIncr){
+                    registerLocallyCompiledStat(hybridDef.getSecondaryData(), hybridDef.isGlobal(), hybridDef.isPositive(), inscriptionID);
                     addStatIncreases(localIncreases,hybridDef.getSecondaryData().stat(),hybridValues[hybridValues.length-1]);
                 }
             }

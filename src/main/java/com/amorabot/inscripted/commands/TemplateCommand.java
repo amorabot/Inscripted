@@ -179,22 +179,15 @@ public class TemplateCommand implements CommandExecutor {
                     if (spreadOBB.intersects(player.getBoundingBox())){Utils.msgPlayer(player, "CollisioN!");}
                     return true;
                 case "modGen":
-                    Weapon testWeapon = new Weapon(50, WeaponTypes.AXE,ItemRarities.AUGMENTED,true,false);
-
-                    Inscription testIncription = new Inscription(InscriptionIDs.ADDED_FIRE,3,1D);
-                    Inscription acc = new Inscription(InscriptionIDs.STAMINA,3,0.5D);
-                    testWeapon.getInscriptions().add(testIncription);
-                    testWeapon.getInscriptions().add(acc);
-
-
+                    Weapon testWeapon = new Weapon(90, WeaponTypes.AXE,ItemRarities.RUNIC,true,false);
                     ItemStack weaponItem = testWeapon.getItemForm();
                     player.getInventory().addItem(weaponItem);
 
-                    Armor testArmor = new Armor(86, ArmorTypes.ARMORED, ItemRarities.COMMON,true, false, EquipmentSlots.CHESTPLATE);
+                    Armor testArmor = new Armor(86, ArmorTypes.ARMORED, ItemRarities.AUGMENTED,true, false, EquipmentSlots.CHESTPLATE);
                     ItemStack armorItemStack = testArmor.getItemForm();
                     Armor hybridArmor = new Armor(86, ArmorTypes.ORNATE, ItemRarities.COMMON,true, false, EquipmentSlots.LEGGINGS);
                     ItemStack hybItemStack = hybridArmor.getItemForm();
-                    Armor soulArmor = new Armor(40, ArmorTypes.RUNISTEEL, ItemRarities.COMMON,true, false, EquipmentSlots.CHESTPLATE);
+                    Armor soulArmor = new Armor(40, ArmorTypes.RUNISTEEL, ItemRarities.RUNIC,true, false, EquipmentSlots.CHESTPLATE);
                     ItemStack soulItemStack = soulArmor.getItemForm();
 
                     player.getInventory().addItem(armorItemStack);

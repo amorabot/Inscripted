@@ -2,6 +2,7 @@ package com.amorabot.inscripted.item.structure.Weapon;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.item.generation.InscriptionGenerator;
 import com.amorabot.inscripted.item.inscription.definition.Stats;
 import com.amorabot.inscripted.item.render.ItemRenderer;
 import com.amorabot.inscripted.item.render.ItemVisitor;
@@ -11,8 +12,8 @@ import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.ItemSubtype;
 import com.amorabot.inscripted.item.structure.io.InscriptedItem;
 import com.amorabot.inscripted.item.structure.io.ItemSerializer;
+import com.amorabot.inscripted.math.MathUtils;
 import com.amorabot.inscripted.profile.parsing.StatPool;
-import com.amorabot.inscripted.utils.CraftingUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
@@ -44,6 +45,8 @@ public class Weapon extends Item {
         this.damageVariance = getRandomVariance();
         this.atkSpeed = getWeaponType().getBaseAttackSpeed();
         this.range = getWeaponType().getRange();
+
+        InscriptionGenerator.generateInscriptionSetFor(this);
     }
 
 
@@ -56,7 +59,7 @@ public class Weapon extends Item {
         return Arrays.stream(basePhys).map(currValue -> (int) ((1+((float)damageVariance/100))*currValue)).toArray();
     }
     public int getRandomVariance(){
-        return CraftingUtils.getRandomNumber(-WeaponTypes.weaponDamageVariance, WeaponTypes.weaponDamageVariance);
+        return MathUtils.getRandomNumber(-WeaponTypes.weaponDamageVariance, WeaponTypes.weaponDamageVariance);
     }
 
     @Override

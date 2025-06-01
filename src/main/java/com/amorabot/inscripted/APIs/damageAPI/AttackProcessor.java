@@ -12,9 +12,9 @@ import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
 import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
+import com.amorabot.inscripted.math.MathUtils;
 import com.amorabot.inscripted.skills.HitTypes;
 import com.amorabot.inscripted.skills.PlayerAbilities;
-import com.amorabot.inscripted.utils.CraftingUtils;
 import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.entity.LivingEntity;
@@ -130,7 +130,7 @@ public class AttackProcessor {
     }
     private static int rollDamageType(Map<DamageTypes, int[]> rawDamages, DamageTypes type){
         int[] dmgRange = rawDamages.getOrDefault(type, new int[2]);
-        return CraftingUtils.getRandomNumber(dmgRange[0], dmgRange[1]);
+        return MathUtils.getRandomNumber(dmgRange[0], dmgRange[1]);
     }
     private static int[] applyAbilityTags(Profile attackerProfile, int[] incomingHit, PlayerAbilities ability){
         HitTypes[] tags = ability.getTags();

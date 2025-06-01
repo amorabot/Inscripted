@@ -35,7 +35,9 @@ public enum InscriptionIDs {
     LOCAL_FIRE_PERCENT("+ local PREFIX: increased single_roll fire_damage",5),
     LOCAL_COLD_PERCENT("+ local PREFIX: increased single_roll cold_damage",5),
     LOCAL_LIGHTNING_PERCENT("+ local PREFIX: increased single_roll lightning_damage",5),
+    //TODO: Change to Armor Penetration
     SHRED("+ global PREFIX: percentage single_roll shred",5),
+    //TODO: Change to Elemental Penetration
     MAELSTROM("+ global PREFIX: percentage single_roll maelstrom",5),
     //Hybrid Prefixes
     HYBRID_PHYS_ACC("+ local PREFIX: increased single_roll physical_damage & flat single_roll accuracy",8),

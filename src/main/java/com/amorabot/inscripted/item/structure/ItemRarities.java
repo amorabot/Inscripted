@@ -10,11 +10,11 @@ public enum ItemRarities {
     RUNIC(6, "&e",InscriptedPalette.RUNIC),
     RELIC(10, "&c",InscriptedPalette.RELIC);
 
-    final int maxMods;
+    final int maxAffixes;
     final String color;
     final InscriptedPalette colorComponent;
-    ItemRarities(int maxMods, String rarityColor, InscriptedPalette color){
-        this.maxMods = maxMods;
+    ItemRarities(int maxAffixes, String rarityColor, InscriptedPalette color){
+        this.maxAffixes = maxAffixes;
         this.color = rarityColor;
         this.colorComponent = color;
     }

@@ -7,7 +7,7 @@ import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.item.structure.Weapon.RangeCategory;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
-import com.amorabot.inscripted.utils.CraftingUtils;
+import com.amorabot.inscripted.math.MathUtils;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
@@ -27,7 +27,7 @@ public class Weapon extends Item {
         this.type = type;
         setup();
         baseDamage = type.mapBaseDamage(getTier());
-        this.percentDamageVariance = CraftingUtils.getRandomNumber(-WeaponTypes.weaponDamageVariance, WeaponTypes.weaponDamageVariance);
+        this.percentDamageVariance = MathUtils.getRandomNumber(-WeaponTypes.weaponDamageVariance, WeaponTypes.weaponDamageVariance);
         this.atkSpeed = getSubtype().getBaseAttackSpeed();
         this.range = getSubtype().getRange();
     }
@@ -35,11 +35,11 @@ public class Weapon extends Item {
         super(ilvl, rarity, identified, corrupted, ItemTypes.WEAPON);
         //Do the rest...
         WeaponTypes[] weapons = WeaponTypes.values();
-        int weaponIndex = CraftingUtils.getRandomNumber(0, weapons.length-1);
+        int weaponIndex = MathUtils.getRandomNumber(0, weapons.length-1);
         this.type = weapons[weaponIndex];
         setup();
         baseDamage = type.mapBaseDamage(getTier());
-        this.percentDamageVariance = CraftingUtils.getRandomNumber(-WeaponTypes.weaponDamageVariance, WeaponTypes.weaponDamageVariance);
+        this.percentDamageVariance = MathUtils.getRandomNumber(-WeaponTypes.weaponDamageVariance, WeaponTypes.weaponDamageVariance);
         this.atkSpeed = getSubtype().getBaseAttackSpeed();
         this.range = getSubtype().getRange();
     }

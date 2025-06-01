@@ -2,6 +2,7 @@ package com.amorabot.inscripted.item.structure.Armor;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.item.generation.InscriptionGenerator;
 import com.amorabot.inscripted.item.inscription.definition.Stats;
 import com.amorabot.inscripted.item.render.ItemRenderer;
 import com.amorabot.inscripted.item.render.ItemVisitor;
@@ -11,8 +12,8 @@ import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.ItemSubtype;
 import com.amorabot.inscripted.item.structure.io.InscriptedItem;
 import com.amorabot.inscripted.item.structure.io.ItemSerializer;
+import com.amorabot.inscripted.math.MathUtils;
 import com.amorabot.inscripted.profile.parsing.StatPool;
-import com.amorabot.inscripted.utils.CraftingUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
@@ -45,13 +46,14 @@ public class Armor extends Item {
 
         this.baseHealth = type.getBaseHealthValue(getTier(),slot);
         this.variance = getRandomHealthVariance();
+        InscriptionGenerator.generateInscriptionSetFor(this);
     }
 
     public int getHealth(){
         return (int) ( baseHealth * ( 1 + ( (float) variance/100 ) ) );
     }
     private int getRandomHealthVariance(){
-        return CraftingUtils.getRandomNumber(-ArmorTypes.BASE_VARIANCE, ArmorTypes.BASE_VARIANCE);
+        return MathUtils.getRandomNumber(-ArmorTypes.BASE_VARIANCE, ArmorTypes.BASE_VARIANCE);
     }
     public LocalDefence getDefences(){
         return new LocalDefence(this);

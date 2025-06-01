@@ -2,6 +2,7 @@ package com.amorabot.inscripted.item.render;
 
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.item.inscription.Inscription;
+import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -64,7 +65,7 @@ public class InscriptionRenderer {
         );
     }
     public static String getTierChar(int tier, int totalTiers){
-        if (tier>totalTiers){return "X";}
+        if (tier>totalTiers){return "//";}
         final int invertedTier = totalTiers - tier;
         if (!TIER_ICONS.containsKey(invertedTier)){
             return "*";

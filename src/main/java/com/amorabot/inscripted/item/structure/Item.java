@@ -38,7 +38,7 @@ public abstract class Item implements Serializable, InscriptedItem {
 
     @Setter
     private Inscription implicit;
-    private final List<Inscription> inscriptions = new ArrayList<>();
+    private List<Inscription> inscriptions = new ArrayList<>();
 
     public Item(int ilvl, EquipmentSlots itemSlot){
         this.ilvl = ilvl;
@@ -86,19 +86,17 @@ public abstract class Item implements Serializable, InscriptedItem {
     }
     public double getStarRating() {
         double percentileSum = 0;
-        int invalidMods = 0;
         for (Inscription inscription : getInscriptions()){
             if (inscription.isSpecial()){
-                invalidMods++;
+                percentileSum++;
                 continue;
             }
             double inscBP = inscription.getBasePercentile();
             percentileSum += inscBP;
         }
         if (!getInscriptions().isEmpty()){
-            double percentileAvg = percentileSum/ (getInscriptions().size()-invalidMods);
-            Utils.log("SR: " + percentileAvg);
-            return percentileAvg;
+            final int inscriptions = getInscriptions().size();
+            return percentileSum / inscriptions;
         }
         return 0;
     }

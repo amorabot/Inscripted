@@ -29,7 +29,7 @@ public class Inscription implements Serializable {
     public Inscription(InscriptionIDs inscription, int tier, double basePercentile) {
         this.inscription = inscription;
         this.tier = Math.min(tier, inscription.getTiers());
-        this.basePercentile = Math.min(Math.max(0,basePercentile),basePercentile); //0-1
+        this.basePercentile = basePercentile; //0-1
     }
 
     public String getDisplayName(String valuesHex){

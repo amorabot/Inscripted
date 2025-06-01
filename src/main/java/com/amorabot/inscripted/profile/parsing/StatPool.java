@@ -12,7 +12,7 @@ import java.util.*;
 
 @Getter
 public class StatPool {
-    private static final boolean DEBUG_MODE = true;
+    private static final boolean DEBUG_MODE = false;
 
     private final Map<Stats, Map<ValueType, int[]>> baseStats;
     private final Map<Stats, Double> multipliers;
@@ -90,7 +90,7 @@ public class StatPool {
             newValueMapping.put(type,values);
             baseStats.put(stat,newValueMapping);
             if (DEBUG_MODE){
-                Utils.log("Added new" + stat.name() + ": " + type.name() + " " + Arrays.toString(values));
+                Utils.log("Added " + stat.name() + ": " + type.name() + " " + Arrays.toString(values));
             }
             return;
         }
@@ -99,7 +99,7 @@ public class StatPool {
         if (!valueMapping.containsKey(type)){
             valueMapping.put(type,values);
             if (DEBUG_MODE){
-                Utils.log("Added new value for " + stat.name() + "("+type.name()+"): " + Arrays.toString(values));
+                Utils.log("Added "+type.name()+" value for " + stat.name() + " " + Arrays.toString(values));
             }
             return;
         }
@@ -115,6 +115,7 @@ public class StatPool {
     public void applyLocalStats(Map<Stats,int[]> localStats){
         localStats.forEach(
                 (stat, values) -> {
+                    if (DEBUG_MODE){Utils.log("Adding Flat " + stat + ": " + Arrays.toString(values) + " to StatPool");}
                     insertValue(stat,ValueType.FLAT,values);
                 }
         );
@@ -145,6 +146,29 @@ public class StatPool {
     }
 
     public void debug(String statPoolName){
-        // Foreach logic
+        Utils.log(statPoolName+"'s Stats ---------------------\n");
+        Utils.log("--- Base Stats -----------");
+        getBaseStats().forEach(
+                (stat, valueTypeMap) -> {
+                    Utils.log(stat.getAlias()+": ");
+                    valueTypeMap.forEach(
+                            (valueType, values) -> {
+                                Utils.log(valueType.name()+" -> " + Arrays.toString(values));
+                            }
+                    );
+                    Utils.log("");
+                }
+        );
+        if (getBaseStats().isEmpty()){
+            Utils.log("-------------------------------------------");
+            return;
+        }
+        Utils.log("--- Multipliers ----------");
+        getMultipliers().forEach(
+                (stat, multi) -> Utils.log(stat.getAlias() + ": " + multi)
+        );
+        Utils.log("\n");
+
+        Utils.log("-------------------------------------------");
     }
 }
