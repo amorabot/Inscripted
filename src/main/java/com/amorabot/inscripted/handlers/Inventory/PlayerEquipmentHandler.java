@@ -1,22 +1,15 @@
 package com.amorabot.inscripted.handlers.Inventory;
 
 import com.amorabot.inscripted.APIs.EventAPI;
-import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.GUIs.OrbGUI;
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.item.structure.Weapon.Weapon;
-import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 //import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.events.ItemUsage;
-import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.item.structure.io.InscriptedItem;
 import com.amorabot.inscripted.item.structure.io.ItemDeserializer;
-import com.amorabot.inscripted.profile.parsing.StatPool;
-import com.amorabot.inscripted.skills.AbilityTypes;
-import com.amorabot.inscripted.skills.AbilityRoutines;
-import com.amorabot.inscripted.utils.DelayedTask;
+import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import com.amorabot.inscripted.utils.Utils;
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import org.bukkit.Bukkit;
@@ -35,12 +28,9 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 //import static com.amorabot.inscripted.events.FunctionalItemAccessInterface.*;
 
@@ -65,11 +55,14 @@ public class PlayerEquipmentHandler implements Listener {
         //HEAD, CHEST, LEGS, FEET -> HELMET, CHESTPLATE, LEGGINGS, BOOTS
 
         Player player = event.getPlayer();
+//        Utils.log("Armor changed!");
 
 //        UUID playerUUID = player.getUniqueId();
 //        Profile profile = JSONProfileManager.getProfile(playerUUID);
-//        ItemStack newItem = event.getNewItem();
-//        ItemStack oldItem = event.getOldItem();
+        ItemStack newItem = event.getNewItem();
+        ItemStack oldItem = event.getOldItem();
+//        player.sendMessage("Old: " + oldItem.getType());
+//        player.sendMessage("New: " + newItem.getType());
 //        ItemTypes changedSlot = mapArmorSlot(event.getSlotType());
 //        if (isNotFunctional(newItem)){ // Unequip
 //            SoundAPI.playArmorUnequipFor(player);

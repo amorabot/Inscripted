@@ -7,7 +7,7 @@ import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.inscripted.components.Items.ItemBuilder;
+//import com.amorabot.inscripted.components.Items.ItemBuilder;
 import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
@@ -94,7 +94,7 @@ public class InscriptedMob {
                 deadEntity.remove();
                 CombatEffects.deathEffect(deadEntity);
 
-                dropAttempt();
+//                dropAttempt();
             }
         }.runTaskLater(Inscripted.getPlugin(),10L).getTaskId();
         //Death API call + Drops call
@@ -107,27 +107,27 @@ public class InscriptedMob {
         return spawnerID;
     }
 
-    public boolean dropAttempt(){
-        Item generatedItem;
-        Archetypes[] allArchetypes = Archetypes.values();
-        ItemRarities[] rarities = ItemRarities.values();
-        Archetypes randomItemArchetype = allArchetypes[Utils.getRandomIntBetween(0,allArchetypes.length-1)];
-        ItemRarities randomItemRarity = rarities[Utils.getRandomIntBetween(0,rarities.length-1)];
-        double dropRand = Math.random();
-        if (dropRand > 0.7){
-            if (Math.random() > 0.5){ //Weapon
-                generatedItem = ItemBuilder.randomItem(ItemTypes.WEAPON, randomItemArchetype.getWeaponType(), getStats().getMobLevel(), randomItemRarity,  true, false);
-            } else {//Armor
-                ItemTypes[] armorSlots = new ItemTypes[]{ItemTypes.HELMET,ItemTypes.CHESTPLATE,ItemTypes.LEGGINGS,ItemTypes.BOOTS};
-                ItemTypes randomArmorSlot = armorSlots[Utils.getRandomIntBetween(0,armorSlots.length-1)];
-                generatedItem = ItemBuilder.randomItem(randomArmorSlot, randomItemArchetype.getArmorType(), getStats().getMobLevel(), randomItemRarity,  true, false);
-            }
-            Location entityDeathLocation = getMobEntity().getLocation();
-            entityDeathLocation.getWorld().dropItem(entityDeathLocation, generatedItem.getItemForm());
-            return true;
-        } else {
-            Utils.log("No drop!");
-            return false;
-        }
-    }
+//    public boolean dropAttempt(){
+//        Item generatedItem;
+//        Archetypes[] allArchetypes = Archetypes.values();
+//        ItemRarities[] rarities = ItemRarities.values();
+//        Archetypes randomItemArchetype = allArchetypes[Utils.getRandomIntBetween(0,allArchetypes.length-1)];
+//        ItemRarities randomItemRarity = rarities[Utils.getRandomIntBetween(0,rarities.length-1)];
+//        double dropRand = Math.random();
+//        if (dropRand > 0.7){
+//            if (Math.random() > 0.5){ //Weapon
+//                generatedItem = ItemBuilder.randomItem(ItemTypes.WEAPON, randomItemArchetype.getWeaponType(), getStats().getMobLevel(), randomItemRarity,  true, false);
+//            } else {//Armor
+//                ItemTypes[] armorSlots = new ItemTypes[]{ItemTypes.HELMET,ItemTypes.CHESTPLATE,ItemTypes.LEGGINGS,ItemTypes.BOOTS};
+//                ItemTypes randomArmorSlot = armorSlots[Utils.getRandomIntBetween(0,armorSlots.length-1)];
+//                generatedItem = ItemBuilder.randomItem(randomArmorSlot, randomItemArchetype.getArmorType(), getStats().getMobLevel(), randomItemRarity,  true, false);
+//            }
+//            Location entityDeathLocation = getMobEntity().getLocation();
+//            entityDeathLocation.getWorld().dropItem(entityDeathLocation, generatedItem.getItemForm());
+//            return true;
+//        } else {
+//            Utils.log("No drop!");
+//            return false;
+//        }
+//    }
 }

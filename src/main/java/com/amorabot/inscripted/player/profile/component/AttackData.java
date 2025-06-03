@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.profile.component;
+package com.amorabot.inscripted.player.profile.component;
 
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import lombok.Getter;

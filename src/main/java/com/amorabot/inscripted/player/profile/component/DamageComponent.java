@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.profile.component;
+package com.amorabot.inscripted.player.profile.component;
 
 public class DamageComponent {
 

@@ -7,7 +7,7 @@ import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.item.structure.Tiers;
-import com.amorabot.inscripted.components.Items.ItemBuilder;
+//import com.amorabot.inscripted.components.Items.ItemBuilder;
 import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
@@ -114,61 +114,62 @@ public class ItemCommandGUI extends GUI{
 
         Item randomItem;
         if (slot.equals(ItemTypes.WEAPON)){
-            randomItem = ItemBuilder.randomItem(slot, archetype.getWeaponType(), getIlvl(), getRarity(),false, false);
+//            randomItem = ItemBuilder.randomItem(slot, archetype.getWeaponType(), getIlvl(), getRarity(),false, false);
         } else {
-            randomItem = ItemBuilder.randomItem(slot, archetype.getArmorType(), getIlvl(), getRarity(),false, false);
+//            randomItem = ItemBuilder.randomItem(slot, archetype.getArmorType(), getIlvl(), getRarity(),false, false);
         }
-        ItemStack itemIcon = randomItem.getItemForm();
-        ItemMeta iconItemMeta = itemIcon.getItemMeta();
-        iconItemMeta.setDisplayName(ColorUtils.translateColorCodes(
-                getRarity().getColor()+ "&l" + getRarity().toString() +" &" +archetype.getColorOnPalette()+"&l"+archetype+" "+slot));
-        List<String> lore = new ArrayList<String>(){
-            {
-                add("");
-                add(Utils.color("&8>| &lLEFT CLICK -> "+ getRarity().getColor() + getRarity().toString() +" Identified item"));
-                add("");
-                add(Utils.color("&8>| &lRIGHT CLICK -> "+ "&4" +"Unidentified item"));
-            }
-        };
-        iconItemMeta.setLore(lore);
-        itemIcon.setItemMeta(iconItemMeta);
-
-        return new GUIButton(desiredSlot, itemIcon) {
-            @Override
-            public void leftClick(Player playerWhoClicked) {
-                Item generatedItem;
-                if (slot.equals(ItemTypes.WEAPON)){
-                    generatedItem = ItemBuilder.randomItem(slot, archetype.getWeaponType(), getIlvl(), getRarity(),true, false);
-                } else {
-                    generatedItem = ItemBuilder.randomItem(slot, archetype.getArmorType(), getIlvl(), getRarity(),true, false);
-                }
-                if (generatedItem == null){
-                    Utils.msgPlayer(playerWhoClicked, "Invalid item stats...");
-                    return;
-                }
-                giveGeneratedItem(generatedItem, playerWhoClicked);
-            }
-
-            @Override
-            public void rightClick(Player playerWhoClicked) {
-                Item generatedItem;
-                if (slot.equals(ItemTypes.WEAPON)){
-                    generatedItem = ItemBuilder.randomItem(slot, archetype.getWeaponType(), getIlvl(), getRarity(),false, false);
-                } else {
-                    generatedItem = ItemBuilder.randomItem(slot, archetype.getArmorType(), getIlvl(), getRarity(),false, false);
-                }
-                if (generatedItem == null){
-                    Utils.msgPlayer(playerWhoClicked, "Invalid item stats...");
-                    return;
-                }
-                giveGeneratedItem(generatedItem, playerWhoClicked);
-            }
-
-            @Override
-            public void shiftLeftClick(Player playerWhoClicked) {}
-            @Override
-            public void shiftRightClick(Player playerWhoClicked) {}
-        };
+//        ItemStack itemIcon = randomItem.getItemForm();
+//        ItemMeta iconItemMeta = itemIcon.getItemMeta();
+//        iconItemMeta.setDisplayName(ColorUtils.translateColorCodes(
+//                getRarity().getColor()+ "&l" + getRarity().toString() +" &" +archetype.getColorOnPalette()+"&l"+archetype+" "+slot));
+//        List<String> lore = new ArrayList<String>(){
+//            {
+//                add("");
+//                add(Utils.color("&8>| &lLEFT CLICK -> "+ getRarity().getColor() + getRarity().toString() +" Identified item"));
+//                add("");
+//                add(Utils.color("&8>| &lRIGHT CLICK -> "+ "&4" +"Unidentified item"));
+//            }
+//        };
+//        iconItemMeta.setLore(lore);
+//        itemIcon.setItemMeta(iconItemMeta);
+//
+//        return new GUIButton(desiredSlot, itemIcon) {
+//            @Override
+//            public void leftClick(Player playerWhoClicked) {
+//                Item generatedItem;
+//                if (slot.equals(ItemTypes.WEAPON)){
+//                    generatedItem = ItemBuilder.randomItem(slot, archetype.getWeaponType(), getIlvl(), getRarity(),true, false);
+//                } else {
+//                    generatedItem = ItemBuilder.randomItem(slot, archetype.getArmorType(), getIlvl(), getRarity(),true, false);
+//                }
+//                if (generatedItem == null){
+//                    Utils.msgPlayer(playerWhoClicked, "Invalid item stats...");
+//                    return;
+//                }
+//                giveGeneratedItem(generatedItem, playerWhoClicked);
+//            }
+//
+//            @Override
+//            public void rightClick(Player playerWhoClicked) {
+//                Item generatedItem;
+//                if (slot.equals(ItemTypes.WEAPON)){
+//                    generatedItem = ItemBuilder.randomItem(slot, archetype.getWeaponType(), getIlvl(), getRarity(),false, false);
+//                } else {
+//                    generatedItem = ItemBuilder.randomItem(slot, archetype.getArmorType(), getIlvl(), getRarity(),false, false);
+//                }
+//                if (generatedItem == null){
+//                    Utils.msgPlayer(playerWhoClicked, "Invalid item stats...");
+//                    return;
+//                }
+//                giveGeneratedItem(generatedItem, playerWhoClicked);
+//            }
+//
+//            @Override
+//            public void shiftLeftClick(Player playerWhoClicked) {}
+//            @Override
+//            public void shiftRightClick(Player playerWhoClicked) {}
+//        };
+        return null;
     }
 
     private void giveGeneratedItem(Item item, Player player){

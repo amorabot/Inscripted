@@ -5,7 +5,6 @@ import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.inscription.language.AffixType;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
 import com.amorabot.inscripted.item.render.InscriptionRenderer;
-import com.amorabot.inscripted.item.render.ItemRenderer;
 import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.math.MathUtils;

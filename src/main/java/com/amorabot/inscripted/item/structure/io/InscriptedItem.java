@@ -2,7 +2,7 @@ package com.amorabot.inscripted.item.structure.io;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.item.inscription.definition.Stats;
-import com.amorabot.inscripted.profile.parsing.StatPool;
+import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

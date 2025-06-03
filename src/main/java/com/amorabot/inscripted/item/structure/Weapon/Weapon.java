@@ -13,7 +13,7 @@ import com.amorabot.inscripted.item.structure.ItemSubtype;
 import com.amorabot.inscripted.item.structure.io.InscriptedItem;
 import com.amorabot.inscripted.item.structure.io.ItemSerializer;
 import com.amorabot.inscripted.math.MathUtils;
-import com.amorabot.inscripted.profile.parsing.StatPool;
+import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;

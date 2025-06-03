@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.profile.parsing;
+package com.amorabot.inscripted.player.profile.parsing;
 
 import com.amorabot.inscripted.item.inscription.Inscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionDefinition;
