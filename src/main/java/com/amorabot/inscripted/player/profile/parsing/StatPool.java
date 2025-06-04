@@ -38,6 +38,9 @@ public class StatPool {
         return globalItemStatPool;
     }
 
+    public Map<Stats, Double> calculateFinalValues(){
+        return null;
+    }
 
 
     public void addInscriptionStats(Inscription inscription, Set<Integer> blockedIDs){
@@ -120,6 +123,11 @@ public class StatPool {
                 }
         );
     }
+    public void merge(StatPool externalPool){
+        mergeBaseStats(externalPool.getBaseStats());
+        mergeMultipliers(externalPool.getMultipliers());
+    }
+
     public void mergeBaseStats(Map<Stats, Map<ValueType, int[]>> externalStats){
         externalStats.forEach(
                 (stat, valueTypeMap) -> {

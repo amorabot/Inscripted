@@ -1,8 +1,7 @@
 package com.amorabot.inscripted;
 
 import com.amorabot.inscripted.commands.*;
-import com.amorabot.inscripted.components.Mobs.Spawners;
-import com.amorabot.inscripted.file.profile.JSONProfileManager;
+import com.amorabot.inscripted.file.profile.ProfileDatabase;
 import com.amorabot.inscripted.item.render.GlyphInfo;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
 import com.amorabot.inscripted.handlers.Combat.InscriptedPlayerDeathEventListener;
@@ -12,31 +11,26 @@ import com.amorabot.inscripted.handlers.misc.JoinQuitHandler;
 import com.amorabot.inscripted.handlers.misc.SunlightBurnHandler;
 import com.amorabot.inscripted.file.item.InscriptionDataManager;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
-import com.amorabot.inscripted.managers.*;
-import com.amorabot.inscripted.tasks.CombatLogger;
-import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
-import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
+import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.scheduler.BukkitTask;
 
-import java.io.IOException;
+import java.util.Collection;
 import java.util.logging.Logger;
-
-import static com.amorabot.inscripted.utils.Utils.log;
 
 public final class Inscripted extends JavaPlugin {
     private static Logger logger;
     private static Inscripted inscriptedPlugin;
-    private static BukkitTask holoDepleterTask;
-    private static BukkitTask combatLogger;
-    private static BukkitTask playerInterfaceRenderer;
+//    private static BukkitTask holoDepleterTask;
+//    private static BukkitTask combatLogger;
+//    private static BukkitTask playerInterfaceRenderer;
     private World world;
 
     private MetadataValue metadataTag = new FixedMetadataValue(this, 0);
@@ -48,8 +42,8 @@ public final class Inscripted extends JavaPlugin {
         inscriptedPlugin = this;
         this.world = Bukkit.getWorld("world");
 
-        JSONProfileManager.initializeProfilesJSON();
-        reloadRoutine();
+//        JSONProfileManager.initializeProfilesJSON();
+        reloadOnlinePlayerData();
         InscriptionTable.loadRawValues();
 
         Utils.populatePrettyAlphabet();
@@ -58,12 +52,12 @@ public final class Inscripted extends JavaPlugin {
         commandsStartupRoutine();
         eventListenersStartupRoutine();
 
-        //Damage hologram depleter
-        holoDepleterTask = CombatHologramsDepleter.getInstance().runTaskTimer(this,(long) (Math.random()*11), 1L);
-        //Combat logger
-        combatLogger = CombatLogger.getInstance().runTaskTimer(this, (long) (Math.random()*11), 20L);
-        //Interface renderer
-        playerInterfaceRenderer = PlayerInterfaceRenderer.getInstance().runTaskTimer(this, (long) (Math.random()*11), 5L);
+//        //Damage hologram depleter
+//        holoDepleterTask = CombatHologramsDepleter.getInstance().runTaskTimer(this,(long) (Math.random()*11), 1L);
+//        //Combat logger
+//        combatLogger = CombatLogger.getInstance().runTaskTimer(this, (long) (Math.random()*11), 20L);
+//        //Interface renderer
+//        playerInterfaceRenderer = PlayerInterfaceRenderer.getInstance().runTaskTimer(this, (long) (Math.random()*11), 5L);
         //Player regeneration
 //        playerRegen = PlayerRegen.getInstance().runTaskTimer(this, 0, 10L);
     }
@@ -71,24 +65,25 @@ public final class Inscripted extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        Bukkit.getLogger().info("Shutting Down...");
-        if (holoDepleterTask != null && !holoDepleterTask.isCancelled()){
-            holoDepleterTask.cancel();
-        }
-        if (combatLogger != null && !combatLogger.isCancelled()){
-            combatLogger.cancel();
-        }
-        if (playerInterfaceRenderer != null && !playerInterfaceRenderer.isCancelled()){
-            playerInterfaceRenderer.cancel();
-        }
-        PlayerRegenManager.shutdown();
-        CombatHologramsDepleter.getInstance().shutdown();
+        Utils.log("Shutting Down...");
+        ProfileDatabase.saveProfiles(PlayerDataContainer.getProfiles());
+//        if (holoDepleterTask != null && !holoDepleterTask.isCancelled()){
+//            holoDepleterTask.cancel();
+//        }
+//        if (combatLogger != null && !combatLogger.isCancelled()){
+//            combatLogger.cancel();
+//        }
+//        if (playerInterfaceRenderer != null && !playerInterfaceRenderer.isCancelled()){
+//            playerInterfaceRenderer.cancel();
+//        }
+//        PlayerRegenManager.shutdown();
+//        CombatHologramsDepleter.getInstance().shutdown();
 
-        try {
-            JSONProfileManager.saveAllToJSON();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            JSONProfileManager.saveAllToJSON();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
     public static Logger getPluginLogger(){
         return logger;
@@ -103,27 +98,30 @@ public final class Inscripted extends JavaPlugin {
         return getPlugin().getServer().getScheduler();
     }
 
-    private void reloadRoutine(){
+    private void reloadOnlinePlayerData(){
         getScheduler().cancelTasks(this);
-        JSONProfileManager.reloadOnlinePlayers(Bukkit.getOnlinePlayers());
-        PlayerRegenManager.reloadOnlinePlayers();
-        PlayerPassivesManager.reloadOnlinePlayers();
-        PlayerBuffManager.reloadOnlinePlayers();
+        Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
+        if (onlinePlayers.isEmpty()){return;}
+        ProfileDatabase.reloadOnlinePlayers(onlinePlayers);
+//        JSONProfileManager.reloadOnlinePlayers(Bukkit.getOnlinePlayers());
+//        PlayerRegenManager.reloadOnlinePlayers();
+//        PlayerPassivesManager.reloadOnlinePlayers();
+//        PlayerBuffManager.reloadOnlinePlayers();
 
-        PlayerInterfaceRenderer.reloadHPDisplays();
+//        PlayerInterfaceRenderer.reloadHPDisplays();
 
         InscriptionDataManager.setupFiles();
         GlyphInfo.loadMappings();
 
 //        ItemModifiersConfig.setup();
 
-        if (MobManager.spawningEnabled()){
-            log("RegisteredSpawners");
-            for (Spawners s : Spawners.values()){
-                log(s.toString());
-            }
-            MobManager.reinstantiateMobSpawners();
-        }
+//        if (MobManager.spawningEnabled()){
+//            log("RegisteredSpawners");
+//            for (Spawners s : Spawners.values()){
+//                log(s.toString());
+//            }
+//            MobManager.reinstantiateMobSpawners();
+//        }
 
 //        initializeRelicItemData();
     }
@@ -146,7 +144,7 @@ public final class Inscripted extends JavaPlugin {
     private void eventListenersStartupRoutine(){
 
         //---------   LISTENERS   ------------
-        new JoinQuitHandler(this);
+        new JoinQuitHandler();
         new PlayerEquipmentHandler(this);
         new InventoryHandler();
         new DelayedTask(this);

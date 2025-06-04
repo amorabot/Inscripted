@@ -3,9 +3,12 @@ package com.amorabot.inscripted.handlers.misc;
 import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.file.profile.JSONProfileManager;
+import com.amorabot.inscripted.file.profile.ProfileDatabase;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
+import com.amorabot.inscripted.player.PlayerDataContainer;
+import com.amorabot.inscripted.player.profile.Profile;
 import com.amorabot.inscripted.tasks.CombatLogger;
 import com.amorabot.inscripted.tasks.PlayerInterfaceRenderer;
 import com.amorabot.inscripted.utils.Utils;
@@ -26,11 +29,8 @@ import java.util.UUID;
 
 public class JoinQuitHandler implements Listener {
 
-    private Inscripted plugin;
-
-    public JoinQuitHandler(Inscripted plugin){
-        this.plugin = plugin;
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+    public JoinQuitHandler(){
+        Bukkit.getPluginManager().registerEvents(this, Inscripted.getPlugin());
     }
 
     @EventHandler
@@ -39,19 +39,31 @@ public class JoinQuitHandler implements Listener {
         Player player = event.getPlayer();
         player.setMaximumNoDamageTicks(5);
         UUID playerID = player.getUniqueId();
-        if (JSONProfileManager.isNewPlayer(playerID)){ //If new player:
-            JSONProfileManager.createProfile(playerID.toString()); //Creates and instantiates the profile.
-            Utils.log("O perfil para o player " + player.getDisplayName() + " foi criado. (JSON)");
+
+        if (ProfileDatabase.isNewPlayer(playerID)){
+            PlayerDataContainer.instantiatePlayer(playerID);
+            Utils.log("Instantiating new profile for " + player.getName());
 
             showTitleTo(player, "<Welcome, "+ player.getName() + ">", "to the Inscripted Alpha!");
-            initializePlayer(player);
-
+//            initializePlayer(player);
             return;
         }
-        JSONProfileManager.loadProfileFromJSON(player.getUniqueId()); //Loads specific profile into memory
+//        if (JSONProfileManager.isNewPlayer(playerID)){ //If new player:
+//            JSONProfileManager.createProfile(playerID.toString()); //Creates and instantiates the profile.
+//            Utils.log("O perfil para o player " + player.getDisplayName() + " foi criado. (JSON)");
+//
+////            showTitleTo(player, "<Welcome, "+ player.getName() + ">", "to the Inscripted Alpha!");
+//            initializePlayer(player);
+//
+//            return;
+//        }
+
+//        JSONProfileManager.loadProfileFromJSON(player.getUniqueId()); //Loads specific profile into memory
+
+        PlayerDataContainer.instantiatePlayer(playerID,ProfileDatabase.loadProfile(playerID));
 
         showTitleTo(player, "<Welcome back, " + player.getName() + "!>", "Enjoy the alpha!");
-        initializePlayer(player);
+//        initializePlayer(player);
     }
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event){
@@ -59,11 +71,13 @@ public class JoinQuitHandler implements Listener {
         Utils.log(player.getDisplayName() + " has quit. Saving profile and removing from cache.");
         UUID playerUUID = player.getUniqueId();
 
-        combatLog(player);
+        ProfileDatabase.saveProfile(playerUUID);
+        PlayerDataContainer.clearPlayerMemory(playerUUID);
+//        combatLog(player);
+//
+//        JSONProfileManager.saveProfileOnQuitToJSON(playerUUID, JSONProfileManager.getProfile(playerUUID));
 
-        JSONProfileManager.saveProfileOnQuitToJSON(playerUUID, JSONProfileManager.getProfile(playerUUID));
-
-        destroyPlayerData(player);
+//        destroyPlayerData(player);
     }
 
     private void initializePlayer(Player player){

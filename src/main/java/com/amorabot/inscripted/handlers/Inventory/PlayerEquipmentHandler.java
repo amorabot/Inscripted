@@ -3,12 +3,16 @@ package com.amorabot.inscripted.handlers.Inventory;
 import com.amorabot.inscripted.APIs.EventAPI;
 import com.amorabot.inscripted.GUIs.OrbGUI;
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.item.structure.Armor.Armor;
+import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.item.structure.Weapon.Weapon;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 //import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.events.ItemUsage;
 import com.amorabot.inscripted.item.structure.io.InscriptedItem;
 import com.amorabot.inscripted.item.structure.io.ItemDeserializer;
+import com.amorabot.inscripted.player.PlayerDataContainer;
+import com.amorabot.inscripted.player.equipment.PlayerEquipment;
 import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import com.amorabot.inscripted.utils.Utils;
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
@@ -31,6 +35,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 //import static com.amorabot.inscripted.events.FunctionalItemAccessInterface.*;
 
@@ -55,83 +60,71 @@ public class PlayerEquipmentHandler implements Listener {
         //HEAD, CHEST, LEGS, FEET -> HELMET, CHESTPLATE, LEGGINGS, BOOTS
 
         Player player = event.getPlayer();
-//        Utils.log("Armor changed!");
-
-//        UUID playerUUID = player.getUniqueId();
-//        Profile profile = JSONProfileManager.getProfile(playerUUID);
         ItemStack newItem = event.getNewItem();
         ItemStack oldItem = event.getOldItem();
-//        player.sendMessage("Old: " + oldItem.getType());
-//        player.sendMessage("New: " + newItem.getType());
-//        ItemTypes changedSlot = mapArmorSlot(event.getSlotType());
-//        if (isNotFunctional(newItem)){ // Unequip
-//            SoundAPI.playArmorUnequipFor(player);
-//            profile.updateEquipmentSlot(changedSlot, null, playerUUID);
-//            return;
-//        }
-//        // New item is a armor
-//        Armor armorData = getArmorData(newItem); //No problem if null (Doesnt have a valid PDC for Armor)
-//        profile.updateEquipmentSlot(changedSlot, armorData, playerUUID);
-//        if (armorData == null){
-//            player.sendMessage(Utils.color("&cInvalid armor, no stats will be gained."));
-//        } else {
-//            SoundAPI.playArmorEquipFor(player);
-//            player.sendMessage("Equipped: " + armorData.getName());
-//        }
-    }
-//    private Armor getArmorData(ItemStack armorItem){
-//        return FunctionalItemAccessInterface.
-//                deserializeArmorData(armorItem.getItemMeta().getPersistentDataContainer());
-//    }
-//    private ItemTypes mapArmorSlot(PlayerArmorChangeEvent.SlotType eventSlot){
-//        switch (eventSlot){
-//            case HEAD -> {
-//                return ItemTypes.HELMET;
-//            }
-//            case CHEST -> {
-//                return ItemTypes.CHESTPLATE;
-//            }
-//            case LEGS -> {
-//                return ItemTypes.LEGGINGS;
-//            }
-//            case FEET -> {
-//                return ItemTypes.BOOTS;
-//            }
-//        }
-//        return null;
-//    }
 
+        UUID playerID = player.getUniqueId();
+        PlayerEquipment playerEquipment = PlayerDataContainer.getPlayerEquipment(playerID);
+        // If the new item on that slot is air, prematurely unequip that slot
+        if (newItem.getType().isAir()){
+            playerEquipment.updateEquimentSlot(mapArmorSlot(event.getSlotType()), null);
+            return;
+        }
+        // Valid item check
+        boolean validArmor = InscriptedItem.hasInscriptedTag(newItem) && ItemDeserializer.isArmor(newItem);
+        if (validArmor && ItemDeserializer.isIdentified(newItem)){
+            Armor armorData = ItemDeserializer.deserializeArmorData(newItem);
+            player.sendMessage(armorData.getSlot().name());
+            playerEquipment.updateEquimentSlot(armorData.getSlot(), armorData);
+            return;
+        }
+        //Invalid armor && not Air -> Unequip that slot
+        playerEquipment.updateEquimentSlot(mapArmorSlot(event.getSlotType()), null);
+    }
+    private EquipmentSlots mapArmorSlot(PlayerArmorChangeEvent.SlotType eventSlot){
+        switch (eventSlot){
+            case HEAD -> {
+                return EquipmentSlots.HELMET;
+            }
+            case CHEST -> {
+                return EquipmentSlots.CHESTPLATE;
+            }
+            case LEGS -> {
+                return EquipmentSlots.LEGGINGS;
+            }
+            case FEET -> {
+                return EquipmentSlots.BOOTS;
+            }
+        }
+        return null;
+    }
 
     @EventHandler
     public void onSlotChange(PlayerItemHeldEvent event){
         Player player = event.getPlayer();
         PlayerInventory inventory = player.getInventory();
         ItemStack heldItem = inventory.getItem(event.getNewSlot());
-        if (heldItem==null){return;}
-        boolean validWeapon = InscriptedItem.hasInscriptedTag(heldItem) && ItemDeserializer.isWeapon(heldItem);
-        if (validWeapon){
-            Weapon weaponData = ItemDeserializer.deserializeWeaponData(heldItem);
-            player.sendMessage(weaponData.getWeaponType().name());
-            StatPool weaponStats = weaponData.compile();
-            weaponStats.debug("Weapon");
+        ItemStack prevItem = inventory.getItem(event.getPreviousSlot());
+        if (heldItem==null && prevItem==null){return;} //Nothing to nothing, no state change
+
+        UUID playerID = player.getUniqueId();
+        PlayerEquipment playerEquipment = PlayerDataContainer.getPlayerEquipment(playerID);
+        if (heldItem==null){
+            //Prematurely unequip weapon
+            playerEquipment.updateEquimentSlot(EquipmentSlots.WEAPON, null);
             return;
         }
+        // Valid item check
+        boolean validWeapon = InscriptedItem.hasInscriptedTag(heldItem) && ItemDeserializer.isWeapon(heldItem);
+        if (validWeapon && ItemDeserializer.isIdentified(heldItem)){
+            Weapon weaponData = ItemDeserializer.deserializeWeaponData(heldItem);
+            player.sendMessage(weaponData.getWeaponType().name());
 
+            playerEquipment.updateEquimentSlot(EquipmentSlots.WEAPON, weaponData);
+            return;
+        }
         //Unequip weapon
-        //...
-//        ItemStack previousItem = inventory.getItem(event.getPreviousSlot());
-//        if (isNotFunctional(heldItem)){
-////            unequipWeaponSlot(player);
-//            EventAPI.callWeaponEquipEvent(event, null);
-//            return;
-//        }
-//        PersistentDataContainer heldItemDataContainer = heldItem.getItemMeta().getPersistentDataContainer();
-//        if (isIdentified(WEAPON_TAG,heldItemDataContainer)){
-//            player.setCooldown(heldItem.getType(), 20*2);
-//            EventAPI.callWeaponEquipEvent(event, heldItem);
-//        } else {
-//            EventAPI.callWeaponEquipEvent(event, null);
-//        }
+        playerEquipment.updateEquimentSlot(EquipmentSlots.WEAPON, null);
     }
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerInteract(PlayerInteractEvent event){
