@@ -1,5 +1,8 @@
 package com.amorabot.inscripted.player.equipment;
 
+import com.amorabot.inscripted.item.inscription.Inscription;
+import com.amorabot.inscripted.item.inscription.definition.EffectIDs;
+import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
 import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.player.Observer;
@@ -11,15 +14,16 @@ import lombok.Getter;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Set;
 
 @Getter
 public class PlayerEquipment {
 
     private final Subject profileSubject = new Subject();
     private boolean locked = true;
-    private Map<EquipmentSlots, EquimentSlotData> equipmentData = new HashMap<>();
+    private final Map<EquipmentSlots, EquimentSlotData> equipmentData = new HashMap<>();
 
     public PlayerEquipment(Observer observer){
         for (EquipmentSlots slot : EquipmentSlots.values()){
@@ -60,7 +64,7 @@ public class PlayerEquipment {
                 @Override
                 public void run() {
                     //After 3Ticks, apply changes
-                    profileSubject.notifyListeners(ProfileEvents.EQUIPMENT_CHANGE);
+                    profileSubject.notifyListeners(ProfileEvents.STAT_CHANGE);
                     //Re-lock so it can be accessed later
                     locked=true;
                 }
@@ -72,5 +76,27 @@ public class PlayerEquipment {
         EquimentSlotData currentSlotData = equipmentData.get(slot);
         //A unnecessary update here would only reset 'ignored' to true, so its fine
         currentSlotData.update(itemData);
+    }
+
+    public Set<Inscription> getEquipmentMetaInscriptions(){
+        Set<Inscription> metaInscriptions = new HashSet<>();
+        getEquipmentData().forEach(
+                (slot, slotData) -> metaInscriptions.addAll(slotData.getMetaInscriptions())
+        );
+        return metaInscriptions;
+    }
+    public Set<EffectIDs> getEquipmenEffects(){
+        Set<EffectIDs> effects = new HashSet<>();
+        getEquipmentData().forEach(
+                (slot, slotData) -> effects.addAll(slotData.getItemEffects())
+        );
+        return effects;
+    }
+    public Set<KeystoneIDs> getEquipmenKeystones(){
+        Set<KeystoneIDs> keystones = new HashSet<>();
+        getEquipmentData().forEach(
+                (slot, slotData) -> keystones.addAll(slotData.getItemKeystones())
+        );
+        return keystones;
     }
 }

@@ -1,11 +1,16 @@
 package com.amorabot.inscripted.player.profile.component;
 
-public class DamageComponent {
+import com.amorabot.inscripted.player.profile.parsing.StatPool;
+import net.kyori.adventure.text.Component;
+
+import java.util.List;
+
+public class DamageComponent implements ProfileComponent {
 
     private AttackData baseAttackData;
     private int lifeOnHit;
-    private int lifeSteal;
     private int extraProjectiles;
+    private int projectileDamage;
     private int meleeDamage;
     private int areaDamage;
 
@@ -16,4 +21,25 @@ public class DamageComponent {
          and a final version of AttackData as output, taking in consideration
          any conversions or multipliers, aswell as any specific damage increases (filtered by tags)
     */
+
+    public DamageComponent(){
+        this.baseAttackData = new AttackData();
+        this.lifeOnHit = 0;
+        this.extraProjectiles = 0;
+        this.meleeDamage = 0;
+        this.projectileDamage = 0;
+        this.areaDamage = 0;
+    }
+
+    @Override
+    public void updateComponent(StatPool stats) {
+        baseAttackData.updateComponent(stats);
+
+        //...
+
+    }
+    @Override
+    public List<Component> asTextComponent() {
+        return List.of();
+    }
 }

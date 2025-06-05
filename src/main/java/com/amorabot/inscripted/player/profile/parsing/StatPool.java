@@ -38,9 +38,49 @@ public class StatPool {
         return globalItemStatPool;
     }
 
-    public Map<Stats, Double> calculateFinalValues(){
-        return null;
+    public Map<Stats, double[]> calculateFinalValues(){
+        Map<Stats, double[]> finalValuesMap = new HashMap<>();
+        for (Stats stat : getBaseStats().keySet()){
+            double[] finalStatValues = calculateStatValue(stat);
+            if (finalStatValues.length == 0){continue;}
+            finalValuesMap.put(stat,finalStatValues);
+        }
+        return finalValuesMap;
     }
+    public double[] calculateStatValue(Stats stat){
+        // Get stored values for that stat
+        Map<ValueType, int[]> values = getBaseStats().get(stat);
+        // Get stat multiplier
+        double multi = getMultipliers().getOrDefault(stat,1D);
+        //If its a percent value ( % Bleed chance ), increases or flat values don't matter
+        if (values.containsKey(ValueType.PERCENTAGE)){
+            int[] percentStat = values.get(ValueType.PERCENTAGE);
+            double[] calculatedValues = new double[percentStat.length];
+            for (int i = 0; i < calculatedValues.length; i++) {
+                calculatedValues[i] = ( percentStat[i] * multi );
+            }
+            return calculatedValues;
+        }
+        // Standard case
+        if (values.containsKey(ValueType.FLAT)){ // Covers single and double rolls
+            int[] flatStat = values.get(ValueType.FLAT);
+            int increase = values.getOrDefault(ValueType.INCREASED,new int[1])[0];
+            double[] calculatedValues = new double[flatStat.length];
+            for (int i = 0; i < calculatedValues.length; i++) {
+                calculatedValues[i] = ( ( flatStat[i] * ((100 + increase)/100D) ) * multi );
+            }
+            return calculatedValues;
+        }
+        return new double[0];
+    }
+    public int[] getBaseStatValue(Stats stat,ValueType type){ // For external usage
+        if (!getBaseStats().containsKey(stat)){return new int[0];}
+        Map<ValueType, int[]> valueTypeMap = getBaseStats().get(stat);
+        return valueTypeMap.getOrDefault(type,new int[0]).clone();
+    }
+    public double getMultiplier(Stats stat){
+        return getMultipliers().getOrDefault(stat,1D);
+    }//-----------------------------------------------------------------------------
 
 
     public void addInscriptionStats(Inscription inscription, Set<Integer> blockedIDs){
@@ -76,7 +116,7 @@ public class StatPool {
         }
     }
 
-    private void insertValue(Stats stat,ValueType type,int[] values){
+    public void insertValue(Stats stat,ValueType type,int[] values){
         if (type.equals(ValueType.MULTIPLIER)){
             double storedMulti = multipliers.getOrDefault(stat,1D);
             double newMulti = ( 100 + values[0] ) / 100D;

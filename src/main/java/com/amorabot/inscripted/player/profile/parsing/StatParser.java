@@ -1,18 +1,14 @@
 package com.amorabot.inscripted.player.profile.parsing;
 
 import com.amorabot.inscripted.item.inscription.Inscription;
-import com.amorabot.inscripted.item.inscription.definition.EffectIDs;
-import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
-import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
-import com.amorabot.inscripted.item.inscription.definition.Stats;
+import com.amorabot.inscripted.item.inscription.definition.*;
+import com.amorabot.inscripted.item.inscription.language.ValueType;
 import com.amorabot.inscripted.player.equipment.PlayerEquipment;
+import com.amorabot.inscripted.player.profile.BaseStats;
 import com.amorabot.inscripted.player.profile.Profile;
 import com.amorabot.inscripted.utils.Utils;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class StatParser {
@@ -23,13 +19,23 @@ public class StatParser {
         Utils.log("Building profile!");
         //Getting global stats
         StatPool globalStatPool = compileEquipmentStats(equipment); //Raw global stats
-        Set<EffectIDs> effects = getEquipmenEffects(equipment);
-        Set<KeystoneIDs> keystones = getEquipmenKeystones(equipment);
+        applyAttributeBonuses(globalStatPool);
+        Set<EffectIDs> effects = equipment.getEquipmenEffects();
+        Set<KeystoneIDs> keystones = equipment.getEquipmenKeystones();
 
+        Map<Stats, double[]> finalStats = globalStatPool.calculateFinalValues();
+        for (Stats stat : finalStats.keySet()){
+            Utils.log(stat.getAlias()+": " + Arrays.toString(finalStats.get(stat)));
+        }
     }
 
     public static StatPool compileEquipmentStats(PlayerEquipment playerEquipment){
         StatPool globalStatPool = new StatPool();
+        // Add base stats
+        for(BaseStats baseStat : BaseStats.values()){
+            globalStatPool.insertValue(baseStat.getTargetStat(),baseStat.getType(), new int[]{baseStat.getValue()});
+        }
+
         playerEquipment.getEquipmentData().forEach(
                 (slot, slotData) -> {
                     if (slotData.isIgnorable()){return;}
@@ -40,36 +46,72 @@ public class StatParser {
                 }
         );
         //TODO: Sort meta inscriptions for predictability?
-        Set<Inscription> metaInscriptions = getEquipmentMetaInscriptions(playerEquipment);
+        Set<Inscription> metaInscriptions = playerEquipment.getEquipmentMetaInscriptions();
         for (Inscription metaInsc : metaInscriptions){
+            InscriptionIDs inscID = metaInsc.getInscription();
+            if (DEBUG_MODE){Utils.log("Compiling meta Inscription " + inscID);}
+            if (!inscID.hasMetadata()){continue;}
+            if (!(inscID.getDefinitionData() instanceof InscriptionDefinition.Meta metaInscriptionDef)){
+                if (DEBUG_MODE){Utils.error("Wtf is this shit of meta insc");}
+                continue;
+            }
+            //Get meta inscription definition data
+            //Get metadata
+            Stats convertedStat = metaInscriptionDef.getConvertedStat();
+            ValueType convertedType = metaInscriptionDef.getMetaValueType();
+            final int ratio = metaInscriptionDef.getConversionRate();
+            //Get main data
+            InscriptionDefinition.BaseInscription baseMetaInsc = metaInscriptionDef.getBaseData();
+            boolean positive = metaInscriptionDef.isPositive(); // Not really needed, why tf a meta stat would be negative
+            Stats targetStat = baseMetaInsc.stat();
+            ValueType targetValueType = baseMetaInsc.type();
             /*
-            Snapshot converted value
-            convert it
-            add the final stat to the global map via insertValue()
+             Get expected final value for convertedStat
+                A constant/single-roll converted stat is implicit/assumed, that means accessing the [0] index
+                should be always safe
             */
+            double baseExpectedValue;
+            switch (convertedType){
+                //These are affected by multipliers
+                case FLAT,PERCENTAGE -> baseExpectedValue = globalStatPool.calculateStatValue(convertedStat)[0];
+                case INCREASED -> baseExpectedValue = globalStatPool.getBaseStatValue(convertedStat,convertedType)[0];
+                case MULTIPLIER -> baseExpectedValue = globalStatPool.getMultiplier(convertedStat);
+                default -> baseExpectedValue = 0D;
+            }
+            if (baseExpectedValue==0){continue;}
+            //Calculate how many times the base stat values are going to be added
+            final int stacks = (int) Math.floor(baseExpectedValue/ratio);
+            if (stacks==0){continue;}
+            int[] metaMappedValues = Arrays.stream(metaInsc.getMappedFinalValues()).map(
+                    metaValue -> metaValue * stacks
+            ).toArray();
+            globalStatPool.insertValue(targetStat,targetValueType,metaMappedValues);
         }
         return globalStatPool;
     }
-    public static Set<Inscription> getEquipmentMetaInscriptions(PlayerEquipment playerEquipment){
-        Set<Inscription> metaInscriptions = new HashSet<>();
-        playerEquipment.getEquipmentData().forEach(
-                (slot, slotData) -> metaInscriptions.addAll(slotData.getMetaInscriptions())
-        );
-        return metaInscriptions;
-    }
-    public static Set<EffectIDs> getEquipmenEffects(PlayerEquipment playerEquipment){
-        Set<EffectIDs> effects = new HashSet<>();
-        playerEquipment.getEquipmentData().forEach(
-                (slot, slotData) -> effects.addAll(slotData.getItemEffects())
-        );
-        return effects;
-    }
-    public static Set<KeystoneIDs> getEquipmenKeystones(PlayerEquipment playerEquipment){
-        Set<KeystoneIDs> keystones = new HashSet<>();
-        playerEquipment.getEquipmentData().forEach(
-                (slot, slotData) -> keystones.addAll(slotData.getItemKeystones())
-        );
-        return keystones;
+
+    private static void applyAttributeBonuses(StatPool globalStatPool){
+        int[] globalStr = globalStatPool.getBaseStatValue(Stats.STRENGTH, ValueType.FLAT);
+        if (globalStr.length==1){
+            final int strength = globalStr[0];
+            //Add STR bonuses to global pool
+
+        }
+
+        int[] globalDex = globalStatPool.getBaseStatValue(Stats.DEXTERITY, ValueType.FLAT);
+        if (globalDex.length==1){
+            final int dexterity = globalDex[0];
+            //Add DEX bonuses to global pool
+
+        }
+
+        int[] globalInt = globalStatPool.getBaseStatValue(Stats.INTELLIGENCE, ValueType.FLAT);
+        if (globalInt.length==1){
+            final int intelligence = globalInt[0];
+            //Add INT bonuses to global pool
+
+        }
+
     }
 
     public static Set<EffectIDs> getEffects(List<Inscription> itemInscriptions){

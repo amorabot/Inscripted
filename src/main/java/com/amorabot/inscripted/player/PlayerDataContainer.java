@@ -37,16 +37,14 @@ public class PlayerDataContainer implements Observer {
     @Override
     public void onNotify(ProfileEvents event) {
         switch (event){
-            case EQUIPMENT_CHANGE -> {
+            case STAT_CHANGE -> {
                 Utils.log("Equipment change notification!");
                 StatParser.buildProfile(profile,equipment);
             }
             case REEVALUATE_ALL_EQUIPMENT -> {
 
             }
-            default -> {
-                Utils.log("Untreated event");
-            }
+            default -> Utils.log("Untreated event");
         }
     }
 

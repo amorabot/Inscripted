@@ -1,12 +1,16 @@
 package com.amorabot.inscripted.player.profile.component;
 
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
+import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
+
+import java.util.List;
 
 @Getter
 @Setter
-public class AttackData {
+public class AttackData implements ProfileComponent {
 
     private float DPS;
 
@@ -59,5 +63,15 @@ public class AttackData {
     }
     public void resetDamages(){
         for (int i = 0; i < hitDamage.length; i++) {hitDamage[i] = new int[2];}
+    }
+
+    @Override
+    public void updateComponent(StatPool stats) {
+
+    }
+
+    @Override
+    public List<Component> asTextComponent() {
+        return List.of();
     }
 }

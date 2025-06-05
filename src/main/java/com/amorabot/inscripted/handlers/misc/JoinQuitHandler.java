@@ -59,7 +59,7 @@ public class JoinQuitHandler implements Listener {
 //        }
 
 //        JSONProfileManager.loadProfileFromJSON(player.getUniqueId()); //Loads specific profile into memory
-
+        //TODO: try to equip the weapon upon login?
         PlayerDataContainer.instantiatePlayer(playerID,ProfileDatabase.loadProfile(playerID));
 
         showTitleTo(player, "<Welcome back, " + player.getName() + "!>", "Enjoy the alpha!");
