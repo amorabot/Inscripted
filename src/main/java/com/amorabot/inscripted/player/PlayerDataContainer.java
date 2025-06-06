@@ -39,7 +39,7 @@ public class PlayerDataContainer implements Observer {
         switch (event){
             case STAT_CHANGE -> {
                 Utils.log("Equipment change notification!");
-                StatParser.buildProfile(profile,equipment);
+                StatParser.buildProfile(this);
             }
             case REEVALUATE_ALL_EQUIPMENT -> {
 

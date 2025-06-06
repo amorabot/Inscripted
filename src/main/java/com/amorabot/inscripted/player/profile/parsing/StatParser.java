@@ -3,6 +3,7 @@ package com.amorabot.inscripted.player.profile.parsing;
 import com.amorabot.inscripted.item.inscription.Inscription;
 import com.amorabot.inscripted.item.inscription.definition.*;
 import com.amorabot.inscripted.item.inscription.language.ValueType;
+import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.equipment.PlayerEquipment;
 import com.amorabot.inscripted.player.profile.BaseStats;
 import com.amorabot.inscripted.player.profile.Profile;
@@ -15,18 +16,39 @@ public class StatParser {
 
     private static final boolean DEBUG_MODE = true;
 
-    public static void buildProfile(Profile profile, PlayerEquipment equipment){
+    public static void buildProfile(PlayerDataContainer playerData){
         Utils.log("Building profile!");
+        Profile profile = playerData.getProfile();
+        PlayerEquipment equipment = playerData.getEquipment();
+
         //Getting global stats
         StatPool globalStatPool = compileEquipmentStats(equipment); //Raw global stats
         applyAttributeBonuses(globalStatPool);
-        Set<EffectIDs> effects = equipment.getEquipmenEffects();
-        Set<KeystoneIDs> keystones = equipment.getEquipmenKeystones();
 
+        Set<KeystoneIDs> keystones = equipment.getEquipmenKeystones();
+        Set<EffectIDs> effects = equipment.getEquipmenEffects();
+
+        //Handle instantiation/state of keystone tasks
+
+        //Early Keystones trigger
+        //...
+
+        //Group keystone+buff stats to insert in the global pool
+        //...
+
+        //Getting final values, counting in whatever early stats from keystones/buffs
         Map<Stats, double[]> finalStats = globalStatPool.calculateFinalValues();
-        for (Stats stat : finalStats.keySet()){
-            Utils.log(stat.getAlias()+": " + Arrays.toString(finalStats.get(stat)));
+        if (DEBUG_MODE){
+            for (Stats stat : finalStats.keySet()){
+                Utils.log(stat.getAlias()+": " + Arrays.toString(finalStats.get(stat)));
+            }
         }
+
+        //Update the player's profile
+        profile.update(playerData.getPlayerID(),finalStats);
+
+        //Late Keystones trigger
+        //...
     }
 
     public static StatPool compileEquipmentStats(PlayerEquipment playerEquipment){
@@ -95,21 +117,56 @@ public class StatParser {
         if (globalStr.length==1){
             final int strength = globalStr[0];
             //Add STR bonuses to global pool
+            //3 STR -> +1 Base HP
+            //10 STR -> 1% Melee DMG
+            int extraHP = strength / 3;
+            if (extraHP>0){
+                globalStatPool.insertValue(Stats.HEALTH,ValueType.FLAT,new int[]{extraHP});
+            }
+            int extraMeleeDMG = strength / 10;
+            if (extraMeleeDMG>0){
+                /*
+                Melee Damage is inherently a INCREASED value. But storing it as a percentage/flat value makes it
+                not ignorable during the stat parsing. That even allows for it to be influenced correctly by
+                mods like More Melee DMG
 
+                When RETRIEVING the final value for melee damage or similar stats (inside its corresponding component),
+                it can be used, for example, as a % Increase inside skills or wherever else needed.
+                */
+                globalStatPool.insertValue(Stats.MELEE_DAMAGE,ValueType.PERCENTAGE,new int[]{extraMeleeDMG});
+            }
         }
 
         int[] globalDex = globalStatPool.getBaseStatValue(Stats.DEXTERITY, ValueType.FLAT);
         if (globalDex.length==1){
             final int dexterity = globalDex[0];
             //Add DEX bonuses to global pool
-
+            //3 DEX -> +1 Accuracy
+            //10 DEX -> +1 Base stamina
+            int extraAccuracy = dexterity / 3;
+            if (extraAccuracy>0){
+                globalStatPool.insertValue(Stats.ACCURACY,ValueType.FLAT,new int[]{extraAccuracy});
+            }
+            int extraStamina = dexterity / 10;
+            if (extraStamina>0){
+                globalStatPool.insertValue(Stats.STAMINA,ValueType.FLAT,new int[]{extraStamina});
+            }
         }
 
         int[] globalInt = globalStatPool.getBaseStatValue(Stats.INTELLIGENCE, ValueType.FLAT);
         if (globalInt.length==1){
             final int intelligence = globalInt[0];
             //Add INT bonuses to global pool
-
+            //3 INT -> +1 Base Soul
+            //50 INT -> 1% Soul recovery
+            int extraSoul = intelligence / 3;
+            if (extraSoul>0){
+                globalStatPool.insertValue(Stats.SOUL,ValueType.FLAT,new int[]{extraSoul});
+            }
+            int extraSoulRecovery = intelligence / 50;
+            if (extraSoulRecovery>0){
+                globalStatPool.insertValue(Stats.SOUL_RECOVERY_RATE,ValueType.PERCENTAGE,new int[]{extraSoulRecovery});
+            }
         }
 
     }

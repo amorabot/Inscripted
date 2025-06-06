@@ -1,15 +1,23 @@
 package com.amorabot.inscripted.player.profile.component;
 
-import com.amorabot.inscripted.player.profile.parsing.StatPool;
+import com.amorabot.inscripted.item.inscription.definition.Stats;
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+@Getter
+@Setter
 public class DamageComponent implements ProfileComponent {
 
     private AttackData baseAttackData;
     private int lifeOnHit;
     private int extraProjectiles;
+
+    // Make a map for damage-tag-related damages?
     private int projectileDamage;
     private int meleeDamage;
     private int areaDamage;
@@ -32,11 +40,15 @@ public class DamageComponent implements ProfileComponent {
     }
 
     @Override
-    public void updateComponent(StatPool stats) {
-        baseAttackData.updateComponent(stats);
+    public void updateComponent(UUID playerID, Map<Stats, double[]> finalStats) {
+        baseAttackData.updateComponent(playerID, finalStats);
 
-        //...
+        setLifeOnHit(getSingleValueFrom(Stats.LIFE_ON_HIT,finalStats));
+        setExtraProjectiles(getSingleValueFrom(Stats.EXTRA_PROJECTILES,finalStats));
 
+        setProjectileDamage(getSingleValueFrom(Stats.PROJECTILE_DAMAGE,finalStats));
+        setMeleeDamage(getSingleValueFrom(Stats.MELEE_DAMAGE,finalStats));
+        setAreaDamage(getSingleValueFrom(Stats.AREA_DAMAGE,finalStats));
     }
     @Override
     public List<Component> asTextComponent() {

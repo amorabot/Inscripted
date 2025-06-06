@@ -45,6 +45,7 @@ public enum Stats {
     COOLDOWN_REDUCTION("Cooldown Reduction"),
     AOE("Area of Effect"),
     EXTRA_PROJECTILES("Additional Proj."),
+    PROJECTILE_DAMAGE("Projectile Damage"),
     HEALING_POWER("Healing Power"),
     SOUL_RECOVERY_RATE("Soul Recovery Rate");
 

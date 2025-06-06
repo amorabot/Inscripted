@@ -1,8 +1,8 @@
 package com.amorabot.inscripted.player.profile.component;
 
 import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
+import com.amorabot.inscripted.item.inscription.definition.Stats;
 import com.amorabot.inscripted.player.profile.BaseStats;
-import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -21,12 +22,12 @@ public class HealthComponent implements ProfileComponent {
 
     public static final int LOW_LIFE_THRESHOLD = 20;
 
-    private float health;
-    private float maxHealth;
+    private int health;
+    private int maxHealth;
     private int healthRegen;
 
-    private float soul;
-    private float maxSoul;
+    private int soul;
+    private int maxSoul;
     private int soulRecovery;
 
     public HealthComponent(){
@@ -39,16 +40,23 @@ public class HealthComponent implements ProfileComponent {
         this.soulRecovery=BaseStats.SOUL_RECOVERY.getValue();
     }
     public HealthComponent(int maxHealth, int maxSoul){ //For Mobs
-        setMaxHealth((float) maxHealth);
+        setMaxHealth(maxHealth);
         setHealth(maxHealth);
-        setMaxSoul((float) maxSoul);
+        setMaxSoul(maxSoul);
         setSoul(maxSoul);
         setHealthRegen(0);
     }
 
     @Override
-    public void updateComponent(StatPool stats) {
+    public void updateComponent(UUID playerID,Map<Stats, double[]> finalStats) {
+        setMaxHealth(getSingleValueFrom(Stats.HEALTH,finalStats));
+        setMaxSoul(getSingleValueFrom(Stats.SOUL,finalStats));
+        setHealthRegen(getSingleValueFrom(Stats.HEALTH_REGEN,finalStats));
+        setSoulRecovery(getSingleValueFrom(Stats.SOUL_RECOVERY_RATE,finalStats));
 
+        //Capping overflowing HP/Soul
+        if (health > getMaxHealth()){health = getMaxHealth();}
+        if (soul > getMaxSoul()){soul = getMaxSoul();}
     }
     @Override
     public List<Component> asTextComponent() {
@@ -166,7 +174,7 @@ public class HealthComponent implements ProfileComponent {
 
 
     public int regenWard(boolean inCombat){ //Standard ward regen call
-        float soulRegen = getMaxSoul() * (getSoulRecovery()/100F);
+        int soulRegen = (int) (getMaxSoul() * (getSoulRecovery()/100F));
         if (inCombat){
             soulRegen = soulRegen/2;
         }
@@ -176,7 +184,7 @@ public class HealthComponent implements ProfileComponent {
         }
         //If this tick of regen surpasses the max ward, cap it to max ward
         if (soul+soulRegen>maxSoul){
-            int soulRegenTick = (int) (maxSoul - soul);
+            int soulRegenTick = (maxSoul - soul);
             soul = maxSoul;
             return soulRegenTick;
         }
@@ -184,11 +192,11 @@ public class HealthComponent implements ProfileComponent {
         if (soul+soulRegen <= maxSoul){
             this.soul += soulRegen;
         }
-        return (int) soulRegen;
+        return soulRegen;
     }
 
     public float getNormalizedHP(){
-        return Math.min(health/maxHealth, 1F);
+        return Math.min((float) health /maxHealth, 1F);
     }
     public double getPlayerHearts(){
         final int basePlayerHearts = 20;
@@ -197,7 +205,7 @@ public class HealthComponent implements ProfileComponent {
     }
 
     public float getNormalizedSoul(){
-        return Math.min(soul/maxSoul, 1F);
+        return Math.min((float) soul /maxSoul, 1F);
     }
     public double getPlayerSoulHearts(){
         int basePlayerHearts = 20;
