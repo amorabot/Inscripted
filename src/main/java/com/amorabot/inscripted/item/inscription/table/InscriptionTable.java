@@ -44,7 +44,6 @@ public class InscriptionTable {
         return this.itemInscriptionMappings;
     }
     private static int[] getImplicitValuesArray(InscriptionIDs implicit, int tier){
-//        ModifierData modData = implicit.getData();
         if (!implicit.getDefinitionData().getAffix().equals(AffixType.IMPLICIT)){return new int[1];}
         if (!IMPLICIT_VALUES.containsKey(implicit)){return new int[1];}
         return IMPLICIT_VALUES.get(implicit).get(tier).clone();
@@ -164,7 +163,6 @@ public class InscriptionTable {
         loadProceduralValues(valuesTable, AffixType.PREFIX);
         loadProceduralValues(valuesTable, AffixType.SUFFIX);
         InscriptionTable.MAPPED_AFFIX_TIER_VALUES = valuesTable;
-//        InscriptionTable.RELIC_VALUES = loadRelicValuesTable();
     }
     //Mutates the base map with all tables mixed together
     private static void loadProceduralValues(Map<AffixType, Map<InscriptionIDs, Map<Integer, int[]>>> valuesTable, AffixType affixTableToLoad){

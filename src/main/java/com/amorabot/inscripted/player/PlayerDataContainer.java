@@ -1,11 +1,14 @@
 package com.amorabot.inscripted.player;
 
+import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.inscripted.player.profile.Profile;
 import com.amorabot.inscripted.player.equipment.PlayerEquipment;
 import com.amorabot.inscripted.player.profile.ProfileEvents;
 import com.amorabot.inscripted.player.profile.parsing.StatParser;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +45,9 @@ public class PlayerDataContainer implements Observer {
                 StatParser.buildProfile(this);
             }
             case REEVALUATE_ALL_EQUIPMENT -> {
-
+                Player targetPlayer = Bukkit.getPlayer(getPlayerID());
+                Utils.log("Reloading all equipment for " + targetPlayer.getDisplayName());
+                PlayerEquipmentHandler.reEquipAllSlots(targetPlayer);
             }
             default -> Utils.log("Untreated event");
         }

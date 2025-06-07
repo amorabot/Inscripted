@@ -3,6 +3,7 @@ package com.amorabot.inscripted.file.profile;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.Profile;
+import com.amorabot.inscripted.player.profile.ProfileEvents;
 import com.amorabot.inscripted.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -116,7 +117,19 @@ public class ProfileDatabase {
         }
     }
     public static void reloadOnlinePlayers(Collection<? extends Player> onlinePlayers){
-
+        //Always used after a shutdown, player data should be correctly stored and shouldn't need checking
+        try {
+            Map<UUID, Profile> profiles = loadAllProfiles();
+            for (Player player : onlinePlayers){
+                UUID currentPlayerID = player.getUniqueId();
+                Profile currentProfile = profiles.get(currentPlayerID);
+                PlayerDataContainer.instantiatePlayer(currentPlayerID,currentProfile);
+                //Trigger a complete equipment re-evaluation (reinstantiate equipment cached data)
+                PlayerDataContainer.getDataContainerFor(currentPlayerID).onNotify(ProfileEvents.REEVALUATE_ALL_EQUIPMENT);
+            }
+        } catch (IOException ex){
+            Utils.error("Unable to load profile data on reload.");
+        }
     }
     public static Map<UUID, Profile> loadAllProfiles() throws IOException {
         GsonBuilder builder = new GsonBuilder();

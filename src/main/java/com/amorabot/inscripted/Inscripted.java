@@ -12,6 +12,7 @@ import com.amorabot.inscripted.handlers.misc.SunlightBurnHandler;
 import com.amorabot.inscripted.file.item.InscriptionDataManager;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
 import com.amorabot.inscripted.player.PlayerDataContainer;
+import com.amorabot.inscripted.tasks.ActionBarRenderer;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
@@ -21,6 +22,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Collection;
 import java.util.logging.Logger;
@@ -30,7 +32,7 @@ public final class Inscripted extends JavaPlugin {
     private static Inscripted inscriptedPlugin;
 //    private static BukkitTask holoDepleterTask;
 //    private static BukkitTask combatLogger;
-//    private static BukkitTask playerInterfaceRenderer;
+    private static BukkitTask actionBarRenderer;
     private World world;
 
     private MetadataValue metadataTag = new FixedMetadataValue(this, 0);
@@ -41,10 +43,10 @@ public final class Inscripted extends JavaPlugin {
         logger = getLogger();
         inscriptedPlugin = this;
         this.world = Bukkit.getWorld("world");
-
-//        JSONProfileManager.initializeProfilesJSON();
-        reloadOnlinePlayerData();
         InscriptionTable.loadRawValues();
+
+
+        reloadOnlinePlayerData();
 
         Utils.populatePrettyAlphabet();
 //        GlobalCooldownManager.setup();
@@ -56,8 +58,10 @@ public final class Inscripted extends JavaPlugin {
 //        holoDepleterTask = CombatHologramsDepleter.getInstance().runTaskTimer(this,(long) (Math.random()*11), 1L);
 //        //Combat logger
 //        combatLogger = CombatLogger.getInstance().runTaskTimer(this, (long) (Math.random()*11), 20L);
-//        //Interface renderer
-//        playerInterfaceRenderer = PlayerInterfaceRenderer.getInstance().runTaskTimer(this, (long) (Math.random()*11), 5L);
+
+        //Interface renderer
+        actionBarRenderer = ActionBarRenderer.getInstance().runTaskTimer(this, (long) (Math.random()*11), 5L);
+
         //Player regeneration
 //        playerRegen = PlayerRegen.getInstance().runTaskTimer(this, 0, 10L);
     }
@@ -66,16 +70,17 @@ public final class Inscripted extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         Utils.log("Shutting Down...");
-        ProfileDatabase.saveProfiles(PlayerDataContainer.getProfiles());
+        ProfileDatabase.saveLoadedProfiles();
+
 //        if (holoDepleterTask != null && !holoDepleterTask.isCancelled()){
 //            holoDepleterTask.cancel();
 //        }
 //        if (combatLogger != null && !combatLogger.isCancelled()){
 //            combatLogger.cancel();
 //        }
-//        if (playerInterfaceRenderer != null && !playerInterfaceRenderer.isCancelled()){
-//            playerInterfaceRenderer.cancel();
-//        }
+        if (actionBarRenderer != null && !actionBarRenderer.isCancelled()){
+            actionBarRenderer.cancel();
+        }
 //        PlayerRegenManager.shutdown();
 //        CombatHologramsDepleter.getInstance().shutdown();
 
@@ -130,8 +135,6 @@ public final class Inscripted extends JavaPlugin {
         getCommand("updatenbt").setExecutor(new UpdateNBT(this));
         getCommand("stats").setExecutor(new StatsCommand());
         getCommand("generateitem").setExecutor(new GenerateItem(this));
-//        getCommand("identify").setExecutor(new Identify(this));
-//        getCommand("resetattributes").setExecutor(new ResetAttributes(this));
         getCommand("show").setExecutor(new Show());
         getCommand("template").setExecutor(new TemplateCommand());
 

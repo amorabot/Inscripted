@@ -14,6 +14,7 @@ import com.amorabot.inscripted.item.structure.io.ItemDeserializer;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.equipment.PlayerEquipment;
 import com.amorabot.inscripted.player.profile.parsing.StatPool;
+import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import org.bukkit.Bukkit;
@@ -29,9 +30,12 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -63,40 +67,7 @@ public class PlayerEquipmentHandler implements Listener {
         ItemStack newItem = event.getNewItem();
         ItemStack oldItem = event.getOldItem();
 
-        UUID playerID = player.getUniqueId();
-        PlayerEquipment playerEquipment = PlayerDataContainer.getPlayerEquipment(playerID);
-        // If the new item on that slot is air, prematurely unequip that slot
-        if (newItem.getType().isAir()){
-            playerEquipment.updateEquimentSlot(mapArmorSlot(event.getSlotType()), null);
-            return;
-        }
-        // Valid item check
-        boolean validArmor = InscriptedItem.hasInscriptedTag(newItem) && ItemDeserializer.isArmor(newItem);
-        if (validArmor && ItemDeserializer.isIdentified(newItem)){
-            Armor armorData = ItemDeserializer.deserializeArmorData(newItem);
-            player.sendMessage(armorData.getSlot().name());
-            playerEquipment.updateEquimentSlot(armorData.getSlot(), armorData);
-            return;
-        }
-        //Invalid armor && not Air -> Unequip that slot
-        playerEquipment.updateEquimentSlot(mapArmorSlot(event.getSlotType()), null);
-    }
-    private EquipmentSlots mapArmorSlot(PlayerArmorChangeEvent.SlotType eventSlot){
-        switch (eventSlot){
-            case HEAD -> {
-                return EquipmentSlots.HELMET;
-            }
-            case CHEST -> {
-                return EquipmentSlots.CHESTPLATE;
-            }
-            case LEGS -> {
-                return EquipmentSlots.LEGGINGS;
-            }
-            case FEET -> {
-                return EquipmentSlots.BOOTS;
-            }
-        }
-        return null;
+        armorEquip(player,newItem,mapArmorSlot(event.getSlotType()));
     }
 
     @EventHandler
@@ -107,24 +78,7 @@ public class PlayerEquipmentHandler implements Listener {
         ItemStack prevItem = inventory.getItem(event.getPreviousSlot());
         if (heldItem==null && prevItem==null){return;} //Nothing to nothing, no state change
 
-        UUID playerID = player.getUniqueId();
-        PlayerEquipment playerEquipment = PlayerDataContainer.getPlayerEquipment(playerID);
-        if (heldItem==null){
-            //Prematurely unequip weapon
-            playerEquipment.updateEquimentSlot(EquipmentSlots.WEAPON, null);
-            return;
-        }
-        // Valid item check
-        boolean validWeapon = InscriptedItem.hasInscriptedTag(heldItem) && ItemDeserializer.isWeapon(heldItem);
-        if (validWeapon && ItemDeserializer.isIdentified(heldItem)){
-            Weapon weaponData = ItemDeserializer.deserializeWeaponData(heldItem);
-            player.sendMessage(weaponData.getWeaponType().name());
-
-            playerEquipment.updateEquimentSlot(EquipmentSlots.WEAPON, weaponData);
-            return;
-        }
-        //Unequip weapon
-        playerEquipment.updateEquimentSlot(EquipmentSlots.WEAPON, null);
+        weaponEquip(player,heldItem);
     }
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerInteract(PlayerInteractEvent event){
@@ -452,5 +406,90 @@ public class PlayerEquipmentHandler implements Listener {
 //            //Apply the item usage cooldown
 //            player.setCooldown(weaponType.getRange().getItem(), attackCD);
         }
+    }
+
+    public static void reEquipAllSlots(Player player){
+        delayedEquipOnMainHand(player);
+        EntityEquipment playerEquipments = player.getEquipment();
+        //Equip each slot individually, mapping the SlotType
+        ItemStack helmetItem = playerEquipments.getHelmet();
+        if (helmetItem!=null){ //No need for triggers when its null since the internal data is already cleared/invalid
+            armorEquip(player,helmetItem,EquipmentSlots.HELMET);
+        }
+        ItemStack chestplateItem = playerEquipments.getChestplate();
+        if (chestplateItem!=null){
+            armorEquip(player,chestplateItem,EquipmentSlots.CHESTPLATE);
+        }
+        ItemStack leggingsItem = playerEquipments.getLeggings();
+        if (leggingsItem!=null){
+            armorEquip(player,leggingsItem,EquipmentSlots.LEGGINGS);
+        }
+        ItemStack bootsItem = playerEquipments.getBoots();
+        if (bootsItem!=null){
+            armorEquip(player,bootsItem,EquipmentSlots.BOOTS);
+        }
+    }
+    private static void delayedEquipOnMainHand(Player player){
+        new DelayedTask(new BukkitRunnable() {
+            @Override
+            public void run() {
+                ItemStack mainHandItem = player.getInventory().getItemInMainHand();
+                weaponEquip(player,mainHandItem);
+            }
+        }, 2L);
+    }
+    public static void weaponEquip(Player player, ItemStack weaponItem){
+        PlayerEquipment playerEquipment = PlayerDataContainer.getPlayerEquipment(player.getUniqueId());
+        if (weaponItem == null || weaponItem.getType().isAir()){
+            //Prematurely unequip weapon
+            playerEquipment.updateEquimentSlot(EquipmentSlots.WEAPON, null);
+            return;
+        }
+        // Valid item check
+        boolean validWeapon = InscriptedItem.hasInscriptedTag(weaponItem) && ItemDeserializer.isWeapon(weaponItem);
+        if (validWeapon && ItemDeserializer.isIdentified(weaponItem)){
+            Weapon weaponData = ItemDeserializer.deserializeWeaponData(weaponItem);
+            playerEquipment.updateEquimentSlot(EquipmentSlots.WEAPON, weaponData);
+            return;
+        }
+        //Unequip weapon
+        playerEquipment.updateEquimentSlot(EquipmentSlots.WEAPON, null);
+    }
+
+    private static void armorEquip(Player player, ItemStack armorItem, EquipmentSlots armorSlot){
+        UUID playerID = player.getUniqueId();
+        PlayerEquipment playerEquipment = PlayerDataContainer.getPlayerEquipment(playerID);
+        // If the new item on that slot is air, prematurely unequip that slot
+        if (armorItem.getType().isAir()){
+            playerEquipment.updateEquimentSlot(armorSlot, null);
+            return;
+        }
+        // Valid item check
+        boolean validArmor = InscriptedItem.hasInscriptedTag(armorItem) && ItemDeserializer.isArmor(armorItem);
+        if (validArmor && ItemDeserializer.isIdentified(armorItem)){
+            Armor armorData = ItemDeserializer.deserializeArmorData(armorItem);
+            player.sendMessage(armorData.getSlot().name());
+            playerEquipment.updateEquimentSlot(armorData.getSlot(), armorData);
+            return;
+        }
+        //Invalid armor && not Air -> Unequip that slot
+        playerEquipment.updateEquimentSlot(armorSlot, null);
+    }
+    private static EquipmentSlots mapArmorSlot(PlayerArmorChangeEvent.SlotType eventSlot){
+        switch (eventSlot){
+            case HEAD -> {
+                return EquipmentSlots.HELMET;
+            }
+            case CHEST -> {
+                return EquipmentSlots.CHESTPLATE;
+            }
+            case LEGS -> {
+                return EquipmentSlots.LEGGINGS;
+            }
+            case FEET -> {
+                return EquipmentSlots.BOOTS;
+            }
+        }
+        return null;
     }
 }

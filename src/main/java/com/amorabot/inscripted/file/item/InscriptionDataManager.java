@@ -48,7 +48,7 @@ public class InscriptionDataManager {
         } catch (IOException | InvalidConfigurationException e) {
             throw new RuntimeException(e);
         }
-        Utils.log(tableName+" table successfully loaded.");
+//        Utils.log(tableName+" table successfully loaded.");
         return config;
     }
     public static YamlConfiguration readRelicValuesTable(){
@@ -77,7 +77,7 @@ public class InscriptionDataManager {
             try {
                 Reader reader = new FileReader(file);
                 TypeToken<InscriptionTableDTO> dtoTypeToken = new TypeToken<InscriptionTableDTO>(){};
-                log("Table loaded: " + itemName);
+//                log("Table loaded: " + itemName);
                 return gson.fromJson(reader, dtoTypeToken);
             } catch (FileNotFoundException e) {
                 Utils.error("Table '"+itemName+"' not found.");
@@ -97,7 +97,7 @@ public class InscriptionDataManager {
                 TypeToken<Map<AffixType, Map<InscriptionIDs, Map<Integer, Integer>>>> subtableTypeToken
                         = new TypeToken<Map<AffixType, Map<InscriptionIDs, Map<Integer, Integer>>>>(){};
 
-                log("Subtable loaded: " + subtableName);
+//                log("Subtable loaded: " + subtableName);
                 return gson.fromJson(reader, subtableTypeToken);
             } catch (FileNotFoundException e) {
                 Utils.error("Table '"+subtableName+"' not found.");
@@ -213,7 +213,7 @@ public class InscriptionDataManager {
     //Used for tests
     public static Map<AffixType, Map<InscriptionIDs, Map<Integer, Integer>>> getSubtableResourceData(String subtableName){
         String resourcePath = "/modifiers/subtables/"+subtableName+".json";
-        Utils.log("Fetching subtable @"+resourcePath);
+//        Utils.log("Fetching subtable @"+resourcePath);
         InputStream jsonData = getResourceJSONAt(resourcePath);
         if (jsonData == null){
             Utils.error("Invalid JSON data stream from filepath(subtable) -> " + resourcePath);
@@ -228,7 +228,7 @@ public class InscriptionDataManager {
     //Used for tests
     public static InscriptionTableDTO getTableResourceDataFor(String itemName){
         String resourcePath = "/modifiers/tables/"+itemName+".json";
-        Utils.log("Fetching table @"+resourcePath);
+//        Utils.log("Fetching table @"+resourcePath);
         InputStream jsonData = getResourceJSONAt(resourcePath);
         if (jsonData == null){
             Utils.error("Invalid JSON data stream from filepath(table) -> " + resourcePath);

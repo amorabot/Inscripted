@@ -6,7 +6,7 @@ import com.amorabot.inscripted.item.structure.Armor.DefenceTypes;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 import com.amorabot.inscripted.item.structure.Tiers;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
-import com.amorabot.inscripted.file.item.RelicEditor;
+//import com.amorabot.inscripted.file.item.RelicEditor;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -18,15 +18,15 @@ import static com.amorabot.inscripted.utils.Utils.log;
 
 public class GenericFileManager {
 
-    private void initializeRelicItemData() {
-        try {
-            log("Initializing relic item data");
-            RelicEditor.setup(); //vai criar o arquivo se ele não existe
-            log("Relic data initialized.");
-        } catch (IOException exception){
-            Utils.error("Unable to setup relic data file");
-        }
-    }
+//    private void initializeRelicItemData() {
+//        try {
+//            log("Initializing relic item data");
+//            RelicEditor.setup(); //vai criar o arquivo se ele não existe
+//            log("Relic data initialized.");
+//        } catch (IOException exception){
+//            Utils.error("Unable to setup relic data file");
+//        }
+//    }
 
     private static void populateArmorConfigSection(){
 

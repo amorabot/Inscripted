@@ -4,6 +4,7 @@ import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
 import com.amorabot.inscripted.Inscripted;
 //import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.file.profile.ProfileDatabase;
+import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.managers.PlayerRegenManager;
@@ -46,19 +47,9 @@ public class JoinQuitHandler implements Listener {
 //            initializePlayer(player);
             return;
         }
-//        if (JSONProfileManager.isNewPlayer(playerID)){ //If new player:
-//            JSONProfileManager.createProfile(playerID.toString()); //Creates and instantiates the profile.
-//            Utils.log("O perfil para o player " + player.getDisplayName() + " foi criado. (JSON)");
-//
-////            showTitleTo(player, "<Welcome, "+ player.getName() + ">", "to the Inscripted Alpha!");
-//            initializePlayer(player);
-//
-//            return;
-//        }
 
-//        JSONProfileManager.loadProfileFromJSON(player.getUniqueId()); //Loads specific profile into memory
-        //TODO: try to equip the weapon upon login?
         PlayerDataContainer.instantiatePlayer(playerID,ProfileDatabase.loadProfile(playerID));
+        PlayerEquipmentHandler.weaponEquip(player,player.getInventory().getItemInMainHand());
 
         showTitleTo(player, "<Welcome back, " + player.getName() + "!>", "Enjoy the alpha!");
 //        initializePlayer(player);
@@ -72,9 +63,6 @@ public class JoinQuitHandler implements Listener {
         ProfileDatabase.saveProfile(playerUUID);
         PlayerDataContainer.clearPlayerMemory(playerUUID);
 //        combatLog(player);
-//
-//        JSONProfileManager.saveProfileOnQuitToJSON(playerUUID, JSONProfileManager.getProfile(playerUUID));
-
 //        destroyPlayerData(player);
     }
 
