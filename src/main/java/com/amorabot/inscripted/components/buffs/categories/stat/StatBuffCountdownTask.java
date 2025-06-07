@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.components.buffs.categories.stat;
 
 import com.amorabot.inscripted.components.Buff;
-import com.amorabot.inscripted.components.Player.stats.StatCompiler;
+//import com.amorabot.inscripted.components.Player.stats.StatCompiler;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.utils.Utils;
@@ -37,7 +37,7 @@ public class StatBuffCountdownTask extends Buff {
             Utils.log("Timer expired for " + buff);
             expire();
             //The buff itself should only call for a recompilation when it's timer runs out: (and is properly removed from memory)
-            StatCompiler.updateProfile(target.getUniqueId());
+//            StatCompiler.updateProfile(target.getUniqueId());
             return;
         }
 

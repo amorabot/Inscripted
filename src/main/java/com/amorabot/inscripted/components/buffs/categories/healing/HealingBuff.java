@@ -3,7 +3,7 @@ package com.amorabot.inscripted.components.buffs.categories.healing;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Buff;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
-import com.amorabot.inscripted.components.Player.Profile;
+//import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.BuffData;
 import org.bukkit.entity.Player;
@@ -65,14 +65,15 @@ public class HealingBuff implements BuffData {
 
     }
 
-    public int getFinalHealingTick(Profile targetProfile){
-        Healing healingData = getHealingAnnotationData();
-        if (healingData.healingType().equals(ValueTypes.FLAT)){
-            return (int) healingData.baseHealing();
-        } else {
-            return (int) (targetProfile.getHealthComponent().getMaxHealth() * (healingData.baseHealing()/100));
-        }
-    }
+//    public int getFinalHealingTick(Profile targetProfile){
+//        Healing healingData = getHealingAnnotationData();
+////        if (healingData.healingType().equals(ValueTypes.FLAT)){
+////            return (int) healingData.baseHealing();
+////        } else {
+////            return (int) (targetProfile.getHealthComponent().getMaxHealth() * (healingData.baseHealing()/100));
+////        }
+//        return 0;
+//    }
 
     public Healing getHealingAnnotationData(){
         Healing healingAnnotation = (Healing) getBuff().getBuffAnnotationData();

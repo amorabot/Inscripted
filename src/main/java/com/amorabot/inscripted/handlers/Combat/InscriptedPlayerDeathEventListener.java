@@ -5,8 +5,8 @@ import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.APIs.damageAPI.CombatEffects;
 import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.HealthComponent;
-import com.amorabot.inscripted.components.Player.stats.StatCompiler;
+//import com.amorabot.inscripted.components.HealthComponent;
+//import com.amorabot.inscripted.components.Player.stats.StatCompiler;
 import com.amorabot.inscripted.events.death.InscriptedPlayerDeathEvent;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.utils.DelayedTask;
@@ -59,8 +59,8 @@ public class InscriptedPlayerDeathEventListener implements Listener {
                 Title.Times.times(Duration.ofMillis(1000), Duration.ofMillis(2000), Duration.ofMillis(2000)) );
         deadPlayer.showTitle(title);
 
-        HealthComponent.replenishHitPoints(deadPlayer);
-        StatCompiler.updateProfile(deadPlayer.getUniqueId());
+//        HealthComponent.replenishHitPoints(deadPlayer);
+//        StatCompiler.updateProfile(deadPlayer.getUniqueId());
 
         new DelayedTask(new BukkitRunnable() {
             @Override

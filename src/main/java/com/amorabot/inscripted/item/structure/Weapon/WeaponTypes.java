@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.item.structure.Weapon;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.item.structure.Tiers;
 import com.amorabot.inscripted.item.structure.ItemSubtype;

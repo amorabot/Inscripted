@@ -4,8 +4,8 @@ import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Buff;
 import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
-import com.amorabot.inscripted.components.Player.stats.StatCompiler;
-import com.amorabot.inscripted.components.Player.stats.StatPool;
+//import com.amorabot.inscripted.components.Player.stats.StatCompiler;
+//import com.amorabot.inscripted.components.Player.stats.StatPool;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.BuffData;
 import com.amorabot.inscripted.components.buffs.categories.damage.Damage;
@@ -87,7 +87,7 @@ public class PlayerBuffManager {
         if (buff.isStatBuff()){//Stat buff instantiation
             //In case a stat buff is being added, a recompilation of stats is needed, to get the newly updated active buff's stats
             Utils.log("Updating buff map -> recompilation needed");
-            StatCompiler.updateProfile(playerID);
+//            StatCompiler.updateProfile(playerID);
         }
 
     }
@@ -148,7 +148,7 @@ public class PlayerBuffManager {
         }
         //After all stat buffs are expired, recompile player data
         Utils.log("All stat de/buffs removed, recompiling player data...");
-        StatCompiler.updateProfile(playerID);
+//        StatCompiler.updateProfile(playerID);
     }
 
     public static void removeBuffFrom(Player player, Buffs buff){
@@ -164,33 +164,33 @@ public class PlayerBuffManager {
         playerBuffMap.remove(buff);
     }
 
-    public static StatPool getBuffStatsFor(UUID playerID){
-        Player player = Bukkit.getPlayer(playerID);
-        assert player != null;
-        if (!player.isOnline()){
-            return new StatPool();
-        }
-
-        StatPool buffStats = new StatPool();
-        Set<Buffs> playerStatBuffs = getActiveStatBuffsFor(player);
-        if (playerStatBuffs.isEmpty()){
-            Utils.log("No buffs to be compiled!");
-            return new StatPool();
-        }
-        for (Buffs statBuff : playerStatBuffs){
-            Stat buffStatData = (Stat) (statBuff.getBuffAnnotationData());
-            PlayerStats currentStat = buffStatData.targetStat();
-            ValueTypes statType = buffStatData.valueType();
-            int statValue = buffStatData.amount();
-            if (statBuff.isDebuff()){
-                statValue = -statValue;
-            }
-            Utils.log("Compiling " + statValue + " " + statType + " " + currentStat + "|| Buff: " + statBuff);
-            buffStats.addStat(currentStat, statType, new int[]{statValue});
-//            StatCompiler.putSingleValueIn(buffStatsMap, currentStat, statType, statValue);
-        }
-        return buffStats;
-    }
+//    public static StatPool getBuffStatsFor(UUID playerID){
+//        Player player = Bukkit.getPlayer(playerID);
+//        assert player != null;
+//        if (!player.isOnline()){
+//            return new StatPool();
+//        }
+//
+//        StatPool buffStats = new StatPool();
+//        Set<Buffs> playerStatBuffs = getActiveStatBuffsFor(player);
+//        if (playerStatBuffs.isEmpty()){
+//            Utils.log("No buffs to be compiled!");
+//            return new StatPool();
+//        }
+//        for (Buffs statBuff : playerStatBuffs){
+//            Stat buffStatData = (Stat) (statBuff.getBuffAnnotationData());
+//            PlayerStats currentStat = buffStatData.targetStat();
+//            ValueTypes statType = buffStatData.valueType();
+//            int statValue = buffStatData.amount();
+//            if (statBuff.isDebuff()){
+//                statValue = -statValue;
+//            }
+//            Utils.log("Compiling " + statValue + " " + statType + " " + currentStat + "|| Buff: " + statBuff);
+//            buffStats.addStat(currentStat, statType, new int[]{statValue});
+////            StatCompiler.putSingleValueIn(buffStatsMap, currentStat, statType, statValue);
+//        }
+//        return buffStats;
+//    }
 
     public static Set<Buffs> getActiveStatBuffsFor(Player player){
         Set<Buffs> playerStatBuffs = new HashSet<>();

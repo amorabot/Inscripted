@@ -1,14 +1,11 @@
 package com.amorabot.inscripted.components.Items.relic.enums;
 
-import com.amorabot.inscripted.components.HealthComponent;
+//import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
-import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.stat.StatBuff;
-import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
-import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import org.bukkit.entity.LivingEntity;
@@ -34,14 +31,14 @@ public enum Effects {
 
         @Override
         public void check(LivingEntity caster, LivingEntity target, int[] hit) {
-            if (target instanceof Player targetPlayer){
-                Profile targetProfile = JSONProfileManager.getProfile(targetPlayer.getUniqueId());
-                HealthComponent targetHP = targetProfile.getHealthComponent();
-                float healthPercentage = (targetHP.getCurrentHealth() / targetHP.getMaxHealth())*100;
-                if (healthPercentage < HealthComponent.LOW_LIFE_THRESHOLD){
-                    execute(caster, target);
-                }
-            }
+//            if (target instanceof Player targetPlayer){
+//                Profile targetProfile = JSONProfileManager.getProfile(targetPlayer.getUniqueId());
+//                HealthComponent targetHP = targetProfile.getHealthComponent();
+//                float healthPercentage = (targetHP.getCurrentHealth() / targetHP.getMaxHealth())*100;
+//                if (healthPercentage < HealthComponent.LOW_LIFE_THRESHOLD){
+//                    execute(caster, target);
+//                }
+//            }
         }
     },
     OVERDRIVE(TriggerTypes.WHEN_HIT, TriggerTimes.LATE, 0,
@@ -74,15 +71,15 @@ public enum Effects {
                     Utils.error("Its on cooldown!!!");
                     return;
                 }
-                Profile casterProfile = JSONProfileManager.getProfile(playerCaster.getUniqueId());
-                HealthComponent casterHP = casterProfile.getHealthComponent();
-                int healedAmount = (int) (casterHP.getMaxHealth() * 0.1);
-                boolean isBleeding = PlayerBuffManager.hasActiveBuff(Buffs.BLEED, playerCaster);
-                int finalHealedAmount = casterHP.healHealth(healedAmount, isBleeding, playerCaster,casterProfile.getKeystones());
+//                Profile casterProfile = JSONProfileManager.getProfile(playerCaster.getUniqueId());
+//                HealthComponent casterHP = casterProfile.getHealthComponent();
+//                int healedAmount = (int) (casterHP.getMaxHealth() * 0.1);
+//                boolean isBleeding = PlayerBuffManager.hasActiveBuff(Buffs.BLEED, playerCaster);
+//                int finalHealedAmount = casterHP.healHealth(healedAmount, isBleeding, playerCaster,casterProfile.getKeystones());
 //                Utils.error("HEALED AMOUNT ON ADREN. RUSH PROC: " + finalHealedAmount);
-                HealthComponent.updateHeartContainers(caster,casterHP);
-                CombatHologramsDepleter.getInstance().instantiateRegenHologram(caster.getLocation(),
-                        "&c&lA. rush: "+"&2&l"+finalHealedAmount);
+//                HealthComponent.updateHeartContainers(caster,casterHP);
+//                CombatHologramsDepleter.getInstance().instantiateRegenHologram(caster.getLocation(),
+//                        "&c&lA. rush: "+"&2&l"+finalHealedAmount);
                 //TODO: Add particle effects
             }
         }
@@ -134,7 +131,7 @@ public enum Effects {
                 if (caster instanceof Player){
                     targetCaster.setKiller((Player) caster);
                 }
-                HealthComponent.execute(targetCaster);
+//                HealthComponent.execute(targetCaster);
 //                Profile.execute(targetCaster);
             }
         }
@@ -145,15 +142,15 @@ public enum Effects {
             int totalDamage = 0;
             double executeHealth = 0;
             if (target instanceof Player targetCaster){
-                Profile targetProfile = JSONProfileManager.getProfile(targetCaster.getUniqueId());
-                HealthComponent targetHP = targetProfile.getHealthComponent();
-                executeHealth = targetHP.getMaxHealth()*0.1;
-
-                for (int dmg : hit){
-                    totalDamage += dmg;
-                }
-
-                shouldExecute = (targetHP.getCurrentHealth() <= executeHealth) && (totalDamage<executeHealth);
+//                Profile targetProfile = JSONProfileManager.getProfile(targetCaster.getUniqueId());
+//                HealthComponent targetHP = targetProfile.getHealthComponent();
+//                executeHealth = targetHP.getMaxHealth()*0.1;
+//
+//                for (int dmg : hit){
+//                    totalDamage += dmg;
+//                }
+//
+//                shouldExecute = (targetHP.getCurrentHealth() <= executeHealth) && (totalDamage<executeHealth);
             }
 
             if (shouldExecute){

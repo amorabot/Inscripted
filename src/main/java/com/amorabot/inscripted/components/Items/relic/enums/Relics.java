@@ -1,10 +1,10 @@
 package com.amorabot.inscripted.components.Items.relic.enums;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.Abstract.Item;
+//import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.inscripted.components.Items.modifiers.Inscription;
-import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
+//import com.amorabot.inscripted.components.Items.modifiers.Inscription;
+//import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -56,59 +56,24 @@ public enum Relics {
     }
 
     public ItemStack getItemForm(){
-        Item relicItem = generate();
-        ItemStack relicItemStack = relicItem.getItemForm();
-        ItemMeta relicItemMeta = relicItemStack.getItemMeta();
-        StringBuilder flavorTextBuilder = new StringBuilder();
-        List<String> rawFlavorText = getFlavorText();
-
-        for (String s : rawFlavorText){
-            flavorTextBuilder.append(s).append("<br>");
-        }
-        relicItemMeta.getPersistentDataContainer().set(
-                new NamespacedKey(Inscripted.getPlugin(),"flavor"),
-                PersistentDataType.STRING,
-                flavorTextBuilder.toString()
-        );
-
-        relicItemStack.setItemMeta(relicItemMeta);
-        return relicItemStack;
-    }
-
-    //TODO: relic constructors should deserialize data from the relic definition file
-    private Item generate(){
-//        if (slot.equals(ItemTypes.WEAPON)){
-//            RelicWeaponDAO weaponDAO = getRelicWeaponsData().get(this);
-//            List<InscriptionID> relicInscriptionIDs = new ArrayList<>(weaponDAO.genericData().specialInscriptions());
-//            relicInscriptionIDs.addAll(weaponDAO.genericData().inscriptions());
-//            List<Inscription> newlyGeneratedInscriptions = generateNewRelicInscriptionList(relicInscriptionIDs);
-//            return new Weapon(weaponDAO, newlyGeneratedInscriptions);
-//        } else { //Relic Armor generation
-//            RelicArmorDAO armorDAO = getRelicArmorsData().get(this);
-//            List<InscriptionID> relicInscriptionIDs =  new ArrayList<>(armorDAO.genericData().specialInscriptions());
-//            relicInscriptionIDs.addAll(armorDAO.genericData().inscriptions());
-//            List<Inscription> newlyGeneratedInscriptions = generateNewRelicInscriptionList(relicInscriptionIDs);
-//            return new Armor(armorDAO,newlyGeneratedInscriptions);
+//        Item relicItem = generate();
+//        ItemStack relicItemStack = relicItem.getItemForm();
+//        ItemMeta relicItemMeta = relicItemStack.getItemMeta();
+//        StringBuilder flavorTextBuilder = new StringBuilder();
+//        List<String> rawFlavorText = getFlavorText();
+//
+//        for (String s : rawFlavorText){
+//            flavorTextBuilder.append(s).append("<br>");
 //        }
+//        relicItemMeta.getPersistentDataContainer().set(
+//                new NamespacedKey(Inscripted.getPlugin(),"flavor"),
+//                PersistentDataType.STRING,
+//                flavorTextBuilder.toString()
+//        );
+//
+//        relicItemStack.setItemMeta(relicItemMeta);
+//        return relicItemStack;
         return null;
-    }
-    private List<Inscription> generateNewRelicInscriptionList(List<InscriptionID> inscIDs){
-        List<Inscription> newlyGeneratedInscriptions = new ArrayList<>();
-        for (InscriptionID ID : inscIDs){
-
-            newlyGeneratedInscriptions.add(new Inscription(ID));
-        }
-        return newlyGeneratedInscriptions;
-    }
-
-    private List<String> getFlavorText(){
-//        if (relicWeaponsData.containsKey(this)){
-//            return relicWeaponsData.get(this).genericData().flavorText();
-//        }
-//        if (relicArmorsData.containsKey(this)){
-//            return relicArmorsData.get(this).genericData().flavorText();
-//        }
-        return new ArrayList<>();
     }
 
 }

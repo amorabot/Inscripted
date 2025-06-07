@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.item.render;
 
-import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.item.inscription.Inscription;
 import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.item.structure.ItemRarities;

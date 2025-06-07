@@ -1,116 +1,99 @@
 package com.amorabot.inscripted.APIs.damageAPI;
 
-import com.amorabot.inscripted.APIs.SoundAPI;
-import com.amorabot.inscripted.components.Attack;
-import com.amorabot.inscripted.components.DamageComponent;
-import com.amorabot.inscripted.components.DefenceComponent;
-import com.amorabot.inscripted.components.EntityProfile;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
-import com.amorabot.inscripted.components.Items.relic.enums.Effects;
-import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.components.buffs.Buffs;
-import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
-import com.amorabot.inscripted.file.profile.JSONProfileManager;
-import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.math.MathUtils;
-import com.amorabot.inscripted.skills.HitTypes;
-import com.amorabot.inscripted.skills.PlayerAbilities;
-import com.amorabot.inscripted.utils.Utils;
-import net.kyori.adventure.audience.Audience;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
 
-import static com.amorabot.inscripted.utils.Utils.applyPercentageToArray;
-
 public class AttackProcessor {
 
-    public static int[] processAttack(EntityProfile attackerProfile, EntityProfile defenderProfile, int[] incomingHit, boolean isCrit, PlayerAbilities ability){
-
-        //Ability arg is only needed when its a player attacking, and is only accessed in this case
-        if (attackerProfile instanceof Profile){
-            incomingHit = ability.scaleDamage(incomingHit);
-        /*
-        Getting the base damage and scaling it according to the ability used
-        Then this resulting damage can be applied to defences and be further altered
-            If a ability nullifies, lets say, abyssal DMG, 0 will then be scaled by crits or ability tags such as MELEE, PROJ. ...
-        */
-
-            incomingHit = applyAbilityTags((Profile) attackerProfile, incomingHit, ability);
-        }
-
-        if (isCrit){
-            int critDmg = attackerProfile.getAttackData().getCritDamage();
-            incomingHit = applyPercentageToArray(incomingHit, 50 + critDmg);
-        }
-        //Incoming hit processing...
-        return DefenceCalculator.applyDefences(incomingHit, attackerProfile, defenderProfile);
-//        if (defenderProfile instanceof Profile playerDefenderProfile){
-//            //Player mapping
-//            return DefenceCalculator.applyDefences(incomingHit, attackerProfile, playerDefenderProfile);
+//    public static int[] processAttack(EntityProfile attackerProfile, EntityProfile defenderProfile, int[] incomingHit, boolean isCrit, PlayerAbilities ability){
+//
+//        //Ability arg is only needed when its a player attacking, and is only accessed in this case
+////        if (attackerProfile instanceof Profile){
+////            incomingHit = ability.scaleDamage(incomingHit);
+////        /*
+////        Getting the base damage and scaling it according to the ability used
+////        Then this resulting damage can be applied to defences and be further altered
+////            If a ability nullifies, lets say, abyssal DMG, 0 will then be scaled by crits or ability tags such as MELEE, PROJ. ...
+////        */
+////
+////            incomingHit = applyAbilityTags((Profile) attackerProfile, incomingHit, ability);
+////        }
+//
+//        if (isCrit){
+////            int critDmg = attackerProfile.getAttackData().getCritDamage();
+////            incomingHit = applyPercentageToArray(incomingHit, 50 + critDmg);
 //        }
-//        if (defenderProfile instanceof MobStats defenderMobProfile){
-//            //Mob mapping
-//            return DefenceCalculator.applyMobDefences(incomingHit, attackerProfile, defenderMobProfile);
+//        //Incoming hit processing...
+////        return DefenceCalculator.applyDefences(incomingHit, attackerProfile, defenderProfile);
+////        if (defenderProfile instanceof Profile playerDefenderProfile){
+////            //Player mapping
+////            return DefenceCalculator.applyDefences(incomingHit, attackerProfile, playerDefenderProfile);
+////        }
+////        if (defenderProfile instanceof MobStats defenderMobProfile){
+////            //Mob mapping
+////            return DefenceCalculator.applyMobDefences(incomingHit, attackerProfile, defenderMobProfile);
+////        }
+//
+////        //Invalid mapping for defender
+////        return new int[5];
+//    }
+
+
+
+
+//    public static boolean attackResult(Attack attackerDamage, DefenceComponent defenderDefence){
+//        float dodgeChance = DefenceCalculator.getDefenderDodgeChance(defenderDefence);
+//        return DefenceCalculator.dodgeResult(attackerDamage, dodgeChance);
+//    }
+//    public static void dodgeAttack(int[] dmgArray, int mitigation){
+//        //Mitigate mitigation % amount of dmg
+//        float resultingDamagePercent = (100-Math.min(mitigation, 100))/100F;
+//        for (int i = 0; i < dmgArray.length; i++){
+//            dmgArray[i] = (int) (dmgArray[i] * resultingDamagePercent);
 //        }
-
-//        //Invalid mapping for defender
-//        return new int[5];
-    }
-
-
-
-
-    public static boolean attackResult(Attack attackerDamage, DefenceComponent defenderDefence){
-        float dodgeChance = DefenceCalculator.getDefenderDodgeChance(defenderDefence);
-        return DefenceCalculator.dodgeResult(attackerDamage, dodgeChance);
-    }
-    public static void dodgeAttack(int[] dmgArray, int mitigation){
-        //Mitigate mitigation % amount of dmg
-        float resultingDamagePercent = (100-Math.min(mitigation, 100))/100F;
-        for (int i = 0; i < dmgArray.length; i++){
-            dmgArray[i] = (int) (dmgArray[i] * resultingDamagePercent);
-        }
-    }
-    public static boolean isCriticalHit(Attack attackerHitData){
-        int critChance = attackerHitData.getCritChance();
-        double critRoll = Math.random();
-        return (critRoll*100) <= critChance;
-    }
+//    }
+//    public static boolean isCriticalHit(Attack attackerHitData){
+//        int critChance = attackerHitData.getCritChance();
+//        double critRoll = Math.random();
+//        return (critRoll*100) <= critChance;
+//    }
 
     public static void bleedAttemptOnPlayer(LivingEntity attacker, Player defender, int[] incomingHit){
         if (incomingHit[0]<=0){return;}
         //Min dmg threshold check
         int baseDamage = incomingHit[0]/10;
-        final double minDamageThreshold = JSONProfileManager.getProfile(defender.getUniqueId()).getHealthComponent().getMaxHealth()*0.01;
-        if (incomingHit[0] < minDamageThreshold){
-            //If the incoming physical hit itself is less than 1% the targets health, dont even apply bleed
-            return;
-        }
+//        final double minDamageThreshold = JSONProfileManager.getProfile(defender.getUniqueId()).getHealthComponent().getMaxHealth()*0.01;
+//        if (incomingHit[0] < minDamageThreshold){
+//            //If the incoming physical hit itself is less than 1% the targets health, dont even apply bleed
+//            return;
+//        }
 
 //        Profile attackerProfile = JSONProfileManager.getProfile(attacker.getUniqueId());
-        EntityProfile attackerProfile = Profile.getEntityProfile(attacker);
-
-        Attack hitData = attackerProfile.getAttackData();
-        int bleedChance = hitData.getBleedChance();
-        double bleedRoll = Math.random();
-        if ((bleedRoll*100) > bleedChance){return;}
-
-        //Time to apply the debuff
-        DamageBuff bleed = new DamageBuff(Buffs.BLEED);
-        if (attackerProfile instanceof Profile playerAttackerProfile){
-            baseDamage = (int) Utils.applyPercentageTo(baseDamage, playerAttackerProfile.getDamageComponent().getBleedDamage());
-        } //else: do specific base dmg modification routine for when the attacker is a mob (nothing for now => always base dmg)
-        int[] dot = bleed.convertBaseHit(baseDamage);
-        bleed.createDamageTask(dot, defender, false, attacker);
-        if (attackerProfile.getEffects().contains(Effects.SADISM)){
-            Effects.SADISM.check(attacker, defender, incomingHit);
-        }
-
-        PlayerBuffManager.addBuffToPlayer(bleed, defender);
-        Audience audience = Audience.audience(attacker, defender);
-        SoundAPI.playGenericSoundAtLocation(audience, defender.getLocation(),"block.pumpkin.carve", 2f, 0.5f);
+//        EntityProfile attackerProfile = Profile.getEntityProfile(attacker);
+//
+//        Attack hitData = attackerProfile.getAttackData();
+//        int bleedChance = hitData.getBleedChance();
+//        double bleedRoll = Math.random();
+//        if ((bleedRoll*100) > bleedChance){return;}
+//
+//        //Time to apply the debuff
+//        DamageBuff bleed = new DamageBuff(Buffs.BLEED);
+//        if (attackerProfile instanceof Profile playerAttackerProfile){
+//            baseDamage = (int) Utils.applyPercentageTo(baseDamage, playerAttackerProfile.getDamageComponent().getBleedDamage());
+//        } //else: do specific base dmg modification routine for when the attacker is a mob (nothing for now => always base dmg)
+//        int[] dot = bleed.convertBaseHit(baseDamage);
+//        bleed.createDamageTask(dot, defender, false, attacker);
+//        if (attackerProfile.getEffects().contains(Effects.SADISM)){
+//            Effects.SADISM.check(attacker, defender, incomingHit);
+//        }
+//
+//        PlayerBuffManager.addBuffToPlayer(bleed, defender);
+//        Audience audience = Audience.audience(attacker, defender);
+//        SoundAPI.playGenericSoundAtLocation(audience, defender.getLocation(),"block.pumpkin.carve", 2f, 0.5f);
     }
 
     public static int[] rollDamages(Map<DamageTypes, int[]> rawDamages){
@@ -132,16 +115,16 @@ public class AttackProcessor {
         int[] dmgRange = rawDamages.getOrDefault(type, new int[2]);
         return MathUtils.getRandomNumber(dmgRange[0], dmgRange[1]);
     }
-    private static int[] applyAbilityTags(Profile attackerProfile, int[] incomingHit, PlayerAbilities ability){
-        HitTypes[] tags = ability.getTags();
-        DamageComponent atkrDmg = attackerProfile.getDamageComponent();
-        int[] finalIncomingHit = incomingHit.clone();
-        for(HitTypes abilityTag : tags){
-            if (abilityTag.equals(HitTypes.NONE)){return new int[5];}
-            switch (abilityTag){
-                case MELEE -> finalIncomingHit = applyPercentageToArray(finalIncomingHit, atkrDmg.getMeleeDamage());
-            }
-        }
-        return finalIncomingHit;
-    }
+//    private static int[] applyAbilityTags(Profile attackerProfile, int[] incomingHit, PlayerAbilities ability){
+//        HitTypes[] tags = ability.getTags();
+//        DamageComponent atkrDmg = attackerProfile.getDamageComponent();
+//        int[] finalIncomingHit = incomingHit.clone();
+//        for(HitTypes abilityTag : tags){
+//            if (abilityTag.equals(HitTypes.NONE)){return new int[5];}
+//            switch (abilityTag){
+//                case MELEE -> finalIncomingHit = applyPercentageToArray(finalIncomingHit, atkrDmg.getMeleeDamage());
+//            }
+//        }
+//        return finalIncomingHit;
+//    }
 }

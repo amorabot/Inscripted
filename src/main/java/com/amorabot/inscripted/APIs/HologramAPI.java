@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.APIs;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Attack;
+//import com.amorabot.inscripted.components.Attack;
 import com.amorabot.inscripted.utils.ColorUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -40,7 +40,8 @@ public class HologramAPI {
         return createAlignedHologram(regenString, location, 0.65D, true);
     }
     public static TextDisplay createDamageHologramAt(Location location, int[] damageArray){
-        return createAlignedHologram(Attack.getDamageString(damageArray), location, 1D, false);
+        return null;
+//        return createAlignedHologram(Attack.getDamageString(damageArray), location, 1D, false);
     }
 
     public static TextDisplay createDodgeIndicatorAt(Location location){

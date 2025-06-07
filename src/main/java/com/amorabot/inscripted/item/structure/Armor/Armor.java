@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.item.structure.Armor;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.item.generation.InscriptionGenerator;
 import com.amorabot.inscripted.item.inscription.definition.Stats;
 import com.amorabot.inscripted.item.render.ItemRenderer;

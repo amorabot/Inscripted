@@ -1,19 +1,10 @@
 package com.amorabot.inscripted.commands;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.HealthComponent;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
-import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
-import com.amorabot.inscripted.components.Items.modifiers.data.Meta;
-import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
-import com.amorabot.inscripted.components.buffs.categories.healing.HealingBuff;
 import com.amorabot.inscripted.components.buffs.categories.stat.StatBuff;
-import com.amorabot.inscripted.components.renderers.ItemInterfaceRenderer;
-import com.amorabot.inscripted.file.profile.JSONProfileManager;
-import com.amorabot.inscripted.item.inscription.Inscription;
-import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.structure.Armor.Armor;
 import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
 import com.amorabot.inscripted.item.structure.EquipmentSlots;
@@ -30,15 +21,12 @@ import com.amorabot.inscripted.skills.archetypes.bow.BowBasicAttacks;
 import com.amorabot.inscripted.skills.math.OrientedBoundingBox;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Display;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.TextDisplay;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
@@ -68,36 +56,7 @@ public class TemplateCommand implements CommandExecutor {
         if (strings.length == 1){
             String action = strings[0];
             switch (action){
-                case "mod":
-                    for (InscriptionID inscription : InscriptionID.values()){
-                        if (inscription.getData().getAffixType().equals(Affix.IMPLICIT)){
-                            player.sendMessage(inscription.getDisplayName() + "  IMPLICIT!!  " + inscription.getTotalTiers());
-                            continue;
-                        }
-                        try {
-                            if (InscriptionID.class.getField(inscription.name()).isAnnotationPresent(Meta.class)){
-                                player.sendMessage("TESTANDO METAMOD!");
-                            }
-                        } catch (NoSuchFieldException e) {
-                            player.sendMessage("NOT A METAMOD");
-                            throw new RuntimeException(e);
-                        }
-                        player.sendMessage(inscription.getDisplayName() + "   " + inscription.getTotalTiers());
-                    }
-                    break;
                 case "bar":
-                    Component bar = JSONProfileManager.getProfile(player.getUniqueId()).getHealthComponent().getHealthBarComponent();
-//                    player.sendMessage(bar);
-                    Inscripted.getPlugin().getWorld().spawn(player.getLocation(), TextDisplay.class, textDisplay -> {
-                        textDisplay.text(bar);
-                        textDisplay.setBillboard(Display.Billboard.CENTER);
-                        textDisplay.setAlignment(TextDisplay.TextAlignment.CENTER);
-                        textDisplay.setTextOpacity((byte) 255);
-
-//                        textDisplay.setInterpolationDelay(1);
-//                        textDisplay.setInterpolationDuration(14);
-                        textDisplay.setPersistent(false);
-                    });
                     break;
                 case "toggle":
                     //Not persistent (ideal for temporary tags/ownership/toggles that are not essential in combat) -> if persistance is needed: scoreboard tags
@@ -114,12 +73,6 @@ public class TemplateCommand implements CommandExecutor {
                     player.sendMessage(temp);
                     player.sendMessage(ColorUtils.decolor(temp));
                     player.sendMessage(ColorUtils.translateColorCodes(temp));
-                    return true;
-                case "unalive":
-//                    Profile.execute(player);
-                    player.setKiller(player);
-                    HealthComponent.execute(player);
-//                    JSONProfileManager.getProfile(player.getUniqueId()).updatePlayerHearts(player);
                     return true;
                 case "bleed":
                     DamageBuff bleed = new DamageBuff(Buffs.BLEED);
@@ -147,12 +100,12 @@ public class TemplateCommand implements CommandExecutor {
                     PlayerBuffManager.addBuffToPlayer(cripple, player);
                     return true;
                 case "rejuv":
-                    HealingBuff rejuv = new HealingBuff(Buffs.REJUVENATE);
-                    Utils.msgPlayer(player, "Rejuvenating!");
-                    int baseHealing = rejuv.getFinalHealingTick(JSONProfileManager.getProfile(player.getUniqueId()));
-                    rejuv.createHealingTask(baseHealing, player, player);
-
-                    PlayerBuffManager.addBuffToPlayer(rejuv, player);
+//                    HealingBuff rejuv = new HealingBuff(Buffs.REJUVENATE);
+//                    Utils.msgPlayer(player, "Rejuvenating!");
+//                    int baseHealing = rejuv.getFinalHealingTick(JSONProfileManager.getProfile(player.getUniqueId()));
+//                    rejuv.createHealingTask(baseHealing, player, player);
+//
+//                    PlayerBuffManager.addBuffToPlayer(rejuv, player);
                     return true;
                 case "seek":
                     BowBasicAttacks.standardBowAttackBy(player, PlayerAbilities.BASIC_BOW_ATTACK, SteeringBehaviors.STRAIGHT_LINE, 4);
@@ -193,12 +146,6 @@ public class TemplateCommand implements CommandExecutor {
                     player.getInventory().addItem(armorItemStack);
                     player.getInventory().addItem(hybItemStack);
                     player.getInventory().addItem(soulItemStack);
-                    return true;
-                case "testColor":
-//                    ItemStack heldItem = player.getInventory().getItemInMainHand();
-//                    ItemInterfaceRenderer.setDisplayName("Awooga buga nuga",heldItem, ItemRarities.COMMON,false,4);
-//                    ItemInterfaceRenderer.setDisplayName("Runeec Bunguschungus",heldItem,ItemRarities.AUGMENTED,false,4);
-//                    ItemInterfaceRenderer.setDisplayName("Bingoos",heldItem,ItemRarities.RUNIC,false,7);
                     return true;
             }
         }

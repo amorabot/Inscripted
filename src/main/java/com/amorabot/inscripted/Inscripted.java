@@ -128,10 +128,10 @@ public final class Inscripted extends JavaPlugin {
 
     private void commandsStartupRoutine(){
         getCommand("updatenbt").setExecutor(new UpdateNBT(this));
-        getCommand("stats").setExecutor(new StatsCommand(this));
+        getCommand("stats").setExecutor(new StatsCommand());
         getCommand("generateitem").setExecutor(new GenerateItem(this));
 //        getCommand("identify").setExecutor(new Identify(this));
-        getCommand("resetattributes").setExecutor(new ResetAttributes(this));
+//        getCommand("resetattributes").setExecutor(new ResetAttributes(this));
         getCommand("show").setExecutor(new Show());
         getCommand("template").setExecutor(new TemplateCommand());
 

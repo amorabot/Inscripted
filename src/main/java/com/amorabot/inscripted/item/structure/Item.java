@@ -1,11 +1,10 @@
 package com.amorabot.inscripted.item.structure;
 
-import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.item.inscription.Inscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.render.ItemVisitor;
 import com.amorabot.inscripted.item.structure.io.InscriptedItem;
-import com.amorabot.inscripted.utils.Utils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;

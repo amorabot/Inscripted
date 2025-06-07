@@ -4,7 +4,7 @@ import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
 import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
 import com.amorabot.inscripted.components.Buff;
 import com.amorabot.inscripted.components.buffs.Buffs;
-import com.amorabot.inscripted.file.profile.JSONProfileManager;
+//import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.entity.LivingEntity;
@@ -58,10 +58,10 @@ public class DamageDebuffTask extends Buff {
             return;
         }
 
-        if ((ticks>=totalTicks) || JSONProfileManager.getProfile(defender.getUniqueId()).getHealthComponent().getCurrentHealth() == 0){
-            expire();
-            return;
-        }
+//        if ((ticks>=totalTicks) || JSONProfileManager.getProfile(defender.getUniqueId()).getHealthComponent().getCurrentHealth() == 0){
+//            expire();
+//            return;
+//        }
 
 //        float hurtAnimationOffset = (float)(Utils.getRandomOffset() * 90);
 //        defender.sendHurtAnimation(hurtAnimationOffset);

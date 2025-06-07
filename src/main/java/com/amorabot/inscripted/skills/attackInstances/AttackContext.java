@@ -2,8 +2,6 @@ package com.amorabot.inscripted.skills.attackInstances;
 
 import com.amorabot.inscripted.components.Items.relic.enums.Effects;
 import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
-import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.skills.PlayerAbilities;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,12 +23,12 @@ public class AttackContext {
     public AttackContext(Player player, PlayerAbilities ability){
         this.attackerID = player.getUniqueId();
         this.sourceAbility = ability;
-        Profile playerProfile = JSONProfileManager.getProfile(attackerID);
+//        Profile playerProfile = JSONProfileManager.getProfile(attackerID);
         this.attackKeystones = new HashSet<>();
-        attackKeystones.addAll(playerProfile.getKeystones());
+//        attackKeystones.addAll(playerProfile.getKeystones());
 
         this.attackEffects = new HashSet<>();
-        attackEffects.addAll(playerProfile.getEffects());
+//        attackEffects.addAll(playerProfile.getEffects());
     }
 
 }

@@ -5,7 +5,7 @@ import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.healing.HealingBuff;
-import com.amorabot.inscripted.file.profile.JSONProfileManager;
+//import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.skills.ParticlePlotter;
 import com.amorabot.inscripted.skills.PlayerAbilities;
@@ -96,8 +96,8 @@ public class ItemPassiveAbilities {
                 World world = playerLoc.getWorld();
 
                 HealingBuff rejuv = new HealingBuff(Buffs.REJUVENATE);
-                int baseHealing = rejuv.getFinalHealingTick(JSONProfileManager.getProfile(keystoneHolder.getUniqueId()));
-                rejuv.createHealingTask(baseHealing, keystoneHolder, keystoneHolder);
+//                int baseHealing = rejuv.getFinalHealingTick(JSONProfileManager.getProfile(keystoneHolder.getUniqueId()));
+//                rejuv.createHealingTask(baseHealing, keystoneHolder, keystoneHolder);
                 PlayerBuffManager.addBuffToPlayer(rejuv, keystoneHolder);
 
                 Vector centerVec = playerLoc.toVector().clone().subtract(new Vector(0,0.3,0));

@@ -1,12 +1,12 @@
 package com.amorabot.inscripted.commands;
 
-import com.amorabot.inscripted.GUIs.ItemCommandGUI;
+//import com.amorabot.inscripted.GUIs.ItemCommandGUI;
 import com.amorabot.inscripted.GUIs.RelicsGUI;
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.Abstract.Item;
+//import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.Tiers;
-import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -75,8 +75,8 @@ public class GenerateItem implements TabExecutor {
 
         if (args.length == 3){
 
-            ItemCommandGUI itemGUI = new ItemCommandGUI(player, archetype, ilvl, rarity, 6, false, true);
-            player.openInventory(itemGUI.getInventory());
+//            ItemCommandGUI itemGUI = new ItemCommandGUI(player, archetype, ilvl, rarity, 6, false, true);
+//            player.openInventory(itemGUI.getInventory());
             return true;
         }
         return true;
@@ -107,9 +107,5 @@ public class GenerateItem implements TabExecutor {
             return options;
         }
         return null;
-    }
-
-    private void giveGeneratedItem(Item item, Player player){
-        player.getInventory().addItem(item.getItemForm());
     }
 }

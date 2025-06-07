@@ -6,7 +6,7 @@ import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.relic.enums.Effects;
 import com.amorabot.inscripted.components.Items.relic.enums.TriggerTimes;
 import com.amorabot.inscripted.components.Items.relic.enums.TriggerTypes;
-import com.amorabot.inscripted.file.profile.JSONProfileManager;
+//import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
 import com.amorabot.inscripted.skills.math.LinalgMath;
 import com.amorabot.inscripted.utils.Utils;
@@ -27,20 +27,20 @@ public class AbilityRoutines {
             Utils.error("Invalid skill mapping: " + weapon + " and " + skillType);
             return;
         }
-        Set<Effects> playerEffects = JSONProfileManager.getProfile(player.getUniqueId()).getEffects();
+//        Set<Effects> playerEffects = JSONProfileManager.getProfile(player.getUniqueId()).getEffects();
 
         //Early cast effects
 
 
-        abilityTriggers(skillType, player, playerEffects);
+//        abilityTriggers(skillType, player, playerEffects);
         ability.cast(player, atkSpeed); //TODO: Should support specific targets
         //LATE cast effects
-        for (Effects effects : playerEffects){
-            if (!effects.getTiming().equals(TriggerTimes.LATE)){continue;}
-            if (effects.getTrigger().equals(TriggerTypes.ON_CAST)){
-                effects.check(player, player, null);
-            }
-        }
+//        for (Effects effects : playerEffects){
+//            if (!effects.getTiming().equals(TriggerTimes.LATE)){continue;}
+//            if (effects.getTrigger().equals(TriggerTypes.ON_CAST)){
+//                effects.check(player, player, null);
+//            }
+//        }
 
 
     }

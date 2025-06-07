@@ -2,10 +2,10 @@ package com.amorabot.inscripted.components.buffs.categories.healing;
 
 import com.amorabot.inscripted.components.Buff;
 import com.amorabot.inscripted.item.structure.Armor.DefenceTypes;
-import com.amorabot.inscripted.components.Player.Profile;
+//import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.item.render.InscriptedPalette;
-import com.amorabot.inscripted.file.profile.JSONProfileManager;
+//import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import com.amorabot.inscripted.utils.ColorUtils;
@@ -53,13 +53,13 @@ public class HealingBuffTask extends Buff {
             expire();
             return;
         }
-        Profile targetProfile = JSONProfileManager.getProfile(target.getUniqueId());
-        boolean targetBleeding = PlayerBuffManager.hasActiveBuff(Buffs.BLEED, target);
-        int amountHealed = targetProfile.getHealthComponent().healHealth(healingTick, targetBleeding, target, targetProfile.getKeystones());
+//        Profile targetProfile = JSONProfileManager.getProfile(target.getUniqueId());
+//        boolean targetBleeding = PlayerBuffManager.hasActiveBuff(Buffs.BLEED, target);
+//        int amountHealed = targetProfile.getHealthComponent().healHealth(healingTick, targetBleeding, target, targetProfile.getKeystones());
 
         buff.effectOn(target);
-        CombatHologramsDepleter.getInstance().instantiateRegenHologram(target.getLocation(), "&2"+amountHealed);
-        debugHealing(caster, target, amountHealed);
+//        CombatHologramsDepleter.getInstance().instantiateRegenHologram(target.getLocation(), "&2"+amountHealed);
+//        debugHealing(caster, target, amountHealed);
 
         ticks++;
     }

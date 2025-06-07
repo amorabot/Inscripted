@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.components.Player.archetypes;
+package com.amorabot.inscripted.player;
 
 import com.amorabot.inscripted.item.inscription.Inscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;

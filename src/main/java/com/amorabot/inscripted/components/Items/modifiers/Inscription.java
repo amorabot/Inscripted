@@ -6,7 +6,7 @@ import com.amorabot.inscripted.components.Items.modifiers.data.HybridInscription
 import com.amorabot.inscripted.components.Items.modifiers.data.InscriptionData;
 import com.amorabot.inscripted.components.Items.modifiers.data.ModifierData;
 import com.amorabot.inscripted.components.Items.modifiers.data.StatDefinition;
-import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.item.render.InscriptedPalette;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.EqualsAndHashCode;

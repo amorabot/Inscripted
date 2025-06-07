@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.item.structure;
 
-import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
+import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
 
 public interface ItemSubtype {

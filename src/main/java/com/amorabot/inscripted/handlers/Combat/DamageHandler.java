@@ -6,11 +6,11 @@ import com.amorabot.inscripted.APIs.damageAPI.CombatEffects;
 import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
 import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.HealthComponent;
-import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.components.Player.stats.StatCompiler;
+//import com.amorabot.inscripted.components.HealthComponent;
+//import com.amorabot.inscripted.components.Player.Profile;
+//import com.amorabot.inscripted.components.Player.stats.StatCompiler;
 import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
-import com.amorabot.inscripted.file.profile.JSONProfileManager;
+//import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.skills.PlayerAbilities;
 import com.amorabot.inscripted.utils.DelayedTask;
@@ -65,7 +65,7 @@ public class DamageHandler implements Listener {
             Player p = (Player) attacker;
             ItemStack heldItem = p.getInventory().getItemInMainHand();
             if (heldItem.getType().isAir()){ //If the player is punching
-                Profile playerProfile = JSONProfileManager.getProfile(p.getUniqueId());
+//                Profile playerProfile = JSONProfileManager.getProfile(p.getUniqueId());
 //                if (!playerProfile.getEquipmentComponent().getSlot(ItemTypes.WEAPON).isIgnorable()){ //If punching with a equipped weapon, unequip
 //                    playerProfile.getEquipmentComponent().setSlot(ItemTypes.WEAPON, null);
 //                }
@@ -109,15 +109,15 @@ public class DamageHandler implements Listener {
         If the player's HP is tempered with immediatly, in game death effects are cancelled (Teleport, automatic HP remapping)
         When implementing custom deaths (predefined respawns, etc...), keep this in mind
         */
-        new DelayedTask(new BukkitRunnable() {
-            @Override
-            public void run() {
-                StatCompiler.updateProfile(deadPlayer.getUniqueId());
-
-                HealthComponent.replenishHitPoints(deadPlayer);
-            }
-        }, 5
-        );
+//        new DelayedTask(new BukkitRunnable() {
+//            @Override
+//            public void run() {
+////                StatCompiler.updateProfile(deadPlayer.getUniqueId());
+//
+////                HealthComponent.replenishHitPoints(deadPlayer);
+//            }
+//        }, 5
+//        );
 
         CombatEffects.deathEffect(deadPlayer);
         //Death effect -> TODO: Move this block to CombatEffects class

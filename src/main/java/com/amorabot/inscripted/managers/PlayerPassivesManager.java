@@ -2,8 +2,8 @@ package com.amorabot.inscripted.managers;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
-import com.amorabot.inscripted.components.Player.stats.StatCompiler;
-import com.amorabot.inscripted.file.profile.JSONProfileManager;
+//import com.amorabot.inscripted.components.Player.stats.StatCompiler;
+//import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,16 +27,16 @@ public class PlayerPassivesManager {
         passiveTasks.clear();
         for (Player player : Bukkit.getOnlinePlayers()){
             UUID playerID = player.getUniqueId();
-            StatCompiler.manageKeystoneTasks(playerID, JSONProfileManager.getProfile(playerID).getKeystones());
+//            StatCompiler.manageKeystoneTasks(playerID, JSONProfileManager.getProfile(playerID).getKeystones());
         }
     }
     public static void removePlayer(UUID playerID){
-        Set<Keystones> playerKeystones = JSONProfileManager.getProfile(playerID).getKeystones();
-        for (Keystones keystones : playerKeystones){
-            if (!keystones.isPassiveTask()){continue;}
-            removePassiveTask(playerID, keystones); //Can be a effect or a stat keystone
-        }
-        passiveTasks.remove(playerID);
+//        Set<Keystones> playerKeystones = JSONProfileManager.getProfile(playerID).getKeystones();
+//        for (Keystones keystones : playerKeystones){
+//            if (!keystones.isPassiveTask()){continue;}
+//            removePassiveTask(playerID, keystones); //Can be a effect or a stat keystone
+//        }
+//        passiveTasks.remove(playerID);
     }
 
     public static void addKeystonePassive(UUID playerID, Keystones keystone, int taskID){
@@ -69,10 +69,10 @@ public class PlayerPassivesManager {
         BukkitScheduler scheduler = Inscripted.getScheduler();
         scheduler.cancelTask(taskID);
 
-        if (keystone.isStatKeystone()){
-            //Once the task is cancelled and the active keystone removed from the player's profile, there's no real need for recompilation.
-            JSONProfileManager.getProfile(playerID).getStatsComponent().removeActiveStatKeystone(playerID, keystone, false);
-        }
+//        if (keystone.isStatKeystone()){
+//            //Once the task is cancelled and the active keystone removed from the player's profile, there's no real need for recompilation.
+////            JSONProfileManager.getProfile(playerID).getStatsComponent().removeActiveStatKeystone(playerID, keystone, false);
+//        }
 
 
         Utils.log("Passive task successfully removed! ID(" + taskID + ")");
