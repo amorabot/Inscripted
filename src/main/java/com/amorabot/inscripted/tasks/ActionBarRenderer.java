@@ -42,8 +42,6 @@ public class ActionBarRenderer extends BukkitRunnable {
             }
 
             currentPlayer.sendActionBar(hpSection.append(soulSection).decoration(TextDecoration.ITALIC,false));
-
-            currentPlayer.setFoodLevel(20);
 //            Long remainingMovementCD = GlobalCooldownManager.fetchAbilityRemainingCooldown(currentPlayer.getUniqueId(), AbilityTypes.MOVEMENT);
 //            if (remainingMovementCD > 0){
 //                if (remainingMovementCD<4000){

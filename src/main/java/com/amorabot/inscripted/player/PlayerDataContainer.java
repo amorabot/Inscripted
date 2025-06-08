@@ -5,14 +5,14 @@ import com.amorabot.inscripted.player.profile.Profile;
 import com.amorabot.inscripted.player.equipment.PlayerEquipment;
 import com.amorabot.inscripted.player.profile.ProfileEvents;
 import com.amorabot.inscripted.player.profile.parsing.StatParser;
+import com.amorabot.inscripted.tasks.RegenerationTask;
+import com.amorabot.inscripted.tasks.base.PlayerboundTask;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 public class PlayerDataContainer implements Observer {
@@ -24,6 +24,7 @@ public class PlayerDataContainer implements Observer {
     private final UUID playerID;
     private final Profile profile;
     private final PlayerEquipment equipment;
+    private final Map<Integer,PlayerboundTask> playerboundTasks = new HashMap<>();
 
     public PlayerDataContainer(UUID playerID){
         this.playerID = playerID;
@@ -57,6 +58,7 @@ public class PlayerDataContainer implements Observer {
     public static void instantiatePlayer(UUID playerID, Profile profileData){
         if (onlinePlayerData.containsKey(playerID)){return;}
         onlinePlayerData.put(playerID, new PlayerDataContainer(playerID,profileData));
+        new RegenerationTask(playerID).start(0, RegenerationTask.regenTimerCooldown);
     }
     public static void instantiatePlayer(UUID playerID){
         if (onlinePlayerData.containsKey(playerID)){return;}
@@ -84,6 +86,36 @@ public class PlayerDataContainer implements Observer {
         return getDataContainerFor(playerID).getEquipment();
     }
     public static PlayerDataContainer getDataContainerFor(UUID uuid){
-        return getOnlinePlayerData().getOrDefault(uuid,new PlayerDataContainer(uuid));
+        if (hasPlayerData(uuid)){
+            return getOnlinePlayerData().get(uuid);
+        }
+        Utils.error("Data not instanced for ID " + uuid + ". Retrieving new data container.");
+        return new PlayerDataContainer(uuid);
+    }
+    public static boolean hasPlayerData(UUID playerID){
+        return getOnlinePlayerData().containsKey(playerID);
+    }
+
+
+    public void addTask(PlayerboundTask newTask){
+        playerboundTasks.put(newTask.getTaskId(),newTask);
+    }
+
+    public PlayerboundTask getTask(int taskID){
+        return playerboundTasks.getOrDefault(taskID,null);
+    }
+    public void removeTask(int taskID){
+        PlayerboundTask removedTask = playerboundTasks.remove(taskID);
+        if (removedTask != null){
+            removedTask.cancel();
+        }
+    }
+    public void clearTasks(){
+        playerboundTasks.forEach(
+                (id, playerboundTask) -> {
+                    playerboundTask.cancel();
+                }
+        );
+        playerboundTasks.clear();
     }
 }

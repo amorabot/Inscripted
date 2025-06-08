@@ -15,7 +15,7 @@ import com.amorabot.inscripted.components.buffs.Buffs;
 //import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.MobManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
-import com.amorabot.inscripted.managers.PlayerRegenManager;
+//import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.skills.PlayerAbilities;
 //import com.amorabot.inscripted.tasks.CombatLogger;
 //import com.amorabot.inscripted.tasks.CombatHologramsDepleter;

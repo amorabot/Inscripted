@@ -7,9 +7,10 @@ import com.amorabot.inscripted.file.profile.ProfileDatabase;
 import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
-import com.amorabot.inscripted.managers.PlayerRegenManager;
+//import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.tasks.CombatLogger;
+import com.amorabot.inscripted.tasks.RegenerationTask;
 import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
@@ -34,7 +35,6 @@ public class JoinQuitHandler implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
-
         Player player = event.getPlayer();
         player.setMaximumNoDamageTicks(5);
         UUID playerID = player.getUniqueId();
@@ -44,15 +44,15 @@ public class JoinQuitHandler implements Listener {
             Utils.log("Instantiating new profile for " + player.getName());
 
             showTitleTo(player, "<Welcome, "+ player.getName() + ">", "to the Inscripted Alpha!");
-//            initializePlayer(player);
+            initializePlayer(player);
             return;
         }
 
         PlayerDataContainer.instantiatePlayer(playerID,ProfileDatabase.loadProfile(playerID));
         PlayerEquipmentHandler.weaponEquip(player,player.getInventory().getItemInMainHand());
+        initializePlayer(player);
 
         showTitleTo(player, "<Welcome back, " + player.getName() + "!>", "Enjoy the alpha!");
-//        initializePlayer(player);
     }
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event){
@@ -67,24 +67,18 @@ public class JoinQuitHandler implements Listener {
     }
 
     private void initializePlayer(Player player){
-        PlayerRegenManager.addPlayer(player.getUniqueId());
-//        PlayerInterfaceRenderer.createHPDisplayFor(player);
-        PlayerBuffManager.initializePlayer(player);
-        EntityStateManager.setPlayerMetadata(player);
+//        PlayerBuffManager.initializePlayer(player);
+//        EntityStateManager.setPlayerMetadata(player);
         //                                                          min 0  |  max 1
         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE)).setBaseValue(1);
         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_ABSORPTION)).setBaseValue(20);
         player.setSaturatedRegenRate(3000);
 
     }
-    private void destroyPlayerData(Player player){
-        //Un-instantiate bossbars
-        UUID playerID = player.getUniqueId();
-        PlayerRegenManager.removePlayer(playerID);
-        PlayerPassivesManager.removePlayer(playerID);
-        PlayerBuffManager.expirePlayerStatBuffs(player);
-//        PlayerInterfaceRenderer.destroyHPDisplayFor(player);
-    }
+//    private void destroyPlayerData(Player player){
+//        //Un-instantiate bossbars
+////        PlayerBuffManager.expirePlayerStatBuffs(player);
+//    }
 
     private void showTitleTo(Player player, String mainTitle, String subtitle){
         final Component mainTitleText = Component.text(mainTitle);

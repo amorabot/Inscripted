@@ -6,15 +6,12 @@ import com.amorabot.inscripted.player.profile.BaseStats;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import static com.amorabot.inscripted.player.PlayerDataContainer.getPlayerEquipment;
 
 @Getter
 @Setter
@@ -63,11 +60,9 @@ public class HealthComponent implements ProfileComponent {
         return List.of();
     }
 
-    public int regenHealth(boolean inCombat, UUID playerID){
-        Player player = Bukkit.getPlayer(playerID);
-        assert player != null;
+    public int regenHealth(boolean inCombat, Set<KeystoneIDs> keystones){
         boolean isBleeding = false; //TODO: remake buffs
-        boolean isFullLife = health == maxHealth;
+        boolean isFullLife = (health == maxHealth);
         if (isFullLife){return 0;} //Stop regening
 
         int baseRegenTick = healthRegen;
@@ -76,11 +71,11 @@ public class HealthComponent implements ProfileComponent {
 
         //If this tick would surpass maxHP, cap it to maxHP
         if (health+baseRegenTick>maxHealth){
-            int regenTick = (int) (maxHealth-health);
+            int regenTick = (maxHealth-health);
             health = maxHealth;
             //Regenerated TO full heath, apply organ failure, if applicable
             //TODO: remake organ failure
-            Set<KeystoneIDs> keystones = getPlayerEquipment(playerID).getEquipmenKeystones();
+//            Set<KeystoneIDs> keystones = getPlayerEquipment(playerID).getEquipmenKeystones();
             return (regenTick);
         }
         //If theres room to regenerate, do
@@ -127,7 +122,7 @@ public class HealthComponent implements ProfileComponent {
             player.setHealth(mappedHealth);
         }
     }
-    public static void updateWardHearts(Player player, HealthComponent playerHP){
+    public static void updateSoulHearts(Player player, HealthComponent playerHP){
         double mappedWard = playerHP.getPlayerSoulHearts();
         double wardDiff = Math.abs((mappedWard - player.getAbsorptionAmount()));
         if (wardDiff >= 0.5D){
@@ -173,7 +168,7 @@ public class HealthComponent implements ProfileComponent {
 
 
 
-    public int regenWard(boolean inCombat){ //Standard ward regen call
+    public int regenSoul(boolean inCombat){ //Standard ward regen call
         int soulRegen = (int) (getMaxSoul() * (getSoulRecovery()/100F));
         if (inCombat){
             soulRegen = soulRegen/2;
