@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.APIs.damageAPI;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
-import com.amorabot.inscripted.skills.ParticlePlotter;
+import com.amorabot.inscripted.particle.ParticlePlotter;
 import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import org.bukkit.Location;
 import org.bukkit.Material;

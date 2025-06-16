@@ -5,6 +5,8 @@ import com.amorabot.inscripted.player.profile.Profile;
 import com.amorabot.inscripted.player.equipment.PlayerEquipment;
 import com.amorabot.inscripted.player.profile.ProfileEvents;
 import com.amorabot.inscripted.player.profile.parsing.StatParser;
+import com.amorabot.inscripted.skill.AbilityTypes;
+import com.amorabot.inscripted.skill.casting.GlobalCooldown;
 import com.amorabot.inscripted.tasks.RegenerationTask;
 import com.amorabot.inscripted.tasks.base.PlayerboundTask;
 import com.amorabot.inscripted.utils.Utils;
@@ -25,6 +27,7 @@ public class PlayerDataContainer implements Observer {
     private final Profile profile;
     private final PlayerEquipment equipment;
     private final Map<Integer,PlayerboundTask> playerboundTasks = new HashMap<>();
+    private final Map<AbilityTypes, GlobalCooldown> skillCooldowns = new HashMap<>();
 
     public PlayerDataContainer(UUID playerID){
         this.playerID = playerID;
@@ -69,7 +72,7 @@ public class PlayerDataContainer implements Observer {
     }
 
 
-
+    //Profile & Equipment methods
     public static Map<UUID, Profile> getProfiles(){
         Map<UUID, Profile> onlineProfiles = new HashMap<>();
         getOnlinePlayerData().forEach(
@@ -96,11 +99,10 @@ public class PlayerDataContainer implements Observer {
         return getOnlinePlayerData().containsKey(playerID);
     }
 
-
+    // Player task methods
     public void addTask(PlayerboundTask newTask){
         playerboundTasks.put(newTask.getTaskId(),newTask);
     }
-
     public PlayerboundTask getTask(int taskID){
         return playerboundTasks.getOrDefault(taskID,null);
     }
@@ -118,4 +120,7 @@ public class PlayerDataContainer implements Observer {
         );
         playerboundTasks.clear();
     }
+
+    //Skill casting/cooldown methods
+
 }

@@ -1,8 +1,16 @@
 package com.amorabot.inscripted.player.profile.component;
 
 import com.amorabot.inscripted.item.inscription.definition.Stats;
+import com.amorabot.inscripted.item.inscription.language.ValueType;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
+import com.amorabot.inscripted.player.profile.parsing.StatPool;
+import com.amorabot.inscripted.skill.AttackSkill;
+import com.amorabot.inscripted.skill.Skills;
+import com.amorabot.inscripted.skill.Tags;
+import com.amorabot.inscripted.utils.Utils;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 
@@ -13,6 +21,8 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AttackData implements ProfileComponent {
 
     private float DPS;
@@ -66,6 +76,107 @@ public class AttackData implements ProfileComponent {
     }
     public void resetDamages(){
         for (int i = 0; i < hitDamage.length; i++) {hitDamage[i] = new int[2];}
+    }
+
+
+    public AttackData(UUID attackerID, Skills skillUsed, StatPool globalPlayerStats){
+        StatPool globalSnapshot = globalPlayerStats.snapshot(); //TODO: Create a filtered version of this snapshot, containing only meaningful stats
+        skillUsed.applyBonusStats(globalSnapshot);
+
+        AttackSkill attackSkillData = skillUsed.getAttackSkillData();
+        Tags skillTags = skillUsed.getSkillTags()[0];
+        assert attackSkillData != null;
+        int[] addedDmgs = attackSkillData.addedBaseDmg();
+        int[] effectiveness = attackSkillData.dmgEffectiveness();
+        double[] normalizedConversions = normalizeConversions(attackSkillData.dmgConversion());
+
+        //Start skill pipeline
+        DamageTypes[] dmgTypes = DamageTypes.values();
+        for (int i = 0; i < DamageTypes.values().length; i++) {
+            DamageTypes type = dmgTypes[i];
+            Stats dmgStat = type.getDmgStat();
+            //Added skill base damages
+            globalSnapshot.insertValue(dmgStat, ValueType.FLAT,new int[]{addedDmgs[(2*i)],addedDmgs[(2*i) + 1]});
+            if (skillTags!=null){
+                //TODO: apply tag-related increases, if any
+            }
+            //Apply damage effectiveness for that type
+            globalSnapshot.insertValue(dmgStat,ValueType.MULTIPLIER,new int[]{effectiveness[i]});
+            //Increases are handled inside the #getFinalValues() on globalSnapshot at a later stage
+            //...
+        }
+
+        //Convert stored physical dmg to other types
+        int[] remainingPhys = convert(normalizedConversions,globalSnapshot);
+        globalSnapshot.setBaseStatValue(Stats.PHYSICAL_DAMAGE,ValueType.FLAT,remainingPhys);
+
+        //globalSnapshot has been updated, lets get the final values for the AttackData component being constructed
+        updateComponent(attackerID,globalSnapshot.calculateFinalValues());
+    }
+    private int[] convert(double[] normalizedConversions, StatPool globalStats){
+        int[] basePhysical = globalStats.getBaseStatValue(Stats.PHYSICAL_DAMAGE,ValueType.FLAT);
+        int[] totalConverted = new int[2];
+
+        double fireConversion = normalizedConversions[0];
+        if (fireConversion>0){
+            int[] fire = Arrays.stream(basePhysical).map(phys -> (int) (phys * fireConversion)).toArray();
+            globalStats.insertValue(Stats.FIRE_DAMAGE,ValueType.FLAT,fire);
+            totalConverted = Utils.vectorSum(totalConverted,fire);
+        }
+        double lightningConversion = normalizedConversions[1];
+        if (lightningConversion>0){
+            int[] lightning = Arrays.stream(basePhysical).map(phys -> (int) (phys * lightningConversion)).toArray();
+            globalStats.insertValue(Stats.LIGHTNING_DAMAGE,ValueType.FLAT,lightning);
+            totalConverted = Utils.vectorSum(totalConverted,lightning);
+        }
+        double coldConversion = normalizedConversions[2];
+        if (coldConversion>0){
+            int[] cold = Arrays.stream(basePhysical).map(phys -> (int) (phys * coldConversion)).toArray();
+            globalStats.insertValue(Stats.COLD_DAMAGE,ValueType.FLAT,cold);
+            totalConverted = Utils.vectorSum(totalConverted,cold);
+        }
+        double abyssalConversion = normalizedConversions[3];
+        if (abyssalConversion>0){
+            int[] abyssal = Arrays.stream(basePhysical).map(phys -> (int) (phys * abyssalConversion)).toArray();
+            globalStats.insertValue(Stats.ABYSSAL_DAMAGE,ValueType.FLAT,abyssal);
+            totalConverted = Utils.vectorSum(totalConverted,abyssal);
+        }
+        //Remaining phys -> Subtracting converted from total
+        return Utils.vectorSum(basePhysical, Arrays.stream(totalConverted).map(t -> -t).toArray());
+    }
+    private double[] normalizeConversions(int[] conversions){
+        double[] normalizedValues = new double[conversions.length];
+        final int conversionSum = Arrays.stream(conversions).sum();
+        if (conversionSum>100){
+            for (int i = 0; i < conversions.length; i++) {
+                normalizedValues[i] = ((double) conversions[i] / conversionSum);
+            }
+            return normalizedValues;
+        }
+        for (int i = 0; i < conversions.length; i++) {
+            normalizedValues[i] = (conversions[i] / 100D);
+        }
+        return normalizedValues;
+    }
+    public int[] getDamage(DamageTypes dmgType){
+        switch (dmgType){
+            case PHYSICAL -> {
+                return getPhysicalDmg();
+            }
+            case FIRE -> {
+                return getFireDmg();
+            }
+            case LIGHTNING -> {
+                return getLightningDmg();
+            }
+            case COLD -> {
+                return getColdDmg();
+            }
+            case ABYSSAL -> {
+                return getAbyssalDmg();
+            }
+        }
+        return new int[2];
     }
 
     @Override

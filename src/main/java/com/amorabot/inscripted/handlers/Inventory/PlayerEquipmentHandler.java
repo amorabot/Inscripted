@@ -7,13 +7,11 @@ import com.amorabot.inscripted.item.structure.Armor.Armor;
 import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.item.structure.Weapon.Weapon;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
-//import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.events.ItemUsage;
 import com.amorabot.inscripted.item.structure.io.InscriptedItem;
 import com.amorabot.inscripted.item.structure.io.ItemDeserializer;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.equipment.PlayerEquipment;
-import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
@@ -40,8 +38,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-
-//import static com.amorabot.inscripted.events.FunctionalItemAccessInterface.*;
 
 //TODO: fragment this class in multiple event handlers
 public class PlayerEquipmentHandler implements Listener {

@@ -7,7 +7,7 @@ import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.components.buffs.categories.damage.Damage;
 import com.amorabot.inscripted.components.buffs.categories.healing.Healing;
 import com.amorabot.inscripted.components.buffs.categories.stat.Stat;
-import com.amorabot.inscripted.skills.ParticlePlotter;
+import com.amorabot.inscripted.particle.ParticlePlotter;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Particle;

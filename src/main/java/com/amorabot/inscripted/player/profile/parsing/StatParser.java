@@ -20,13 +20,15 @@ public class StatParser {
         Utils.log("Building profile!");
         Profile profile = playerData.getProfile();
         PlayerEquipment equipment = playerData.getEquipment();
+        //Updating cache for keystones, effects, ... based on equipment
+        equipment.compileSpecialInscriptions();
 
         //Getting global stats
         StatPool globalStatPool = compileEquipmentStats(equipment); //Raw global stats
         applyAttributeBonuses(globalStatPool);
 
-        Set<KeystoneIDs> keystones = equipment.getEquipmenKeystones();
-        Set<EffectIDs> effects = equipment.getEquipmenEffects();
+        Set<KeystoneIDs> keystones = equipment.getKeystones();
+        Set<EffectIDs> effects = equipment.getEffects();
 
         //Handle instantiation/state of keystone tasks
 
@@ -67,8 +69,9 @@ public class StatParser {
                     globalStatPool.merge(slotStats);
                 }
         );
+
         //TODO: Sort meta inscriptions for predictability?
-        Set<Inscription> metaInscriptions = playerEquipment.getEquipmentMetaInscriptions();
+        Set<Inscription> metaInscriptions = playerEquipment.getMetaInscriptions();
         for (Inscription metaInsc : metaInscriptions){
             InscriptionIDs inscID = metaInsc.getInscription();
             if (DEBUG_MODE){Utils.log("Compiling meta Inscription " + inscID);}

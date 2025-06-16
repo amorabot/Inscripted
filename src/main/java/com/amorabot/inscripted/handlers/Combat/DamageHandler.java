@@ -9,11 +9,9 @@ import com.amorabot.inscripted.Inscripted;
 //import com.amorabot.inscripted.components.HealthComponent;
 //import com.amorabot.inscripted.components.Player.Profile;
 //import com.amorabot.inscripted.components.Player.stats.StatCompiler;
-import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
 //import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
-import com.amorabot.inscripted.skills.PlayerAbilities;
-import com.amorabot.inscripted.utils.DelayedTask;
+import com.amorabot.inscripted.skill.PlayerAbilities;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,8 +24,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class DamageHandler implements Listener {
 

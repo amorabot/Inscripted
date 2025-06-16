@@ -3,7 +3,7 @@ package com.amorabot.inscripted.components.Mobs;
 import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.managers.MobManager;
-import com.amorabot.inscripted.skills.ParticlePlotter;
+import com.amorabot.inscripted.particle.ParticlePlotter;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;

@@ -27,9 +27,9 @@ public class Profile {
         this.miscStats = new Miscellaneous();
     }
 
-    public AttackData getBaseAttackData(){
-        return damageComponent.getBaseAttackData();
-    }
+//    public AttackData getBaseAttackData(){
+//        return damageComponent.getBaseAttackData();
+//    }
 
     public void update(UUID playerID,Map<Stats, double[]> newStats){
         healthComponent.updateComponent(playerID,newStats);

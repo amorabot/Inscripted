@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.player.profile.component;
 
 import com.amorabot.inscripted.item.inscription.definition.Stats;
+import com.amorabot.inscripted.skill.Skills;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -13,7 +14,11 @@ import java.util.UUID;
 @Setter
 public class DamageComponent implements ProfileComponent {
 
-    private AttackData baseAttackData;
+    /*
+    TODO: reestructure DamageComponent to better handle global stats that need to be stored for generating AttackData instances
+    possibly storing only a snapshot of specific damage-related stats instead of the entire thing
+    */
+//    private AttackData baseAttackData;
     private int lifeOnHit;
     private int extraProjectiles;
 
@@ -31,7 +36,7 @@ public class DamageComponent implements ProfileComponent {
     */
 
     public DamageComponent(){
-        this.baseAttackData = new AttackData();
+//        this.baseAttackData = new AttackData();
         this.lifeOnHit = 0;
         this.extraProjectiles = 0;
         this.meleeDamage = 0;
@@ -41,7 +46,7 @@ public class DamageComponent implements ProfileComponent {
 
     @Override
     public void updateComponent(UUID playerID, Map<Stats, double[]> finalStats) {
-        baseAttackData.updateComponent(playerID, finalStats);
+//        baseAttackData.updateComponent(playerID, finalStats);
 
         setLifeOnHit(getSingleValueFrom(Stats.LIFE_ON_HIT,finalStats));
         setExtraProjectiles(getSingleValueFrom(Stats.EXTRA_PROJECTILES,finalStats));

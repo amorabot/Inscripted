@@ -3,8 +3,8 @@ package com.amorabot.inscripted.components.Items.relic.enums;
 
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
-import com.amorabot.inscripted.skills.PlayerAbilities;
-import com.amorabot.inscripted.skills.item.StatToggleMonitors;
+import com.amorabot.inscripted.skill.PlayerAbilities;
+import com.amorabot.inscripted.skill.item.StatToggleMonitors;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

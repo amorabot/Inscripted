@@ -78,7 +78,11 @@ public class StatPool {
         Map<ValueType, int[]> valueTypeMap = getBaseStats().get(stat);
         return valueTypeMap.getOrDefault(type,new int[0]).clone();
     }
-    public double getMultiplier(Stats stat){
+    //Overrides existing stat, ideally should only be used on pool snapshots to avoid stat de-syncing
+    public void setBaseStatValue(Stats stat,ValueType type, int[] newBaseValue){
+        getBaseStats().get(stat).put(type, newBaseValue);
+    }
+        public double getMultiplier(Stats stat){
         return getMultipliers().getOrDefault(stat,1D);
     }//-----------------------------------------------------------------------------
 

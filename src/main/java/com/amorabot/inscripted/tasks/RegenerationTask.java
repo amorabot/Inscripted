@@ -3,7 +3,6 @@ package com.amorabot.inscripted.tasks;
 import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
 import com.amorabot.inscripted.player.profile.component.HealthComponent;
 import com.amorabot.inscripted.tasks.base.PlayerboundTask;
-import lombok.Getter;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -33,7 +32,7 @@ public class RegenerationTask extends PlayerboundTask {
 
         boolean inCombat = false;
 
-        Set<KeystoneIDs> playerKeystones = getPlayerEquipment(getPlayerID()).getEquipmenKeystones();
+        Set<KeystoneIDs> playerKeystones = getPlayerEquipment(getPlayerID()).getKeystones();
         int regeneratedHealth = playerHealth.regenHealth(inCombat,playerKeystones);
 
         boolean canRegenSoul = canRegenSoul(getPlayerID());

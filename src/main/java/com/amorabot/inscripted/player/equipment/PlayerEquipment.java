@@ -8,9 +8,11 @@ import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.player.Observer;
 import com.amorabot.inscripted.player.Subject;
 import com.amorabot.inscripted.player.profile.ProfileEvents;
+import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -25,11 +27,19 @@ public class PlayerEquipment {
     private boolean locked = true;
     private final Map<EquipmentSlots, EquimentSlotData> equipmentData = new HashMap<>();
 
+    // Processed and cached equipment data that will represent player state
+    @Setter
+    private StatPool globalStatCache;
+    private final Set<EffectIDs> effects = new HashSet<>();
+    private final Set<KeystoneIDs> keystones = new HashSet<>();
+    private final Set<Inscription> metaInscriptions = new HashSet<>();
+
     public PlayerEquipment(Observer observer){
         for (EquipmentSlots slot : EquipmentSlots.values()){
             equipmentData.put(slot,new EquimentSlotData());
         }
         profileSubject.addObserver(observer);
+        globalStatCache = new StatPool();
     }
 
     public void updateEquimentSlot(EquipmentSlots slot, Item itemData){
@@ -78,25 +88,28 @@ public class PlayerEquipment {
         currentSlotData.update(itemData);
     }
 
-    public Set<Inscription> getEquipmentMetaInscriptions(){
-        Set<Inscription> metaInscriptions = new HashSet<>();
+    public void compileSpecialInscriptions(){
+        updateEquipmenEffects();
+        updateEquipmenKeystones();
+        updateEquipmentMetaInscriptions();
+    }
+
+    private void updateEquipmentMetaInscriptions(){
+        metaInscriptions.clear();
         getEquipmentData().forEach(
                 (slot, slotData) -> metaInscriptions.addAll(slotData.getMetaInscriptions())
         );
-        return metaInscriptions;
     }
-    public Set<EffectIDs> getEquipmenEffects(){
-        Set<EffectIDs> effects = new HashSet<>();
+    private void updateEquipmenEffects(){
+        effects.clear();
         getEquipmentData().forEach(
                 (slot, slotData) -> effects.addAll(slotData.getItemEffects())
         );
-        return effects;
     }
-    public Set<KeystoneIDs> getEquipmenKeystones(){
-        Set<KeystoneIDs> keystones = new HashSet<>();
+    private void updateEquipmenKeystones(){
+        effects.clear();
         getEquipmentData().forEach(
                 (slot, slotData) -> keystones.addAll(slotData.getItemKeystones())
         );
-        return keystones;
     }
 }

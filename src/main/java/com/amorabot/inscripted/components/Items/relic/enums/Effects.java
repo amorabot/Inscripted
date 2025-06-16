@@ -5,7 +5,7 @@ import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.stat.StatBuff;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
-import com.amorabot.inscripted.skills.casting.GlobalCooldownManager;
+import com.amorabot.inscripted.skill.casting.GlobalCooldownManager;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import org.bukkit.entity.LivingEntity;

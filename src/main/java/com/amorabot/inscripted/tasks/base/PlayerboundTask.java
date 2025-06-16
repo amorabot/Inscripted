@@ -12,12 +12,12 @@ import java.util.UUID;
 
 @Getter
 public abstract class PlayerboundTask extends BukkitRunnable {
-    private static final boolean DEBUG_MODE = true;
+    protected static final boolean DEBUG_MODE = true;
 
-    private final UUID playerID;
+    protected final Player player;
 
     public PlayerboundTask(UUID playerID){
-        this.playerID = playerID;
+        this.player = Bukkit.getPlayer(playerID);
     }
 
     @Override
@@ -26,9 +26,8 @@ public abstract class PlayerboundTask extends BukkitRunnable {
             this.cancel();
             return;
         }
-        Player player = Bukkit.getPlayer(playerID);
-        if (player == null || !player.isOnline()){
-            abort("Error getting valid player instance for PlayerboundTask (" + this.getClass().getSimpleName()+") with taskID " + getTaskId());
+        if (invalidPlayer()){
+            abort("Error: invalid player for PlayerboundTask (" + this.getClass().getSimpleName()+" | "+getTaskId()+") Aborting...");
             return;
         }
         taskRoutine(player);
@@ -39,7 +38,7 @@ public abstract class PlayerboundTask extends BukkitRunnable {
     public void start(long delay, long timer) {
         runTaskTimer(Inscripted.getPlugin(),delay,timer);
         if (DEBUG_MODE) {
-            Utils.log("Started task " + this.getClass().getSimpleName());
+            Utils.log("Started " + this.getClass().getSimpleName());
         }
         register();
     }
@@ -56,9 +55,17 @@ public abstract class PlayerboundTask extends BukkitRunnable {
     public void register() {
         PlayerDataContainer.getDataContainerFor(getPlayerID()).addTask(this);
     }
+
     public void unregister() {
         if (PlayerDataContainer.hasPlayerData(getPlayerID())){
             PlayerDataContainer.getDataContainerFor(getPlayerID()).removeTask(getTaskId());
         }
+    }
+
+    public UUID getPlayerID() {
+        return getPlayer().getUniqueId();
+    }
+    protected boolean invalidPlayer(){
+        return (player == null || !player.isOnline());
     }
 }
