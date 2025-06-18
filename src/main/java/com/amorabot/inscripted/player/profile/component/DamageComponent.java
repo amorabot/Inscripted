@@ -13,30 +13,16 @@ import java.util.UUID;
 @Getter
 @Setter
 public class DamageComponent implements ProfileComponent {
-
-    /*
-    TODO: reestructure DamageComponent to better handle global stats that need to be stored for generating AttackData instances
-    possibly storing only a snapshot of specific damage-related stats instead of the entire thing
-    */
-//    private AttackData baseAttackData;
+    private AttackData baseAttackData;
     private int lifeOnHit;
     private int extraProjectiles;
 
-    // Make a map for damage-tag-related damages?
     private int projectileDamage;
     private int meleeDamage;
     private int areaDamage;
 
-    //Set with attack-related keystones and effects
-    /*
-     Wont support generic damage conversions for now, only skill conversions
-         Skills need to have a getRawAttack() method, recieving DamageComponent as input
-         and a final version of AttackData as output, taking in consideration
-         any conversions or multipliers, aswell as any specific damage increases (filtered by tags)
-    */
-
     public DamageComponent(){
-//        this.baseAttackData = new AttackData();
+        this.baseAttackData = new AttackData();
         this.lifeOnHit = 0;
         this.extraProjectiles = 0;
         this.meleeDamage = 0;
@@ -46,7 +32,7 @@ public class DamageComponent implements ProfileComponent {
 
     @Override
     public void updateComponent(UUID playerID, Map<Stats, double[]> finalStats) {
-//        baseAttackData.updateComponent(playerID, finalStats);
+        baseAttackData.updateComponent(playerID, finalStats);
 
         setLifeOnHit(getSingleValueFrom(Stats.LIFE_ON_HIT,finalStats));
         setExtraProjectiles(getSingleValueFrom(Stats.EXTRA_PROJECTILES,finalStats));

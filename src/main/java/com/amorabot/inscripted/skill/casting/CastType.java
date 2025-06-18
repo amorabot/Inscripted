@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.skill;
+package com.amorabot.inscripted.skill.casting;
 
 public enum CastType {
     NEUTRAL,

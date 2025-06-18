@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.skill;
 
-import com.amorabot.inscripted.skill.attackInstances.projectile.Projectile;
+import com.amorabot.inscripted.skill.routine.projectile.Projectile;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import org.bukkit.util.Vector;

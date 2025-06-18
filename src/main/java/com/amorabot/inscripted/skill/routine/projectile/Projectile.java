@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.skill.attackInstances.projectile;
+package com.amorabot.inscripted.skill.routine.projectile;
 
 import com.amorabot.inscripted.Inscripted;
 //import com.amorabot.inscripted.skill.PlayerAbilities;
@@ -6,7 +6,6 @@ import com.amorabot.inscripted.skill.SteeringBehaviors;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.*;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;

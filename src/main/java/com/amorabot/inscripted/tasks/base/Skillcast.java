@@ -2,10 +2,10 @@ package com.amorabot.inscripted.tasks.base;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
-import com.amorabot.inscripted.skill.CastSource;
-import com.amorabot.inscripted.skill.SkillcastData;
+import com.amorabot.inscripted.skill.casting.CastSource;
+import com.amorabot.inscripted.skill.routine.SkillcastData;
 import com.amorabot.inscripted.skill.Skills;
-import com.amorabot.inscripted.skill.attackInstances.SkillcastContext;
+import com.amorabot.inscripted.skill.routine.SkillcastContext;
 import lombok.Getter;
 
 import java.util.UUID;

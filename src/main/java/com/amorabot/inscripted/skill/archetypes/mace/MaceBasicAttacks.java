@@ -1,11 +1,11 @@
 package com.amorabot.inscripted.skill.archetypes.mace;
 
 import com.amorabot.inscripted.skill.PlayerAbilities;
-import com.amorabot.inscripted.skill.attackInstances.slam.Slam;
-import com.amorabot.inscripted.skill.attackInstances.slam.SlamConfigDTO;
-import com.amorabot.inscripted.skill.attackInstances.slam.SlamRenderers;
-import com.amorabot.inscripted.skill.attackInstances.slash.SlashConfig;
-import com.amorabot.inscripted.skill.attackInstances.slash.SlashPresets;
+import com.amorabot.inscripted.skill.routine.slam.Slam;
+import com.amorabot.inscripted.skill.routine.slam.SlamConfigDTO;
+import com.amorabot.inscripted.skill.routine.slam.SlamRenderers;
+import com.amorabot.inscripted.skill.routine.slash.SlashConfig;
+import com.amorabot.inscripted.skill.routine.slash.SlashPresets;
 import com.amorabot.inscripted.skill.type.Attack;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import org.bukkit.entity.Player;

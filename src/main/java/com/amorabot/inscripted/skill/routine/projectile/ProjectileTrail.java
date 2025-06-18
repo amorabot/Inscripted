@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.skill.attackInstances.projectile;
+package com.amorabot.inscripted.skill.routine.projectile;
 
 import com.amorabot.inscripted.particle.ParticlePlotter;
 import org.bukkit.Particle;

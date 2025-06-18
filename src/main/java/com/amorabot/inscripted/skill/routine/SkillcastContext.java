@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.skill.attackInstances;
+package com.amorabot.inscripted.skill.routine;
 
 import com.amorabot.inscripted.item.inscription.definition.EffectIDs;
 import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;

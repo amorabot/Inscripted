@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.skill.attackInstances.slash;
+package com.amorabot.inscripted.skill.routine.slash;
 
 import lombok.Getter;
 

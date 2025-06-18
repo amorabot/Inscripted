@@ -80,6 +80,12 @@ public class StatPool {
     }
     //Overrides existing stat, ideally should only be used on pool snapshots to avoid stat de-syncing
     public void setBaseStatValue(Stats stat,ValueType type, int[] newBaseValue){
+        if (!getBaseStats().containsKey(stat)){
+            Map<ValueType, int[]> valueTypeMap = new HashMap<>();
+            valueTypeMap.put(type,newBaseValue);
+            getBaseStats().put(stat,valueTypeMap);
+            return;
+        }
         getBaseStats().get(stat).put(type, newBaseValue);
     }
         public double getMultiplier(Stats stat){
@@ -121,6 +127,10 @@ public class StatPool {
     }
 
     public void insertValue(Stats stat,ValueType type,int[] values){
+        if (values == null || Arrays.stream(values).sum() == 0){
+            if (DEBUG_MODE){Utils.log("Ignoring value insertion (Empty/null values)");}
+            return;
+        }
         if (type.equals(ValueType.MULTIPLIER)){
             double storedMulti = multipliers.getOrDefault(stat,1D);
             double newMulti = ( 100 + values[0] ) / 100D;

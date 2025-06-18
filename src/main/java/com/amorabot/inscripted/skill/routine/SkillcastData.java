@@ -1,6 +1,6 @@
-package com.amorabot.inscripted.skill;
+package com.amorabot.inscripted.skill.routine;
 
-import com.amorabot.inscripted.skill.attackInstances.SkillcastContext;
+import com.amorabot.inscripted.skill.casting.CastSource;
 import lombok.Getter;
 
 import java.util.ArrayList;

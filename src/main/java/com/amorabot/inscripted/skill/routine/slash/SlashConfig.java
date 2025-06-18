@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.skill.attackInstances.slash;
+package com.amorabot.inscripted.skill.routine.slash;
 
 import org.bukkit.World;
 import org.bukkit.util.Vector;

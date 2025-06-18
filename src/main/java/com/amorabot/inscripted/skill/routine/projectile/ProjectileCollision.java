@@ -1,8 +1,5 @@
-package com.amorabot.inscripted.skill.attackInstances.projectile;
+package com.amorabot.inscripted.skill.routine.projectile;
 
-import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
-import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

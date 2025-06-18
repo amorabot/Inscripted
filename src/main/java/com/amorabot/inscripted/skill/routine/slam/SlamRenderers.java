@@ -1,14 +1,8 @@
-package com.amorabot.inscripted.skill.attackInstances.slam;
+package com.amorabot.inscripted.skill.routine.slam;
 
 import com.amorabot.inscripted.particle.ParticlePlotter;
-import com.amorabot.inscripted.skill.attackInstances.slash.SlashConfig;
-import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
-
-import java.util.function.Consumer;
-
-import static com.amorabot.inscripted.skill.attackInstances.slash.SlashSegment.renderTip;
 
 public class SlamRenderers {
 

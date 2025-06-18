@@ -2,11 +2,7 @@ package com.amorabot.inscripted.skill.archetypes.bow;
 
 import com.amorabot.inscripted.skill.PlayerAbilities;
 import com.amorabot.inscripted.skill.SteeringBehaviors;
-import com.amorabot.inscripted.skill.attackInstances.projectile.ProjectileCollision;
-import com.amorabot.inscripted.skill.attackInstances.projectile.ProjectilePatterns;
-import com.amorabot.inscripted.skill.attackInstances.projectile.ProjectileTrail;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 public class BowBasicAttacks {
 

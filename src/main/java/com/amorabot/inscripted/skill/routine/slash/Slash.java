@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.skill.attackInstances.slash;
+package com.amorabot.inscripted.skill.routine.slash;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.math.LinalgMath;
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static com.amorabot.inscripted.skill.AbilityRoutines.getLargeHitbox;
 
@@ -118,17 +117,22 @@ public class Slash{
             int totalFrames = 0;
             @Override
             public void run() {
-                for (int frame = 0; frame<framesPerIteration; frame++){
-                    int currentSegmentIndex = iteration*framesPerIteration + frame;
-                    Vector currentTip = points[0][currentSegmentIndex];
-                    Vector currentHandle = points[1][currentSegmentIndex];
+                try {
+                    for (int frame = 0; frame<framesPerIteration; frame++){
+                        int currentSegmentIndex = iteration*framesPerIteration + frame;
+                        Vector currentTip = points[0][currentSegmentIndex];
+                        Vector currentHandle = points[1][currentSegmentIndex];
 
-                    data.getSegmentRenderer().apply(slashData,getSlashWorld()).accept(new Vector[]{currentHandle,currentTip});
+                        data.getSegmentRenderer().apply(slashData,getSlashWorld()).accept(new Vector[]{currentHandle,currentTip});
 
-                    totalFrames++;
-                    if (totalFrames>=getSlashData().segments()){this.cancel();return;}
+                        totalFrames++;
+                        if (totalFrames>=getSlashData().segments()){this.cancel();return;}
+                    }
+                    iteration++;
+                } catch (Exception exception){
+                    this.cancel();
+                    return;
                 }
-                iteration++;
             }
         }.runTaskTimer(Inscripted.getPlugin(),0, 1).getTaskId();
     }
@@ -156,9 +160,7 @@ public class Slash{
     }
 
     public World getSlashWorld(){
-        Entity projOwner = Bukkit.getEntity(getSkillcast().getCastData().getCastingContext().getAttackerID());
-        assert projOwner != null;
-        return projOwner.getWorld();
+        return getSkillcast().getPlayer().getWorld();
     }
 
     private boolean checkValidity(Vector[] vectorsToCheck){

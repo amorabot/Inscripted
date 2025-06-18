@@ -1,8 +1,8 @@
-package com.amorabot.inscripted.skill.attackInstances.slam;
+package com.amorabot.inscripted.skill.routine.slam;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.player.profile.component.AttackData;
-import com.amorabot.inscripted.skill.attackInstances.slash.SlashConfig;
+import com.amorabot.inscripted.skill.routine.slash.SlashConfig;
 import com.amorabot.inscripted.math.LinalgMath;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import lombok.Getter;

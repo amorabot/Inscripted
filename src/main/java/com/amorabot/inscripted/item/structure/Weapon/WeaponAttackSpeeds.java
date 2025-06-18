@@ -24,8 +24,8 @@ public enum WeaponAttackSpeeds {
     //https://wynncraft.fandom.com/wiki/Weapons
     WeaponAttackSpeeds(double APS, int swingSpeed){
         this.attacksPerSecond = APS;
-        this.itemUsageCooldown = 1 / APS;   // X Attacks -> 1s
-                                            // 1 Attacks -> Ys
+        this.itemUsageCooldown = 20 / APS;   // X Attacks -> 20 ticks
+                                            // 1 Attacks -> Y ticks
         this.swingAnimationSpeed = swingSpeed;
     }
 

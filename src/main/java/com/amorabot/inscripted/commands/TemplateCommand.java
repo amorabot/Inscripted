@@ -16,7 +16,7 @@ import com.amorabot.inscripted.math.LinalgMath;
 import com.amorabot.inscripted.particle.ParticlePlotter;
 import com.amorabot.inscripted.skill.PlayerAbilities;
 import com.amorabot.inscripted.skill.SteeringBehaviors;
-import com.amorabot.inscripted.skill.attackInstances.projectile.Projectile;
+import com.amorabot.inscripted.skill.routine.projectile.Projectile;
 import com.amorabot.inscripted.skill.archetypes.bow.BowBasicAttacks;
 import com.amorabot.inscripted.math.OrientedBoundingBox;
 import com.amorabot.inscripted.utils.ColorUtils;

@@ -49,7 +49,7 @@ public class StatParser {
         //Update the player's profile
         profile.update(playerData.getPlayerID(),finalStats);
 
-        //Late Keystones trigger
+        //Late Keystones trigger (Overrides, Stat rules, ...)
         //...
     }
 

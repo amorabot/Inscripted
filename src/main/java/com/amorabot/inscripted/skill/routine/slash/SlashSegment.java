@@ -1,15 +1,11 @@
-package com.amorabot.inscripted.skill.attackInstances.slash;
+package com.amorabot.inscripted.skill.routine.slash;
 
 import com.amorabot.inscripted.particle.ParticlePlotter;
-import com.amorabot.inscripted.skill.attackInstances.slam.Slam;
-import com.google.common.collect.Maps;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
 
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class SlashSegment {
     // segment =>> [handle, tip]

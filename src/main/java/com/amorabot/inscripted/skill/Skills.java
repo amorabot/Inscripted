@@ -3,6 +3,10 @@ package com.amorabot.inscripted.skill;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import com.amorabot.inscripted.skill.archetypes.axe.AxeBasicAttacks;
+import com.amorabot.inscripted.skill.archetypes.dagger.DaggerBasicAttacks;
+import com.amorabot.inscripted.skill.archetypes.sword.SwordBasicAttacks;
+import com.amorabot.inscripted.skill.casting.CastSource;
+import com.amorabot.inscripted.skill.casting.CastType;
 import com.amorabot.inscripted.skill.type.Attack;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
@@ -11,15 +15,17 @@ import lombok.Getter;
 import java.lang.reflect.Field;
 import java.util.UUID;
 import java.util.function.Consumer;
+//TODO: Move annotation data to skills.yml file
 
 @Getter
 public enum Skills {
-    FIST(null,CastType.NEUTRAL, new Tags[]{Tags.NONE},0),
-    //TODO: Move annotation data to .yml file
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {110, 90, 90, 90, 30}, dmgConversion = {0, 0, 0, 0} )
-    BASIC_AXE_SLASH(AxeBasicAttacks::standardAxeSlashBy,CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0);
-//    BASIC_SWORD_SLASH(CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE}),
-//    BASIC_DAGGER_SLASH(CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE}),
+    FIST(null, CastType.NEUTRAL, new Tags[]{Tags.NONE},0),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {110, 90, 60, 60, 30}, dmgConversion = {0, 0, 0, 0} )
+    BASIC_AXE_SLASH(AxeBasicAttacks::standardAxeSlash,CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {90, 90, 90, 90, 40}, dmgConversion = {0, 0, 0, 0} )
+    BASIC_SWORD_SLASH(SwordBasicAttacks::standardSwordSlash, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {100, 80, 80, 80, 40}, dmgConversion = {0, 0, 0, 0} )
+    BASIC_DAGGER_SLASH(DaggerBasicAttacks::standardDaggerSlash,CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0);
 //    BASIC_BOW_SHOT(CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE}),
 //    BASIC_MACE_SLAM(CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE,Tags.SPELL});
 
@@ -38,13 +44,13 @@ public enum Skills {
 
     public void cast(UUID casterID, CastSource source, WeaponAttackSpeeds speedModifier){
         final boolean persistent = false;
-        switch (type){
+        switch (getType()){
             case BASIC_ATTACK, SPECIAL_ATTACK -> {
                 if (persistent){
                     // Instantiate a persistent attack
                     return;
                 }
-                new Attack.Basic(casterID,this,source,speedModifier);
+                new Attack.Basic(casterID,this,source,speedModifier).start(0,0);
             }
             case MOVEMENT -> {
                 //Instantiate a Movement

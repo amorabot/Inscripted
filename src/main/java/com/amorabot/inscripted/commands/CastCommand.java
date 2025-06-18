@@ -1,10 +1,7 @@
 package com.amorabot.inscripted.commands;
 
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
-import com.amorabot.inscripted.player.PlayerDataContainer;
-import com.amorabot.inscripted.player.profile.component.DamageComponent;
-import com.amorabot.inscripted.skill.CastSource;
-import com.amorabot.inscripted.skill.PlayerAbilities;
+import com.amorabot.inscripted.skill.casting.CastSource;
 import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.skill.type.Attack;
 import org.bukkit.command.Command;
@@ -30,27 +27,9 @@ public class CastCommand implements TabExecutor {
         if (strings == null){return false;}
         try{
             Skills skill = Skills.valueOf(strings[0]);
-            new Attack.Basic(playerID,skill, CastSource.PLAYER, WeaponAttackSpeeds.FAST).start(0,0);
+            skill.cast(playerID,CastSource.PLAYER,WeaponAttackSpeeds.FAST);
+//            new Attack.Basic(playerID,skill, CastSource.PLAYER, WeaponAttackSpeeds.FAST).start(0,0);
 
-//            switch (selectorArgument){
-//                case "slash":
-////                    boolean isMirrored = Math.random() > 0.5;
-////                    boolean isInverted = Math.random() > 0.5;
-////                    SlashConfig slashConfig = new SlashConfig(
-////                            20,100,2,-0.2, 0.1,
-////                            0.3,1.2, new int[]{173, 143, 130}, null, 0.7F, 0.2
-////                            );
-////
-////                    Slash slash = new Slash(player, PlayerAbilities.BASIC_SWORD_SLASH,slashConfig,
-////                            isMirrored,isInverted,false, SlashSegment::standardSword, 30);
-//
-////                    slash.execute();
-//                    return true;
-//                case "slam":
-//
-//                    return true;
-//
-//
 //                case "smite":
 ////                    Consumer<Slam> impactRenderer = slamData -> {
 ////                        Vector slamCenter = slamData.getSlamCenter();

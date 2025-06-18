@@ -80,11 +80,15 @@ public class AttackData implements ProfileComponent {
 
 
     public AttackData(UUID attackerID, Skills skillUsed, StatPool globalPlayerStats){
+        if (!skillUsed.isAttackSkill()){
+            Utils.error("Skill '" + skillUsed.name() + "' does not have attack data set.");
+            return;
+        }
         StatPool globalSnapshot = globalPlayerStats.snapshot(); //TODO: Create a filtered version of this snapshot, containing only meaningful stats
         skillUsed.applyBonusStats(globalSnapshot);
 
         AttackSkill attackSkillData = skillUsed.getAttackSkillData();
-        Tags skillTags = skillUsed.getSkillTags()[0];
+        Tags[] skillTags = skillUsed.getSkillTags();
         assert attackSkillData != null;
         int[] addedDmgs = attackSkillData.addedBaseDmg();
         int[] effectiveness = attackSkillData.dmgEffectiveness();
@@ -97,9 +101,6 @@ public class AttackData implements ProfileComponent {
             Stats dmgStat = type.getDmgStat();
             //Added skill base damages
             globalSnapshot.insertValue(dmgStat, ValueType.FLAT,new int[]{addedDmgs[(2*i)],addedDmgs[(2*i) + 1]});
-            if (skillTags!=null){
-                //TODO: apply tag-related increases, if any
-            }
             //Apply damage effectiveness for that type
             globalSnapshot.insertValue(dmgStat,ValueType.MULTIPLIER,new int[]{effectiveness[i]});
             //Increases are handled inside the #getFinalValues() on globalSnapshot at a later stage
@@ -109,6 +110,16 @@ public class AttackData implements ProfileComponent {
         //Convert stored physical dmg to other types
         int[] remainingPhys = convert(normalizedConversions,globalSnapshot);
         globalSnapshot.setBaseStatValue(Stats.PHYSICAL_DAMAGE,ValueType.FLAT,remainingPhys);
+
+        if (skillTags!=null){ // Apply conditional increases to 'Final' damages, if any
+            int totalDmgIncrease = 0;
+            for (Tags tag : skillTags){
+                totalDmgIncrease+=tag.getDamageBonus(attackerID);
+            }
+            for (DamageTypes dmg : DamageTypes.values()){
+                globalSnapshot.insertValue(dmg.getDmgStat(),ValueType.INCREASED,new int[]{totalDmgIncrease});
+            }
+        }
 
         //globalSnapshot has been updated, lets get the final values for the AttackData component being constructed
         updateComponent(attackerID,globalSnapshot.calculateFinalValues());
