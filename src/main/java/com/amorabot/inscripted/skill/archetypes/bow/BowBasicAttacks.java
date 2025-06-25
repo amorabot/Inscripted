@@ -1,17 +1,43 @@
 package com.amorabot.inscripted.skill.archetypes.bow;
 
+import com.amorabot.inscripted.player.PlayerDataContainer;
+import com.amorabot.inscripted.player.profile.component.AttackData;
 import com.amorabot.inscripted.skill.PlayerAbilities;
+import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.skill.SteeringBehaviors;
+import com.amorabot.inscripted.skill.routine.projectile.Projectile;
+import com.amorabot.inscripted.skill.routine.projectile.ProjectileCollision;
+import com.amorabot.inscripted.skill.routine.projectile.ProjectileConfig;
+import com.amorabot.inscripted.skill.routine.projectile.ProjectileTrail;
+import com.amorabot.inscripted.skill.type.Attack;
+import com.amorabot.inscripted.skill.type.ProjectileSkill;
+import com.amorabot.inscripted.tasks.base.Skillcast;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 public class BowBasicAttacks {
 
     public static void standardBowAttackBy(Player player, PlayerAbilities mappedAbility, SteeringBehaviors behavior, int projectiles){
-        int maxRange = 25;
-        double projSpeed = (double) 30 / 20; //Blocks/s (Scales with proj speed stat) //randomize per pellet?
-        double detectionRange = 0.8;
+    }
+    public static void standardBowAttack(Skillcast skillcast){
+        if (!(skillcast instanceof Attack.Basic basicAttackInstance)){return;}
+        Skills sourceSkill = skillcast.getCastData().getCastingContext().getSkillUsed();
+        ProjectileSkill projData = sourceSkill.getProjectileSkilLData();
+        AttackData attackData = basicAttackInstance.getAttackData();
 
-//        ProjectilePatterns.CONE.instantiate(player, mappedAbility,projectiles,maxRange,projSpeed,detectionRange, behavior, false, false, true,
-//                ProjectileTrail::basicArrow, ProjectileCollision::standard, 90, new Vector[]{null});
+        int maxRange = 25;
+        int projectiles = PlayerDataContainer.getProfile(skillcast.getPlayerID()).getDamageComponent().getExtraProjectiles() + projData.baseProjectiles();
+        ProjectileConfig projectileConfig = new ProjectileConfig(false,false,true,
+                30D / 20, 0.12, 0.8,
+                ProjectileTrail::basicArrow, ProjectileCollision::standardDetection, ProjectileCollision::testCollisionExecution);
+        Location playerLocation = skillcast.getPlayer().getLocation().clone().add(0,1.2,0);
+        Vector target = null;
+        boolean uniqueTarget = skillcast.getCastData().getCastingContext().getSkillUsed().getProjectileSkilLData().uniqueTarget();
+        if (uniqueTarget){
+            target = Projectile.getRaytracedMaxDistance(playerLocation, playerLocation.getDirection().clone(), maxRange);
+        }
+
+        projData.spread().instantiate(skillcast,attackData,projectileConfig,playerLocation,target, projectiles, maxRange, 90D);
     }
 }

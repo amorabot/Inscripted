@@ -9,13 +9,13 @@ import static com.amorabot.inscripted.utils.Utils.limitVector;
 
 @Getter
 public enum SteeringBehaviors {
-    STRAIGHT_LINE(false) {
+    STRAIGHT_LINE() {
         @Override
         public void steer(Projectile proj) {
             proj.applyForce(proj.getBaseAcceleration());
         }
     },
-    SEEK(true) {
+    SEEK() {
         @Override
         public void steer(Projectile proj) {
             Vector desiredVelocity = limitVector(proj.getTarget().clone().subtract(proj.getOrigin()), proj.getMaxSpeed());
@@ -23,7 +23,7 @@ public enum SteeringBehaviors {
             proj.applyForce(steeringForce);
         }
     },
-    ARRIVE(true) {
+    ARRIVE() {
         @Override
         public void steer(Projectile proj) {
             float arriveRadius = 10;
@@ -42,10 +42,5 @@ public enum SteeringBehaviors {
         }
     };
 
-    final boolean singleTarget;
-
-    SteeringBehaviors(boolean singleTarget){
-        this.singleTarget = singleTarget;
-    }
     public abstract void steer(Projectile proj);
 }

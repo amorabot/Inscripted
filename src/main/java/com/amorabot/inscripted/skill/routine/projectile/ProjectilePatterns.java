@@ -46,13 +46,13 @@ public enum ProjectilePatterns {
                 Vector currentTarget = Projectile.getRaytracedMaxDistance(origin, dir, maxRange);
 //                    Vector currentTarget = dir.clone().multiply(maxRange).add(origin.toVector());
                 Vector initialVelocity = dir.clone().multiply(projSpeed);
-                Projectile currProj = new Projectile(player,origin.toVector().clone(), initialVelocity, new Vector(), currentTarget,
-                        gravity, ignoreBlocks, destroyOnContact, projSpeed, 0.12, Math.min(currentTarget.distance(origin.toVector()), maxRange),detectionRange,
-                        behavior, trailRenderer, collisionRoutine
-                );
-                //If the behavior dictates a need for a different type of target, prioritize it
-                updateTargets(currProj, targets);
-                currProj.execute();
+//                Projectile currProj = new Projectile(player,origin.toVector().clone(), initialVelocity, new Vector(), currentTarget,
+//                        gravity, ignoreBlocks, destroyOnContact, projSpeed, 0.12, Math.min(currentTarget.distance(origin.toVector()), maxRange),detectionRange,
+//                        behavior, trailRenderer, collisionRoutine
+//                );
+//                //If the behavior dictates a need for a different type of target, prioritize it
+//                updateTargets(currProj, targets);
+//                currProj.execute();
             }
         }
     },
@@ -72,12 +72,12 @@ public enum ProjectilePatterns {
             for (Vector target : spreadPoints){
                 Vector currentDir = target.clone().subtract(origin.toVector()).normalize();
                 Vector initialVel = currentDir.clone().multiply(Utils.getRandomInclusiveValue(0.5*projSpeed, projSpeed));
-                Projectile currProj = new Projectile(player, origin.toVector().clone(), initialVel, new Vector(), target,
-                        gravity, ignoreBlocks, destroyOnContact, projSpeed, 0.15, maxRange, detectionRange,
-                        behavior, trailRenderer, collisionRoutine
-                );
-                updateTargets(currProj,targets);
-                currProj.execute();
+//                Projectile currProj = new Projectile(player, origin.toVector().clone(), initialVel, new Vector(), target,
+//                        gravity, ignoreBlocks, destroyOnContact, projSpeed, 0.15, maxRange, detectionRange,
+//                        behavior, trailRenderer, collisionRoutine
+//                );
+//                updateTargets(currProj,targets);
+//                currProj.execute();
             }
         }
     },
@@ -99,13 +99,13 @@ public enum ProjectilePatterns {
                     Location origin = player.getLocation().clone().add(0,1.2,0);
                     Vector currentDir = origin.getDirection().clone();
                     Vector currentTarget = Projectile.getRaytracedMaxDistance(origin, currentDir, maxRange);
-                    Projectile currProj = new Projectile(player, origin.toVector().clone(), currentDir.clone().multiply(projSpeed), new Vector(), currentTarget,
-                            gravity, ignoreBlocks, destroyOnContact, projSpeed, 0.10, maxRange, detectionRange,
-                            behavior, trailRenderer, collisionRoutine
-                    );
-                    updateTargets(currProj,targets);
-                    currProj.execute();
-                    shotProj++;
+//                    Projectile currProj = new Projectile(player, origin.toVector().clone(), currentDir.clone().multiply(projSpeed), new Vector(), currentTarget,
+//                            gravity, ignoreBlocks, destroyOnContact, projSpeed, 0.10, maxRange, detectionRange,
+//                            behavior, trailRenderer, collisionRoutine
+//                    );
+//                    updateTargets(currProj,targets);
+//                    currProj.execute();
+//                    shotProj++;
                 }
             }.runTaskTimer(Inscripted.getPlugin(),0, period).getTaskId();
         }
@@ -118,10 +118,4 @@ public enum ProjectilePatterns {
     public abstract void instantiate(Player player, Skills skillUsed, int projectiles, int maxRange, double projSpeed, double detectionRange,
                                      SteeringBehaviors behavior, boolean gravity, boolean ignoreBlocks, boolean destroyOnContact,
                                      Consumer<Projectile> trailRenderer, Consumer<Projectile> collisionRoutine, double extraData, Vector... targets);
-
-    public void updateTargets(Projectile proj, Vector[] targets){
-        if (proj.getBehavior().isSingleTarget() && targets != null){
-            if (targets[0] != null){proj.changeTarget(targets[0]);}
-        }
-    }
 }

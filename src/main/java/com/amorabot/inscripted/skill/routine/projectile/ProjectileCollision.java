@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.skill.routine.projectile;
 
+import com.amorabot.inscripted.tasks.base.Skillcast;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -14,7 +15,7 @@ public class ProjectileCollision {
 
     //TODO: Replace for 2 methods -> detection & execution //Detection can be a projectile standard method and execution a Consumer<Proj>
     //that can mutate its internal value (like changing targets,resetting travel distance, chain, explosion,...)
-    public static void standard(Projectile projectile){
+    public static boolean standardDetection(Projectile projectile){
         Vector currentPosition = projectile.getOrigin();
 //TODO        Player attacker = Bukkit.getPlayer(projectile.getContext().getAttackerID());
 //        assert attacker != null;
@@ -44,13 +45,18 @@ public class ProjectileCollision {
 //                    DamageRouter.entityDamage(attacker, e, DamageSource.HIT, projectile.getContext().getSkillUsed());
 //                    projectile.getAffectedEntities().add(e.getUniqueId());
 //                    if (projectile.isDestroyOnContact()){projectile.setValid(false);}
-                    return;
+                    return true;
                 }
                 continue;
                 //Its a regular mob/living entity
 
             }
         }
+        return false;
+    }
+
+    public static void testCollisionExecution(Skillcast originalSkillcast){
+        originalSkillcast.getPlayer().sendMessage("Colided!");
     }
 
     //TODO: Seek when found -> constant checks for nearby players and change behavior to seek + change target

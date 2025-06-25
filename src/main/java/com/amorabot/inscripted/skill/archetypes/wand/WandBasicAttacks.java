@@ -1,8 +1,17 @@
 package com.amorabot.inscripted.skill.archetypes.wand;
 
+import com.amorabot.inscripted.player.PlayerDataContainer;
+import com.amorabot.inscripted.player.profile.component.AttackData;
 import com.amorabot.inscripted.skill.PlayerAbilities;
+import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.skill.SteeringBehaviors;
 import com.amorabot.inscripted.skill.routine.projectile.Projectile;
+import com.amorabot.inscripted.skill.routine.projectile.ProjectileCollision;
+import com.amorabot.inscripted.skill.routine.projectile.ProjectileConfig;
+import com.amorabot.inscripted.skill.routine.projectile.ProjectileTrail;
+import com.amorabot.inscripted.skill.type.Attack;
+import com.amorabot.inscripted.skill.type.ProjectileSkill;
+import com.amorabot.inscripted.tasks.base.Skillcast;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -10,14 +19,26 @@ import org.bukkit.util.Vector;
 public class WandBasicAttacks {
 
     public static void standardWandAttackBy(Player player, PlayerAbilities mappedAbility, SteeringBehaviors behavior, int projectiles){
-        int maxRange = 13;
-        double projSpeed = (double) 20 / 20; //Blocks/s (Scales with proj speed stat) //randomize per pellet?
-        double detectionRange = 0.9;
+    }
 
-        Location loc = player.getLocation().clone().add(0,1.7,0);
-        Vector targetpos = Projectile.getRaytracedMaxDistance(loc, loc.getDirection().clone(), maxRange);
-//        ProjectilePatterns.SHOTGUN.instantiate(player, mappedAbility,projectiles,maxRange,projSpeed,detectionRange, behavior, false, false, false,
-//                ProjectileTrail::basicWand, ProjectileCollision::standard, 16, new Vector[]{targetpos});
+    public static void standardWandAttack(Skillcast skillcast){
+        if (!(skillcast instanceof Attack.Basic basicAttackInstance)){return;}
+        Skills sourceSkill = skillcast.getCastData().getCastingContext().getSkillUsed();
+        ProjectileSkill projData = sourceSkill.getProjectileSkilLData();
+        AttackData attackData = basicAttackInstance.getAttackData();
 
+        int maxRange = 12;
+        int projectiles = PlayerDataContainer.getProfile(skillcast.getPlayerID()).getDamageComponent().getExtraProjectiles() + projData.baseProjectiles();
+        ProjectileConfig projectileConfig = new ProjectileConfig(false,false,false,
+                20D / 20, 0.08, 0.9,
+                ProjectileTrail::basicWand, ProjectileCollision::standardDetection, ProjectileCollision::testCollisionExecution);
+        Location playerLocation = skillcast.getPlayer().getLocation().clone().add(0,1.2,0);
+        Vector target = null;
+        boolean uniqueTarget = skillcast.getCastData().getCastingContext().getSkillUsed().getProjectileSkilLData().uniqueTarget();
+        if (uniqueTarget){
+            target = Projectile.getRaytracedMaxDistance(playerLocation, playerLocation.getDirection().clone(), maxRange);
+        }
+
+        projData.spread().instantiate(skillcast,attackData,projectileConfig,playerLocation,target, projectiles, maxRange, 12);
     }
 }
