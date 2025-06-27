@@ -65,7 +65,7 @@ public abstract class PlayerboundTask extends BukkitRunnable {
     public UUID getPlayerID() {
         return getPlayer().getUniqueId();
     }
-    protected boolean invalidPlayer(){
+    public boolean invalidPlayer(){
         return (player == null || !player.isOnline());
     }
 }

@@ -7,6 +7,8 @@ import com.amorabot.inscripted.skill.routine.SkillcastData;
 import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.skill.routine.SkillcastContext;
 import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -35,9 +37,9 @@ public abstract class Skillcast extends PlayerboundTask{
     }
 
     @Override
-    public void start(long delay, long timer) { // Skills execute routines once by default. Persistent casts will execute a new and independent task
-        register();
+    public void start(long delay, long timer) { // Skills execute routines once by default. Persistent casts will execute a new and independent subtask
         run();
+        register();
     }
     @Override
     public void register(){
@@ -47,6 +49,14 @@ public abstract class Skillcast extends PlayerboundTask{
     public void unregister(){
         //Remove this skill cast from global CDs
         //stop this task
+    }
+    @Override
+    protected void taskRoutine(Player player) {
+        getCastData().getCastingContext().getSkillUsed().getSkillRoutine().accept(this);
+    }
+
+    public Skills getCastedSkill(){
+        return getCastData().getCastingContext().getSkillUsed();
     }
 
 
@@ -70,14 +80,48 @@ public abstract class Skillcast extends PlayerboundTask{
         Aura casts should be stored on a "Active" map, when toggled, cancel and remove from that map
         When activating a aura, check if that Skill instance, for that player, is already active. If so, toggle(deactivate) it.
         */
-        final int period;
-        int persistentRoutineID;
+        @Setter
+        @Getter
+        private int persistentRoutineID = -1;
         //TODO: maxDuration on persistent attacks, Auras are essentially toggles
         //+ castTime, complementing maxDuration
 
-        public Persistent(UUID playerID, Skills sourceSkill, CastSource castSource,  WeaponAttackSpeeds weaponSpeed, int taskPeriod) {
+        public Persistent(UUID playerID, Skills sourceSkill, CastSource castSource,  WeaponAttackSpeeds weaponSpeed) {
             super(playerID, sourceSkill, castSource, weaponSpeed.getAbilityCooldownModifier());
-            this.period = taskPeriod;
+        }
+
+        @Override
+        public void run() {
+            /*
+             For persistent casts, the skill routine defines and starts the subroutine task
+             Then, the persistent subroutine ID must be set internally
+            */
+            taskRoutine(getPlayer());
+            if (persistentRoutineID ==-1){
+                abort("Persistent subroutine must be set!");
+                return;
+            }
+            if (!isValidPersistentCast()){
+                abort("Error: Invalid persistent cast internal data.");
+                return;
+            }
+        }
+
+        public boolean isValidPersistentCast(){
+            CastSource source = getCastData().getSource();
+            return Inscripted.getPlugin().isEnabled() &&
+                    source != null &&
+                    !source.equals(CastSource.MONSTER) &&
+                    !invalidPlayer();
+        }
+
+        public double getSubroutinePeriodInSeconds(){
+            if (!getCastData().getCastingContext().getSkillUsed().isPersistent()){return 0;}
+            return getCastedSkill().getPersistentSkillData().period();
+        }
+        public double getSubroutineMaxDurationInSeconds(){
+            if (!getCastData().getCastingContext().getSkillUsed().isPersistent()){return 0;}
+            return getCastedSkill().getPersistentSkillData().maxDuration();
         }
     }
 }

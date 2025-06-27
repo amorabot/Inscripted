@@ -1,7 +1,7 @@
-package com.amorabot.inscripted.skill.type;
+package com.amorabot.inscripted.skill.annotations;
 
 import com.amorabot.inscripted.skill.SteeringBehaviors;
-import com.amorabot.inscripted.skill.routine.projectile.ProjectileSpread;
+import com.amorabot.inscripted.skill.routine.projectile.ProjectileGenerators;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ProjectileSkill {
     int baseProjectiles();
-    ProjectileSpread spread();
+    ProjectileGenerators spread();
     SteeringBehaviors defaultSteering();
     boolean uniqueTarget();
 }

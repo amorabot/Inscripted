@@ -6,7 +6,7 @@ import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.skill.casting.GlobalCooldownManager;
-import com.amorabot.inscripted.skill.item.ItemPassiveAbilities;
+import com.amorabot.inscripted.skill.item.ItemAuras;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -158,8 +158,8 @@ public enum PlayerAbilities {
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
             int period = 60; //Ticks
             int animationSteps = 3;
-            int taskID = ItemPassiveAbilities.activatePermafrost(caster, period, animationSteps);
-            PlayerPassivesManager.addKeystonePassive(caster.getUniqueId(), Keystones.PERMAFROST, taskID);
+//            int taskID = ItemAuras.activatePermafrost(caster, period, animationSteps);
+//            PlayerPassivesManager.addKeystonePassive(caster.getUniqueId(), Keystones.PERMAFROST, taskID);
         }
     },
     THUNDERSTRUCK_PASSIVE(new int[]{0,0,50,0,0}, new float[]{0,0,0.15F,0,0}, 0,
@@ -168,8 +168,8 @@ public enum PlayerAbilities {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
             int period = 30; //Ticks
-            int taskID = ItemPassiveAbilities.activateThunderstruck(caster, period);
-            PlayerPassivesManager.addKeystonePassive(caster.getUniqueId(), Keystones.THUNDERSTRUCK, taskID);
+//            int taskID = ItemAuras.activateThunderstruck(caster, period);
+//            PlayerPassivesManager.addKeystonePassive(caster.getUniqueId(), Keystones.THUNDERSTRUCK, taskID);
         }
     },
     WINDS_OF_CHANGE_PASSIVE(new int[5], new float[5], 0,
@@ -178,8 +178,8 @@ public enum PlayerAbilities {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
             int period = 20*60; //Ticks
-            int taskID = ItemPassiveAbilities.activateWindsOfChangeFor(caster, period);
-            PlayerPassivesManager.addKeystonePassive(caster.getUniqueId(), Keystones.WINDS_OF_CHANGE, taskID);
+//            int taskID = ItemAuras.activateWindsOfChangeFor(caster, period);
+//            PlayerPassivesManager.addKeystonePassive(caster.getUniqueId(), Keystones.WINDS_OF_CHANGE, taskID);
         }
     };
 

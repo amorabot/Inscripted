@@ -10,7 +10,7 @@ import com.amorabot.inscripted.skill.routine.projectile.ProjectileCollision;
 import com.amorabot.inscripted.skill.routine.projectile.ProjectileConfig;
 import com.amorabot.inscripted.skill.routine.projectile.ProjectileTrail;
 import com.amorabot.inscripted.skill.type.Attack;
-import com.amorabot.inscripted.skill.type.ProjectileSkill;
+import com.amorabot.inscripted.skill.annotations.ProjectileSkill;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

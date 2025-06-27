@@ -4,7 +4,7 @@ import com.amorabot.inscripted.item.inscription.definition.Stats;
 import com.amorabot.inscripted.item.inscription.language.ValueType;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.player.profile.parsing.StatPool;
-import com.amorabot.inscripted.skill.AttackSkill;
+import com.amorabot.inscripted.skill.annotations.AttackSkill;
 import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.skill.Tags;
 import com.amorabot.inscripted.utils.Utils;

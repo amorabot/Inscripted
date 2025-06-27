@@ -47,10 +47,10 @@ public abstract class Attack extends Skillcast.Simple {
             getPlayer().setCooldown(Material.BOW,usageCooldown);
             swingEffect.apply(getPlayer());
         }
-
-        @Override
-        protected void taskRoutine(Player player) {
-            getCastData().getCastingContext().getSkillUsed().getSkillRoutine().accept(this);
-        }
+//
+//        @Override
+//        protected void taskRoutine(Player player) {
+//            getCastData().getCastingContext().getSkillUsed().getSkillRoutine().accept(this);
+//        }
     }
 }

@@ -4,7 +4,7 @@ import com.amorabot.inscripted.Inscripted;
 //import com.amorabot.inscripted.skill.PlayerAbilities;
 import com.amorabot.inscripted.player.profile.component.AttackData;
 import com.amorabot.inscripted.skill.SteeringBehaviors;
-import com.amorabot.inscripted.skill.type.ProjectileSkill;
+import com.amorabot.inscripted.skill.annotations.ProjectileSkill;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
@@ -53,31 +53,6 @@ public class Projectile{
     private Function<Projectile, Boolean> collisionDetection;
     private Consumer<Skillcast> collisionImpact;
 
-    public Projectile(Player attacker,
-                      Vector initialPos, Vector baseVelocity, Vector baseAcceleration, Vector targetPos,
-                      boolean hasGravity, boolean ignoreBlocks, boolean destroyOnContact, double maxSpeed, double maxForce, double maxTravelDistance, double detectionRange,
-                      SteeringBehaviors behavior,Consumer<Projectile> trail, Function<Projectile, Boolean> collisionDetection){
-        this.skillcast = null;
-        this.attackData = null;
-
-        this.origin = initialPos;
-        this.velocity = baseVelocity;
-        this.baseAcceleration = baseAcceleration;
-        this.target = targetPos;
-
-        this.behavior = behavior;
-        //Gravity can be defined via attackerContext
-        this.gravity = hasGravity;
-        this.ignoreBlocks = ignoreBlocks;
-        this.destroyOnContact = destroyOnContact;
-        this.maxSpeed = maxSpeed;
-        this.maxForce = maxForce;
-        this.maxTravelDistance = maxTravelDistance;
-        this.detectionRange = detectionRange;
-
-        this.trailRenderer = trail;
-        this.collisionDetection = collisionDetection;
-    }
     public Projectile(Skillcast skillcast, AttackData attackData, Vector initialPos, Vector baseVelocity, Vector baseAcceleration, Vector targetPos,
                       double maxTravelDistance,
                       ProjectileConfig projConfig){
@@ -90,7 +65,7 @@ public class Projectile{
         this.target = targetPos;
         //TODO: check for special Keystone rules/spreads
         ProjectileSkill projSkillData = skillcast.getCastData().getCastingContext().getSkillUsed().getProjectileSkilLData();
-        if (target == null || projSkillData.spread().equals(ProjectileSpread.RADIAL)){
+        if (target == null || projSkillData.spread().equals(ProjectileGenerators.RADIAL)){
             this.behavior = SteeringBehaviors.STRAIGHT_LINE;
         } else {
             this.behavior = projSkillData.defaultSteering();
@@ -107,6 +82,8 @@ public class Projectile{
         this.trailRenderer = projConfig.trail();
         this.collisionDetection = projConfig.collisionDetection();
         this.collisionImpact = projConfig.impactRoutine();
+
+        execute();
     }
 
     public void execute() {

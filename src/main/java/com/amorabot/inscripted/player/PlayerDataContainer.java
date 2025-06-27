@@ -6,9 +6,14 @@ import com.amorabot.inscripted.player.equipment.PlayerEquipment;
 import com.amorabot.inscripted.player.profile.ProfileEvents;
 import com.amorabot.inscripted.player.profile.parsing.StatParser;
 import com.amorabot.inscripted.skill.AbilityTypes;
+import com.amorabot.inscripted.skill.PlayerAbilities;
+import com.amorabot.inscripted.skill.Skills;
+import com.amorabot.inscripted.skill.casting.CastType;
 import com.amorabot.inscripted.skill.casting.GlobalCooldown;
+import com.amorabot.inscripted.skill.type.Aura;
 import com.amorabot.inscripted.tasks.RegenerationTask;
 import com.amorabot.inscripted.tasks.base.PlayerboundTask;
+import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -27,7 +32,11 @@ public class PlayerDataContainer implements Observer {
     private final Profile profile;
     private final PlayerEquipment equipment;
     private final Map<Integer,PlayerboundTask> playerboundTasks = new HashMap<>();
-    private final Map<AbilityTypes, GlobalCooldown> skillCooldowns = new HashMap<>();
+    private final Map<CastType, GlobalCooldown> skillCooldowns = new HashMap<>();
+//    private final Map<CastType, Skillcast.Persistent> persistentSkillInstances = new HashMap<>();
+    @Getter
+    private final Map<Skills, Aura> activeAuras = new HashMap<>();
+
 
     public PlayerDataContainer(UUID playerID){
         this.playerID = playerID;
@@ -122,5 +131,45 @@ public class PlayerDataContainer implements Observer {
     }
 
     //Skill casting/cooldown methods
+    public boolean skillcastBy(Skills skill, int cooldownModifier){
+        final int baseCD = skill.getCooldownInSeconds();
+        if (baseCD==0){return true;}
+        CastType type = skill.getType();
+        int cooldown = (baseCD*1000);
+        if (cooldownModifier!=0){
+            cooldown = (int) Utils.applyPercentageTo(cooldown,cooldownModifier);
+        }
 
+        long castTime = System.currentTimeMillis();
+        if (!skillCooldowns.containsKey(type)){
+            skillCooldowns.put(type, new GlobalCooldown(cooldown, castTime));
+            return true;
+        }
+        //A GCD object is accessible
+        GlobalCooldown skillGCD = skillCooldowns.get(type);
+        if (skillGCD.canBeCast()){
+            skillGCD.setBaseGCD(cooldown);
+            skillGCD.setLastCastTime(castTime);
+            return true;
+        }
+        return false;
+    }
+
+    public Long fetchAbilityRemainingCooldown(CastType type){
+        if (!skillCooldowns.containsKey(type)){
+            return 0L;
+        }
+
+        //The player already used a skill before, so fetch the GDC in the map
+        GlobalCooldown playerGCD = skillCooldowns.get(type);
+        return getRemainingCD(playerGCD.getLastCastTime(), playerGCD.getBaseGCD());
+    }
+    private Long getRemainingCD(long lastCastTime, long cooldownTime){
+        long timeElapsed = System.currentTimeMillis() - lastCastTime;
+        if (timeElapsed > cooldownTime){
+            return 0L;
+        } else {
+            return cooldownTime - timeElapsed;
+        }
+    }
 }
