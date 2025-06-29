@@ -69,6 +69,6 @@ public class Aura extends Skillcast.Persistent {
             Utils.error(auraSkill + " is has no damage data.");
             return null;
         }
-        return new AttackData(getPlayerID(),auraSkill,PlayerDataContainer.getPlayerEquipment(getPlayerID()).getGlobalStatCache());
+        return new AttackData(getPlayerID(),auraSkill,PlayerDataContainer.getDataContainerFor(getPlayerID()).getGlobalStats());
     }
 }

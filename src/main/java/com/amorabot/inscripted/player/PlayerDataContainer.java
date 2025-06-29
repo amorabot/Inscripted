@@ -5,17 +5,16 @@ import com.amorabot.inscripted.player.profile.Profile;
 import com.amorabot.inscripted.player.equipment.PlayerEquipment;
 import com.amorabot.inscripted.player.profile.ProfileEvents;
 import com.amorabot.inscripted.player.profile.parsing.StatParser;
-import com.amorabot.inscripted.skill.AbilityTypes;
-import com.amorabot.inscripted.skill.PlayerAbilities;
+import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.skill.casting.CastType;
 import com.amorabot.inscripted.skill.casting.GlobalCooldown;
 import com.amorabot.inscripted.skill.type.Aura;
 import com.amorabot.inscripted.tasks.RegenerationTask;
 import com.amorabot.inscripted.tasks.base.PlayerboundTask;
-import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -30,6 +29,8 @@ public class PlayerDataContainer implements Observer {
 
     private final UUID playerID;
     private final Profile profile;
+    @Setter
+    private StatPool globalStats; // Fully compiled global player stats cache ( Equipment + Keystones + External stats + ...)
     private final PlayerEquipment equipment;
     private final Map<Integer,PlayerboundTask> playerboundTasks = new HashMap<>();
     private final Map<CastType, GlobalCooldown> skillCooldowns = new HashMap<>();
@@ -53,8 +54,20 @@ public class PlayerDataContainer implements Observer {
     @Override
     public void onNotify(ProfileEvents event) {
         switch (event){
-            case STAT_CHANGE -> {
+            case EQUIPMENT_CHANGE -> {
                 Utils.log("Equipment change notification!");
+                StatParser.buildProfile(this);
+            }
+            case EXTERNAL_STAT_CHANGE -> {
+                /*
+                 Sources of stats should notify the player using this event
+                 Since external stats are calculated procedurally by StatsParser,
+                 notifying about a external change and triggering a full profile
+                 recompilation should be enough but not optimized.
+                */
+                Utils.log("Stat change!");
+                // Event-specific logic
+                //...
                 StatParser.buildProfile(this);
             }
             case REEVALUATE_ALL_EQUIPMENT -> {

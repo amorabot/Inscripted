@@ -37,6 +37,10 @@ public class StatPool {
         globalItemStatPool.applyLocalStats(localStats);
         return globalItemStatPool;
     }
+    public void clear(){
+        baseStats.clear();
+        multipliers.clear();
+    }
 
     public Map<Stats, double[]> calculateFinalValues(){
         Map<Stats, double[]> finalValuesMap = new HashMap<>();

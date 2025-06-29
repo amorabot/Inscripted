@@ -58,7 +58,7 @@ public class Utils {
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ColorUtils.translateColorCodes(msg)));
     }
     public static float mapToPercentage(int flatDodge){
-        return Float.valueOf(getPercentString(flatDodge));
+        return Float.parseFloat(getPercentString(flatDodge));
     }
     public static String getPercentString(int flatDodge){
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
@@ -66,7 +66,7 @@ public class Utils {
     }
     public static float toTwoDigitsFloat(float floatToConvert){
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        return Float.valueOf(decimalFormat.format(floatToConvert/100.0f));
+        return Float.parseFloat(decimalFormat.format(floatToConvert/100.0f));
     }
 
     public static void populatePrettyAlphabet(){
@@ -209,5 +209,14 @@ public class Utils {
 //        if (v.isZero()){return v;}
         if (v.lengthSquared() > (limitSize*limitSize)){return v.clone().normalize().multiply(limitSize);}
         return v;
+    }
+
+    public static class Easings{
+        public static double easeOutCirc(double t){
+            return Math.sqrt(1 - Math.pow(t - 1, 2));
+        }
+        public static double easeOutQuad(double t){
+            return 1 - (1 - t) * (1 - t);
+        }
     }
 }

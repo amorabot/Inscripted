@@ -14,18 +14,23 @@ import java.util.stream.Collectors;
 
 public class StatParser {
 
+    //TODO: implement a compiling queue for fast recompilation attempts
+    // private static Map<UUID, Boolean> lockedProfiles
+    // if locked -> queue & have a running server-wide task to handle queue processing
     private static final boolean DEBUG_MODE = true;
 
     public static void buildProfile(PlayerDataContainer playerData){
         Utils.log("Building profile!");
         Profile profile = playerData.getProfile();
         PlayerEquipment equipment = playerData.getEquipment();
+
+        //TODO: diff checking for special ACTIVE inscriptions (Aura keystones, etc...)
+
         //Updating cache for keystones, effects, ... based on equipment
-        equipment.compileSpecialInscriptions();
+        equipment.updateSpecialInscriptions();
 
         //Getting global stats
-        StatPool globalStatPool = compileEquipmentStats(equipment); //Raw global stats
-        applyAttributeBonuses(globalStatPool);
+        StatPool globalStatPool = compileEquipmentStats(equipment); //Raw equipment global stats
 
         Set<KeystoneIDs> keystones = equipment.getKeystones();
         Set<EffectIDs> effects = equipment.getEffects();
@@ -35,10 +40,16 @@ public class StatParser {
         //Early Keystones trigger
         //...
 
-        //Group keystone+buff stats to insert in the global pool
+        //Procedurally group external stats (Buffs, auras, conditional aura buffs...) to insert in the global pool
         //...
 
-        //Getting final values, counting in whatever early stats from keystones/buffs
+        //Late Keystones trigger (Stat Overrides, rules, ...). Those have the final say on the player's profile state
+        //...
+
+        //After all stat changes, apply attribute bonuses
+        applyAttributeBonuses(globalStatPool);
+
+        //Now that all stat changes are applied, get the final profile-level values to be stored
         Map<Stats, double[]> finalStats = globalStatPool.calculateFinalValues();
         if (DEBUG_MODE){
             for (Stats stat : finalStats.keySet()){
@@ -48,9 +59,7 @@ public class StatParser {
 
         //Update the player's profile
         profile.update(playerData.getPlayerID(),finalStats);
-
-        //Late Keystones trigger (Overrides, Stat rules, ...)
-        //...
+        playerData.setGlobalStats(globalStatPool); // Store the up-to-date pool for things like stat checks for skill damages
     }
 
     public static StatPool compileEquipmentStats(PlayerEquipment playerEquipment){

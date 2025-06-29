@@ -80,7 +80,11 @@ public enum InscriptionIDs {
     MERCENARY_CLOTH("+ global IMPLICIT: flat single_roll dexterity", 5),
     ROGUE_PELT("+ global IMPLICIT: flat single_roll dexterity & flat single_roll intelligence", 5),
     SORCERER_SILK("+ global IMPLICIT: flat single_roll intelligence", 5),
-    TEMPLAR_RUNISTEEL("+ global IMPLICIT: flat single_roll intelligence & flat single_roll strength", 5);
+    TEMPLAR_RUNISTEEL("+ global IMPLICIT: flat single_roll intelligence & flat single_roll strength", 5),
+
+    PERMAFROST("keystone: PERMAFROST",0),
+    THUNDERSTRUCK("keystone: THUNDERSTRUCK",0),
+    RIGHTEOUS_FIRE("keystone: RIGHTEOUS_FIRE",0);
 
 
     private final InscriptionDefinition definitionData;

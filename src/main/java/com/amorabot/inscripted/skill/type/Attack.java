@@ -9,7 +9,6 @@ import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.UUID;
@@ -25,7 +24,7 @@ public abstract class Attack extends Skillcast.Simple {
             this.attackData = null;
             return;
         }
-        this.attackData = new AttackData(playerID,skillUsed,PlayerDataContainer.getPlayerEquipment(playerID).getGlobalStatCache());
+        this.attackData = new AttackData(playerID,skillUsed,PlayerDataContainer.getDataContainerFor(playerID).getGlobalStats());
     }
 
 

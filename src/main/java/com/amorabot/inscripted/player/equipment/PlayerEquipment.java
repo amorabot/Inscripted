@@ -27,9 +27,6 @@ public class PlayerEquipment {
     private boolean locked = true;
     private final Map<EquipmentSlots, EquimentSlotData> equipmentData = new HashMap<>();
 
-    // Processed and cached equipment data that will represent player state
-    @Setter
-    private StatPool globalStatCache;
     private final Set<EffectIDs> effects = new HashSet<>();
     private final Set<KeystoneIDs> keystones = new HashSet<>();
     private final Set<Inscription> metaInscriptions = new HashSet<>();
@@ -39,7 +36,6 @@ public class PlayerEquipment {
             equipmentData.put(slot,new EquimentSlotData());
         }
         profileSubject.addObserver(observer);
-        globalStatCache = new StatPool();
     }
 
     public void updateEquimentSlot(EquipmentSlots slot, Item itemData){
@@ -74,7 +70,7 @@ public class PlayerEquipment {
                 @Override
                 public void run() {
                     //After 3Ticks, apply changes
-                    profileSubject.notifyListeners(ProfileEvents.STAT_CHANGE);
+                    profileSubject.notifyListeners(ProfileEvents.EQUIPMENT_CHANGE);
                     //Re-lock so it can be accessed later
                     locked=true;
                 }
@@ -88,7 +84,7 @@ public class PlayerEquipment {
         currentSlotData.update(itemData);
     }
 
-    public void compileSpecialInscriptions(){
+    public void updateSpecialInscriptions(){
         updateEquipmenEffects();
         updateEquipmenKeystones();
         updateEquipmentMetaInscriptions();

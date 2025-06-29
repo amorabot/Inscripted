@@ -64,6 +64,21 @@ public class LinalgMath {
 
         return plottedPoints;
     }
+    public static Vector[] plotPointsInsideHorizontalCircle(Vector center, double radius, int numPoints){
+        Vector[] plottedPoints = new Vector[numPoints];
+        Vector xAxis = new Vector(1,0,0);
+        Vector zAxis = new Vector(0,0,1);
+        for (int n = 0; n<numPoints; n++){
+            double intermediateRadius = Utils.getRandomInclusiveValue(0, radius);
+            double randomPhase = Utils.getRandomInclusiveValue(0, 359);
+            double rad = (randomPhase/180) * Math.PI;
+            Vector relativeXPos = xAxis.clone().multiply(intermediateRadius*cos(rad));
+            Vector relativeZPos = zAxis.clone().multiply(intermediateRadius*sen(rad));
+            Vector randomPoint = center.clone().add(relativeXPos).add(relativeZPos);
+            plottedPoints[n] = randomPoint;
+        }
+        return plottedPoints;
+    }
 
     public static Vector[][] plotSlam(Location slamOrigin,boolean rightHanded, double slashOffsetPhase, double handHeightReduction,
                                       double arc, int segments, double baseRadius, double[] skewFactor, boolean isSprinting,

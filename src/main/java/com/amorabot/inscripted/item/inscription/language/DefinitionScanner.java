@@ -89,12 +89,12 @@ public class DefinitionScanner {
                 return new InscriptionDefinition.Meta(affixType,baseInscription,isPositive,targetStat,type,conversionRate);
             }
             case EFFECT_INSCRIPTION -> {
-                EffectIDs effect = EffectIDs.valueOf(sections[1]);
+                EffectIDs effect = EffectIDs.valueOf(sections[1].strip());
 
                 return new InscriptionDefinition.Effect(effect);
             }
             case KEYSTONE_INSCRIPTION -> {
-                KeystoneIDs keystone = KeystoneIDs.valueOf(sections[1]);
+                KeystoneIDs keystone = KeystoneIDs.valueOf(sections[1].strip());
 
                 return new InscriptionDefinition.Keystone(keystone);
             }
