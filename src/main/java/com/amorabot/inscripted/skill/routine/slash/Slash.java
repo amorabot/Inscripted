@@ -1,9 +1,13 @@
 package com.amorabot.inscripted.skill.routine.slash;
 
+import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
+import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.math.LinalgMath;
 import com.amorabot.inscripted.math.OrientedBoundingBox;
 import com.amorabot.inscripted.player.profile.component.AttackData;
+import com.amorabot.inscripted.skill.PlayerAbilities;
+import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import lombok.Getter;
 import lombok.Setter;
@@ -90,8 +94,26 @@ public class Slash{
             if (getSkillcast().getCastData().getBlacklistedEntities().contains(entity.getUniqueId())){continue;}
 
             if (!slashOwner.hasLineOfSight(entity)){continue;}
+            
+            // Add to affected entities and blacklist to prevent multiple hits
             getSkillcast().getCastData().getAffectedEntities().add(entity.getUniqueId());
-//TODO            DamageRouter.entityDamage((Player) slashOwner, entity, DamageSource.HIT, getSkillcastData().getCastingContext().getSkillUsed());
+            getSkillcast().getCastData().getBlacklistedEntities().add(entity.getUniqueId());
+            
+            // Apply damage through the custom damage router system
+            Skills skillUsed = getSkillcast().getCastData().getCastingContext().getSkillUsed();
+            PlayerAbilities playerAbility = convertSkillToPlayerAbility(skillUsed);
+            DamageRouter.entityDamage((Player) slashOwner, entity, DamageSource.HIT, playerAbility);
+        }
+    }
+
+    // Helper method to convert Skills enum to PlayerAbilities enum
+    private PlayerAbilities convertSkillToPlayerAbility(Skills skill) {
+        try {
+            // Convert by name - both enums have the same names for basic attacks
+            return PlayerAbilities.valueOf(skill.name());
+        } catch (IllegalArgumentException e) {
+            // Fallback to FIST if conversion fails
+            return PlayerAbilities.FIST;
         }
     }
 
