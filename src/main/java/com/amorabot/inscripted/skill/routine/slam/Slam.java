@@ -1,7 +1,11 @@
 package com.amorabot.inscripted.skill.routine.slam;
 
+import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
+import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.player.profile.component.AttackData;
+import com.amorabot.inscripted.skill.PlayerAbilities;
+import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.skill.routine.slash.SlashConfig;
 import com.amorabot.inscripted.math.LinalgMath;
 import com.amorabot.inscripted.tasks.base.Skillcast;
@@ -71,8 +75,15 @@ public class Slam{
                             if (slamObject.getSkillcast().getCastData().getBlacklistedEntities().contains(entity.getUniqueId())){continue;}
 
                             if (!(slamOwner).hasLineOfSight(entity)){continue;}
+                            
+                            // Add to affected entities and blacklist to prevent multiple hits
                             slamObject.getSkillcast().getCastData().getAffectedEntities().add(entity.getUniqueId());
-//                            DamageRouter.entityDamage((Player) slamOwner, entity, DamageSource.HIT, getContext().getSkillUsed());
+                            slamObject.getSkillcast().getCastData().getBlacklistedEntities().add(entity.getUniqueId());
+                            
+                            // Apply damage through the custom damage router system
+                            Skills skillUsed = slamObject.getSkillcast().getCastData().getCastingContext().getSkillUsed();
+                            PlayerAbilities playerAbility = convertSkillToPlayerAbility(skillUsed);
+                            DamageRouter.entityDamage((Player) slamOwner, entity, DamageSource.HIT, playerAbility);
                         }
                         //Post-slam effects can go here
                     }
@@ -121,5 +132,16 @@ public class Slam{
                 animationData.arc(), animationData.segments(), animationData.baseRadius(),animationData.skewFactor(),sprinting,
                 animationData.startingLength(),animationData.finalLength()-animationData.startingLength(),
                 animationData.initialOffset(), animationData.finalOffset()-animationData.initialOffset());
+    }
+
+    // Helper method to convert Skills enum to PlayerAbilities enum
+    private PlayerAbilities convertSkillToPlayerAbility(Skills skill) {
+        try {
+            // Convert by name - both enums have the same names for basic attacks
+            return PlayerAbilities.valueOf(skill.name());
+        } catch (IllegalArgumentException e) {
+            // Fallback to FIST if conversion fails
+            return PlayerAbilities.FIST;
+        }
     }
 }
