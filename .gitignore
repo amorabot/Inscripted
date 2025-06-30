@@ -118,3 +118,6 @@ buildNumber.properties
 
 # Common working directory
 run/
+
+CLAUDE.md
+build-and-deploy.sh
