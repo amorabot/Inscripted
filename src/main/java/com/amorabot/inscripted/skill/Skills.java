@@ -8,6 +8,7 @@ import com.amorabot.inscripted.skill.annotations.ProjectileSkill;
 import com.amorabot.inscripted.skill.archetypes.axe.AxeBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.bow.BowBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.dagger.DaggerBasicAttacks;
+import com.amorabot.inscripted.skill.archetypes.mace.MaceBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.sword.SwordBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.wand.WandBasicAttacks;
 import com.amorabot.inscripted.skill.casting.CastSource;
@@ -47,7 +48,7 @@ public enum Skills {
     BASIC_WAND_ATTACK(WandBasicAttacks::standardWandAttack, CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE}, 0),
 
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {100, 100, 100, 100, 40}, dmgConversion = {0, 0, 0, 0} )
-//    BASIC_MACE_SLAM(CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE,Tags.SPELL}),
+    BASIC_MACE_SLAM(MaceBasicAttacks::standardMaceSlam,CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE,Tags.SPELL},0),
 
     // Keystone Auras
     @PersistentSkill( period = 3, maxDuration = -1 )

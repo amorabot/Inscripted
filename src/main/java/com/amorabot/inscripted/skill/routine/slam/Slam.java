@@ -23,16 +23,16 @@ public class Slam{
     private final AttackData attackData;
 
     private final Vector slamCenter;
-    private final SlamConfigDTO slamData;
+    private final SlamConfig slamData;
     private final BiFunction<SlashConfig, World, Consumer<Vector[]>> slashRenderer;
-    private final Consumer<Slam> impactRenderer;
+    private final Consumer<Slam> impactRoutine;
 
-    public Slam(Skillcast skillcast, AttackData attackData, SlamConfigDTO configData,
-                BiFunction<SlashConfig,World, Consumer<Vector[]>> slashRenderer, Consumer<Slam> impactRenderer){
+    public Slam(Skillcast skillcast, AttackData attackData, SlamConfig configData,
+                BiFunction<SlashConfig,World, Consumer<Vector[]>> slashRenderer, Consumer<Slam> impactRoutine){
         this.skillcast = skillcast;
         this.attackData = attackData;
         this.slashRenderer = slashRenderer;
-        this.impactRenderer = impactRenderer;
+        this.impactRoutine = impactRoutine;
         this.slamData = configData;
         Player slamOwner = getOwner();
         SlashConfig swingAnimationData = configData.slashAnimationData();
@@ -41,6 +41,8 @@ public class Slam{
         Vector targetOffset = LinalgMath.getHorizontalOrientation(slamOwner.getLocation()).clone()[1]
                 .multiply(finalDistToCenter);
         this.slamCenter = slamOwner.getLocation().toVector().clone().add(targetOffset);
+
+        execute();
     }
 
     public Player getOwner(){
@@ -60,7 +62,7 @@ public class Slam{
                     @Override
                     public void run() {
                         //Wait "delayToImpact" frames to instantiate the effects
-                        getImpactRenderer().accept(slamObject);
+                        getImpactRoutine().accept(slamObject);
                         LivingEntity slamOwner = getOwner();
                         double impactRadius = slamData.impactRadius();
                         final List<LivingEntity> nearbyEntities = (List<LivingEntity>) slamCenter.toLocation(slamOwner.getWorld())
@@ -113,7 +115,7 @@ public class Slam{
 
     // Make this functionality as a Slash constructor flag?
     private Vector[][] plotSlamSlash(Location playerLoc, boolean sprinting){
-        SlamConfigDTO data = getSlamData();
+        SlamConfig data = getSlamData();
         SlashConfig animationData = data.slashAnimationData();
         return LinalgMath.plotSlam(playerLoc, data.rightHanded(), slamData.slashOffsetPhase(), data.handHeightReduction(),
                 animationData.arc(), animationData.segments(), animationData.baseRadius(),animationData.skewFactor(),sprinting,
