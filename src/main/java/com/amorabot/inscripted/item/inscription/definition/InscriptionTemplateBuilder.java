@@ -30,12 +30,12 @@ public class InscriptionTemplateBuilder implements InscriptionDefinition.Inscrip
 
     @Override
     public String visitEffect(InscriptionDefinition.Effect inscription) {
-        return "Effect";
+        return inscription.getEffectID().name().replaceFirst("_"," ").strip();
     }
 
     @Override
     public String visitKeystone(InscriptionDefinition.Keystone inscription) {
-        return "Keystone";
+        return inscription.getKeystoneID().name().replaceFirst("_"," ").strip();
     }
 
     private String buildBaseInscriptionTemplate(InscriptionDefinition.BaseInscription inscriptionData, boolean isPositive, boolean isGlobal){

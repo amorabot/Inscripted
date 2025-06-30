@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.skill.item;
+package com.amorabot.inscripted.skill.archetypes.item;
 
 import com.amorabot.inscripted.Inscripted;
 //import com.amorabot.inscripted.components.HealthComponent;

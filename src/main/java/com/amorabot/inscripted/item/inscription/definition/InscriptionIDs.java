@@ -48,8 +48,8 @@ public enum InscriptionIDs {
     ARMOR_DODGE("+ local PREFIX: flat single_roll armor & flat single_roll dodge",4),
     DODGE_SOUL("+ local PREFIX: flat single_roll dodge & flat single_roll soul",4),
     //Meta Prefixes
-    @MetaInscription(convertedStat = STRENGTH, convertedValueType = FLAT, rate = 8)
-    STRENGTH_TO_FIRE_DMG("+ meta PREFIX: flat double_roll fire_damage",3),
+//    @MetaInscription(convertedStat = STRENGTH, convertedValueType = FLAT, rate = 8)
+    STRENGTH_TO_FIRE_DMG("+ meta PREFIX: flat double_roll fire_damage<<8 flat strength",3),
 
     //Suffixes
     FLAT_STRENGTH("+ global SUFFIX: flat single_roll strength", 8),
@@ -91,43 +91,8 @@ public enum InscriptionIDs {
     private final int tiers;
 
     InscriptionIDs(String definitionString, int tiers){
-        String finalDefinitionString = definitionString;
-        if (hasMetadata()){
-            finalDefinitionString += getMetadataDefinitionSection(
-                    Objects.requireNonNull(getMetaAnnotationData())
-            );
-        }
-        DefinitionScanner scanner = new DefinitionScanner(finalDefinitionString);
+        DefinitionScanner scanner = new DefinitionScanner(definitionString);
         this.definitionData = scanner.run();
         this.tiers = tiers;
-    }
-
-    public boolean hasMetadata(){
-        return getMetaAnnotationData() != null;
-    }
-    public MetaInscription getMetaAnnotationData(){
-        try {
-            Field inscriptionEnumField = InscriptionIDs.class.getField(this.name());
-            if (inscriptionEnumField.isAnnotationPresent(MetaInscription.class)){
-                return inscriptionEnumField.getAnnotation(MetaInscription.class);
-            }
-            return null;
-        } catch (NoSuchFieldException e) {
-            throw new InscriptionSyntaxException("No Metadata defined for " + this.name());
-        }
-    }
-    private String getMetadataDefinitionSection(MetaInscription metaAnnotation){
-        StringBuilder builder = new StringBuilder("<<");
-        builder.append(metaAnnotation.rate()).append(" ");
-        builder.append(metaAnnotation.convertedValueType()).append(" ");
-        builder.append(metaAnnotation.convertedStat());
-        return builder.toString();
-    }
-
-    public boolean isEffect(){
-        return getDefinitionData() instanceof InscriptionDefinition.Effect;
-    }
-    public boolean isKeystone(){
-        return getDefinitionData() instanceof InscriptionDefinition.Keystone;
     }
 }

@@ -3,7 +3,7 @@ package com.amorabot.inscripted.GUIs;
 import com.amorabot.inscripted.GUIs.modules.GUI;
 import com.amorabot.inscripted.GUIs.modules.GUIButton;
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.relic.enums.Relics;
+import com.amorabot.inscripted.item.relic.Relics;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -12,9 +12,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.amorabot.inscripted.utils.Utils.color;
-import static com.amorabot.inscripted.utils.Utils.convertToPrettyString;
 
 public class RelicsGUI extends GUI {
     protected RelicsGUI(int rows, boolean editable, boolean renderNulls) {

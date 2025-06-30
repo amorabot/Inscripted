@@ -1,17 +1,10 @@
-package com.amorabot.inscripted.components.Items.relic.enums;
+package com.amorabot.inscripted.item.relic;
 
-import com.amorabot.inscripted.Inscripted;
 //import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 //import com.amorabot.inscripted.components.Items.modifiers.Inscription;
 //import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
-import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
-
-import java.util.ArrayList;
-import java.util.List;
+        import org.bukkit.inventory.ItemStack;
 
 public enum Relics {
 

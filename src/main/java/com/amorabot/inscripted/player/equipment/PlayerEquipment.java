@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.player.equipment;
 
-import com.amorabot.inscripted.item.inscription.Inscription;
+import com.amorabot.inscripted.item.inscription.ProceduralInscription;
 import com.amorabot.inscripted.item.inscription.definition.EffectIDs;
 import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
 import com.amorabot.inscripted.item.structure.EquipmentSlots;
@@ -8,11 +8,9 @@ import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.player.Observer;
 import com.amorabot.inscripted.player.Subject;
 import com.amorabot.inscripted.player.profile.ProfileEvents;
-import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -29,7 +27,7 @@ public class PlayerEquipment {
 
     private final Set<EffectIDs> effects = new HashSet<>();
     private final Set<KeystoneIDs> keystones = new HashSet<>();
-    private final Set<Inscription> metaInscriptions = new HashSet<>();
+    private final Set<ProceduralInscription> metaInscriptions = new HashSet<>();
 
     public PlayerEquipment(Observer observer){
         for (EquipmentSlots slot : EquipmentSlots.values()){

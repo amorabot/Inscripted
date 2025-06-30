@@ -82,20 +82,21 @@ public class DefinitionScanner {
                 String[] metaData = splitSection(data[1], " ");
 
                 InscriptionDefinition.BaseInscription baseInscription = parseBaseInscription(mainStatData);
-                int conversionRate = Integer.parseInt(metaData[0]);
-                ValueType type = ValueType.valueOf(metaData[1].toUpperCase());
-                Stats targetStat = Stats.valueOf(metaData[2].toUpperCase());
-
-                return new InscriptionDefinition.Meta(affixType,baseInscription,isPositive,targetStat,type,conversionRate);
+                try{
+                    int conversionRate = Integer.parseInt(metaData[0]);
+                    ValueType type = ValueType.valueOf(metaData[1].toUpperCase());
+                    Stats targetStat = Stats.valueOf(metaData[2].toUpperCase());
+                    return new InscriptionDefinition.Meta(affixType,baseInscription,isPositive,targetStat,type,conversionRate);
+                } catch (IllegalArgumentException ex){
+                    throw new InscriptionSyntaxException("Meta inscription definition error: Could not parse metadata");
+                }
             }
             case EFFECT_INSCRIPTION -> {
                 EffectIDs effect = EffectIDs.valueOf(sections[1].strip());
-
                 return new InscriptionDefinition.Effect(effect);
             }
             case KEYSTONE_INSCRIPTION -> {
                 KeystoneIDs keystone = KeystoneIDs.valueOf(sections[1].strip());
-
                 return new InscriptionDefinition.Keystone(keystone);
             }
             default -> throw new InscriptionSyntaxException("Invalid inscriptionExpression on definition string.");

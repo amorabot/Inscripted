@@ -1,6 +1,8 @@
 package com.amorabot.inscripted.player.profile.parsing;
 
 import com.amorabot.inscripted.item.inscription.Inscription;
+import com.amorabot.inscripted.item.inscription.ProceduralInscription;
+import com.amorabot.inscripted.item.inscription.UniqueInscription;
 import com.amorabot.inscripted.item.inscription.definition.*;
 import com.amorabot.inscripted.item.inscription.language.ValueType;
 import com.amorabot.inscripted.player.PlayerDataContainer;
@@ -10,7 +12,6 @@ import com.amorabot.inscripted.player.profile.Profile;
 import com.amorabot.inscripted.utils.Utils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class StatParser {
 
@@ -34,6 +35,7 @@ public class StatParser {
 
         Set<KeystoneIDs> keystones = equipment.getKeystones();
         Set<EffectIDs> effects = equipment.getEffects();
+        Set<ProceduralInscription> metaInscriptions = equipment.getMetaInscriptions();
 
         //Handle instantiation/state of keystone tasks
 
@@ -46,8 +48,9 @@ public class StatParser {
         //Late Keystones trigger (Stat Overrides, rules, ...). Those have the final say on the player's profile state
         //...
 
-        //After all stat changes, apply attribute bonuses
+        //After all stat changes, apply attribute bonuses and meta-conversions
         applyAttributeBonuses(globalStatPool);
+        convertMetaStats(metaInscriptions,globalStatPool);
 
         //Now that all stat changes are applied, get the final profile-level values to be stored
         Map<Stats, double[]> finalStats = globalStatPool.calculateFinalValues();
@@ -78,13 +81,13 @@ public class StatParser {
                     globalStatPool.merge(slotStats);
                 }
         );
-
-        //TODO: Sort meta inscriptions for predictability?
-        Set<Inscription> metaInscriptions = playerEquipment.getMetaInscriptions();
-        for (Inscription metaInsc : metaInscriptions){
+        return globalStatPool;
+    }
+    private static void convertMetaStats(Set<ProceduralInscription> metaInscriptions, StatPool globalStatPool){
+        for (ProceduralInscription metaInsc : metaInscriptions){
             InscriptionIDs inscID = metaInsc.getInscription();
             if (DEBUG_MODE){Utils.log("Compiling meta Inscription " + inscID);}
-            if (!inscID.hasMetadata()){continue;}
+            if (!metaInsc.isMeta()){continue;}
             if (!(inscID.getDefinitionData() instanceof InscriptionDefinition.Meta metaInscriptionDef)){
                 if (DEBUG_MODE){Utils.error("Wtf is this shit of meta insc");}
                 continue;
@@ -121,7 +124,6 @@ public class StatParser {
             ).toArray();
             globalStatPool.insertValue(targetStat,targetValueType,metaMappedValues);
         }
-        return globalStatPool;
     }
 
     private static void applyAttributeBonuses(StatPool globalStatPool){
@@ -186,14 +188,10 @@ public class StatParser {
     public static Set<EffectIDs> getEffects(List<Inscription> itemInscriptions){
         Set<EffectIDs> mappedEffects = new HashSet<>();
         for (Inscription inscription : itemInscriptions){
-            if (!inscription.isSpecial()){continue;}
-            // Map Insc.IDs -> EffectIDs
-            InscriptionIDs insc = inscription.getInscription();
-            try {
-                EffectIDs mappedEffect = EffectIDs.valueOf(insc.name());
-                mappedEffects.add(mappedEffect);
-            } catch (IllegalArgumentException ex){
-                Utils.error("Unable to parse Effect: " + insc.name());
+            if (inscription instanceof UniqueInscription uniqueInsc){
+                if (uniqueInsc.isEffect()){
+                    mappedEffects.add(((InscriptionDefinition.Effect)uniqueInsc.getInscriptionDefinition()).getEffectID());
+                }
             }
         }
         return mappedEffects;
@@ -201,23 +199,25 @@ public class StatParser {
     public static Set<KeystoneIDs> getKeystones(List<Inscription> itemInscriptions){
         Set<KeystoneIDs> mappedKeystones = new HashSet<>();
         for (Inscription inscription : itemInscriptions){
-            if (!inscription.isSpecial()){continue;}
-            // Map Insc.IDs -> KeystoneIDs
-            InscriptionIDs insc = inscription.getInscription();
-            try {
-                KeystoneIDs mappedKeystone = KeystoneIDs.valueOf(insc.name());
-                mappedKeystones.add(mappedKeystone);
-            } catch (IllegalArgumentException ex){
-                Utils.error("Unable to parse Keystone: " + insc.name());
+            if (inscription instanceof UniqueInscription uniqueInsc){
+                if (uniqueInsc.isEffect()){
+                    mappedKeystones.add(((InscriptionDefinition.Keystone)uniqueInsc.getInscriptionDefinition()).getKeystoneID());
+                }
             }
         }
         return mappedKeystones;
     }
-    public static Set<Inscription> filterMetaInscriptions(List<Inscription> itemInscriptions){
-        return itemInscriptions.stream().filter(
-                inscription -> {
-                    return inscription.getInscription().hasMetadata();
+    public static Set<ProceduralInscription> filterMetaInscriptions(List<Inscription> itemInscriptions){
+        Set<ProceduralInscription> metaSet = new HashSet<>();
+        itemInscriptions.forEach(
+            inscription -> {
+                if (inscription instanceof ProceduralInscription proceduralInscription){
+                    if (proceduralInscription.isMeta()){
+                        metaSet.add(proceduralInscription);
+                    }
                 }
-        ).collect(Collectors.toSet());
+            }
+        );
+        return metaSet;
     }
 }

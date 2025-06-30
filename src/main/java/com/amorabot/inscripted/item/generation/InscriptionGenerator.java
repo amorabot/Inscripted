@@ -1,10 +1,11 @@
 package com.amorabot.inscripted.item.generation;
 
 import com.amorabot.inscripted.item.inscription.Inscription;
+import com.amorabot.inscripted.item.inscription.ProceduralInscription;
+import com.amorabot.inscripted.item.inscription.definition.InscriptionDefinition;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.inscription.language.AffixType;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
-import com.amorabot.inscripted.item.render.InscriptionRenderer;
 import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.math.MathUtils;
@@ -42,7 +43,8 @@ public class InscriptionGenerator {
         fixedInscr.forEach(
                 fixedInscription -> {
                     inscriptions.add(fixedInscription);
-                    blockedInscriptions.add(fixedInscription.getInscription());
+                    //Its safe to assume its a procedural item/inscription, UniqueInscriptions are always modifiable
+                    blockedInscriptions.add(((ProceduralInscription)fixedInscription).getInscription());
                 }
         );
         for (int i = 0; i < inscriptionsToGenerate; i++) {
@@ -53,7 +55,7 @@ public class InscriptionGenerator {
             // Suffix
             inscriptions.add(getRandomInscription(table,AffixType.SUFFIX,itemData.getIlvl(),blockedInscriptions));
         }
-        inscriptions.sort(InscriptionRenderer.SORTER);
+//        inscriptions.sort(InscriptionRenderer.SORTER);
         return inscriptions;
     }
     public static List<Inscription> generateRunicSet(Item itemData, InscriptionTable table, Set<InscriptionIDs> blockedInscriptions){
@@ -70,8 +72,8 @@ public class InscriptionGenerator {
         fixedInscr.forEach(
                 fixedInscription -> {
                     inscriptions.add(fixedInscription);
-                    blockedInscriptions.add(fixedInscription.getInscription());
-                    AffixType fixedAffixType = fixedInscription.getInscription().getDefinitionData().getAffix();
+                    blockedInscriptions.add(((ProceduralInscription)fixedInscription).getInscription());
+                    AffixType fixedAffixType = fixedInscription.getInscriptionDefinition().getAffix();
                     if (fixedAffixType.equals(AffixType.PREFIX)){
                         prefixes.getAndIncrement();
                     }
@@ -105,7 +107,7 @@ public class InscriptionGenerator {
             prefixes.getAndIncrement();
             inscriptions.add(getRandomInscription(table,AffixType.PREFIX,itemData.getIlvl(),blockedInscriptions));
         }
-        inscriptions.sort(InscriptionRenderer.SORTER);
+//        inscriptions.sort(InscriptionRenderer.SORTER);
         return inscriptions;
     }
 
@@ -113,7 +115,10 @@ public class InscriptionGenerator {
     //Returns -1 if mod is not available
     public static int getHighestTierFor(InscriptionIDs inscription, int itemLevel, Map<Integer, Integer> tierMappings){
         assert itemLevel>=1;
-        if (inscription.getDefinitionData().getAffix().equals(AffixType.UNIQUE) || inscription.isKeystone() || inscription.isEffect()){return -1;}
+        InscriptionDefinition inscriptionDefinition = inscription.getDefinitionData();
+        boolean isKeystone = inscriptionDefinition instanceof InscriptionDefinition.Keystone;
+        boolean isEffect = inscriptionDefinition instanceof InscriptionDefinition.Effect;
+        if (inscriptionDefinition.getAffix().equals(AffixType.UNIQUE) || isKeystone || isEffect){return -1;}
         if (tierMappings.isEmpty()){
             return -1;
         }
@@ -142,8 +147,8 @@ public class InscriptionGenerator {
         return Utils.getRandomIntBetween(highestTier, minTier);
     }
 
-    public static Inscription getRandomInscription(InscriptionTable itemInscriptionTable,
-                                            AffixType affixToGenerate, int itemLevel, Set<InscriptionIDs> blockedInscriptions){
+    public static ProceduralInscription getRandomInscription(InscriptionTable itemInscriptionTable,
+                                                             AffixType affixToGenerate, int itemLevel, Set<InscriptionIDs> blockedInscriptions){
         /* PSEUDOCODE
         Get affix table from instance data
         get the set containing all inscriptions of that affix type
@@ -178,6 +183,6 @@ public class InscriptionGenerator {
         }
         //Mutate the given set, so its updated and prevents selectedInscription from being generated again
         blockedInscriptions.add(selectedInscription);
-        return new Inscription(selectedInscription, selectedTier, Utils.getNormalizedValue());
+        return new ProceduralInscription(selectedInscription, selectedTier, Utils.getNormalizedValue());
     }
 }

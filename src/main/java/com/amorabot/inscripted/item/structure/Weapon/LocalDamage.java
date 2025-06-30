@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.item.structure.Weapon;
 
-import com.amorabot.inscripted.item.inscription.Inscription;
+import com.amorabot.inscripted.item.inscription.ProceduralInscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionDefinition;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.inscription.definition.Stats;
@@ -20,7 +20,7 @@ public class LocalDamage {
 
     public LocalDamage(Weapon weapon){
         if(weapon==null){return;}
-        List<Inscription> inscriptions = weapon.getInscriptions();
+        List<ProceduralInscription> inscriptions = weapon.getProceduralInscriptions();
 
         Map<DamageTypes, int[]> baseDamage = new HashMap<>();
         baseDamage.put(DamageTypes.PHYSICAL,weapon.getBaseDamage());
@@ -58,10 +58,10 @@ public class LocalDamage {
         }
     }
 
-    private Map<DamageTypes, int[]> buildAddedDamages(List<Inscription> inscriptions){
+    private Map<DamageTypes, int[]> buildAddedDamages(List<ProceduralInscription> inscriptions){
         Map<DamageTypes, int[]> addedDamages = new HashMap<>();
 
-        for (Inscription insc : inscriptions){
+        for (ProceduralInscription insc : inscriptions){
             InscriptionIDs inscriptionID = insc.getInscription();
             InscriptionDefinition definition = inscriptionID.getDefinitionData();
             if (insc.isSpecial()){continue;}
@@ -105,10 +105,10 @@ public class LocalDamage {
 
         return addedDamages;
     }
-    private Map<DamageTypes, Integer> buildLocalIncreases(List<Inscription> inscriptions){
+    private Map<DamageTypes, Integer> buildLocalIncreases(List<ProceduralInscription> inscriptions){
         Map<DamageTypes, Integer> localIncreases = new HashMap<>();
 
-        for (Inscription insc : inscriptions){
+        for (ProceduralInscription insc : inscriptions){
             InscriptionIDs inscriptionID = insc.getInscription();
             InscriptionDefinition definition = inscriptionID.getDefinitionData();
             if (insc.isSpecial()){continue;}

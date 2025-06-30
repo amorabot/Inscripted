@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.player.equipment;
 
 import com.amorabot.inscripted.item.inscription.Inscription;
+import com.amorabot.inscripted.item.inscription.ProceduralInscription;
 import com.amorabot.inscripted.item.inscription.definition.EffectIDs;
 import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
 import com.amorabot.inscripted.item.structure.Item;
@@ -18,7 +19,7 @@ public class EquimentSlotData {
     private StatPool equipmentStats;
     private Set<EffectIDs> itemEffects = new HashSet<>();
     private Set<KeystoneIDs> itemKeystones = new HashSet<>();
-    private Set<Inscription> metaInscriptions = new HashSet<>();
+    private Set<ProceduralInscription> metaInscriptions = new HashSet<>();
 
     private int itemHash;
     private boolean ignore;

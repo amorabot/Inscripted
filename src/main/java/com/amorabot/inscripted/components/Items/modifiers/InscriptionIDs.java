@@ -3,7 +3,7 @@ package com.amorabot.inscripted.components.Items.modifiers;
 import lombok.Getter;
 
 @Getter
-public enum InscriptionID {
+public enum InscriptionIDs {
     //=====RELIC INSCRIPTIONS=====
     //BLEEDING HEART INSCRIPTIONS
     BLHA_BLEED_CHANCE("1 RELIC BLEED +% x +", 1, true),
@@ -129,7 +129,7 @@ public enum InscriptionID {
     private boolean positive;
 
 
-    InscriptionID(String definitionString, int tiers, boolean isGlobal){
+    InscriptionIDs(String definitionString, int tiers, boolean isGlobal){
 
     }
 }

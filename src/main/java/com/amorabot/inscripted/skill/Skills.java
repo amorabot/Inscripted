@@ -13,7 +13,7 @@ import com.amorabot.inscripted.skill.archetypes.sword.SwordBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.wand.WandBasicAttacks;
 import com.amorabot.inscripted.skill.casting.CastSource;
 import com.amorabot.inscripted.skill.casting.CastType;
-import com.amorabot.inscripted.skill.item.ItemAuras;
+import com.amorabot.inscripted.skill.archetypes.item.ItemAuras;
 import com.amorabot.inscripted.skill.routine.projectile.ProjectileGenerators;
 import com.amorabot.inscripted.skill.type.Attack;
 import com.amorabot.inscripted.skill.type.Aura;
@@ -58,6 +58,8 @@ public enum Skills {
     THUNDERSTRUCK(ItemAuras::thunderstruck, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),
     @PersistentSkill( period = 0.2, maxDuration = -1 )
     RIGHTEOUS_FIRE(ItemAuras::righteousFire, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0);
+
+
 
     private final Consumer<Skillcast> skillRoutine;
     private final CastType type;

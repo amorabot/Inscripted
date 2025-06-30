@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.player;
 
-import com.amorabot.inscripted.item.inscription.Inscription;
+import com.amorabot.inscripted.item.inscription.ProceduralInscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
 import com.amorabot.inscripted.item.structure.Tiers;
@@ -32,16 +32,16 @@ public enum Archetypes {
         this.weaponType = weaponType;
         this.armorType = armorMaterial;
     }
-    public static <subType extends Enum<subType> & ItemSubtype> Inscription mapImplicitFor(subType itemSubtype, Tiers tier, boolean corrupted){
+    public static <subType extends Enum<subType> & ItemSubtype> ProceduralInscription mapImplicitFor(subType itemSubtype, Tiers tier, boolean corrupted){
         Archetypes subtypeArchetype = itemSubtype.mapArchetype();
         if (subtypeArchetype.equals(NONE)){Utils.error("No valid archetype for"+ itemSubtype.name()+" @" + Archetypes.class.getSimpleName());}
         return subtypeArchetype.getImplicitFor(itemSubtype, tier, corrupted);
     }
-    private <subType extends Enum<subType> & ItemSubtype> Inscription getImplicitFor(subType itemSubtype, Tiers tier, boolean corrupted){
+    private <subType extends Enum<subType> & ItemSubtype> ProceduralInscription getImplicitFor(subType itemSubtype, Tiers tier, boolean corrupted){
         String implicitID = this + "_" + itemSubtype.name();
         try {
             InscriptionIDs implicit = InscriptionIDs.valueOf(implicitID);
-            return new Inscription(implicit, tier.ordinal(), getNormalizedValue());
+            return new ProceduralInscription(implicit, tier.ordinal(), getNormalizedValue());
         } catch (IllegalArgumentException exception){
             Utils.error("Invalid implicit fetch for: " + implicitID);
         }

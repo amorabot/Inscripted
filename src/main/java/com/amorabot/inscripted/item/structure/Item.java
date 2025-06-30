@@ -1,7 +1,8 @@
 package com.amorabot.inscripted.item.structure;
 
-import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.item.inscription.Inscription;
+import com.amorabot.inscripted.player.Archetypes;
+import com.amorabot.inscripted.item.inscription.ProceduralInscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.render.ItemVisitor;
 import com.amorabot.inscripted.item.structure.io.InscriptedItem;
@@ -36,7 +37,7 @@ public abstract class Item implements Serializable, InscriptedItem {
     protected boolean corrupted;
 
     @Setter
-    private Inscription implicit;
+    private ProceduralInscription implicit;
     private List<Inscription> inscriptions = new ArrayList<>();
 
     public Item(int ilvl, EquipmentSlots itemSlot){
@@ -61,6 +62,18 @@ public abstract class Item implements Serializable, InscriptedItem {
     protected abstract void setupInternalItemData();
     protected abstract void mapItemBase();
 
+    public List<ProceduralInscription> getProceduralInscriptions(){
+        List<ProceduralInscription> proceduralSet = new ArrayList<>();
+        getInscriptions().forEach(
+                inscription -> {
+                    if (inscription instanceof ProceduralInscription proceduralInscription){
+                        proceduralSet.add(proceduralInscription);
+                    }
+                }
+        );
+        return proceduralSet;
+    }
+
     public Archetypes getArchetype(){
         return getGenericSubtype().mapArchetype();
     }
@@ -76,17 +89,10 @@ public abstract class Item implements Serializable, InscriptedItem {
         }
         this.corrupted = true;
     }
-    public Set<InscriptionIDs> getInscriptionSet(){
-        Set<InscriptionIDs> auxSet = new HashSet<>();
-        for (Inscription insc : this.inscriptions){
-            auxSet.add(insc.getInscription());
-        }
-        return auxSet;
-    }
     public double getStarRating() {
         double percentileSum = 0;
         for (Inscription inscription : getInscriptions()){
-            if (inscription.isSpecial()){
+            if (inscription.isEffect() || inscription.isKeystone()){
                 percentileSum++;
                 continue;
             }

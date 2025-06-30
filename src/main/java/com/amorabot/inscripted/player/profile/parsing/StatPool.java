@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.player.profile.parsing;
 
 import com.amorabot.inscripted.item.inscription.Inscription;
+import com.amorabot.inscripted.item.inscription.ProceduralInscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionDefinition;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.inscription.definition.Stats;
@@ -28,7 +29,7 @@ public class StatPool {
     public StatPool snapshot(){
         return new StatPool(new HashMap<>(baseStats),new HashMap<>(multipliers));
     }
-    public static StatPool getItemStats(Inscription implicit, List<Inscription> itemInscriptions, Map<Stats, int[]> localStats, Set<Integer> alreadyCompiledIDs){
+    public static StatPool getItemStats(ProceduralInscription implicit, List<Inscription> itemInscriptions, Map<Stats, int[]> localStats, Set<Integer> alreadyCompiledIDs){
         StatPool globalItemStatPool = new StatPool();
         globalItemStatPool.addInscriptionStats(implicit,alreadyCompiledIDs);
         for (Inscription inscription : itemInscriptions){
@@ -98,9 +99,10 @@ public class StatPool {
 
 
     public void addInscriptionStats(Inscription inscription, Set<Integer> blockedIDs){
-        if (inscription.isSpecial()){return;} // Special inscriptions aren't compiled here
-        InscriptionIDs inscriptionID = inscription.getInscription();
-        InscriptionDefinition definitionData = inscriptionID.getDefinitionData();
+        if (inscription.isEffect() || inscription.isKeystone()){return;} // Special inscriptions aren't compiled here
+//        InscriptionIDs inscriptionID = inscription.getInscription();
+//        InscriptionDefinition definitionData = inscriptionID.getDefinitionData();
+        InscriptionDefinition definitionData = inscription.getInscriptionDefinition();
         if (definitionData instanceof InscriptionDefinition.Regular regularDef){
             InscriptionDefinition.BaseInscription regularBaseInsc = regularDef.getBaseData();
             int definitionID = regularBaseInsc.id(regularDef.isGlobal(), regularDef.isPositive());
@@ -116,14 +118,14 @@ public class StatPool {
             int[] mappedHybridValues = inscription.getMappedFinalValues();
 
             if (!blockedIDs.contains(primaryID)){ // Parse the primary value
-                if (DEBUG_MODE) {Utils.log("Parsing Primary ID for "+inscriptionID.name()+ ": " + primaryID);}
+                if (DEBUG_MODE) {Utils.log("Parsing Primary ID: " + primaryID);}
                 insertValue(primaryData.stat(),primaryData.type(),hybridDef.getPrimaryValues(mappedHybridValues));
             }
 
             InscriptionDefinition.BaseInscription secondaryData = hybridDef.getSecondaryData();
             int secondaryID = secondaryData.id(hybridDef.isGlobal(), hybridDef.isPositive());
             if (!blockedIDs.contains(primaryID)){
-                if (DEBUG_MODE) {Utils.log("Parsing Secondary ID for "+inscriptionID.name()+ ": " + secondaryID);}
+                if (DEBUG_MODE) {Utils.log("Parsing Secondary ID: " + secondaryID);}
                 insertValue(secondaryData.stat(),secondaryData.type(),hybridDef.getSecondaryValues(mappedHybridValues));
             }
             return;

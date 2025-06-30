@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.item.inscription.table;
 
 import com.amorabot.inscripted.file.item.InscriptionDataManager;
-import com.amorabot.inscripted.item.inscription.Inscription;
+import com.amorabot.inscripted.item.inscription.ProceduralInscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.inscription.language.AffixType;
 import com.amorabot.inscripted.utils.Utils;
@@ -138,8 +138,8 @@ public class InscriptionTable {
 
 
 
-    public static int[] queryValuesFor(Inscription inscription){
-        return queryValuesFor(inscription.getInscription(), inscription.getTier());
+    public static int[] queryValuesFor(ProceduralInscription proceduralInscription){
+        return queryValuesFor(proceduralInscription.getInscription(), proceduralInscription.getTier());
     }
     public static int[] queryValuesFor(InscriptionIDs mod, int tier){
         AffixType inscriptionAffix = mod.getDefinitionData().getAffix();

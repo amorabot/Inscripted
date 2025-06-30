@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.item.structure.Armor;
 
 import com.amorabot.inscripted.item.inscription.Inscription;
+import com.amorabot.inscripted.item.inscription.ProceduralInscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionDefinition;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.inscription.definition.Stats;
@@ -61,9 +62,9 @@ public class LocalDefence {
         Map<DefenceTypes, Integer> localIncreases = new HashMap<>();
 
         for (Inscription insc : inscriptions){
-            InscriptionIDs inscriptionID = insc.getInscription();
-            InscriptionDefinition definition = inscriptionID.getDefinitionData();
-            if (insc.isSpecial()){continue;}
+//            InscriptionIDs inscriptionID = insc.getInscription();
+            InscriptionDefinition definition = insc.getInscriptionDefinition();
+            if (insc.isEffect() || insc.isKeystone()){continue;}
             if (definition.isGlobal()){continue;}
             // Its a local armor mod, if it targets a defence type, and its a increase/flat, lets map it
             if (definition instanceof InscriptionDefinition.Regular regularDef){
@@ -75,7 +76,7 @@ public class LocalDefence {
                     continue;
                 }
 
-                registerLocallyCompiledStat(regularDef.getBaseData(), regularDef.isGlobal(), regularDef.isPositive(), inscriptionID);
+                registerLocallyCompiledStat(regularDef.getBaseData(), regularDef.isGlobal(), regularDef.isPositive());
                 addLocalIncrease(
                         localIncreases,
                         mapStatDefence(regularDef.getBaseData().stat()),
@@ -96,7 +97,7 @@ public class LocalDefence {
                     if (targetFlatValues ^ isPrimaryFlat){
                         continue;
                     }
-                    registerLocallyCompiledStat(hybridDef.getPrimaryData(), hybridDef.isGlobal(), hybridDef.isPositive(), inscriptionID);
+                    registerLocallyCompiledStat(hybridDef.getPrimaryData(), hybridDef.isGlobal(), hybridDef.isPositive());
                     addLocalIncrease(
                             localIncreases,
                             mapStatDefence(hybridDef.getPrimaryData().stat()),
@@ -108,7 +109,7 @@ public class LocalDefence {
                     if (targetFlatValues ^ isSecondaryFlat){
                         continue;
                     }
-                    registerLocallyCompiledStat(hybridDef.getSecondaryData(), hybridDef.isGlobal(), hybridDef.isPositive(), inscriptionID);
+                    registerLocallyCompiledStat(hybridDef.getSecondaryData(), hybridDef.isGlobal(), hybridDef.isPositive());
                     addLocalIncrease(
                             localIncreases,
                             mapStatDefence(hybridDef.getSecondaryData().stat()),
@@ -147,9 +148,8 @@ public class LocalDefence {
     }
 
 
-    private void registerLocallyCompiledStat(InscriptionDefinition.BaseInscription baseData, boolean isGlobal, boolean isPositive, InscriptionIDs sourceInscription){
+    private void registerLocallyCompiledStat(InscriptionDefinition.BaseInscription baseData, boolean isGlobal, boolean isPositive){
         int definitionID = baseData.id(isGlobal,isPositive);
-        if (DEBUG_MODE){Utils.log("Inscription code("+sourceInscription+"): " + definitionID);}
         locallyCompiledStatIDs.add(definitionID);
     }
     public static boolean hasStatID(int statID){

@@ -1,7 +1,11 @@
 package com.amorabot.inscripted.item.render;
 
-import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.item.inscription.Inscription;
+import com.amorabot.inscripted.item.inscription.UniqueInscription;
+import com.amorabot.inscripted.item.inscription.definition.InscriptionDefinition;
+import com.amorabot.inscripted.player.Archetypes;
+import com.amorabot.inscripted.item.inscription.ProceduralInscription;
+import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -10,7 +14,7 @@ import java.util.*;
 
 public class InscriptionRenderer {
 
-    public static Comparator<Inscription> SORTER;
+    public static Comparator<ProceduralInscription> SORTER;
     public static Map<Integer,String> TIER_ICONS;
     static {
         SORTER = (o1, o2) -> {
@@ -38,14 +42,13 @@ public class InscriptionRenderer {
     public static List<Component> renderInscriptionList(List<Inscription> inscriptions, int padding){
         String valuesHex = InscriptedPalette.ITEM_VALUE.getColorString();
         List<Component> renderedInscriptions = new ArrayList<>();
-        inscriptions.sort(SORTER);
+//        inscriptions.sort(SORTER);
         for (Inscription insc : inscriptions) {
-            if (insc.isSpecial()){continue;}
             renderedInscriptions.add(getInscriptionAsComponent(insc,padding,valuesHex));
         }
         return renderedInscriptions;
     }
-    public static Component getImplicitComponent(Inscription implicit, Archetypes archetype){
+    public static Component getImplicitComponent(ProceduralInscription implicit, Archetypes archetype){
         InscriptedPalette archetypeColor = archetype.getColorOnPalette();
         Component displayNameComponent = MiniMessage.miniMessage().deserialize(implicit.getDisplayName(archetypeColor.getColorString())).color(archetypeColor.getColor());
         Component spacing = Component.text(" ");
@@ -53,14 +56,25 @@ public class InscriptionRenderer {
     }
 
     public static Component getInscriptionAsComponent(Inscription inscription, int padding, String valuesHex){
+        if (inscription instanceof UniqueInscription uniqueInscription){
+            if (uniqueInscription.isEffect() || uniqueInscription.isKeystone()){
+
+            }
+            //Standard or Meta Unique inscriptions
+
+        }
         Component displayNameComponent = MiniMessage.miniMessage().deserialize(inscription.getDisplayName(valuesHex)).color(InscriptedPalette.NEUTRAL_GRAY.getColor());
         Component paddingComponent = Component.text(" ".repeat(padding));
         Component spacing = Component.text(" ");
         return paddingComponent.append(displayNameComponent.append(spacing).append(getPostfixDetails(inscription)).append(spacing)).decoration(TextDecoration.ITALIC,false);
     }
     public static Component getPostfixDetails(Inscription inscription){
-        return Component.text(inscription.getInscription().getDefinitionData().getAffix().getRuneIcon(), InscriptedPalette.DARK_GRAY.getColor()).append(
-                Component.text(getTierChar(inscription.getTier(),inscription.getInscription().getTiers()), InscriptedPalette.DARKEST_TEXT.getColor())
+        if (inscription instanceof UniqueInscription uniqueInscription){
+            return Component.text(inscription.getInscriptionDefinition().getAffix().getRuneIcon());
+        }
+        ProceduralInscription regularInscription = (ProceduralInscription) inscription;
+        return Component.text(inscription.getInscriptionDefinition().getAffix().getRuneIcon(), InscriptedPalette.DARK_GRAY.getColor()).append(
+                Component.text(getTierChar(regularInscription.getTier(), regularInscription.getInscription().getTiers()), InscriptedPalette.DARKEST_TEXT.getColor())
         );
     }
     public static String getTierChar(int tier, int totalTiers){

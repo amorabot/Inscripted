@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.item.render;
 
 import com.amorabot.inscripted.player.Archetypes;
-import com.amorabot.inscripted.item.inscription.Inscription;
+import com.amorabot.inscripted.item.inscription.ProceduralInscription;
 import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.utils.Utils;
@@ -64,7 +64,7 @@ public class ItemRenderer {
         return lore;
     }
 
-    public static Component getImplicitLine(Inscription implicit, Archetypes itemArchetype, int padding){
+    public static Component getImplicitLine(ProceduralInscription implicit, Archetypes itemArchetype, int padding){
         Component passiveIndicator = Component.text(Utils.convertToPrettyString("Passive:"));
         Component paddingComponent = Component.text(" ".repeat(padding));
         Component implicitComponent = InscriptionRenderer.getImplicitComponent(implicit, itemArchetype);

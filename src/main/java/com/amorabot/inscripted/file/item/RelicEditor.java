@@ -9,7 +9,7 @@
 //import com.amorabot.inscripted.components.Items.relic.GenericRelicData;
 //import com.amorabot.inscripted.components.Items.relic.RelicArmorDAO;
 //import com.amorabot.inscripted.components.Items.relic.RelicWeaponDAO;
-//import com.amorabot.inscripted.components.Items.relic.enums.Relics;
+//import com.amorabot.inscripted.item.relic.Relics;
 //import com.amorabot.inscripted.file.ResourcesJSONReader;
 //import com.google.gson.Gson;
 //import com.google.gson.GsonBuilder;
