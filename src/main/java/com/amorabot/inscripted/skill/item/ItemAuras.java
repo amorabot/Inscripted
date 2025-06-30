@@ -1,5 +1,7 @@
 package com.amorabot.inscripted.skill.item;
 
+import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
+import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.healing.HealingBuff;
@@ -7,6 +9,7 @@ import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.math.LinalgMath;
 import com.amorabot.inscripted.particle.ParticlePlotter;
 import com.amorabot.inscripted.player.profile.component.AttackData;
+import com.amorabot.inscripted.skill.PlayerAbilities;
 import com.amorabot.inscripted.skill.type.Aura;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
@@ -101,7 +104,9 @@ public class ItemAuras {
         List<LivingEntity> nearbyEntities = (List<LivingEntity>) playerLoc.getNearbyLivingEntities(radius+0.1);
         for (LivingEntity entity : nearbyEntities){
             ParticlePlotter.thunderAt(entity.getLocation().clone(), 4, 16);
-            //TODO: Damage entity
+            
+            // Apply aura damage - Thunderstruck does lightning damage
+            DamageRouter.entityDamage(caster, entity, DamageSource.DOT, PlayerAbilities.THUNDERSTRUCK_PASSIVE);
         }
     }
 
@@ -127,9 +132,10 @@ public class ItemAuras {
     private static void righteousFireRoutine(Player caster, AttackData auraDamage, float radius, double currentPhase){
         renderRFRadius(caster,radius,50, currentPhase);
         List<LivingEntity> nearbyEntities = (List<LivingEntity>) caster.getLocation().getNearbyLivingEntities(radius+0.1);
-//        for (LivingEntity entity : nearbyEntities){
-//            //TODO: Damage entity
-//        }
+        for (LivingEntity entity : nearbyEntities){
+            // Apply aura damage - Righteous Fire does fire damage over time
+            DamageRouter.entityDamage(caster, entity, DamageSource.DOT, PlayerAbilities.FIST);
+        }
     }
     private static void renderRFRadius(Player caster, float radius, int numPoints, double currentPhase){
         final int[] color = new int[]{255, 148, 61};
