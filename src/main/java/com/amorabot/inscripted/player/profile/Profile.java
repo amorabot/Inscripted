@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.player.profile;
 
+import com.amorabot.inscripted.components.damage.DamageTracker;
 import com.amorabot.inscripted.item.inscription.definition.Stats;
 import com.amorabot.inscripted.player.profile.component.*;
 import lombok.Getter;
@@ -13,6 +14,7 @@ public class Profile {
     private final HealthComponent healthComponent;
     private final DefenceComponent defenceComponent;
     private final DamageComponent damageComponent;
+    private final DamageTracker damageTracker;
 
     private final Attributes attributes;
     private final Miscellaneous miscStats;
@@ -22,6 +24,7 @@ public class Profile {
         this.healthComponent = new HealthComponent();
         this.damageComponent = new DamageComponent();
         this.defenceComponent = new DefenceComponent();
+        this.damageTracker = new DamageTracker();
 
         this.attributes = new Attributes(0,0,0);
         this.miscStats = new Miscellaneous();

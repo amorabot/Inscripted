@@ -1,6 +1,8 @@
 package com.amorabot.inscripted;
 
 import com.amorabot.inscripted.commands.*;
+import com.amorabot.inscripted.components.damage.DamageEventNotifier;
+import com.amorabot.inscripted.components.damage.LoggingDamageObserver;
 import com.amorabot.inscripted.file.profile.ProfileDatabase;
 import com.amorabot.inscripted.item.render.GlyphInfo;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
@@ -53,6 +55,10 @@ public final class Inscripted extends JavaPlugin {
 
         commandsStartupRoutine();
         eventListenersStartupRoutine();
+
+        // Initialize damage detection system
+        DamageEventNotifier.addGlobalObserver(new LoggingDamageObserver());
+        Utils.log("Damage detection system initialized with logging observer");
 
 //        //Damage hologram depleter
 //        holoDepleterTask = CombatHologramsDepleter.getInstance().runTaskTimer(this,(long) (Math.random()*11), 1L);

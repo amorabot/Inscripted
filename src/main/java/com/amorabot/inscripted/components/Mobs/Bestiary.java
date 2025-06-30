@@ -41,6 +41,8 @@ public enum Bestiary {
     private final EntityType type;
     private final Component displayName;
 //    private final MobStats stats;
+    private final HealthComponent healthComponent;
+    private final DefenceComponent defenceComponent;
 
     private final List<String> customAddedGoals;
     private final List<String> removedGoals;
@@ -63,6 +65,8 @@ public enum Bestiary {
 //                defensePreset);
 //        this.stats=null;
         this.displayName = Component.text(displayName).appendSpace().append(Component.text("[Lv."+level+"]").color(NamedTextColor.GRAY));
+        this.healthComponent = healthPreset;
+        this.defenceComponent = defensePreset;
 
         this.customAddedGoals = addGoals;
         this.removedGoals = removeGoals;

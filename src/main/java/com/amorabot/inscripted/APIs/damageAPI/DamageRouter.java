@@ -6,6 +6,8 @@ package com.amorabot.inscripted.APIs.damageAPI;
 //import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.components.Items.relic.enums.TriggerTimes;
 import com.amorabot.inscripted.components.Items.relic.enums.TriggerTypes;
+import com.amorabot.inscripted.components.damage.MobHealthComponent;
+import com.amorabot.inscripted.player.PlayerDataContainer;
 //import com.amorabot.inscripted.components.Mobs.InscriptedMob;
 //import com.amorabot.inscripted.components.Mobs.MobStats;
 //import com.amorabot.inscripted.components.Player.Profile;
@@ -90,10 +92,13 @@ public class DamageRouter {
 //        Profile defenderProfile = JSONProfileManager.getProfile(defender.getUniqueId());
 //        DefenceComponent defenderDefence = defenderProfile.getDefenceComponent();
 
-        final boolean dodged;
+        final boolean dodged = false;
 //        dodged = AttackProcessor.attackResult(attackerHit, defenderDefence);
 
+        // Placeholder damage for testing - in real implementation this would come from damage calculation  
+        int[] rawHitDamage = new int[]{5, 0, 0, 0, 0}; // Basic physical damage
 //        int[] baseDamage = rollDamages(attackerHit.getDamages());
+        final boolean isCriticalHit = false;
 //        final boolean isCriticalHit = AttackProcessor.isCriticalHit(attackerHit);
 
         final boolean isSelfDamage = source.equals(DamageSource.SELF);
@@ -104,6 +109,9 @@ public class DamageRouter {
 //            CombatEffects.playDodgeEffectsAt(defender, attacker);
 //            AttackProcessor.dodgeAttack(rawHitDamage, 60); //Mutates rawHitDamage
 //        }
+
+        // DAMAGE DETECTION: Record damage in versusPlayer before calling damageDefendingPlayer
+        recordPlayerDamage(defender, attacker, rawHitDamage, isCriticalHit, dodged);
 
 //        damageDefendingPlayer(defender, rawHitDamage, isCriticalHit, isSelfDamage, attacker, originalSource);
     }
@@ -118,20 +126,41 @@ public class DamageRouter {
 //        Attack attackerHit = playerProfile.getDamageComponent().getHitData();
 //        DefenceComponent defenderDefence = mobStats.getMobDefence();
 
-        final boolean dodged;
+        final boolean dodged = false;
 //        dodged = AttackProcessor.attackResult(attackerHit, defenderDefence);
 
 //        int[] baseDamage = rollDamages(attackerHit.getDamages());
+        final boolean isCriticalHit = false;
 //        final boolean isCriticalHit = AttackProcessor.isCriticalHit(attackerHit);
 
         final boolean isSelfDamage = source.equals(DamageSource.SELF);
 
+        // Placeholder damage for testing - in real implementation this would come from damage calculation
+        int[] rawHitDamage = new int[]{10, 0, 0, 0, 0}; // Basic physical damage
 //        int[] rawHitDamage = AttackProcessor.processAttack(playerProfile, mobStats, baseDamage, isCriticalHit, ability);
 
 //        if (dodged){
 //            CombatEffects.playDodgeEffectsAt(defender, attacker);
 //            AttackProcessor.dodgeAttack(rawHitDamage, 60); //Mutates rawHitDamage
 //        }
+
+        // DAMAGE DETECTION: Handle mob damage tracking
+        MobHealthComponent mobHealth = MobHealthComponent.getOrCreateHealthComponent(defender);
+        if (mobHealth != null) {
+            boolean mobDied = mobHealth.takeDamage(attacker, rawHitDamage, source, isCriticalHit, dodged);
+            
+            // Record damage dealt by the player attacker
+            if (PlayerDataContainer.hasPlayerData(attacker.getUniqueId())) {
+                PlayerDataContainer container = PlayerDataContainer.getDataContainerFor(attacker.getUniqueId());
+                int totalDamage = 0;
+                for (int dmg : rawHitDamage) totalDamage += dmg;
+                container.getProfile().getDamageTracker().recordDamageDealt(totalDamage);
+            }
+            
+            if (mobDied) {
+                Utils.log("Mob " + defender.getName() + " died from damage!");
+            }
+        }
 
 //        damageDefendingMob(defender, rawHitDamage, isCriticalHit, false, attacker, originalSource);
     }
@@ -295,6 +324,21 @@ public class DamageRouter {
 //        if (!isSelfDamage){
 //            CombatLogger.addToCombat(player);
 //        }
+
+        // DAMAGE DETECTION: Record damage taken by player
+        // Note: This method is called from both pvpOutcome and evpOutcome, so we use the last stored values
+        recordPlayerDamage(player, attacker, incomingHit, false, false);
+    }
+
+    // Helper method to centralize damage recording logic
+    private static void recordPlayerDamage(Player player, LivingEntity attacker, int[] incomingHit, 
+                                         boolean isCritical, boolean dodged) {
+        if (PlayerDataContainer.hasPlayerData(player.getUniqueId())) {
+            PlayerDataContainer container = PlayerDataContainer.getDataContainerFor(player.getUniqueId());
+            container.getProfile().getDamageTracker().recordDamageTaken(
+                player, attacker, incomingHit, DamageSource.HIT, isCritical, dodged
+            );
+        }
     }
 
     public static void notifyProfile(LivingEntity attacker, LivingEntity defender, TriggerTypes trigger, TriggerTimes triggerTiming, int[] hit){
