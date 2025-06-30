@@ -1,6 +1,11 @@
 package com.amorabot.inscripted.skill.routine.projectile;
 
+import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
+import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
+import com.amorabot.inscripted.skill.PlayerAbilities;
+import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.tasks.base.Skillcast;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -17,9 +22,11 @@ public class ProjectileCollision {
     //that can mutate its internal value (like changing targets,resetting travel distance, chain, explosion,...)
     public static boolean standardDetection(Projectile projectile){
         Vector currentPosition = projectile.getOrigin();
-//TODO        Player attacker = Bukkit.getPlayer(projectile.getContext().getAttackerID());
-//        assert attacker != null;
-//        if (!attacker.isOnline()){projectile.setValid(false);}
+        Player attacker = projectile.getSkillcast().getPlayer();
+        if (attacker == null || !attacker.isOnline()){
+            projectile.setValid(false);
+            return false;
+        }
 
         World projWorld = projectile.getProjectileWorld();
         double detectionRange = projectile.getDetectionRange();
@@ -27,8 +34,8 @@ public class ProjectileCollision {
 
         if (!nearbyEntities.isEmpty()){
             for (LivingEntity e : nearbyEntities){
-//TODO                if (projectile.getBlacklistedEntities().contains(e.getUniqueId())){continue;}
-//                if (projectile.getAffectedEntities().contains(e.getUniqueId())){continue;}
+                if (projectile.getSkillcast().getCastData().getBlacklistedEntities().contains(e.getUniqueId())){continue;}
+                if (projectile.getSkillcast().getCastData().getAffectedEntities().contains(e.getUniqueId())){continue;}
 
                 BoundingBox entityAABB;
                 if (e instanceof Player p){
@@ -41,10 +48,20 @@ public class ProjectileCollision {
                 arrowAABB.expand(detectionRange/4);
 
                 if (entityAABB.overlaps(arrowAABB)){
-//                    if (!attacker.hasLineOfSight(e)){continue;}
-//                    DamageRouter.entityDamage(attacker, e, DamageSource.HIT, projectile.getContext().getSkillUsed());
-//                    projectile.getAffectedEntities().add(e.getUniqueId());
-//                    if (projectile.isDestroyOnContact()){projectile.setValid(false);}
+                    if (!attacker.hasLineOfSight(e)){continue;}
+                    
+                    // Apply damage through the custom damage router system
+                    Skills skillUsed = projectile.getSkillcast().getCastData().getCastingContext().getSkillUsed();
+                    PlayerAbilities playerAbility = convertSkillToPlayerAbility(skillUsed);
+                    DamageRouter.entityDamage(attacker, e, DamageSource.HIT, playerAbility);
+                    
+                    // Track affected entities and destroy projectile if needed
+                    projectile.getSkillcast().getCastData().getAffectedEntities().add(e.getUniqueId());
+                    projectile.getSkillcast().getCastData().getBlacklistedEntities().add(e.getUniqueId());
+                    
+                    if (projectile.isDestroyOnContact()){
+                        projectile.setValid(false);
+                    }
                     return true;
                 }
                 continue;
@@ -57,6 +74,17 @@ public class ProjectileCollision {
 
     public static void testCollisionExecution(Skillcast originalSkillcast){
         originalSkillcast.getPlayer().sendMessage("Colided!");
+    }
+
+    // Helper method to convert Skills enum to PlayerAbilities enum
+    private static PlayerAbilities convertSkillToPlayerAbility(Skills skill) {
+        try {
+            // Convert by name - both enums have the same names for basic attacks
+            return PlayerAbilities.valueOf(skill.name());
+        } catch (IllegalArgumentException e) {
+            // Fallback to FIST if conversion fails
+            return PlayerAbilities.FIST;
+        }
     }
 
     //TODO: Seek when found -> constant checks for nearby players and change behavior to seek + change target
