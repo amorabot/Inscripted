@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.commands;
 
-//import com.amorabot.inscripted.GUIs.ItemCommandGUI;
+import com.amorabot.inscripted.GUIs.ItemCommandGUI;
 import com.amorabot.inscripted.GUIs.RelicsGUI;
 import com.amorabot.inscripted.Inscripted;
 //import com.amorabot.inscripted.components.Items.Abstract.Item;
@@ -37,46 +37,43 @@ public class GenerateItem implements TabExecutor {
         Player player = (Player) sender;
 
         if (args.length == 0){
-            player.sendMessage("Usage: /item itemTier itemRarity itemArchetype");
-            player.sendMessage("");
-
-            Utils.msgPlayer(player, "Example: "+"&c&l/item" + " T4" + " " + ItemRarities.AUGMENTED + " " + Archetypes.MERCENARY);
-            Utils.msgPlayer(player, "&c  ->Would open the item generation menu for Tier 4 &lAUGMENTED&c(have up to 2 modifiers) Mercenary items");
-            Utils.msgPlayer(player, "Item tiers: T1 T2 T3 T4 T5 & RELIC");
-            Utils.msgPlayer(player, "Item Rarities: COMMON (0 modifiers),   AUGMENTED (up to 2),     RUNIC (up to 6)");
-            Utils.msgPlayer(player, "Item Archetypes:");
-            player.sendMessage(Component.text(""+Archetypes.MARAUDER).color(Archetypes.MARAUDER.getColorOnPalette().getColor()).decorate(TextDecoration.BOLD));
-            player.sendMessage(Component.text(""+Archetypes.GLADIATOR).color(Archetypes.GLADIATOR.getColorOnPalette().getColor()).decorate(TextDecoration.BOLD));
-            player.sendMessage(Component.text(""+Archetypes.MERCENARY).color(Archetypes.MERCENARY.getColorOnPalette().getColor()).decorate(TextDecoration.BOLD));
-            player.sendMessage(Component.text(""+Archetypes.ROGUE).color(Archetypes.ROGUE.getColorOnPalette().getColor()).decorate(TextDecoration.BOLD));
-            player.sendMessage(Component.text(""+Archetypes.SORCERER).color(Archetypes.SORCERER.getColorOnPalette().getColor()).decorate(TextDecoration.BOLD));
-            player.sendMessage(Component.text(""+Archetypes.TEMPLAR).color(Archetypes.TEMPLAR.getColorOnPalette().getColor()).decorate(TextDecoration.BOLD));
-            Utils.msgPlayer(player, "");
-            Utils.msgPlayer(player, "You can also modify your non-Relic items with currencies from /orb!");
+            // Open the item generation GUI with default values
+            ItemCommandGUI itemGUI = new ItemCommandGUI(player, Archetypes.MARAUDER, 75, ItemRarities.AUGMENTED);
+            player.openInventory(itemGUI.getInventory());
             return true;
         }
         if (args.length == 1){//manually getting Relics
-            if (Objects.equals(args[0], "RELIC")){
+            if (Objects.equals(args[0].toUpperCase(), "RELIC")){
                 RelicsGUI relicsGUI = new RelicsGUI();
                 player.openInventory(relicsGUI.getInventory());
                 return true;
+            } else if (Objects.equals(args[0].toUpperCase(), "HELP")) {
+                player.sendMessage("§e§lItem Generation Commands:");
+                player.sendMessage("§f/item §7- Opens the item creation interface");
+                player.sendMessage("§f/item relic §7- Opens the relic browser");
+                player.sendMessage("§f/item <tier> <rarity> <archetype> §7- Opens interface with presets");
+                player.sendMessage("");
+                player.sendMessage("§7Available options:");
+                player.sendMessage("§7Tiers: §fT1, T2, T3, T4, T5");
+                player.sendMessage("§7Rarities: §fCOMMON, AUGMENTED, RUNIC");
+                player.sendMessage("§7Archetypes: §fMARAUDER, GLADIATOR, MERCENARY, ROGUE, SORCERER, TEMPLAR");
             } else {
-                Utils.error("Not a valid argument for item generation");
+                Utils.msgPlayer(player, "§cInvalid argument. Use §f/item help §cfor usage information.");
             }
             return true;
         }
 
         
 //        int ilvl = Integer.parseInt(args[0]);
-        Tiers tier = Tiers.valueOf(args[0]);
+        Tiers tier = Tiers.valueOf(args[0].toUpperCase());
         int ilvl = tier.getMaxLevel();
-        ItemRarities rarity = ItemRarities.valueOf(args[1]);
-        Archetypes archetype = Archetypes.valueOf(args[2]);
+        ItemRarities rarity = ItemRarities.valueOf(args[1].toUpperCase());
+        Archetypes archetype = Archetypes.valueOf(args[2].toUpperCase());
 
         if (args.length == 3){
 
-//            ItemCommandGUI itemGUI = new ItemCommandGUI(player, archetype, ilvl, rarity, 6, false, true);
-//            player.openInventory(itemGUI.getInventory());
+            ItemCommandGUI itemGUI = new ItemCommandGUI(player, archetype, ilvl, rarity);
+            player.openInventory(itemGUI.getInventory());
             return true;
         }
         return true;
@@ -93,6 +90,7 @@ public class GenerateItem implements TabExecutor {
 //                options.add(String.valueOf(t));
             }
             options.add("RELIC");
+            options.add("HELP");
             return options;
         } else if (strings.length == 2) { // Rarity
             for (ItemRarities rarity : ItemRarities.values()){
