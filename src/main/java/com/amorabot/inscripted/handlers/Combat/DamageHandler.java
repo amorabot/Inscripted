@@ -17,6 +17,7 @@ import com.amorabot.inscripted.skill.casting.CastSource;
 import com.amorabot.inscripted.item.structure.Weapon.Weapon;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
+import com.amorabot.inscripted.item.structure.Weapon.RangeCategory;
 import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.equipment.PlayerEquipment;
@@ -74,11 +75,19 @@ public class DamageHandler implements Listener {
             
             // Check if player has an Inscripted weapon equipped
             if (hasInscriptedWeaponEquipped(p)) {
+                Weapon equippedWeapon = getEquippedWeapon(p);
+                WeaponTypes weaponType = equippedWeapon.getWeaponType();
+                
+                // Check if player has cooldown for this weapon type
+                if (hasWeaponCooldown(p, weaponType)) {
+                    // Player has cooldown, cancel the event but don't trigger BASIC skill
+                    event.setCancelled(true);
+                    return;
+                }
+                
                 // Cancel the default attack and trigger the appropriate BASIC skill
                 event.setCancelled(true);
                 
-                Weapon equippedWeapon = getEquippedWeapon(p);
-                WeaponTypes weaponType = equippedWeapon.getWeaponType();
                 Skills basicSkill = mapWeaponTypeToBasicSkill(weaponType);
                 WeaponAttackSpeeds attackSpeed = equippedWeapon.getAtkSpeed();
                 
@@ -186,5 +195,29 @@ public class DamageHandler implements Listener {
     private boolean hasInscriptedWeaponEquipped(Player player) {
         Weapon equippedWeapon = getEquippedWeapon(player);
         return equippedWeapon != null;
+    }
+
+    /**
+     * Checks if the player has cooldown for the given weapon type.
+     * @param player the player to check
+     * @param weaponType the weapon type to check cooldown for
+     * @return true if player has cooldown, false otherwise
+     */
+    private boolean hasWeaponCooldown(Player player, WeaponTypes weaponType) {
+        Material cooldownMaterial = getWeaponCooldownMaterial(weaponType);
+        return player.hasCooldown(cooldownMaterial);
+    }
+
+    /**
+     * Gets the appropriate cooldown material for the given weapon type.
+     * @param weaponType the weapon type
+     * @return Material.SHEARS for melee weapons, Material.BOW for ranged weapons
+     */
+    private Material getWeaponCooldownMaterial(WeaponTypes weaponType) {
+        RangeCategory rangeCategory = weaponType.getRange();
+        return switch (rangeCategory) {
+            case MELEE -> Material.SHEARS;
+            case RANGED -> Material.BOW;
+        };
     }
 }
