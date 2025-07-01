@@ -50,10 +50,10 @@ public class ProjectileCollision {
                 if (entityAABB.overlaps(arrowAABB)){
                     if (!attacker.hasLineOfSight(e)){continue;}
                     
-                    // Apply damage through the custom damage router system
+                    // Apply damage through the custom damage router system with AttackData
                     Skills skillUsed = projectile.getSkillcast().getCastData().getCastingContext().getSkillUsed();
                     PlayerAbilities playerAbility = convertSkillToPlayerAbility(skillUsed);
-                    DamageRouter.entityDamage(attacker, e, DamageSource.HIT, playerAbility);
+                    DamageRouter.entityDamage(attacker, e, DamageSource.HIT, playerAbility, projectile.getAttackData());
                     
                     // Track affected entities and destroy projectile if needed
                     projectile.getSkillcast().getCastData().getAffectedEntities().add(e.getUniqueId());

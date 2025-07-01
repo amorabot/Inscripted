@@ -7,6 +7,9 @@ import com.amorabot.inscripted.item.structure.Armor.Armor;
 import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.item.structure.Weapon.Weapon;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
+import com.amorabot.inscripted.skill.Skills;
+import com.amorabot.inscripted.skill.casting.CastSource;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.events.ItemUsage;
 import com.amorabot.inscripted.item.structure.io.InscriptedItem;
 import com.amorabot.inscripted.item.structure.io.ItemDeserializer;
@@ -86,19 +89,24 @@ public class PlayerEquipmentHandler implements Listener {
             return;
         }
         ItemStack usedItem = usedItemOptional.get();
-        PersistentDataContainer dataContainer = usedItem.getItemMeta().getPersistentDataContainer();
-        ItemUsage itemUsage = mapPlayerInteractAction(dataContainer, event.getAction());
+        ItemUsage itemUsage = mapPlayerInteractAction(usedItem, event.getAction());
         switch (itemUsage){
             case NONE -> player.sendMessage("Non functional item usage");
             case ARMOR_RIGHT_CLICK_AIR -> player.sendMessage("Equiping armor!!");
             case ARMOR_LEFT_CLICK_AIR -> player.sendMessage("Punching with armor");
             case WEAPON_LEFT_CLICK_AIR, WEAPON_LEFT_CLICK_BLOCK -> {
-//                Weapon weaponData = FunctionalItemAccessInterface.deserializeWeaponData(dataContainer);
-//                if (weaponData == null){
-//                    player.sendMessage("Invalid weapon attack...");
-//                    return;
-//                }
-//                basicAttackBy(player, usedItem, weaponData.getSubtype());
+                // Get the weapon from the held item directly
+                Weapon equippedWeapon = ItemDeserializer.deserializeWeaponData(usedItem);
+                
+                if (equippedWeapon == null) {
+                    player.sendMessage("Invalid weapon!");
+                    return;
+                }
+                
+                // Map weapon type to basic skill and cast it
+                WeaponTypes weaponType = equippedWeapon.getWeaponType();
+                Skills basicSkill = mapWeaponTypeToBasicSkill(weaponType);
+                basicSkill.cast(player.getUniqueId(), CastSource.PLAYER, equippedWeapon.getAtkSpeed());
             }
             case WEAPON_RIGHT_CLICK_AIR, WEAPON_RIGHT_CLICK_BLOCK -> {
 //                player.sendMessage("Mobility skill!");
@@ -317,14 +325,23 @@ public class PlayerEquipmentHandler implements Listener {
     private boolean isNotFunctional(ItemStack item){
         return (item == null || !item.hasItemMeta() || item.getType().isAir());
     }
-    private ItemUsage mapPlayerInteractAction(PersistentDataContainer heldItemData, Action interactionType){
+    private ItemUsage mapPlayerInteractAction(ItemStack heldItem, Action interactionType){
+        if (heldItem == null || heldItem.getType().isAir() || !heldItem.hasItemMeta()){
+            return ItemUsage.NONE;
+        }
+        
+        PersistentDataContainer heldItemData = heldItem.getItemMeta().getPersistentDataContainer();
         if (heldItemData == null || heldItemData.isEmpty()){
             return ItemUsage.NONE;
         }
+        
 //        boolean equipableArmor = isEquipableArmor(heldItemData);
         boolean equipableArmor = false;
-//        boolean equipableWeapon = isIdentified(WEAPON_TAG,heldItemData);
-        boolean equipableWeapon = false;
+        
+        // Check if this is an Inscripted weapon
+        boolean equipableWeapon = InscriptedItem.hasInscriptedTag(heldItem) && 
+                                 ItemDeserializer.isWeapon(heldItem) &&
+                                 ItemDeserializer.isIdentified(heldItem);
 
         switch (interactionType){
             case LEFT_CLICK_AIR -> {
@@ -487,5 +504,16 @@ public class PlayerEquipmentHandler implements Listener {
             }
         }
         return null;
+    }
+
+    private Skills mapWeaponTypeToBasicSkill(WeaponTypes weaponType) {
+        return switch (weaponType) {
+            case AXE -> Skills.BASIC_AXE_SLASH;
+            case SWORD -> Skills.BASIC_SWORD_SLASH;
+            case BOW -> Skills.BASIC_BOW_SHOT;
+            case DAGGER -> Skills.BASIC_DAGGER_SLASH;
+            case WAND -> Skills.BASIC_WAND_ATTACK;
+            case MACE -> Skills.BASIC_MACE_SLAM;
+        };
     }
 }

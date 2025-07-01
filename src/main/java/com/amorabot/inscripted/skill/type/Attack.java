@@ -44,7 +44,9 @@ public abstract class Attack extends Skillcast.Simple {
             int usageCooldown = (int) (itemUsageCD * ( (100 + cooldownReduction)/100D ));
             getPlayer().setCooldown(Material.SHEARS,usageCooldown);
             getPlayer().setCooldown(Material.BOW,usageCooldown);
-            swingEffect.apply(getPlayer());
+            if (swingEffect != null) {
+                swingEffect.apply(getPlayer());
+            }
         }
 //
 //        @Override

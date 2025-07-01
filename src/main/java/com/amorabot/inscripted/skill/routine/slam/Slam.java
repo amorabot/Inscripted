@@ -80,10 +80,10 @@ public class Slam{
                             slamObject.getSkillcast().getCastData().getAffectedEntities().add(entity.getUniqueId());
                             slamObject.getSkillcast().getCastData().getBlacklistedEntities().add(entity.getUniqueId());
                             
-                            // Apply damage through the custom damage router system
+                            // Apply damage through the custom damage router system with AttackData
                             Skills skillUsed = slamObject.getSkillcast().getCastData().getCastingContext().getSkillUsed();
                             PlayerAbilities playerAbility = convertSkillToPlayerAbility(skillUsed);
-                            DamageRouter.entityDamage((Player) slamOwner, entity, DamageSource.HIT, playerAbility);
+                            DamageRouter.entityDamage((Player) slamOwner, entity, DamageSource.HIT, playerAbility, slamObject.getAttackData());
                         }
                         //Post-slam effects can go here
                     }

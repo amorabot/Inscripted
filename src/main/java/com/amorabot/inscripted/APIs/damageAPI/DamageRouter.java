@@ -8,6 +8,7 @@ import com.amorabot.inscripted.components.Items.relic.enums.TriggerTimes;
 import com.amorabot.inscripted.components.Items.relic.enums.TriggerTypes;
 import com.amorabot.inscripted.components.damage.MobHealthComponent;
 import com.amorabot.inscripted.player.PlayerDataContainer;
+import com.amorabot.inscripted.player.profile.component.AttackData;
 //import com.amorabot.inscripted.components.Mobs.InscriptedMob;
 //import com.amorabot.inscripted.components.Mobs.MobStats;
 //import com.amorabot.inscripted.components.Player.Profile;
@@ -23,9 +24,9 @@ import org.bukkit.entity.Player;
 
 public class DamageRouter {
 
-    public static void entityDamage(LivingEntity attacker,LivingEntity defender, DamageSource source, PlayerAbilities ability){
+    public static void entityDamage(LivingEntity attacker, LivingEntity defender, DamageSource source, PlayerAbilities ability, AttackData attackData){
         if (attacker instanceof Player playerAttacker){
-            playerAttack(playerAttacker,defender,source,ability);
+            playerAttack(playerAttacker, defender, source, ability, attackData);
             return;
         }
         if (EntityStateManager.isMob(attacker)){
@@ -34,21 +35,24 @@ public class DamageRouter {
         }
     }
 
-    private static void playerAttack(Player player, LivingEntity defender, DamageSource source, PlayerAbilities ability){
+    // Legacy method for backward compatibility - uses default attack data
+    public static void entityDamage(LivingEntity attacker,LivingEntity defender, DamageSource source, PlayerAbilities ability){
+        entityDamage(attacker, defender, source, ability, null);
+    }
+
+    private static void playerAttack(Player player, LivingEntity defender, DamageSource source, PlayerAbilities ability, AttackData attackData){
         defender.damage(0.001);
         if (defender instanceof Player def){
             if (EntityStateManager.isDead(def)){ //If the player is recieving hits during the death invuln. period
                 Utils.log("Ignoring PvP Hits against " + def.getName());
                 return;
             }
-            versusPlayer(player, def,source,ability);
-            //....
+            versusPlayer(player, def, source, ability, attackData);
             return;
         }
 
         if (EntityStateManager.isMob(defender)){
-            versusEntity(player,defender,source,ability);
-            //...
+            versusEntity(player, defender, source, ability, attackData);
             return;
         }
     }
@@ -60,7 +64,7 @@ public class DamageRouter {
                 return;
             }
             //Ability is only accessed if it was a player attack, can be whatever
-            versusPlayer(attacker, def,DamageSource.HIT, PlayerAbilities.FIST);
+            versusPlayer(attacker, def, DamageSource.HIT, PlayerAbilities.FIST, null);
             //....
             return;
         }
@@ -68,83 +72,47 @@ public class DamageRouter {
     }
 
 
-    private static void versusPlayer(LivingEntity attacker, Player defender, DamageSource originalSource, PlayerAbilities ability){
+    private static void versusPlayer(LivingEntity attacker, Player defender, DamageSource originalSource, PlayerAbilities ability, AttackData attackData){
         DamageSource source = originalSource;
         if (attacker.getUniqueId().equals(defender.getUniqueId()) && !originalSource.equals(DamageSource.SELF)){
             source = DamageSource.SELF;
         }
 
-
-//        Attack attackerHit;
-//        EntityProfile attackerProfile;
-
-//        if (attacker instanceof Player p){
-//            attackerProfile = JSONProfileManager.getProfile(p.getUniqueId());
-//        } else { //Its a mob profile
-//            InscriptedMob mobInstance = MobManager.getMobData(defender);
-//            assert mobInstance != null;
-//            attackerProfile = mobInstance.getStats();
-//        }
-//        attackerProfile = Profile.getEntityProfile(attacker);
-//        attackerHit = attackerProfile.getAttackData();
-
-
-//        Profile defenderProfile = JSONProfileManager.getProfile(defender.getUniqueId());
-//        DefenceComponent defenderDefence = defenderProfile.getDefenceComponent();
-
         final boolean dodged = false;
-//        dodged = AttackProcessor.attackResult(attackerHit, defenderDefence);
-
-        // Placeholder damage for testing - in real implementation this would come from damage calculation  
-        int[] rawHitDamage = new int[]{5, 0, 0, 0, 0}; // Basic physical damage
-//        int[] baseDamage = rollDamages(attackerHit.getDamages());
         final boolean isCriticalHit = false;
-//        final boolean isCriticalHit = AttackProcessor.isCriticalHit(attackerHit);
-
         final boolean isSelfDamage = source.equals(DamageSource.SELF);
 
-//        int[] rawHitDamage = AttackProcessor.processAttack(attackerProfile, defenderProfile, baseDamage, isCriticalHit, ability);
+        // Use AttackData if provided, otherwise fall back to placeholder damage
+        int[] rawHitDamage;
+        if (attackData != null) {
+            rawHitDamage = extractTotalDamageFromAttackData(attackData);
+        } else {
+            // Placeholder damage for legacy/mob attacks
+            rawHitDamage = new int[]{5, 0, 0, 0, 0};
+        }
 
-//        if (dodged){
-//            CombatEffects.playDodgeEffectsAt(defender, attacker);
-//            AttackProcessor.dodgeAttack(rawHitDamage, 60); //Mutates rawHitDamage
-//        }
-
-        // DAMAGE DETECTION: Record damage in versusPlayer before calling damageDefendingPlayer
+        // DAMAGE DETECTION: Record damage before calling damageDefendingPlayer
         recordPlayerDamage(defender, attacker, rawHitDamage, isCriticalHit, dodged);
 
 //        damageDefendingPlayer(defender, rawHitDamage, isCriticalHit, isSelfDamage, attacker, originalSource);
     }
-    private static void versusEntity(Player attacker, LivingEntity defender, DamageSource originalSource, PlayerAbilities ability){
+    private static void versusEntity(Player attacker, LivingEntity defender, DamageSource originalSource, PlayerAbilities ability, AttackData attackData){
         DamageSource source = originalSource;
 
-//        Profile playerProfile = JSONProfileManager.getProfile(attacker.getUniqueId());
-//        InscriptedMob mobInstance = MobManager.getMobData(defender);
-//        assert mobInstance != null;
-//        MobStats mobStats = mobInstance.getStats();
-
-//        Attack attackerHit = playerProfile.getDamageComponent().getHitData();
-//        DefenceComponent defenderDefence = mobStats.getMobDefence();
-
         final boolean dodged = false;
-//        dodged = AttackProcessor.attackResult(attackerHit, defenderDefence);
-
-//        int[] baseDamage = rollDamages(attackerHit.getDamages());
         final boolean isCriticalHit = false;
-//        final boolean isCriticalHit = AttackProcessor.isCriticalHit(attackerHit);
-
         final boolean isSelfDamage = source.equals(DamageSource.SELF);
 
-        // Placeholder damage for testing - in real implementation this would come from damage calculation
-        int[] rawHitDamage = new int[]{10, 0, 0, 0, 0}; // Basic physical damage
-//        int[] rawHitDamage = AttackProcessor.processAttack(playerProfile, mobStats, baseDamage, isCriticalHit, ability);
+        // Use AttackData if provided, otherwise fall back to placeholder damage
+        int[] rawHitDamage;
+        if (attackData != null) {
+            rawHitDamage = extractTotalDamageFromAttackData(attackData);
+        } else {
+            // Placeholder damage for legacy attacks
+            rawHitDamage = new int[]{10, 0, 0, 0, 0};
+        }
 
-//        if (dodged){
-//            CombatEffects.playDodgeEffectsAt(defender, attacker);
-//            AttackProcessor.dodgeAttack(rawHitDamage, 60); //Mutates rawHitDamage
-//        }
-
-        // DAMAGE DETECTION: Handle mob damage tracking
+        // DAMAGE DETECTION: Handle mob damage tracking with proper calculated damage
         MobHealthComponent mobHealth = MobHealthComponent.getOrCreateHealthComponent(defender);
         if (mobHealth != null) {
             boolean mobDied = mobHealth.takeDamage(attacker, rawHitDamage, source, isCriticalHit, dodged);
@@ -423,5 +391,14 @@ public class DamageRouter {
 //        if (finalLifeHealed>0){
 //            CombatHologramsDepleter.getInstance().instantiateRegenHologram(attacker.getLocation(), "&2"+finalLifeHealed);
 //        }
+    }
+
+
+    /**
+     * Uses existing AttackProcessor.rollDamages() to properly calculate damage from AttackData.
+     * Follows established patterns and maintains memory efficiency with primitive arrays.
+     */
+    private static int[] extractTotalDamageFromAttackData(AttackData attackData) {
+        return AttackProcessor.rollDamages(attackData.toDamageMap());
     }
 }

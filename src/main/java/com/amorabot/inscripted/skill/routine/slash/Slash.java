@@ -99,10 +99,10 @@ public class Slash{
             getSkillcast().getCastData().getAffectedEntities().add(entity.getUniqueId());
             getSkillcast().getCastData().getBlacklistedEntities().add(entity.getUniqueId());
             
-            // Apply damage through the custom damage router system
+            // Apply damage through the custom damage router system with AttackData
             Skills skillUsed = getSkillcast().getCastData().getCastingContext().getSkillUsed();
             PlayerAbilities playerAbility = convertSkillToPlayerAbility(skillUsed);
-            DamageRouter.entityDamage((Player) slashOwner, entity, DamageSource.HIT, playerAbility);
+            DamageRouter.entityDamage((Player) slashOwner, entity, DamageSource.HIT, playerAbility, getAttackData());
         }
     }
 

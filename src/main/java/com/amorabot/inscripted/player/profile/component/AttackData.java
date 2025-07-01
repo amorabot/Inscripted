@@ -236,4 +236,16 @@ public class AttackData implements ProfileComponent {
         }
         DPS = totalDmg;
     }
+
+    /**
+     * Converts AttackData to format expected by AttackProcessor.rollDamages()
+     * Returns a Map<DamageTypes, int[]> where int[] is [min, max] damage range
+     */
+    public Map<DamageTypes, int[]> toDamageMap() {
+        Map<DamageTypes, int[]> damageMap = new java.util.HashMap<>();
+        for (DamageTypes type : DamageTypes.values()) {
+            damageMap.put(type, getDamage(type));
+        }
+        return damageMap;
+    }
 }

@@ -12,6 +12,17 @@ import com.amorabot.inscripted.Inscripted;
 //import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.managers.PlayerBuffManager;
 import com.amorabot.inscripted.skill.PlayerAbilities;
+import com.amorabot.inscripted.skill.Skills;
+import com.amorabot.inscripted.skill.casting.CastSource;
+import com.amorabot.inscripted.item.structure.Weapon.Weapon;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
+import com.amorabot.inscripted.item.structure.EquipmentSlots;
+import com.amorabot.inscripted.player.PlayerDataContainer;
+import com.amorabot.inscripted.player.equipment.PlayerEquipment;
+import com.amorabot.inscripted.player.equipment.EquimentSlotData;
+import com.amorabot.inscripted.item.structure.io.InscriptedItem;
+import com.amorabot.inscripted.item.structure.io.ItemDeserializer;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -60,6 +71,22 @@ public class DamageHandler implements Listener {
         if (attacker instanceof Player){
             Player p = (Player) attacker;
             ItemStack heldItem = p.getInventory().getItemInMainHand();
+            
+            // Check if player has an Inscripted weapon equipped
+            if (hasInscriptedWeaponEquipped(p)) {
+                // Cancel the default attack and trigger the appropriate BASIC skill
+                event.setCancelled(true);
+                
+                Weapon equippedWeapon = getEquippedWeapon(p);
+                WeaponTypes weaponType = equippedWeapon.getWeaponType();
+                Skills basicSkill = mapWeaponTypeToBasicSkill(weaponType);
+                WeaponAttackSpeeds attackSpeed = equippedWeapon.getAtkSpeed();
+                
+                // Cast the appropriate BASIC skill
+                basicSkill.cast(p.getUniqueId(), CastSource.PLAYER, attackSpeed);
+                return;
+            }
+            
             if (heldItem.getType().isAir()){ //If the player is punching
 //                Profile playerProfile = JSONProfileManager.getProfile(p.getUniqueId());
 //                if (!playerProfile.getEquipmentComponent().getSlot(ItemTypes.WEAPON).isIgnorable()){ //If punching with a equipped weapon, unequip
@@ -75,13 +102,6 @@ public class DamageHandler implements Listener {
 //                    return;
 //                }
             }
-//            PersistentDataContainer dataContainer = heldItem.getItemMeta().getPersistentDataContainer();
-//            boolean isWeapon = FunctionalItemAccessInterface.isItemType(FunctionalItemAccessInterface.WEAPON_TAG, dataContainer);
-//            if (isWeapon){
-//                Weapon weaponData = FunctionalItemAccessInterface.deserializeWeaponData(dataContainer);
-//                if (weaponData == null){return;}
-//                PlayerEquipmentHandler.basicAttackBy(p,heldItem,weaponData.getSubtype());
-//            }
         }
 
 //        com.amorabot.inscripted.APIs.damageAPI.DamageHandler.handleDamageEntityDamageEvents(event);
@@ -119,5 +139,52 @@ public class DamageHandler implements Listener {
         //Death effect -> TODO: Move this block to CombatEffects class
 //        for (int i = 0; i < 20; i++){
 //        }
+    }
+
+    private Skills mapWeaponTypeToBasicSkill(WeaponTypes weaponType) {
+        return switch (weaponType) {
+            case AXE -> Skills.BASIC_AXE_SLASH;
+            case SWORD -> Skills.BASIC_SWORD_SLASH;
+            case BOW -> Skills.BASIC_BOW_SHOT;
+            case DAGGER -> Skills.BASIC_DAGGER_SLASH;
+            case WAND -> Skills.BASIC_WAND_ATTACK;
+            case MACE -> Skills.BASIC_MACE_SLAM;
+        };
+    }
+
+    private Weapon getEquippedWeapon(Player player) {
+        PlayerEquipment playerEquipment = PlayerDataContainer.getPlayerEquipment(player.getUniqueId());
+        EquimentSlotData weaponSlotData = playerEquipment.getEquipmentData().get(EquipmentSlots.WEAPON);
+        
+        if (weaponSlotData == null || weaponSlotData.isIgnorable()) {
+            return null;
+        }
+        
+        // We need to access the actual weapon item from the slot data
+        // Since the slot data doesn't directly expose the Item, we need to check the player's inventory
+        return getWeaponFromPlayerInventory(player);
+    }
+    
+    private Weapon getWeaponFromPlayerInventory(Player player) {
+        ItemStack mainHandItem = player.getInventory().getItemInMainHand();
+        if (mainHandItem == null || mainHandItem.getType().isAir()) {
+            return null;
+        }
+        
+        // Check if it's an Inscripted weapon
+        if (!InscriptedItem.hasInscriptedTag(mainHandItem)) {
+            return null;
+        }
+        
+        if (!ItemDeserializer.isWeapon(mainHandItem) || !ItemDeserializer.isIdentified(mainHandItem)) {
+            return null;
+        }
+        
+        return ItemDeserializer.deserializeWeaponData(mainHandItem);
+    }
+
+    private boolean hasInscriptedWeaponEquipped(Player player) {
+        Weapon equippedWeapon = getEquippedWeapon(player);
+        return equippedWeapon != null;
     }
 }
