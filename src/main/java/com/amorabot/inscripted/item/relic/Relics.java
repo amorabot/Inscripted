@@ -13,23 +13,20 @@ import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public enum Relics {
 
     TRAINING_DUMMY_ARMOR(),
 //    BLEEDING_HEART(ItemTypes.CHESTPLATE, "This severed, yet","pulsating heart","gives you a unending","desire for carnage.");
 //    CORRUPTORS_WRAPPINGS(ItemTypes.CHESTPLATE, "This old tunic","once belonged to","a powerful sage","that stared too","long into the abyss."),
-    OMINOUS_TWIG();
+    OMINOUS_TWIG(),
 //    APPROACHING_WINTER(ItemTypes.BOOTS,"The winter's cold","embrace is slowly","approaching."),
 //    BLIND_RAGE(ItemTypes.HELMET,"This cursed helmet","once belonged to","a mysterious ske-","letal and silent","protector."),
 //    EYE_OF_THE_STORM(ItemTypes.CHESTPLATE,"This heavenly curse","can be a powerful","boon in the right", "hands."),
 //    TIN_FOIL_HELMET(ItemTypes.HELMET,"Can protect you","against conspiracies,","but certainly not", "against electricity!"),
 //    QUEEN_OF_THE_FOREST(ItemTypes.LEGGINGS,"Become one with nature.","","To hunt is to live."),
-//    SCARLET_DANCER(ItemTypes.WEAPON,"Oh, the thrill of dancing","to a battle's rhythm...","","The thrill of flirting","with death..."),
+    SCARLET_DANCER(),
 //    IMMORTAL_FLESH(ItemTypes.CHESTPLATE,"The cycle of carnage","is the only constant","in life."),
 //    FEATHERED_BOW(ItemTypes.WEAPON,"Reflecting the local","fauna's elegance,","the user can't","help but to feel","graceful aswell."),
 //    THE_BODY(ItemTypes.CHESTPLATE,"The resilience of","a body can reach","impressive heights.","","But alone... it can't","be whole."),
@@ -43,15 +40,17 @@ public enum Relics {
 //    BROKEN_FAITH(ItemTypes.WEAPON,"Whatever watches","over us must be","completely ignorant","or blind to the","horrors of this land..."),
 ////    UNWAVERING_FAITH(ItemTypes.WEAPON,"Check every corner.","","Every. Shadow."),
 //    DRUIDIC_PELTS(ItemTypes.CHESTPLATE,"Nature's beautiful","cycle...","To be wounded","To be healed"),
-//    HELLFORGE(ItemTypes.WEAPON,"This glowing-hot","cleaver seems","to sap it's user's", "might to grow even", "stronger...");
+    HELLFORGED();
 
     @Getter
     private static final Map<Relics, RelicArmorData> relicArmorsData;
     @Getter
     private static final Map<Relics, RelicWeaponData> relicWeaponsData;
+    private static final boolean DEBUG_MODE;
 
     static {
-        Utils.error("Initalizing Relics class");
+        DEBUG_MODE = false;
+        if (DEBUG_MODE){Utils.log("Initalizing Relics class");}
         relicArmorsData = RelicEditor.loadAllArmors();
         relicWeaponsData = RelicEditor.loadAllWeapons();
     }
@@ -99,7 +98,9 @@ public enum Relics {
     }
 
     public static void init() {
+        if (DEBUG_MODE){Utils.log("Initializing Relic internal data");}
         for (Relics relic : Relics.values()){
+            if (DEBUG_MODE){Utils.log(relic + " initialized.");}
             Map<Integer, ParsedUniqueInscription> parsedInscr = new HashMap<>();
             List<UniqueInscriptionDTO> rawInscriptionData = new ArrayList<>();
             List<String> rawFlavorText = new ArrayList<>();

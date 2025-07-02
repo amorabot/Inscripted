@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.item.structure.Armor;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.item.relic.RelicArmorData;
 import com.amorabot.inscripted.item.relic.Relics;
 import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.item.generation.InscriptionGenerator;
@@ -54,11 +55,12 @@ public class Armor extends Item {
     }
     public Armor(Relics relic, int ilvl, ArmorTypes type, boolean identified, EquipmentSlots slot){
         super(ilvl,ItemRarities.RELIC,identified,false,slot);
+        RelicArmorData relicArmorData = Relics.getRelicArmorsData().get(relic);
         this.armorType = type;
         setupInternalItemData();
-        this.baseHealth = type.getBaseHealthValue(getTier(),slot);
+        this.baseHealth = relicArmorData.baseHealth();
         this.variance = getRandomHealthVariance();
-        setName(Relics.getRelicArmorsData().get(relic).data().name());
+        setName(relicArmorData.data().name());
         InscriptionGenerator.generateUniqueInscriptionSet(relic,this);
     }
 

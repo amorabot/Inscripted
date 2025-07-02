@@ -46,6 +46,7 @@ public final class Inscripted extends JavaPlugin {
         inscriptedPlugin = this;
         this.world = Bukkit.getWorld("world");
         InscriptionTable.loadRawValues();
+        Relics.init();
 
 
         reloadOnlinePlayerData();
@@ -120,7 +121,6 @@ public final class Inscripted extends JavaPlugin {
         InscriptionDataManager.setupFiles();
 //        Relics.setRelicArmorsData(RelicEditor.loadAllArmors());
 //        Relics.setRelicWeaponsData(RelicEditor.loadAllWeapons());
-        Relics.init();
         GlyphInfo.loadMappings();
 
 //        ItemModifiersConfig.setup();

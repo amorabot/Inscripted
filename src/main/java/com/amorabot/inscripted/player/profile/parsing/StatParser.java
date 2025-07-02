@@ -200,7 +200,7 @@ public class StatParser {
         Set<KeystoneIDs> mappedKeystones = new HashSet<>();
         for (Inscription inscription : itemInscriptions){
             if (inscription instanceof UniqueInscription uniqueInsc){
-                if (uniqueInsc.isEffect()){
+                if (uniqueInsc.isKeystone()){
                     mappedKeystones.add(((InscriptionDefinition.Keystone)uniqueInsc.getInscriptionDefinition()).getKeystoneID());
                 }
             }

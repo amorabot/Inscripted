@@ -20,5 +20,59 @@
         "branch lives on."
       ]
     }
+  },
+  "HELLFORGED": {
+    "type": "AXE",
+    "atkSpeed": "HEAVY",
+    "baseDmg": [15, 35],
+    "data": {
+      "name": "Hellforged Might",
+      "itemLevel": 45,
+      "inscriptions": [
+        {
+          "definition": "+ meta UNIQUE: flat double_roll fire_damage<<8 flat strength",
+          "values": [4,5,  7,8]
+        }
+      ],
+      "flavorText": [
+        "This glowing-hot",
+        "cleaver seems",
+        "to sap it's user's",
+        "might to grow even",
+        "stronger..."
+      ]
+    }
+  },
+  "SCARLET_DANCER": {
+    "type": "SWORD",
+    "atkSpeed": "NORMAL",
+    "baseDmg": [150, 220],
+    "data": {
+      "name": "The Scarlet Dancer",
+      "itemLevel": 90,
+      "inscriptions": [
+        {"definition": "keystone: BLOOD_PACT", "values": []},
+        {"definition": "effect: ADRENALINE_RUSH", "values": []},
+        {
+          "definition": "+ local UNIQUE: increased single_roll physical_damage",
+          "values": [30,  50]
+        },
+        {
+          "definition": "- global UNIQUE: multiplier constant armor",
+          "values": [50]
+        },
+        {
+          "definition": "+ global UNIQUE: flat single_roll life_on_hit",
+          "values": [6,  9]
+        }
+      ],
+      "flavorText": [
+        "Oh, the thrill of dancing",
+        "to a battle's rhythm...",
+        "",
+        "The thrill of flirting",
+        "with death..."
+      ]
+    }
   }
 }

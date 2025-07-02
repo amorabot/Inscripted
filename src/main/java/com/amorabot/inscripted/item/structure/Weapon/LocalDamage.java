@@ -23,8 +23,10 @@ public class LocalDamage {
         if(weapon==null){return;}
         List<Inscription> inscriptions = weapon.getInscriptions();
 
-        Map<DamageTypes, int[]> baseDamage = new HashMap<>();
-        baseDamage.put(DamageTypes.PHYSICAL,weapon.getBaseDamage());
+        Map<DamageTypes, int[]> baseDamages = new HashMap<>();
+        int[] basePhys = weapon.getBaseDamage();
+        if (DEBUG_MODE){Utils.error("INITIAL BASE WEAPON DAMAGE: "+ Arrays.toString(basePhys));}
+        baseDamages.put(DamageTypes.PHYSICAL,basePhys);
 
         Map<DamageTypes, int[]> addedDamages = buildAddedDamages(inscriptions);
         Map<DamageTypes, Integer> localIncreases = buildLocalIncreases(inscriptions);
@@ -33,18 +35,19 @@ public class LocalDamage {
 
         //Adding local flats to baseDamage
         for (DamageTypes dmg : addedDamages.keySet()){
-            addFlatDamage(baseDamage,dmg, addedDamages.get(dmg));
+            addFlatDamage(baseDamages,dmg, addedDamages.get(dmg));
         }
 
         //Getting final values
-        for (DamageTypes finalDmg : baseDamage.keySet()){
-            final int[] baseDmg = baseDamage.get(finalDmg);
+        for (DamageTypes finalDmg : baseDamages.keySet()){
+            final int[] baseDmg = baseDamages.get(finalDmg);
             final int totalIncrease = localIncreases.getOrDefault(finalDmg,0) + qualityIncrease;
+            final int[] finalValues = Arrays.stream(baseDmg).map(currValue -> (int) (((100 + totalIncrease)/100F)*currValue)).toArray();
             if (DEBUG_MODE){
                 Utils.log(finalDmg.name()+": "+Arrays.toString(baseDmg));
                 Utils.log("Increase: " + totalIncrease);
+                Utils.log("Final values: " + Arrays.toString(finalValues));
             }
-            final int[] finalValues = Arrays.stream(baseDmg).map(currValue -> (int) ((1+((float)totalIncrease/100))*currValue)).toArray();
             weaponDamage.put(finalDmg,finalValues);
         }
     }
@@ -117,8 +120,9 @@ public class LocalDamage {
                 if (!regularDef.getBaseData().type().equals(ValueType.INCREASED)){
                     continue;
                 }
+                int increase = insc.getMappedFinalValues()[0];
                 registerLocallyCompiledStat(regularDef.getBaseData(), regularDef.isGlobal(), regularDef.isPositive());
-                addStatIncreases(localIncreases,regularDef.getBaseData().stat(),insc.getMappedFinalValues()[0]);
+                addStatIncreases(localIncreases,regularDef.getBaseData().stat(),increase);
             }
             if (definition instanceof InscriptionDefinition.Hybrid hybridDef){
                 int[] hybridValues = insc.getMappedFinalValues();
@@ -134,7 +138,6 @@ public class LocalDamage {
                 }
             }
         }
-
         return localIncreases;
     }
     private void addFlatDamage(Map<DamageTypes, int[]> baseDamage, DamageTypes dmgType, int[] values){
@@ -162,8 +165,9 @@ public class LocalDamage {
         return null;
     }
     private void addLocalncrease(Map<DamageTypes, Integer> localIncreases, DamageTypes damageToAdd, int value){
-        localIncreases.put(damageToAdd,
-                localIncreases.getOrDefault(damageToAdd,0) + value);
+        int updatedValue = localIncreases.getOrDefault(damageToAdd,0) + value;
+        if (DEBUG_MODE){Utils.error("Updated value local increase for "+damageToAdd+": " + updatedValue);}
+        localIncreases.put(damageToAdd, updatedValue);
     }
 
 

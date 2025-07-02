@@ -41,12 +41,12 @@
       ]
     }
   },
-  "HELLFORGE": {
+  "HELLFORGED": {
     "type": "AXE",
     "atkSpeed": "HEAVY",
     "baseDmg": [15, 35],
     "genericData": {
-      "name": "The Hellforge",
+      "name": "Hellforged",
       "itemLevel": 45,
       "specialInscriptions": [],
       "inscriptions": [

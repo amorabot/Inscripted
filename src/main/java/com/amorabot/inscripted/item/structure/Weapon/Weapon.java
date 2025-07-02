@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.item.structure.Weapon;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.item.relic.RelicWeaponData;
 import com.amorabot.inscripted.item.relic.Relics;
 import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
 import com.amorabot.inscripted.player.Archetypes;
@@ -56,12 +57,13 @@ public class Weapon extends Item {
 
     public Weapon(Relics relic, int ilvl, WeaponTypes type, boolean identified, EquipmentSlots slot){
         super(ilvl,ItemRarities.RELIC,identified,false,slot);
+        RelicWeaponData weaponRelicData = Relics.getRelicWeaponsData().get(relic);
         this.weaponType = type;
-        this.baseDamage = type.mapBaseDamage(getTier());
+        this.baseDamage = weaponRelicData.baseDmg();
         setupInternalItemData();
-        this.name = Relics.getRelicWeaponsData().get(relic).data().name();
+        this.name = weaponRelicData.data().name();
         this.damageVariance = getRandomVariance();
-        this.atkSpeed = getWeaponType().getBaseAttackSpeed();
+        this.atkSpeed = weaponRelicData.atkSpeed();
         this.range = getWeaponType().getRange();
         InscriptionGenerator.generateUniqueInscriptionSet(relic,this);
     }

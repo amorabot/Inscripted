@@ -3,11 +3,11 @@ BLHA_BLEED_CHANCE:
 BLHA_BLD_DMG:
   - 80
   - 120
-OMTW_ABYSSAL:
-  - 1
-  - 3
-  - 5
-  - 6
+#OMTW_ABYSSAL:
+#  - 1
+#  - 3
+#  - 5
+#  - 6
 COWR_WARD:
   - 120
   - 150
@@ -45,11 +45,11 @@ BLRA_ACCURACY:
   - 250
 BLRA_LESS_HEALTH:
   - 15
-HELLFORGE_STRENGTH_TO_FIRE_DMG:
-  - 4
-  - 4
-  - 7
-  - 7
+#HELLFORGE_STRENGTH_TO_FIRE_DMG:
+#  - 4
+#  - 4
+#  - 7
+#  - 7
 TIFO_HELMET_INTELLIGENCE:
   - 30
   - 70
