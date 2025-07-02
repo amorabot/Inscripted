@@ -3,12 +3,14 @@ package com.amorabot.inscripted.item.inscription.definition;
 import com.amorabot.inscripted.item.inscription.language.AffixType;
 import com.amorabot.inscripted.item.inscription.language.RollType;
 import com.amorabot.inscripted.item.inscription.language.ValueType;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 
 import java.io.Serializable;
 
 @Getter
+@EqualsAndHashCode
 public abstract class InscriptionDefinition implements Serializable {
 
     private String displayName;
@@ -33,7 +35,7 @@ public abstract class InscriptionDefinition implements Serializable {
         R visitKeystone(InscriptionDefinition.Keystone inscription);
     }
 
-    public record BaseInscription(ValueType type, RollType roll, Stats stat) {
+    public record BaseInscription(ValueType type, RollType roll, Stats stat) implements Serializable {
         public int id(boolean isGlobal, boolean isPositive){
             String positiveBit;
             if (isPositive){positiveBit="1";}else{positiveBit="0";}

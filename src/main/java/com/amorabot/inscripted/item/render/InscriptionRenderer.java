@@ -44,6 +44,7 @@ public class InscriptionRenderer {
         List<Component> renderedInscriptions = new ArrayList<>();
 //        inscriptions.sort(SORTER);
         for (Inscription insc : inscriptions) {
+            if (insc instanceof UniqueInscription){valuesHex = InscriptedPalette.RELIC.getColorString();}
             renderedInscriptions.add(getInscriptionAsComponent(insc,padding,valuesHex));
         }
         return renderedInscriptions;
@@ -56,16 +57,16 @@ public class InscriptionRenderer {
     }
 
     public static Component getInscriptionAsComponent(Inscription inscription, int padding, String valuesHex){
-        if (inscription instanceof UniqueInscription uniqueInscription){
-            if (uniqueInscription.isEffect() || uniqueInscription.isKeystone()){
-
-            }
-            //Standard or Meta Unique inscriptions
-
-        }
-        Component displayNameComponent = MiniMessage.miniMessage().deserialize(inscription.getDisplayName(valuesHex)).color(InscriptedPalette.NEUTRAL_GRAY.getColor());
         Component paddingComponent = Component.text(" ".repeat(padding));
         Component spacing = Component.text(" ");
+        if (inscription instanceof UniqueInscription uniqueInscription){
+            if (uniqueInscription.isEffect() || uniqueInscription.isKeystone()){
+                Utils.log(inscription.getDisplayName(valuesHex));
+                Component specialInscriptionComponent = MiniMessage.miniMessage().deserialize(inscription.getDisplayName(valuesHex)).decorate(TextDecoration.BOLD);
+                return paddingComponent.append(specialInscriptionComponent.append(spacing).append(getPostfixDetails(inscription)).append(spacing)).decoration(TextDecoration.ITALIC,false);
+            }
+        }
+        Component displayNameComponent = MiniMessage.miniMessage().deserialize(inscription.getDisplayName(valuesHex)).color(InscriptedPalette.NEUTRAL_GRAY.getColor());
         return paddingComponent.append(displayNameComponent.append(spacing).append(getPostfixDetails(inscription)).append(spacing)).decoration(TextDecoration.ITALIC,false);
     }
     public static Component getPostfixDetails(Inscription inscription){

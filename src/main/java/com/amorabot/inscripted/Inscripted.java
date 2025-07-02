@@ -1,7 +1,9 @@
 package com.amorabot.inscripted;
 
 import com.amorabot.inscripted.commands.*;
+import com.amorabot.inscripted.file.item.RelicEditor;
 import com.amorabot.inscripted.file.profile.ProfileDatabase;
+import com.amorabot.inscripted.item.relic.Relics;
 import com.amorabot.inscripted.item.render.GlyphInfo;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
 import com.amorabot.inscripted.handlers.Combat.InscriptedPlayerDeathEventListener;
@@ -116,6 +118,9 @@ public final class Inscripted extends JavaPlugin {
 //        PlayerInterfaceRenderer.reloadHPDisplays();
 
         InscriptionDataManager.setupFiles();
+//        Relics.setRelicArmorsData(RelicEditor.loadAllArmors());
+//        Relics.setRelicWeaponsData(RelicEditor.loadAllWeapons());
+        Relics.init();
         GlyphInfo.loadMappings();
 
 //        ItemModifiersConfig.setup();

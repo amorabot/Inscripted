@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.item.structure.io;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.item.relic.Relics;
 import com.amorabot.inscripted.item.structure.Armor.Armor;
 import com.amorabot.inscripted.item.structure.Weapon.Weapon;
 import com.amorabot.inscripted.item.structure.Item;
@@ -44,6 +45,15 @@ public class ItemSerializer implements ItemDataContainerVisitor<Item> {
         ItemMeta itemMeta = item.getItemMeta();
         PersistentDataContainer itemPDC = itemMeta.getPersistentDataContainer();
         itemPDC.set(IDENTIFIED, new PersistentDataType.BooleanPersistentDataType(), identified);
+        item.setItemMeta(itemMeta);
+    }
+
+    public static void setRelicData(ItemStack item, Relics relic){
+        ItemMeta itemMeta = item.getItemMeta();
+        PersistentDataContainer itemPDC = itemMeta.getPersistentDataContainer();
+        NamespacedKey relicKey = new NamespacedKey(Inscripted.getPlugin(),relic.name());
+        String flavorText = relic.getFlavorText();
+        itemPDC.set(relicKey, PersistentDataType.STRING, flavorText);
         item.setItemMeta(itemMeta);
     }
 }

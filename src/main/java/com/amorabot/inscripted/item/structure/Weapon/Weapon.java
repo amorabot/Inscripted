@@ -1,6 +1,8 @@
 package com.amorabot.inscripted.item.structure.Weapon;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.item.relic.Relics;
+import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
 import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.item.generation.InscriptionGenerator;
 import com.amorabot.inscripted.item.inscription.definition.Stats;
@@ -42,13 +44,27 @@ public class Weapon extends Item {
 
         setupInternalItemData();
 
+        this.name = getWeaponType().getTierName(getTier());
         this.damageVariance = getRandomVariance();
         this.atkSpeed = getWeaponType().getBaseAttackSpeed();
         this.range = getWeaponType().getRange();
 
-        InscriptionGenerator.generateInscriptionSetFor(this);
+        if (!rarity.equals(ItemRarities.RELIC)){
+            InscriptionGenerator.generateInscriptionSetFor(this);
+        }
     }
 
+    public Weapon(Relics relic, int ilvl, WeaponTypes type, boolean identified, EquipmentSlots slot){
+        super(ilvl,ItemRarities.RELIC,identified,false,slot);
+        this.weaponType = type;
+        this.baseDamage = type.mapBaseDamage(getTier());
+        setupInternalItemData();
+        this.name = Relics.getRelicWeaponsData().get(relic).data().name();
+        this.damageVariance = getRandomVariance();
+        this.atkSpeed = getWeaponType().getBaseAttackSpeed();
+        this.range = getWeaponType().getRange();
+        InscriptionGenerator.generateUniqueInscriptionSet(relic,this);
+    }
 
 
     public LocalDamage getDamage(){
@@ -72,7 +88,6 @@ public class Weapon extends Item {
     }
     @Override
     protected void setupInternalItemData() {
-        this.name = getWeaponType().getTierName(getTier());
         setImplicit(Archetypes.mapImplicitFor(getWeaponType(), getTier(), isCorrupted()));
         mapItemBase();
     }

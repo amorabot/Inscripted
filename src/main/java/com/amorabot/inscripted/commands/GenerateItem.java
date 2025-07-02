@@ -4,6 +4,7 @@ package com.amorabot.inscripted.commands;
 import com.amorabot.inscripted.GUIs.RelicsGUI;
 import com.amorabot.inscripted.Inscripted;
 //import com.amorabot.inscripted.components.Items.Abstract.Item;
+import com.amorabot.inscripted.item.relic.Relics;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.Tiers;
 import com.amorabot.inscripted.player.Archetypes;
@@ -14,6 +15,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,6 +42,12 @@ public class GenerateItem implements TabExecutor {
             player.sendMessage("Usage: /item itemTier itemRarity itemArchetype");
             player.sendMessage("");
 
+            for (Relics relic : Relics.values()){
+                Utils.log("Giving relic: " + relic);
+                ItemStack relicItem = relic.getItemForm();
+                player.getInventory().addItem(relicItem);
+            }
+
             Utils.msgPlayer(player, "Example: "+"&c&l/item" + " T4" + " " + ItemRarities.AUGMENTED + " " + Archetypes.MERCENARY);
             Utils.msgPlayer(player, "&c  ->Would open the item generation menu for Tier 4 &lAUGMENTED&c(have up to 2 modifiers) Mercenary items");
             Utils.msgPlayer(player, "Item tiers: T1 T2 T3 T4 T5 & RELIC");
@@ -55,10 +63,13 @@ public class GenerateItem implements TabExecutor {
             Utils.msgPlayer(player, "You can also modify your non-Relic items with currencies from /orb!");
             return true;
         }
-        if (args.length == 1){//manually getting Relics
+        if (args.length == 2){//manually getting Relics
             if (Objects.equals(args[0], "RELIC")){
-                RelicsGUI relicsGUI = new RelicsGUI();
-                player.openInventory(relicsGUI.getInventory());
+//                Relics relic = Relics.valueOf(args[1]);
+//                ItemStack relicItem = relic.getItemForm();
+//                player.getInventory().addItem(relicItem);
+//                RelicsGUI relicsGUI = new RelicsGUI();
+//                player.openInventory(relicsGUI.getInventory());
                 return true;
             } else {
                 Utils.error("Not a valid argument for item generation");
@@ -95,6 +106,12 @@ public class GenerateItem implements TabExecutor {
             options.add("RELIC");
             return options;
         } else if (strings.length == 2) { // Rarity
+            if (strings[1].equals("RELIC")){
+                for (Relics relic : Relics.values()){
+                    options.add(relic.name());
+                }
+                return options;
+            }
             for (ItemRarities rarity : ItemRarities.values()){
                 options.add(rarity.toString());
             }

@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.item.structure.Armor;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.item.relic.Relics;
 import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.item.generation.InscriptionGenerator;
 import com.amorabot.inscripted.item.inscription.definition.Stats;
@@ -44,9 +45,21 @@ public class Armor extends Item {
         // Some internal attributes can only be defined at this stage
         setupInternalItemData();
 
+        setName(getArmorType().getTierName(getTier()) + " " + getSlot().toString().toLowerCase());
         this.baseHealth = type.getBaseHealthValue(getTier(),slot);
         this.variance = getRandomHealthVariance();
-        InscriptionGenerator.generateInscriptionSetFor(this);
+        if (!rarity.equals(ItemRarities.RELIC)){
+            InscriptionGenerator.generateInscriptionSetFor(this);
+        }
+    }
+    public Armor(Relics relic, int ilvl, ArmorTypes type, boolean identified, EquipmentSlots slot){
+        super(ilvl,ItemRarities.RELIC,identified,false,slot);
+        this.armorType = type;
+        setupInternalItemData();
+        this.baseHealth = type.getBaseHealthValue(getTier(),slot);
+        this.variance = getRandomHealthVariance();
+        setName(Relics.getRelicArmorsData().get(relic).data().name());
+        InscriptionGenerator.generateUniqueInscriptionSet(relic,this);
     }
 
     public int getHealth(){
@@ -69,7 +82,6 @@ public class Armor extends Item {
     }
     @Override
     protected void setupInternalItemData() {
-        setName(getArmorType().getTierName(getTier()) + " " + getSlot().toString().toLowerCase());
         setImplicit(Archetypes.mapImplicitFor(getArmorType(), getTier(), isCorrupted()));
         mapItemBase();
     }

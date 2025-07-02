@@ -36,7 +36,7 @@ public class EquimentSlotData {
     }
 
     public void update(Item newItem){
-        if (newItem == null){ // Newly equipment item is invalid, ignore that slot
+        if (newItem == null){ // Newly equipment item is invalid, ignore that armorSlot
             ignore=true;
             return;
         }

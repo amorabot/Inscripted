@@ -13,19 +13,21 @@ public class InscriptionValuesMapper implements InscriptionVisitor<int[]>{
     @Override
     public int[] visitProceduralInscription(ProceduralInscription proceduralInscription) {
         int[] tableValues = InscriptionTable.queryValuesFor(proceduralInscription);
-        if (proceduralInscription.getDebugState()){
-            Utils.log(Arrays.toString(tableValues));}
-        return mapProceduralInscriptionFinalValues(proceduralInscription, tableValues);
+        if (proceduralInscription.getDebugState()){Utils.log(Arrays.toString(tableValues));}
+        return mapInscriptionFinalValues(proceduralInscription, tableValues);
     }
 
     @Override
     public int[] visitUniqueInscription(UniqueInscription uniqueInscription) {
-        //Logica pra pegar o valor dos mods unique
-        return new int[0];
+        InscriptionDefinition uniqueDef = uniqueInscription.getInscriptionDefinition();
+        if (uniqueInscription.isEffect() || uniqueInscription.isKeystone()){return new int[0];}
+        int[] uniqueValues = uniqueInscription.getSourceRelic().getParsedInscriptions().get(uniqueDef.hashCode()).values();
+        if (uniqueInscription.getDebugState()){Utils.log(Arrays.toString(uniqueValues));}
+        return mapInscriptionFinalValues(uniqueInscription,uniqueValues);
     }
 
-    private int[] mapProceduralInscriptionFinalValues(ProceduralInscription proceduralInscription, int[] tableValues){
-        InscriptionDefinition definition = proceduralInscription.getInscription().getDefinitionData();
+    private int[] mapInscriptionFinalValues(Inscription inscription, int[] tableValues){
+        InscriptionDefinition definition = inscription.getInscriptionDefinition();
         Integer[] storedValuesSizing = definition.accept(new ValuesTableSizeExtractor());
         if (storedValuesSizing.length==0){return new int[]{999};}
 
@@ -47,8 +49,8 @@ public class InscriptionValuesMapper implements InscriptionVisitor<int[]>{
                 // Get the offset values on the raw value table
                 final int v1 = tableValues[rawOffset];
                 final int v2 = tableValues[rawOffset+1];
-                if (proceduralInscription.getDebugState()){Utils.log("v1: " + v1 + " " + "v2: " + v2 + "  BP:" + proceduralInscription.getBasePercentile());}
-                final int m1 = Utils.getRoundedParametricValue(v1, v2, proceduralInscription.getBasePercentile());
+                if (inscription.getDebugState()){Utils.log("v1: " + v1 + " " + "v2: " + v2 + "  BP:" + inscription.getBasePercentile());}
+                final int m1 = Utils.getRoundedParametricValue(v1, v2, inscription.getBasePercentile());
                 mappedValues[mappedValuesArrayIndex] = m1;
 
                 mappedOffset+= 1;
@@ -59,10 +61,10 @@ public class InscriptionValuesMapper implements InscriptionVisitor<int[]>{
             if (currentSizing == RollType.DOUBLE_ROLL.getPreRollSize()){
                 final int v1 = tableValues[i+rawOffset];
                 final int v2 = tableValues[i+rawOffset+1];
-                final int m1 = Utils.getRoundedParametricValue(v1, v2, proceduralInscription.getBasePercentile());
+                final int m1 = Utils.getRoundedParametricValue(v1, v2, inscription.getBasePercentile());
                 final int v3 = tableValues[i+rawOffset+2];
                 final int v4 = tableValues[i+rawOffset+3];
-                final int m2 = Utils.getRoundedParametricValue(v3, v4, proceduralInscription.getBasePercentile());
+                final int m2 = Utils.getRoundedParametricValue(v3, v4, inscription.getBasePercentile());
 
                 mappedValues[mappedValuesArrayIndex] = m1;
                 mappedValues[mappedValuesArrayIndex+1] = m2;
@@ -79,7 +81,7 @@ public class InscriptionValuesMapper implements InscriptionVisitor<int[]>{
         for (Integer i : rawSizings) {
             if (i==1){baseSize+=1;}
             /*
-            Every time we hit a 1, it means there needs to be dedicated slot on the array for that constant
+            Every time we hit a 1, it means there needs to be dedicated armorSlot on the array for that constant
             The array's size should only grow if i is higher than 1. Which means the additional size will vary
                 (2->1 extra, 4->2 extra, 1->0 extra)
             */

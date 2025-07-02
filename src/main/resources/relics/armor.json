@@ -1,0 +1,23 @@
+{
+  "TRAINING_DUMMY_ARMOR": {
+    "armorSlot": "CHESTPLATE",
+    "type": "ARMORED",
+    "baseHealth": 10,
+    "data": {
+      "name": "Dummy Armor",
+      "itemLevel": 1,
+      "inscriptions": [
+        {
+          "definition": "keystone: THUNDERSTRUCK",
+          "values": [0]
+        }
+      ],
+      "flavorText": [
+        "This severed, yet",
+        "pulsating heart",
+        "gives you a unending",
+        "desire for carnage."
+      ]
+    }
+  }
+}

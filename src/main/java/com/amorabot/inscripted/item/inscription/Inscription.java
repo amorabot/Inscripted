@@ -5,16 +5,26 @@ import com.amorabot.inscripted.item.inscription.definition.InscriptionDefinition
 import com.amorabot.inscripted.item.inscription.language.RollType;
 import com.amorabot.inscripted.utils.Utils;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public interface Inscription {
+public interface Inscription extends Serializable {
     <R> R accept(InscriptionVisitor<R> visitor);
     InscriptionDefinition getInscriptionDefinition();
     boolean getDebugState();
     boolean isModifiable();
     double getBasePercentile();
-    String getDisplayName(String valuesHex);
 
+
+    default String getDisplayName(String valuesHex) {
+        String template = getTemplateDisplayName();
+        if ((this instanceof UniqueInscription) && (isKeystone() || isEffect())){
+            return ("<"+valuesHex+">" + template + "</"+valuesHex+">");
+        }
+        Integer[] templateOrdering = getInscriptionDefinition().accept(new ValuesTableSizeExtractor());
+        int[] mappedValues = getMappedFinalValues();
+        return substituteTemplates(mappedValues,template,templateOrdering, valuesHex);
+    }
 
     default String getTemplateDisplayName(){
         return getInscriptionDefinition().getDisplayName();

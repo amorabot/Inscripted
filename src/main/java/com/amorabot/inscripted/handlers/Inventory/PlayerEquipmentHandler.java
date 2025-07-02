@@ -148,7 +148,7 @@ public class PlayerEquipmentHandler implements Listener {
         ItemStack clickedItem = event.getCurrentItem();
         ItemStack cursorItem = event.getCursor();
 
-        //When, for instance, the player has a item in the cursor and they click a slot, it comes as air/null
+        //When, for instance, the player has a item in the cursor and they click a armorSlot, it comes as air/null
         if (isNotFunctional(clickedItem) && isNotFunctional(cursorItem)){ //If they are both non functional, ignore the event
             player.sendMessage("Ignoring: non functional items (clicked item and cursor item");//                    # DEBUG MESSAGE
             return;
@@ -165,7 +165,7 @@ public class PlayerEquipmentHandler implements Listener {
                 }
                 PersistentDataContainer clickedItemDataContainer = Objects.requireNonNull(clickedItem.getItemMeta()).getPersistentDataContainer();
                 //The clicked item is functional, lets check if it was a equiped armor
-                if (isArmorSlotClick(event)){ //It was a armor slot drop attempt
+                if (isArmorSlotClick(event)){ //It was a armor armorSlot drop attempt
 //                    if (isEquipableArmor(clickedItemDataContainer)){
 //                        player.sendMessage("No equipped armor dropping");
 //                        event.setCancelled(true);
@@ -190,9 +190,9 @@ public class PlayerEquipmentHandler implements Listener {
                 if (event.getSlot() != player.getInventory().getHeldItemSlot()){ //The click was not in the main hand
                     player.sendMessage("standard click");
                     int clickedSlot = event.getSlot();
-                    //Since it was not in the main hand, lets check for armor slot clicks:
+                    //Since it was not in the main hand, lets check for armor armorSlot clicks:
                     // REMOVED
-                    //If its not a armor slot click, ignore for now
+                    //If its not a armor armorSlot click, ignore for now
                     return;
                 }
 
@@ -407,7 +407,7 @@ public class PlayerEquipmentHandler implements Listener {
     public static void reEquipAllSlots(Player player){
         delayedEquipOnMainHand(player);
         EntityEquipment playerEquipments = player.getEquipment();
-        //Equip each slot individually, mapping the SlotType
+        //Equip each armorSlot individually, mapping the SlotType
         ItemStack helmetItem = playerEquipments.getHelmet();
         if (helmetItem!=null){ //No need for triggers when its null since the internal data is already cleared/invalid
             armorEquip(player,helmetItem,EquipmentSlots.HELMET);
@@ -455,7 +455,7 @@ public class PlayerEquipmentHandler implements Listener {
     private static void armorEquip(Player player, ItemStack armorItem, EquipmentSlots armorSlot){
         UUID playerID = player.getUniqueId();
         PlayerEquipment playerEquipment = PlayerDataContainer.getPlayerEquipment(playerID);
-        // If the new item on that slot is air, prematurely unequip that slot
+        // If the new item on that armorSlot is air, prematurely unequip that armorSlot
         if (armorItem.getType().isAir()){
             playerEquipment.updateEquimentSlot(armorSlot, null);
             return;
@@ -468,7 +468,7 @@ public class PlayerEquipmentHandler implements Listener {
             playerEquipment.updateEquimentSlot(armorData.getSlot(), armorData);
             return;
         }
-        //Invalid armor && not Air -> Unequip that slot
+        //Invalid armor && not Air -> Unequip that armorSlot
         playerEquipment.updateEquimentSlot(armorSlot, null);
     }
     private static EquipmentSlots mapArmorSlot(PlayerArmorChangeEvent.SlotType eventSlot){

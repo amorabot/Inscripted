@@ -2,10 +2,12 @@ package com.amorabot.inscripted.item.generation;
 
 import com.amorabot.inscripted.item.inscription.Inscription;
 import com.amorabot.inscripted.item.inscription.ProceduralInscription;
+import com.amorabot.inscripted.item.inscription.UniqueInscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionDefinition;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.inscription.language.AffixType;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
+import com.amorabot.inscripted.item.relic.Relics;
 import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.math.MathUtils;
@@ -16,6 +18,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class InscriptionGenerator {
 
+    public static List<Inscription> generateUniqueInscriptionSet(Relics relic, Item relicItem){
+        List<Inscription> relicInscriptions = relicItem.getInscriptions();
+        relic.getParsedInscriptions().forEach(
+                (definitionHash, parsedInscription) -> {
+                    relicInscriptions.add(new UniqueInscription(parsedInscription.definition(),relic));
+                }
+        );
+        return relicInscriptions;
+    }
 
     public static List<Inscription> generateInscriptionSetFor(Item item){
         Set<InscriptionIDs> blockedInscriptions = new HashSet<>();

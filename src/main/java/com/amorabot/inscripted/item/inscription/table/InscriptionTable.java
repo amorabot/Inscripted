@@ -1,10 +1,15 @@
 package com.amorabot.inscripted.item.inscription.table;
 
 import com.amorabot.inscripted.file.item.InscriptionDataManager;
+import com.amorabot.inscripted.file.item.RelicEditor;
 import com.amorabot.inscripted.item.inscription.ProceduralInscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.inscription.language.AffixType;
+import com.amorabot.inscripted.item.relic.RelicArmorData;
+import com.amorabot.inscripted.item.relic.RelicWeaponData;
+import com.amorabot.inscripted.item.relic.Relics;
 import com.amorabot.inscripted.utils.Utils;
+import lombok.Getter;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,11 +18,7 @@ import java.util.*;
 public class InscriptionTable {
     // Raw Values for each individual PREFIX and SUFFIX tier
     private static Map<AffixType, Map<InscriptionIDs, Map<Integer, int[]>>> MAPPED_AFFIX_TIER_VALUES;
-
     private static final Map<InscriptionIDs, Map<Integer, int[]>> IMPLICIT_VALUES = new HashMap<>();
-    private static Map<InscriptionIDs, int[]> RELIC_VALUES;
-
-
     //Tier-level mappings for an individual item type (AXE, SWORD, DEX_CHESTPLATE,...)
     private final Map<AffixType, Map<InscriptionIDs, Map<Integer, Integer>>> itemInscriptionMappings;
 
@@ -143,8 +144,8 @@ public class InscriptionTable {
     }
     public static int[] queryValuesFor(InscriptionIDs mod, int tier){
         AffixType inscriptionAffix = mod.getDefinitionData().getAffix();
-        if (inscriptionAffix.equals(AffixType.UNIQUE)){//Consult the relic values table
-            return RELIC_VALUES.get(mod).clone();
+        if (inscriptionAffix.equals(AffixType.UNIQUE)){// Invalid
+            return new int[1];
         }
         if (inscriptionAffix.equals(AffixType.IMPLICIT)){
             return getImplicitValuesArray(mod,tier);
@@ -196,29 +197,4 @@ public class InscriptionTable {
         }
         return valuesArray;
     }
-
-//    private static Map<InscriptionIDs, int[]> loadRelicValuesTable(){
-//        List<InscriptionIDs> relicInscriptions = scanForRelicInscriptions();
-//        Map<InscriptionIDs, int[]> valuesTable = new HashMap<>();
-//        YamlConfiguration relicValuesConfig = InscriptionDataManager.readRelicValuesTable();
-//        assert relicValuesConfig != null;
-//        for (InscriptionIDs relicInscription : relicInscriptions){
-//            List<Integer> values = relicValuesConfig.getIntegerList(relicInscription.toString());
-//            int[] valuesArray = new int[values.size()];
-//            for (int i = 0; i< valuesArray.length; i++){
-//                valuesArray[i] = values.get(i);
-//            }
-//            valuesTable.put(relicInscription,valuesArray);
-//        }
-//        return valuesTable;
-//    }
-//    private static List<InscriptionIDs> scanForRelicInscriptions(){
-//        List<InscriptionIDs> list = new ArrayList<>();
-//        for (InscriptionIDs insc : InscriptionIDs.values()){
-//            if (insc.getData().isRelicInscription()){
-//                list.add(insc);
-//            }
-//        }
-//        return list;
-//    }
 }

@@ -1,6 +1,5 @@
 package com.amorabot.inscripted.item.inscription;
 
-import com.amorabot.inscripted.item.generation.ValuesTableSizeExtractor;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionDefinition;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
 import com.amorabot.inscripted.item.inscription.language.AffixType;
@@ -41,14 +40,6 @@ public class ProceduralInscription implements Serializable, Inscription {
     @Override
     public boolean getDebugState() {
         return DEBUG_MODE;
-    }
-
-    @Override
-    public String getDisplayName(String valuesHex){
-        String template = getTemplateDisplayName();
-        Integer[] templateOrdering = getInscription().getDefinitionData().accept(new ValuesTableSizeExtractor());
-        int[] mappedValues = getMappedFinalValues();
-        return substituteTemplates(mappedValues,template,templateOrdering, valuesHex);
     }
 
     public boolean isSpecial(){

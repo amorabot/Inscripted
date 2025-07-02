@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.item.structure.Weapon;
 
+import com.amorabot.inscripted.item.inscription.Inscription;
 import com.amorabot.inscripted.item.inscription.ProceduralInscription;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionDefinition;
 import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
@@ -20,7 +21,7 @@ public class LocalDamage {
 
     public LocalDamage(Weapon weapon){
         if(weapon==null){return;}
-        List<ProceduralInscription> inscriptions = weapon.getProceduralInscriptions();
+        List<Inscription> inscriptions = weapon.getInscriptions();
 
         Map<DamageTypes, int[]> baseDamage = new HashMap<>();
         baseDamage.put(DamageTypes.PHYSICAL,weapon.getBaseDamage());
@@ -58,20 +59,20 @@ public class LocalDamage {
         }
     }
 
-    private Map<DamageTypes, int[]> buildAddedDamages(List<ProceduralInscription> inscriptions){
+    private Map<DamageTypes, int[]> buildAddedDamages(List<Inscription> inscriptions){
         Map<DamageTypes, int[]> addedDamages = new HashMap<>();
 
-        for (ProceduralInscription insc : inscriptions){
-            InscriptionIDs inscriptionID = insc.getInscription();
-            InscriptionDefinition definition = inscriptionID.getDefinitionData();
-            if (insc.isSpecial()){continue;}
+        for (Inscription insc : inscriptions){
+//            InscriptionIDs inscriptionID = insc.getInscription();
+            InscriptionDefinition definition = insc.getInscriptionDefinition();
+            if (insc.isEffect() || insc.isKeystone()){continue;}
             if (definition.isGlobal()){continue;}
             if (definition instanceof InscriptionDefinition.Regular regularDef){
                 if (!regularDef.getBaseData().type().equals(ValueType.FLAT)){
                     continue;
                 }
                 // It's a locally compiled stat, lets process it:
-                registerLocallyCompiledStat(regularDef.getBaseData(), regularDef.isGlobal(), regularDef.isPositive(), inscriptionID);
+                registerLocallyCompiledStat(regularDef.getBaseData(), regularDef.isGlobal(), regularDef.isPositive());
 
                 DamageTypes damageToAdd = mapFlatDamageTypes(regularDef.getBaseData().stat());
                 if(damageToAdd==null){continue;}
@@ -84,7 +85,7 @@ public class LocalDamage {
                     We only register this one, the other might be "Accuracy", which might be local and does not matter locally.
                     Same logic applies to the 2nd half. It's a side effect of having arbitrary local mods and only compiling damage-related ones.
                     */
-                    registerLocallyCompiledStat(hybridDef.getPrimaryData(), hybridDef.isGlobal(), hybridDef.isPositive(), inscriptionID);
+                    registerLocallyCompiledStat(hybridDef.getPrimaryData(), hybridDef.isGlobal(), hybridDef.isPositive());
 
                     DamageTypes damageToAdd = mapFlatDamageTypes(hybridDef.getPrimaryData().stat());
                     if(damageToAdd==null){continue;}
@@ -92,7 +93,7 @@ public class LocalDamage {
                     addFlatDamage(addedDamages,damageToAdd, new int[]{hybridValues[0],hybridValues[1]});
                 }
                 if (hybridDef.getSecondaryData().type().equals(ValueType.FLAT)){
-                    registerLocallyCompiledStat(hybridDef.getSecondaryData(), hybridDef.isGlobal(), hybridDef.isPositive(), inscriptionID);
+                    registerLocallyCompiledStat(hybridDef.getSecondaryData(), hybridDef.isGlobal(), hybridDef.isPositive());
 
                     DamageTypes damageToAdd = mapFlatDamageTypes(hybridDef.getSecondaryData().stat());
                     if(damageToAdd==null){continue;}
@@ -105,31 +106,30 @@ public class LocalDamage {
 
         return addedDamages;
     }
-    private Map<DamageTypes, Integer> buildLocalIncreases(List<ProceduralInscription> inscriptions){
+    private Map<DamageTypes, Integer> buildLocalIncreases(List<Inscription> inscriptions){
         Map<DamageTypes, Integer> localIncreases = new HashMap<>();
 
-        for (ProceduralInscription insc : inscriptions){
-            InscriptionIDs inscriptionID = insc.getInscription();
-            InscriptionDefinition definition = inscriptionID.getDefinitionData();
-            if (insc.isSpecial()){continue;}
+        for (Inscription insc : inscriptions){
+            InscriptionDefinition definition = insc.getInscriptionDefinition();
+            if (insc.isEffect() || insc.isKeystone()){continue;}
             if (definition.isGlobal()){continue;}
             if (definition instanceof InscriptionDefinition.Regular regularDef){
                 if (!regularDef.getBaseData().type().equals(ValueType.INCREASED)){
                     continue;
                 }
-                registerLocallyCompiledStat(regularDef.getBaseData(), regularDef.isGlobal(), regularDef.isPositive(), inscriptionID);
+                registerLocallyCompiledStat(regularDef.getBaseData(), regularDef.isGlobal(), regularDef.isPositive());
                 addStatIncreases(localIncreases,regularDef.getBaseData().stat(),insc.getMappedFinalValues()[0]);
             }
             if (definition instanceof InscriptionDefinition.Hybrid hybridDef){
                 int[] hybridValues = insc.getMappedFinalValues();
                 boolean is1stIncr = hybridDef.getPrimaryData().type().equals(ValueType.INCREASED);
                 if (is1stIncr){
-                    registerLocallyCompiledStat(hybridDef.getPrimaryData(), hybridDef.isGlobal(), hybridDef.isPositive(), inscriptionID);
+                    registerLocallyCompiledStat(hybridDef.getPrimaryData(), hybridDef.isGlobal(), hybridDef.isPositive());
                     addStatIncreases(localIncreases,hybridDef.getPrimaryData().stat(),hybridValues[0]);
                 }
                 boolean is2ndIncr = hybridDef.getSecondaryData().type().equals(ValueType.INCREASED);
                 if (is2ndIncr){
-                    registerLocallyCompiledStat(hybridDef.getSecondaryData(), hybridDef.isGlobal(), hybridDef.isPositive(), inscriptionID);
+                    registerLocallyCompiledStat(hybridDef.getSecondaryData(), hybridDef.isGlobal(), hybridDef.isPositive());
                     addStatIncreases(localIncreases,hybridDef.getSecondaryData().stat(),hybridValues[hybridValues.length-1]);
                 }
             }
@@ -167,9 +167,9 @@ public class LocalDamage {
     }
 
 
-    private void registerLocallyCompiledStat(InscriptionDefinition.BaseInscription baseData, boolean isGlobal, boolean isPositive, InscriptionIDs sourceInscription){
+    private void registerLocallyCompiledStat(InscriptionDefinition.BaseInscription baseData, boolean isGlobal, boolean isPositive){
         int definitionID = baseData.id(isGlobal,isPositive);
-        if (DEBUG_MODE){Utils.log("Inscription code("+sourceInscription+"): " + definitionID);}
+//        if (DEBUG_MODE){Utils.log("Inscription code("+sourceInscription+"): " + definitionID);}
         locallyCompiledStatIDs.add(definitionID);
     }
     public static boolean hasStatID(int statID){

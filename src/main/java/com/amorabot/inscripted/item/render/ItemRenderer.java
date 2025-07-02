@@ -1,5 +1,7 @@
 package com.amorabot.inscripted.item.render;
 
+import com.amorabot.inscripted.item.relic.Relics;
+import com.amorabot.inscripted.item.structure.io.ItemDeserializer;
 import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.item.inscription.ProceduralInscription;
 import com.amorabot.inscripted.item.structure.Item;
@@ -12,8 +14,10 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ItemRenderer {
@@ -35,6 +39,18 @@ public class ItemRenderer {
             return;
         }
         setDisplayName("Unidentified " + itemData.getGenericSubtype().getSubtypeDisplayName(itemData),item,itemData.getRarity(),false,0);
+    }
+
+    public static void appendRelicFlavorText(ItemStack item, Relics relic){
+        ItemMeta itemMeta = item.getItemMeta();
+        List<Component> currentLore = itemMeta.lore();
+        assert currentLore != null;
+        String rawFlavorText = ItemDeserializer.getRelicData(item,relic);
+        List<String> flavorText = Arrays.stream(rawFlavorText.split("<br>")).toList();
+        for (String flavorTextLine : flavorText){
+            currentLore.add(Component.text(flavorTextLine));
+        }
+        item.setItemMeta(itemMeta);
     }
 
     public static List<Component> render(Item itemData){

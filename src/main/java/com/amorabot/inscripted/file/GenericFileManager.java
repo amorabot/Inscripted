@@ -3,7 +3,7 @@ package com.amorabot.inscripted.file;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
 import com.amorabot.inscripted.item.structure.Armor.DefenceTypes;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
+import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.item.structure.Tiers;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 //import com.amorabot.inscripted.file.item.RelicEditor;
@@ -57,8 +57,8 @@ public class GenericFileManager {
                     config.set(slotDefenceStringPath, 69);
                 }
 
-                for (ItemTypes armorSlot : ItemTypes.values()){
-                    if (armorSlot.equals(ItemTypes.WEAPON)){continue;}
+                for (EquipmentSlots armorSlot : EquipmentSlots.values()){
+                    if (armorSlot.equals(EquipmentSlots.WEAPON)){continue;}
 
                     String slotHealthPath = currTierStringPath + armorSlot;
                     config.set(slotHealthPath, 99);

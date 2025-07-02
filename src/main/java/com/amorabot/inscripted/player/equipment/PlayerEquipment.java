@@ -52,7 +52,7 @@ public class PlayerEquipment {
                 if (currentSlotData.isIgnorable()){
                     /*
                      Already unequipped/ignored, this prevents a un-needed recompilation trigger
-                     since the slot state didn't change and wouldn't be compiled anyway
+                     since the armorSlot state didn't change and wouldn't be compiled anyway
                     */
                     locked = true;
                     return;

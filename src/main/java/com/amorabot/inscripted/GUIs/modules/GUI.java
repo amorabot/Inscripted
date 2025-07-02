@@ -51,7 +51,7 @@ public abstract class GUI implements InventoryHolder {
     }
     private boolean isValidSlot(int slot){
         if ( (slot < 0) || (slot>=rows*9)){ // 0 -> 9*r-1
-            Utils.error("Invalid slot access attempt at: " + this.getClass().getSimpleName() + " Class");
+            Utils.error("Invalid armorSlot access attempt at: " + this.getClass().getSimpleName() + " Class");
             return false;
         }
         return true;

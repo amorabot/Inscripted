@@ -1,5 +1,7 @@
 package com.amorabot.inscripted.item.structure.io;
 
+import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.item.relic.Relics;
 import com.amorabot.inscripted.item.structure.Armor.Armor;
 import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.item.structure.Weapon.Weapon;
@@ -61,5 +63,19 @@ public class ItemDeserializer implements ItemDataContainerVisitor<Optional<Item>
         ItemMeta itemMeta = item.getItemMeta();
         PersistentDataContainer itemPDC = itemMeta.getPersistentDataContainer();
         return Boolean.TRUE.equals(itemPDC.get(ItemSerializer.IDENTIFIED, new PersistentDataType.BooleanPersistentDataType()));
+    }
+
+    public static boolean isRelic(ItemStack item, Relics relic){
+        NamespacedKey relicKey = new NamespacedKey(Inscripted.getPlugin(),relic.name());
+        return checkDataContainer(item,relicKey);
+    }
+    public static String getRelicData(ItemStack item, Relics relic){
+        if (!isRelic(item,relic)){
+            return "";
+        }
+        NamespacedKey relicKey = new NamespacedKey(Inscripted.getPlugin(),relic.name());
+        ItemMeta itemMeta = item.getItemMeta();
+        PersistentDataContainer itemPDC = itemMeta.getPersistentDataContainer();
+        return itemPDC.get(relicKey, PersistentDataType.STRING);
     }
 }
