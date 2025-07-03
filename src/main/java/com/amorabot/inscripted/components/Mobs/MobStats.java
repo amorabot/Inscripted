@@ -3,8 +3,8 @@
 ////import com.amorabot.inscripted.components.*;
 //import com.amorabot.inscripted.components.Items.relic.enums.Effects;
 //import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
-//import com.amorabot.inscripted.components.Items.relic.enums.TriggerTimes;
-//import com.amorabot.inscripted.components.Items.relic.enums.TriggerTypes;
+//import com.amorabot.inscripted.item.inscription.definition.TriggerTimes;
+//import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
 //import com.amorabot.inscripted.player.profile.component.AttackData;
 //import com.amorabot.inscripted.player.profile.component.DefenceComponent;
 //import com.amorabot.inscripted.player.profile.component.HealthComponent;

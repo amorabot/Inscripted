@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.components.Items.relic.enums;
+package com.amorabot.inscripted.item.inscription.definition;
 
 public enum TriggerTimes {
     EARLY,

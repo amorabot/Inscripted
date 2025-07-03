@@ -4,7 +4,7 @@ import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.components.Items.relic.enums.Effects;
-import com.amorabot.inscripted.components.Items.relic.enums.TriggerTypes;
+import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
 //import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.particle.ParticlePlotter;
 import com.amorabot.inscripted.skill.casting.GlobalCooldownManager;

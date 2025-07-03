@@ -48,8 +48,10 @@ public class ItemRenderer {
         String rawFlavorText = ItemDeserializer.getRelicData(item,relic);
         List<String> flavorText = Arrays.stream(rawFlavorText.split("<br>")).toList();
         for (String flavorTextLine : flavorText){
-            currentLore.add(Component.text(flavorTextLine));
+            currentLore.add(Component.text("  "+flavorTextLine).color(InscriptedPalette.DARK_GRAY.getColor()));
         }
+        currentLore.add(Component.text(""));
+        itemMeta.lore(currentLore);
         item.setItemMeta(itemMeta);
     }
 

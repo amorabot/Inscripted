@@ -1,6 +1,8 @@
 package com.amorabot.inscripted.components.Items.relic.enums;
 
 //import com.amorabot.inscripted.components.HealthComponent;
+import com.amorabot.inscripted.item.inscription.definition.TriggerTimes;
+import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.stat.StatBuff;

@@ -1,13 +1,7 @@
 package com.amorabot.inscripted.item.inscription.definition;
 
-import static com.amorabot.inscripted.item.inscription.definition.Stats.*;
-import static com.amorabot.inscripted.item.inscription.language.ValueType.*;
 import com.amorabot.inscripted.item.inscription.language.DefinitionScanner;
-import com.amorabot.inscripted.item.inscription.language.InscriptionSyntaxException;
 import lombok.Getter;
-
-import java.lang.reflect.Field;
-import java.util.Objects;
 
 @Getter
 public enum InscriptionIDs {
@@ -48,7 +42,6 @@ public enum InscriptionIDs {
     ARMOR_DODGE("+ local PREFIX: flat single_roll armor & flat single_roll dodge",4),
     DODGE_SOUL("+ local PREFIX: flat single_roll dodge & flat single_roll soul",4),
     //Meta Prefixes
-//    @MetaInscription(convertedStat = STRENGTH, convertedValueType = FLAT, rate = 8)
     STRENGTH_TO_FIRE_DMG("+ meta PREFIX: flat double_roll fire_damage<<8 flat strength",3),
 
     //Suffixes
@@ -80,12 +73,7 @@ public enum InscriptionIDs {
     MERCENARY_CLOTH("+ global IMPLICIT: flat single_roll dexterity", 5),
     ROGUE_PELT("+ global IMPLICIT: flat single_roll dexterity & flat single_roll intelligence", 5),
     SORCERER_SILK("+ global IMPLICIT: flat single_roll intelligence", 5),
-    TEMPLAR_RUNISTEEL("+ global IMPLICIT: flat single_roll intelligence & flat single_roll strength", 5),
-
-    PERMAFROST("keystone: PERMAFROST",0),
-    THUNDERSTRUCK("keystone: THUNDERSTRUCK",0),
-    RIGHTEOUS_FIRE("keystone: RIGHTEOUS_FIRE",0);
-
+    TEMPLAR_RUNISTEEL("+ global IMPLICIT: flat single_roll intelligence & flat single_roll strength", 5);
 
     private final InscriptionDefinition definitionData;
     private final int tiers;

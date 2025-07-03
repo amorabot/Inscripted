@@ -14,14 +14,16 @@ import java.util.*;
 
 public class InscriptionRenderer {
 
-    public static Comparator<ProceduralInscription> SORTER;
+    public static Comparator<Inscription> SORTER;
     public static Map<Integer,String> TIER_ICONS;
     static {
-        SORTER = (o1, o2) -> {
-            if (o2.isModifiable()){return 1;}
-            if (o1.equals(o2)){return 0;}
-            if (o1.getInscription().ordinal() < o2.getInscription().ordinal()){return -1;}
-            return 1;
+        SORTER = (i1, i2) -> {
+            if (i2.isEffect() && i1.isKeystone()){return 1;}
+            if ((i2.isKeystone() || i2.isEffect())){return 1;}
+            if (!i2.isModifiable()){return 1;}
+            if (i1.equals(i2)){return 0;}
+            if (i1.getInscriptionDefinition().getDisplayName().length() < i2.getInscriptionDefinition().getDisplayName().length()){return -1;}
+            return -1;
         };
         TIER_ICONS = new HashMap<>();
         TIER_ICONS.put(0,"∅");
@@ -42,10 +44,12 @@ public class InscriptionRenderer {
     public static List<Component> renderInscriptionList(List<Inscription> inscriptions, int padding){
         String valuesHex = InscriptedPalette.ITEM_VALUE.getColorString();
         List<Component> renderedInscriptions = new ArrayList<>();
-//        inscriptions.sort(SORTER);
+        inscriptions.sort(SORTER); //Mutates the list
         for (Inscription insc : inscriptions) {
-            if (insc instanceof UniqueInscription){valuesHex = InscriptedPalette.RELIC.getColorString();}
-            renderedInscriptions.add(getInscriptionAsComponent(insc,padding,valuesHex));
+            String currentHex = valuesHex;
+            if (insc instanceof UniqueInscription){currentHex = InscriptedPalette.RELIC.getColorString();}
+            renderedInscriptions.add(getInscriptionAsComponent(insc,padding,currentHex));
+            if (insc.isEffect()){renderedInscriptions.add(Component.text(""));}
         }
         return renderedInscriptions;
     }
@@ -61,9 +65,9 @@ public class InscriptionRenderer {
         Component spacing = Component.text(" ");
         if (inscription instanceof UniqueInscription uniqueInscription){
             if (uniqueInscription.isEffect() || uniqueInscription.isKeystone()){
-                Utils.log(inscription.getDisplayName(valuesHex));
-                Component specialInscriptionComponent = MiniMessage.miniMessage().deserialize(inscription.getDisplayName(valuesHex)).decorate(TextDecoration.BOLD);
-                return paddingComponent.append(specialInscriptionComponent.append(spacing).append(getPostfixDetails(inscription)).append(spacing)).decoration(TextDecoration.ITALIC,false);
+                String specialDisplayName = inscription.getDisplayName(valuesHex);
+                Component specialInscriptionComponent = MiniMessage.miniMessage().deserialize(specialDisplayName);
+                return paddingComponent.append(specialInscriptionComponent.append(spacing).append(getPostfixDetails(inscription)).append(paddingComponent)).decoration(TextDecoration.ITALIC,false);
             }
         }
         Component displayNameComponent = MiniMessage.miniMessage().deserialize(inscription.getDisplayName(valuesHex)).color(InscriptedPalette.NEUTRAL_GRAY.getColor());
@@ -71,7 +75,7 @@ public class InscriptionRenderer {
     }
     public static Component getPostfixDetails(Inscription inscription){
         if (inscription instanceof UniqueInscription uniqueInscription){
-            return Component.text(inscription.getInscriptionDefinition().getAffix().getRuneIcon());
+            return Component.text(inscription.getInscriptionDefinition().getAffix().getRuneIcon()).color(InscriptedPalette.DARKEST_TEXT.getColor());
         }
         ProceduralInscription regularInscription = (ProceduralInscription) inscription;
         return Component.text(inscription.getInscriptionDefinition().getAffix().getRuneIcon(), InscriptedPalette.DARK_GRAY.getColor()).append(

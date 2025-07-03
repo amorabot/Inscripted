@@ -17,16 +17,16 @@ public interface Inscription extends Serializable {
 
 
     default String getDisplayName(String valuesHex) {
-        String template = getTemplateDisplayName();
+        String rawDisplayName = getRawDisplayName();
         if ((this instanceof UniqueInscription) && (isKeystone() || isEffect())){
-            return ("<"+valuesHex+">" + template + "</"+valuesHex+">");
+            return rawDisplayName;
         }
         Integer[] templateOrdering = getInscriptionDefinition().accept(new ValuesTableSizeExtractor());
         int[] mappedValues = getMappedFinalValues();
-        return substituteTemplates(mappedValues,template,templateOrdering, valuesHex);
+        return substituteTemplates(mappedValues,rawDisplayName,templateOrdering, valuesHex);
     }
 
-    default String getTemplateDisplayName(){
+    default String getRawDisplayName(){
         return getInscriptionDefinition().getDisplayName();
     }
     default String substituteTemplates(int[] mappedValues, String templateString, Integer[] templateOrdering, String valueColorHex){
@@ -38,16 +38,16 @@ public interface Inscription extends Serializable {
             String replacement = roll.getValuesTemplate();
             switch (roll){
                 case CONSTANT -> {
-                    replacement = substituteTemplate(mappedValues[mappedOffset],replacement,"const", valueColorHex);
+                    replacement = substituteTemplateValue(mappedValues[mappedOffset],replacement,"const", valueColorHex);
                     mappedOffset+=1;
                 }
                 case SINGLE_ROLL -> {
-                    replacement = substituteTemplate(mappedValues[mappedOffset],replacement,"value", valueColorHex);
+                    replacement = substituteTemplateValue(mappedValues[mappedOffset],replacement,"value", valueColorHex);
                     mappedOffset+=1;
                 }
                 case DOUBLE_ROLL -> {
-                    replacement = substituteTemplate(mappedValues[mappedOffset],replacement,"v1", valueColorHex);
-                    replacement = substituteTemplate(mappedValues[mappedOffset+1],replacement,"v2", valueColorHex);
+                    replacement = substituteTemplateValue(mappedValues[mappedOffset],replacement,"v1", valueColorHex);
+                    replacement = substituteTemplateValue(mappedValues[mappedOffset+1],replacement,"v2", valueColorHex);
                     mappedOffset+=2;
                 }
             }
@@ -55,7 +55,7 @@ public interface Inscription extends Serializable {
         }
         return replacedTemplate;
     }
-    default String substituteTemplate(int value, String templateString, String regex, String valueColor){
+    default String substituteTemplateValue(int value, String templateString, String regex, String valueColor){
         String substitute = "<"+valueColor+">" + Math.abs(value) + "</"+valueColor+">";
         return templateString.replaceFirst(regex,substitute);
     }

@@ -2,6 +2,7 @@ package com.amorabot.inscripted.item.inscription.definition;
 
 import com.amorabot.inscripted.item.inscription.language.RollType;
 import com.amorabot.inscripted.item.inscription.language.ValueType;
+import com.amorabot.inscripted.item.render.InscriptedPalette;
 
 public class InscriptionTemplateBuilder implements InscriptionDefinition.InscriptionDefinitionVisitor<String> {
 
@@ -30,12 +31,19 @@ public class InscriptionTemplateBuilder implements InscriptionDefinition.Inscrip
 
     @Override
     public String visitEffect(InscriptionDefinition.Effect inscription) {
-        return inscription.getEffectID().name().replaceFirst("_"," ").strip();
+        EffectIDs effect = inscription.getEffectID();
+        String effectName = effect.name().replaceFirst("_"," ").strip();
+        String effectInfo = effect.getInfo();
+        String effectColor = InscriptedPalette.RELIC.getColorString();
+        String infoColor = InscriptedPalette.DARK_GRAY.getColorString();
+        return ("<"+effectColor+"><b>" + effectName + "</b></"+effectColor+">" + "<"+infoColor+"> > " + effectInfo + "</"+infoColor+">");
     }
 
     @Override
     public String visitKeystone(InscriptionDefinition.Keystone inscription) {
-        return inscription.getKeystoneID().name().replaceFirst("_"," ").strip();
+        String keystoneName = inscription.getKeystoneID().name().replaceFirst("_"," ").strip();
+        String keystoneColor = InscriptedPalette.RELIC.getColorString();
+        return "<"+keystoneColor+"><b>" + keystoneName + " \uD83D\uDCD6</b></"+keystoneColor+">";
     }
 
     private String buildBaseInscriptionTemplate(InscriptionDefinition.BaseInscription inscriptionData, boolean isPositive, boolean isGlobal){

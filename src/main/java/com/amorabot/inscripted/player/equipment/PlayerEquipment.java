@@ -5,7 +5,7 @@ import com.amorabot.inscripted.item.inscription.definition.EffectIDs;
 import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
 import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.item.structure.Item;
-import com.amorabot.inscripted.player.Observer;
+import com.amorabot.inscripted.player.ProfileObserver;
 import com.amorabot.inscripted.player.Subject;
 import com.amorabot.inscripted.player.profile.ProfileEvents;
 import com.amorabot.inscripted.utils.DelayedTask;
@@ -29,7 +29,7 @@ public class PlayerEquipment {
     private final Set<KeystoneIDs> keystones = new HashSet<>();
     private final Set<ProceduralInscription> metaInscriptions = new HashSet<>();
 
-    public PlayerEquipment(Observer observer){
+    public PlayerEquipment(ProfileObserver observer){
         for (EquipmentSlots slot : EquipmentSlots.values()){
             equipmentData.put(slot,new EquimentSlotData());
         }

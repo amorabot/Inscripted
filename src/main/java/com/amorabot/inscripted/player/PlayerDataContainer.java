@@ -1,6 +1,8 @@
 package com.amorabot.inscripted.player;
 
 import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
+import com.amorabot.inscripted.item.inscription.definition.EffectIDs;
+import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
 import com.amorabot.inscripted.player.profile.Profile;
 import com.amorabot.inscripted.player.equipment.PlayerEquipment;
 import com.amorabot.inscripted.player.profile.ProfileEvents;
@@ -16,12 +18,13 @@ import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
 @Getter
-public class PlayerDataContainer implements Observer {
+public class PlayerDataContainer implements ProfileObserver {
 
     @Getter
     private static final Map<UUID, PlayerDataContainer> onlinePlayerData = new HashMap<>();
@@ -76,6 +79,23 @@ public class PlayerDataContainer implements Observer {
                 PlayerEquipmentHandler.reEquipAllSlots(targetPlayer);
             }
             default -> Utils.log("Untreated event");
+        }
+    }
+    @Override
+    public void onNotify(TriggerTypes combatTrigger, LivingEntity target) {
+        Player player = Bukkit.getPlayer(playerID);
+        Set<EffectIDs> playerEffects = equipment.getEffects();
+        switch (combatTrigger){
+            //TODO: make triggerEffects default and 'reverse' triggers (like WHEN_HIT) declarative
+            case ON_HIT -> {
+                triggerEffects(combatTrigger,playerEffects,player,target);
+            }
+        }
+    }
+    private void triggerEffects(TriggerTypes triggeredEffectType, Set<EffectIDs> playerEffects, LivingEntity caster, LivingEntity target){
+        for (EffectIDs effect : playerEffects){
+            if (!effect.getTrigger().equals(triggeredEffectType)){continue;}
+            Utils.error(triggeredEffectType + " triggered: " + effect);
         }
     }
 

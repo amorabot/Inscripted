@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.components.Items.relic.enums;
+package com.amorabot.inscripted.item.inscription.definition;
 
 import lombok.Getter;
 
@@ -18,6 +18,12 @@ public enum TriggerTypes {
     private final String icon;
 
     TriggerTypes(String icon){
-        this.icon = "&c("+icon+")&c&l";
+        this.icon = "("+icon+")";
+    }
+    public String getDisplayName(){
+        char initial = this.name().charAt(0);
+        char[] lc = this.name().replace("_", " ").toLowerCase().toCharArray();
+        lc[0] = initial;
+        return (new String(lc));
     }
 }
