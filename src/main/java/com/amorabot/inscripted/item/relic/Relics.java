@@ -16,31 +16,33 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public enum Relics {
-
-    TRAINING_DUMMY_ARMOR(),
-//    BLEEDING_HEART(ItemTypes.CHESTPLATE, "This severed, yet","pulsating heart","gives you a unending","desire for carnage.");
-//    CORRUPTORS_WRAPPINGS(ItemTypes.CHESTPLATE, "This old tunic","once belonged to","a powerful sage","that stared too","long into the abyss."),
+// Weapons
     OMINOUS_TWIG(),
-//    APPROACHING_WINTER(ItemTypes.BOOTS,"The winter's cold","embrace is slowly","approaching."),
-//    BLIND_RAGE(ItemTypes.HELMET,"This cursed helmet","once belonged to","a mysterious ske-","letal and silent","protector."),
-//    EYE_OF_THE_STORM(ItemTypes.CHESTPLATE,"This heavenly curse","can be a powerful","boon in the right", "hands."),
-//    TIN_FOIL_HELMET(ItemTypes.HELMET,"Can protect you","against conspiracies,","but certainly not", "against electricity!"),
-//    QUEEN_OF_THE_FOREST(ItemTypes.LEGGINGS,"Become one with nature.","","To hunt is to live."),
     SCARLET_DANCER(),
-//    IMMORTAL_FLESH(ItemTypes.CHESTPLATE,"The cycle of carnage","is the only constant","in life."),
-//    FEATHERED_BOW(ItemTypes.WEAPON,"Reflecting the local","fauna's elegance,","the user can't","help but to feel","graceful aswell."),
-//    THE_BODY(ItemTypes.CHESTPLATE,"The resilience of","a body can reach","impressive heights.","","But alone... it can't","be whole."),
-//    THE_MIND(ItemTypes.HELMET,"The strength of","mind can bring","enlightenment.","","But alone... it can't","be whole."),
-//    THE_SOUL(ItemTypes.BOOTS,"The freedom of a","soul can bring","inner peace.","","But alone... it can't","be whole."),
-//    TRINITY(ItemTypes.LEGGINGS,"One must seek balance","at all costs."),
-//    EXECUTIONERS_MASK(ItemTypes.HELMET,"The merciful face","of death shall","remain concealed."),
-//    HEADSMAN_BLADE(ItemTypes.WEAPON,"No victim is","unworthy of mercy.","Thy death ","shall be quick","and painless."),
-//    MAD_BUTCHER(ItemTypes.WEAPON,"dihgubsduygahsuidy","","- A once wise and sane", "butcher."),
-//    ELUSIVE_SHADOW(ItemTypes.WEAPON,"Check every corner.","","Every. Shadow."),
-//    BROKEN_FAITH(ItemTypes.WEAPON,"Whatever watches","over us must be","completely ignorant","or blind to the","horrors of this land..."),
-////    UNWAVERING_FAITH(ItemTypes.WEAPON,"Check every corner.","","Every. Shadow."),
-//    DRUIDIC_PELTS(ItemTypes.CHESTPLATE,"Nature's beautiful","cycle...","To be wounded","To be healed"),
-    HELLFORGED();
+    FEATHERED_BOW(),
+    HEADSMAN_BLADE(),
+    MAD_BUTCHER(),
+    ELUSIVE_SHADOW(),
+    BROKEN_FAITH(),
+    HELLFORGED(),
+//    UNWAVERING_FAITH(ItemTypes.WEAPON,"Check every corner.","","Every. Shadow."), //TO BE DESIGNED
+
+// Armors
+    TRAINING_DUMMY_ARMOR(),
+    BLEEDING_HEART(),
+    CORRUPTORS_WRAPPINGS(),
+    APPROACHING_WINTER(),
+    BLIND_RAGE(),
+    EYE_OF_THE_STORM(),
+    TIN_FOIL_HELMET(),
+    QUEEN_OF_THE_FOREST(),
+    IMMORTAL_FLESH(),
+    THE_BODY(),
+    THE_MIND(),
+    THE_SOUL(),
+    TRINITY(),
+    EXECUTIONERS_MASK(),
+    DRUIDIC_PELTS();
 
     @Getter
     private static final Map<Relics, RelicArmorData> relicArmorsData;

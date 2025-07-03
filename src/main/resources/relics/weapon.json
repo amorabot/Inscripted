@@ -30,7 +30,7 @@
       "itemLevel": 45,
       "inscriptions": [
         {
-          "definition": "+ meta UNIQUE: flat double_roll fire_damage<<8 flat strength",
+          "definition": "+ meta UNIQUE: flat double_roll fire_damage<<10 flat strength",
           "values": [4,5,  7,8]
         }
       ],
@@ -72,6 +72,126 @@
         "",
         "The thrill of flirting",
         "with death..."
+      ]
+    }
+  },
+  "FEATHERED_BOW": {
+    "type": "BOW",
+    "atkSpeed": "FAST",
+    "baseDmg": [9, 20],
+    "data": {
+      "name": "Feathered bow",
+      "itemLevel": 22,
+      "inscriptions": [
+        {"definition": "effect: GRACEFUL_LANDING", "values": []}
+      ],
+      "flavorText": [
+        "Reflecting the local",
+        "fauna's elegance,",
+        "the user can't",
+        "help but to feel",
+        "graceful aswell."
+      ]
+    }
+  },
+  "HEADSMAN_BLADE": {
+    "type": "SWORD",
+    "atkSpeed": "HEAVY",
+    "baseDmg": [260, 320],
+    "data": {
+      "name": "The Headsman blade",
+      "itemLevel": 110,
+      "inscriptions": [
+        {"definition": "keystone: AGNOSTIC", "values": []},
+        {"definition": "effect: COUP_DE_GRACE", "values": []},
+        {
+          "definition": "+ local UNIQUE: increased single_roll physical_damage",
+          "values": [10,  80]
+        },
+        {
+          "definition": "+ local UNIQUE: percentage single_roll bleed_damage",
+          "values": [12, 15]
+        },
+        {
+          "definition": "+ global UNIQUE: percentage constant shred",
+          "values": [15]
+        },
+        {
+          "definition": "+ global UNIQUE: percentage constant critical_damage",
+          "values": [10]
+        }
+      ],
+      "flavorText": [
+        "No victim is","unworthy of mercy.","Thy death ","shall be quick","and painless."
+      ]
+    }
+  },
+  "MAD_BUTCHER": {
+    "type": "AXE",
+    "atkSpeed": "NORMAL",
+    "baseDmg": [100, 170],
+    "data": {
+      "name": "The Mad Butcher's cleaver",
+      "itemLevel": 70,
+      "inscriptions": [
+        {"definition": "effect: SADISM", "values": []},
+        {
+          "definition": "+ global UNIQUE: percentage single_roll bleed",
+          "values": [10,30]
+        }
+      ],
+      "flavorText": [
+        "dihgubsduygahsuidy","","- A once wise and sane", "butcher."
+      ]
+    }
+  },
+  "ELUSIVE_SHADOW": {
+    "type": "DAGGER",
+    "atkSpeed": "NORMAL",
+    "baseDmg": [123, 197],
+    "data": {
+      "name": "Elusive Shadow",
+      "itemLevel": 93,
+      "inscriptions": [
+        {"definition": "effect: OPPORTUNIST", "values": []},
+        {
+          "definition": "+ global UNIQUE: percentage single_roll critical_chance",
+          "values": [25,32]
+        }
+      ],
+      "flavorText": [
+        "Check every corner.","","Every. Shadow."
+      ]
+    }
+  },
+  "BROKEN_FAITH": {
+    "type": "MACE",
+    "atkSpeed": "NORMAL",
+    "baseDmg": [100, 130],
+    "data": {
+      "name": "Broken Faith",
+      "itemLevel": 99,
+      "inscriptions": [
+        {"definition": "keystone: AGNOSTIC", "values": []},
+        {
+          "definition": "+ meta UNIQUE: flat double_roll abyssal_damage<<400 flat soul",
+          "values": [4,5,  9,10]
+        },
+        {
+          "definition": "+ global UNIQUE: increased single_roll abyssal_damage",
+          "values": [10,15]
+        },
+        {
+          "definition": "- global UNIQUE: multiplier constant health",
+          "values": [20]
+        },
+        {
+          "definition": "+ local UNIQUE: flat double_roll abyssal_damage",
+          "values": [23,30,  50,57]
+        }
+      ],
+      "flavorText": [
+        "Whatever watches","over us must be","completely ignorant","or blind to the","horrors of this land..."
       ]
     }
   }

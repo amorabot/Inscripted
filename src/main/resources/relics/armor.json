@@ -7,16 +7,369 @@
       "name": "Dummy Armor",
       "itemLevel": 1,
       "inscriptions": [
-        {
-          "definition": "keystone: THUNDERSTRUCK",
-          "values": [0]
-        }
+        {"definition": "keystone: THUNDERSTRUCK", "values": []}
       ],
       "flavorText": [
         "This severed, yet",
         "pulsating heart",
         "gives you a unending",
         "desire for carnage."
+      ]
+    }
+  },
+  "BLEEDING_HEART": {
+    "armorSlot": "CHESTPLATE",
+    "type": "ARMORED",
+    "baseHealth": 400,
+    "data": {
+      "name": "Bleeding Heart",
+      "itemLevel": 42,
+      "inscriptions": [
+        {"definition": "keystone: LETHAL_STRIKES", "values": []},
+        {
+          "definition": "+ global UNIQUE: percentage constant bleed",
+          "values": [30]
+        },
+        {
+          "definition": "+ global UNIQUE: percentage single_roll bleed_damage",
+          "values": [80, 120]
+        }
+      ],
+      "flavorText": [
+        "This severed, yet","pulsating heart","gives you a unending","desire for carnage."
+      ]
+    }
+  },
+  "CORRUPTORS_WRAPPINGS": {
+    "armorSlot": "CHESTPLATE",
+    "type": "SILK",
+    "baseHealth": 1,
+    "data": {
+      "name": "The Corruptor's Wrappings",
+      "itemLevel": 70,
+      "inscriptions": [
+        {"definition": "keystone: FORBIDDEN_PACT", "values": []},
+        {
+          "definition": "+ local UNIQUE: increased single_roll soul",
+          "values": [120,150]
+        },
+        {
+          "definition": "+ global UNIQUE: multiplier single_roll soul",
+          "values": [15, 25]
+        },
+        {
+          "definition": "- global UNIQUE: flat single_roll strength",
+          "values": [50, 70]
+        }
+      ],
+      "flavorText": [
+        "This old tunic","once belonged to","a powerful sage","that stared too","long into the abyss."
+      ]
+    }
+  },
+  "APPROACHING_WINTER": {
+    "armorSlot": "BOOTS",
+    "type": "SILK",
+    "baseHealth": 200,
+    "data": {
+      "name": "Approaching Winter",
+      "itemLevel": 92,
+      "inscriptions": [
+        {"definition": "keystone: PERMAFROST", "values": []},
+        {
+          "definition": "+ global UNIQUE: flat single_roll walk_speed",
+          "values": [10,25]
+        },
+        {
+          "definition": "+ global UNIQUE: percentage single_roll cold_resistance",
+          "values": [30, 38]
+        },
+        {
+          "definition": "- global UNIQUE: percentage single_roll fire_resistance",
+          "values": [20, 50]
+        },
+        {
+          "definition": "+ global UNIQUE: flat double_roll cold_damage",
+          "values": [2,4,   8,12]
+        },
+        {
+          "definition": "+ global UNIQUE: increased single_roll cold_damage",
+          "values": [12, 15]
+        }
+      ],
+      "flavorText": [
+        "The winter's cold","embrace is slowly","approaching."
+      ]
+    }
+  },
+  "BLIND_RAGE": {
+    "armorSlot": "HELMET",
+    "type": "ARMORED",
+    "baseHealth": 666,
+    "data": {
+      "name": "Blind Rage",
+      "itemLevel": 40,
+      "inscriptions": [
+        {"definition": "keystone: BERSERK", "values": []},
+        {
+          "definition": "+ global UNIQUE: flat single_roll accuracy",
+          "values": [150,250]
+        },
+        {
+          "definition": "- global UNIQUE: multiplier constant health",
+          "values": [15]
+        }
+      ],
+      "flavorText": [
+        "This cursed helmet",
+        "once belonged to",
+        "a mysterious ske-",
+        "letal and silent","protector."
+      ]
+    }
+  },
+  "EYE_OF_THE_STORM": {
+    "armorSlot": "CHESTPLATE",
+    "type": "SILK",
+    "baseHealth": 1000,
+    "data": {
+      "name": "Eye of The Storm",
+      "itemLevel": 75,
+      "inscriptions": [
+        {"definition": "keystone: THUNDERSTRUCK", "values": []},
+        {
+          "definition": "+ global UNIQUE: percentage single_roll lightning_resistance",
+          "values": [60,80]
+        },
+        {
+          "definition": "+ global UNIQUE: percentage single_roll max_lightning_resistance",
+          "values": [4,6]
+        }
+      ],
+      "flavorText": [
+        "This cursed helmet",
+        "once belonged to",
+        "a mysterious ske-",
+        "letal and silent","protector."
+      ]
+    }
+  },
+  "TIN_FOIL_HELMET": {
+    "armorSlot": "HELMET",
+    "type": "ARMORED",
+    "baseHealth": 100,
+    "data": {
+      "name": "Tin Foil Helmet",
+      "itemLevel": 42,
+      "inscriptions": [
+        {"definition": "effect: OVERDRIVE", "values": []},
+        {
+          "definition": "- global UNIQUE: flat single_roll intelligence",
+          "values": [30,70]
+        }
+      ],
+      "flavorText": [
+        "Can protect you","against conspiracies,","but certainly not", "against electricity!"
+      ]
+    }
+  },
+  "QUEEN_OF_THE_FOREST": {
+    "armorSlot": "LEGGINGS",
+    "type": "CLOTH",
+    "baseHealth": 1200,
+    "data": {
+      "name": "Queen of The Forest",
+      "itemLevel": 90,
+      "inscriptions": [
+        {"definition": "effect: THRILL_OF_THE_HUNT", "values": []},
+        {
+          "definition": "+ meta UNIQUE: increased constant walk_speed<<5 flat dexterity",
+          "values": [1]
+        },
+        {
+          "definition": "- global UNIQUE: increased single_roll walk_speed",
+          "values": [20,30]
+        }
+      ],
+      "flavorText": [
+        "Become one with nature.","","To hunt is to live."
+      ]
+    }
+  },
+  "IMMORTAL_FLESH": {
+    "armorSlot": "CHESTPLATE",
+    "type": "ARMORED",
+    "baseHealth": 5000,
+    "data": {
+      "name": "Immortal Flesh",
+      "itemLevel": 90,
+      "inscriptions": [
+        {"definition": "keystone: ORGAN_FAILURE", "values": []},
+        {
+          "definition": "- global UNIQUE: multiplier constant health",
+          "values": [20]
+        },
+        {
+          "definition": "+ global UNIQUE: increased single_roll health_regen",
+          "values": [280,300]
+        },
+        {
+          "definition": "+ global UNIQUE: flat single_roll health_regen",
+          "values": [6,60]
+        }
+      ],
+      "flavorText": [
+        "The cycle of carnage","is the only constant","in life."
+      ]
+    }
+  },
+  "THE_BODY": {
+    "armorSlot": "CHESTPLATE",
+    "type": "ARMORED",
+    "baseHealth": 4000,
+    "data": {
+      "name": "The Body",
+      "itemLevel": 100,
+      "inscriptions": [
+        {"definition": "keystone: FIRE_ATTUNEMENT", "values": []},
+        {
+          "definition": "- global UNIQUE: multiplier constant lightning_resistance",
+          "values": [50]
+        },
+        {
+          "definition": "- global UNIQUE: multiplier constant cold_resistance",
+          "values": [50]
+        },
+        {
+          "definition": "+ local UNIQUE: increased single_roll armor",
+          "values": [11,33]
+        }
+      ],
+      "flavorText": [
+        "The resilience of","a body can reach","build empires.","","But it alone... can't","make you whole."
+      ]
+    }
+  },
+  "THE_MIND": {
+    "armorSlot": "HELMET",
+    "type": "CLOTH",
+    "baseHealth": 2000,
+    "data": {
+      "name": "The Mind",
+      "itemLevel": 100,
+      "inscriptions": [
+        {"definition": "keystone: LIGHTNING_ATTUNEMENT", "values": []},
+        {
+          "definition": "- global UNIQUE: multiplier constant cold_resistance",
+          "values": [50]
+        },
+        {
+          "definition": "- global UNIQUE: multiplier constant fire_resistance",
+          "values": [50]
+        },
+        {
+          "definition": "+ local UNIQUE: increased single_roll dodge",
+          "values": [11,33]
+        }
+      ],
+      "flavorText": [
+        "The freedom of","mind can bring","enlightenment.","","But it alone... can't","make you whole."
+      ]
+    }
+  },
+  "THE_SOUL": {
+    "armorSlot": "BOOTS",
+    "type": "SILK",
+    "baseHealth": 1500,
+    "data": {
+      "name": "The Soul",
+      "itemLevel": 100,
+      "inscriptions": [
+        {"definition": "keystone: COLD_ATTUNEMENT", "values": []},
+        {
+          "definition": "- global UNIQUE: multiplier constant lightning_resistance",
+          "values": [50]
+        },
+        {
+          "definition": "- global UNIQUE: multiplier constant fire_resistance",
+          "values": [50]
+        },
+        {
+          "definition": "+ local UNIQUE: increased single_roll soul",
+          "values": [11,33]
+        }
+      ],
+      "flavorText": [
+        "The strength of","a soul can bring","divine protection.","","But it alone... can't","make you whole."
+      ]
+    }
+  },
+  "TRINITY": {
+    "armorSlot": "LEGGINGS",
+    "type": "RUNISTEEL",
+    "baseHealth": 3333,
+    "data": {
+      "name": "Trinity",
+      "itemLevel": 77,
+      "inscriptions": [
+        {"definition": "keystone: ELEMENTAL_BLESSING", "values": []},
+        {
+          "definition": "- global UNIQUE: multiplier constant health",
+          "values": [33]
+        },
+        {
+          "definition": "- global UNIQUE: multiplier constant soul",
+          "values": [33]
+        }
+      ],
+      "flavorText": [
+        "Imbalance is the","invitation for ruin."
+      ]
+    }
+  },
+  "EXECUTIONERS_MASK": {
+    "armorSlot": "HELMET",
+    "type": "PELT",
+    "baseHealth": 1900,
+    "data": {
+      "name": "The Executioner's mask",
+      "itemLevel": 90,
+      "inscriptions": [
+        {"definition": "effect: COUP_DE_GRACE", "values": []},
+        {
+          "definition": "+ global UNIQUE: flat double_roll physical_damage",
+          "values": [4,7,  12,19]
+        },
+        {
+          "definition": "+ global UNIQUE: percentage constant shred",
+          "values": [15]
+        },
+        {
+          "definition": "+ global UNIQUE: percentage single_roll critical_damage",
+          "values": [8,12]
+        }
+      ],
+      "flavorText": [
+        "The merciful face","of death shall","remain concealed."
+      ]
+    }
+  },
+  "DRUIDIC_PELTS": {
+    "armorSlot": "CHESTPLATE",
+    "type": "PELT",
+    "baseHealth": 1200,
+    "data": {
+      "name": "Druidic Pelts",
+      "itemLevel": 64,
+      "inscriptions": [
+        {"definition": "keystone: WINDS_OF_CHANGE", "values": []},
+        {
+          "definition": "+ global UNIQUE: flat single_roll health_regen",
+          "values": [15,25]
+        }
+      ],
+      "flavorText": [
+        "Nature's beautiful","cycle...","To be wounded","To be healed"
       ]
     }
   }
