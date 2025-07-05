@@ -9,6 +9,7 @@ import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.equipment.PlayerEquipment;
 import com.amorabot.inscripted.player.profile.BaseStats;
 import com.amorabot.inscripted.player.profile.Profile;
+import com.amorabot.inscripted.player.profile.component.SpecialInscriptionsComponent;
 import com.amorabot.inscripted.utils.Utils;
 
 import java.util.*;
@@ -24,18 +25,18 @@ public class StatParser {
         Utils.log("Building profile!");
         Profile profile = playerData.getProfile();
         PlayerEquipment equipment = playerData.getEquipment();
+        SpecialInscriptionsComponent prevInscriptionsSnapshot = equipment.getSpecialInscriptions().snapshot();
 
-        //TODO: diff checking for special ACTIVE inscriptions (Aura keystones, etc...)
-
-        //Updating cache for keystones, effects, ... based on equipment
+        //Getting keystones before re-compilation:
+        Set<KeystoneIDs> oldKeystones = new HashSet<>(prevInscriptionsSnapshot.getKeystones());
+        //Updating cache for keystones, effects, ..., based on equipment
         equipment.updateSpecialInscriptions();
+        SpecialInscriptionsComponent updatedSpecialInscriptions = equipment.getSpecialInscriptions();
+        handlePlayerKeystoneStates(oldKeystones,updatedSpecialInscriptions,playerData);
 
         //Getting global stats
         StatPool globalStatPool = compileEquipmentStats(equipment); //Raw equipment global stats
 
-        Set<KeystoneIDs> keystones = equipment.getKeystones();
-        Set<EffectIDs> effects = equipment.getEffects();
-        Set<ProceduralInscription> metaInscriptions = equipment.getMetaInscriptions();
 
         //Handle instantiation/state of keystone tasks
 
@@ -46,11 +47,11 @@ public class StatParser {
         //...
 
         //Late Keystones trigger (Stat Overrides, rules, ...). Those have the final say on the player's profile state
-        //...
+        triggerKeystoneRules(TriggerTimes.LATE,updatedSpecialInscriptions.getKeystones(),playerData);
 
         //After all stat changes, apply attribute bonuses and meta-conversions
         applyAttributeBonuses(globalStatPool);
-        convertMetaStats(metaInscriptions,globalStatPool);
+        convertMetaStats(updatedSpecialInscriptions.getMetaInscriptions(),globalStatPool);
 
         //Now that all stat changes are applied, get the final profile-level values to be stored
         Map<Stats, double[]> finalStats = globalStatPool.calculateFinalValues();
@@ -63,6 +64,71 @@ public class StatParser {
         //Update the player's profile
         profile.update(playerData.getPlayerID(),finalStats);
         playerData.setGlobalStats(globalStatPool); // Store the up-to-date pool for things like stat checks for skill damages
+    }
+
+    public static void handlePlayerKeystoneStates(Set<KeystoneIDs> oldKeystones, SpecialInscriptionsComponent specialInscriptions, PlayerDataContainer playerData){
+        Set<KeystoneIDs> updatedKeystones = specialInscriptions.getKeystones();
+        debugKeystoneSet(oldKeystones,"Old Keystones");
+        if (oldKeystones.isEmpty()){
+            // Apply all new keystones
+            for (KeystoneIDs newKeystone : updatedKeystones){
+                if (!newKeystone.isRule()){
+                    newKeystone.apply(playerData);
+                }
+            }
+        } else { // Then a diff check is needed
+            if (!oldKeystones.equals(updatedKeystones)){ // old and updated are different
+                Set<KeystoneIDs> striclyNewKeystones = new HashSet<>(updatedKeystones);
+                striclyNewKeystones.removeAll(oldKeystones); // ( (A) U (B) ) - (B) =>
+                debugKeystoneSet(striclyNewKeystones,"New Keystones:");
+                for (KeystoneIDs nKey : striclyNewKeystones){
+                    if (!nKey.isRule()){
+                        nKey.apply(playerData);
+                    }
+                }
+                // Uninstantiate any state from to-be-removed keystones
+                oldKeystones.removeAll(updatedKeystones); //Remove all current keystones from the old snapshot
+                uninstantiateKeystones(playerData,oldKeystones);
+            } else { // They were the same set to begin with -> No changes
+                if (DEBUG_MODE){Utils.error("No keystone state changes.");}
+            }
+        }
+        //Trigger early keystones
+        triggerKeystoneRules(TriggerTimes.EARLY,specialInscriptions.getKeystones(),playerData);
+    }
+    private static void triggerKeystoneRules(TriggerTimes triggerTime, Set<KeystoneIDs> keystones, PlayerDataContainer playerData){
+        for (KeystoneIDs keystone : keystones){
+            if (keystone.isRule() && keystone.getTriggerTime().equals(triggerTime)){
+                if (DEBUG_MODE){
+                    Utils.log(keystone + " " + triggerTime + " rule trigger.");
+                }
+                keystone.apply(playerData);
+            }
+        }
+    }
+
+    public static void uninstantiateKeystones(PlayerDataContainer playerData, Set<KeystoneIDs> keystones){
+        for (KeystoneIDs oldKeystone : keystones){
+            if (!oldKeystone.isRule()){ //Its a Aura, let's toggle it
+                if (DEBUG_MODE){
+                    Utils.log("Uninstantiating keystone: " + oldKeystone);
+                }
+                oldKeystone.apply(playerData);
+            }
+        }
+    }
+    public static void debugKeystoneSet(Set<KeystoneIDs> keystones, String message){
+        if (!DEBUG_MODE){return;}
+        if (keystones.isEmpty()){
+            Utils.error(message+":");
+            Utils.error("No keystones!\n");
+            return;
+        }
+        Utils.error("DEBUG: " +message+"  ====---- - - -   -   -   -");
+        for (KeystoneIDs debuggedKeystone : keystones){
+            Utils.error(debuggedKeystone.name());
+        }
+        Utils.error("=======------------------ - - -   -   -   -");
     }
 
     public static StatPool compileEquipmentStats(PlayerEquipment playerEquipment){
@@ -83,12 +149,11 @@ public class StatParser {
         );
         return globalStatPool;
     }
-    private static void convertMetaStats(Set<ProceduralInscription> metaInscriptions, StatPool globalStatPool){
-        for (ProceduralInscription metaInsc : metaInscriptions){
-            InscriptionIDs inscID = metaInsc.getInscription();
-            if (DEBUG_MODE){Utils.log("Compiling meta Inscription " + inscID);}
+    private static void convertMetaStats(Set<Inscription> metaInscriptions, StatPool globalStatPool){
+        for (Inscription metaInsc : metaInscriptions){
+            if (DEBUG_MODE){Utils.log("Compiling meta Inscription " + metaInsc.getInscriptionDefinition().getDisplayName());}
             if (!metaInsc.isMeta()){continue;}
-            if (!(inscID.getDefinitionData() instanceof InscriptionDefinition.Meta metaInscriptionDef)){
+            if (!(metaInsc.getInscriptionDefinition() instanceof InscriptionDefinition.Meta metaInscriptionDef)){
                 if (DEBUG_MODE){Utils.error("Wtf is this shit of meta insc");}
                 continue;
             }
@@ -207,8 +272,8 @@ public class StatParser {
         }
         return mappedKeystones;
     }
-    public static Set<ProceduralInscription> filterMetaInscriptions(List<Inscription> itemInscriptions){
-        Set<ProceduralInscription> metaSet = new HashSet<>();
+    public static Set<Inscription> filterMetaInscriptions(List<Inscription> itemInscriptions){
+        Set<Inscription> metaSet = new HashSet<>();
         itemInscriptions.forEach(
             inscription -> {
                 if (inscription instanceof ProceduralInscription proceduralInscription){

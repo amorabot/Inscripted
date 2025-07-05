@@ -84,7 +84,7 @@ public class PlayerDataContainer implements ProfileObserver {
     @Override
     public void onNotify(TriggerTypes combatTrigger, LivingEntity target) {
         Player player = Bukkit.getPlayer(playerID);
-        Set<EffectIDs> playerEffects = equipment.getEffects();
+        Set<EffectIDs> playerEffects = equipment.getSpecialInscriptions().getEffects();
         switch (combatTrigger){
             //TODO: make triggerEffects default and 'reverse' triggers (like WHEN_HIT) declarative
             case ON_HIT -> {

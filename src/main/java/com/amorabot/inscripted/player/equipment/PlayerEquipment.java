@@ -1,22 +1,18 @@
 package com.amorabot.inscripted.player.equipment;
 
-import com.amorabot.inscripted.item.inscription.ProceduralInscription;
-import com.amorabot.inscripted.item.inscription.definition.EffectIDs;
-import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
 import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.player.ProfileObserver;
 import com.amorabot.inscripted.player.Subject;
 import com.amorabot.inscripted.player.profile.ProfileEvents;
+import com.amorabot.inscripted.player.profile.component.SpecialInscriptionsComponent;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 @Getter
 public class PlayerEquipment {
@@ -25,9 +21,7 @@ public class PlayerEquipment {
     private boolean locked = true;
     private final Map<EquipmentSlots, EquimentSlotData> equipmentData = new HashMap<>();
 
-    private final Set<EffectIDs> effects = new HashSet<>();
-    private final Set<KeystoneIDs> keystones = new HashSet<>();
-    private final Set<ProceduralInscription> metaInscriptions = new HashSet<>();
+    private final SpecialInscriptionsComponent specialInscriptions = new SpecialInscriptionsComponent();
 
     public PlayerEquipment(ProfileObserver observer){
         for (EquipmentSlots slot : EquipmentSlots.values()){
@@ -67,7 +61,7 @@ public class PlayerEquipment {
             new DelayedTask(new BukkitRunnable() {
                 @Override
                 public void run() {
-                    //After 3Ticks, apply changes
+                    //After 2Ticks, apply changes
                     profileSubject.notifyListeners(ProfileEvents.EQUIPMENT_CHANGE);
                     //Re-lock so it can be accessed later
                     locked=true;
@@ -83,27 +77,6 @@ public class PlayerEquipment {
     }
 
     public void updateSpecialInscriptions(){
-        updateEquipmenEffects();
-        updateEquipmenKeystones();
-        updateEquipmentMetaInscriptions();
-    }
-
-    private void updateEquipmentMetaInscriptions(){
-        metaInscriptions.clear();
-        getEquipmentData().forEach(
-                (slot, slotData) -> metaInscriptions.addAll(slotData.getMetaInscriptions())
-        );
-    }
-    private void updateEquipmenEffects(){
-        effects.clear();
-        getEquipmentData().forEach(
-                (slot, slotData) -> effects.addAll(slotData.getItemEffects())
-        );
-    }
-    private void updateEquipmenKeystones(){
-        effects.clear();
-        getEquipmentData().forEach(
-                (slot, slotData) -> keystones.addAll(slotData.getItemKeystones())
-        );
+        specialInscriptions.update(equipmentData);
     }
 }

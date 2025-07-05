@@ -1,10 +1,10 @@
 package com.amorabot.inscripted.player.equipment;
 
 import com.amorabot.inscripted.item.inscription.Inscription;
-import com.amorabot.inscripted.item.inscription.ProceduralInscription;
 import com.amorabot.inscripted.item.inscription.definition.EffectIDs;
 import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
 import com.amorabot.inscripted.item.structure.Item;
+import com.amorabot.inscripted.player.profile.component.SpecialInscriptionsComponent;
 import com.amorabot.inscripted.player.profile.parsing.StatParser;
 import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import lombok.Getter;
@@ -17,9 +17,7 @@ import java.util.Set;
 public class EquimentSlotData {
 
     private StatPool equipmentStats;
-    private Set<EffectIDs> itemEffects = new HashSet<>();
-    private Set<KeystoneIDs> itemKeystones = new HashSet<>();
-    private Set<ProceduralInscription> metaInscriptions = new HashSet<>();
+    private SpecialInscriptionsComponent localSpecialInscriptions;
 
     private int itemHash;
     private boolean ignore;
@@ -28,10 +26,12 @@ public class EquimentSlotData {
         this.itemHash = 0;
         this.ignore = true;
         this.equipmentStats = null;
+        this.localSpecialInscriptions = new SpecialInscriptionsComponent();
     }
     public EquimentSlotData(Item newItem){
         this.itemHash = newItem.hashCode();
         this.ignore = false;
+        this.localSpecialInscriptions = new SpecialInscriptionsComponent();
         parseItem(newItem);
     }
 
@@ -68,15 +68,30 @@ public class EquimentSlotData {
 
     private void parseItem(Item itemData){
         this.equipmentStats = itemData.compile();
+        if (ignore){
+            return;
+        }
         List<Inscription> itemInscriptions = itemData.getInscriptions();
-        this.itemEffects = StatParser.getEffects(itemInscriptions);
-        this.itemKeystones = StatParser.getKeystones(itemInscriptions);
-        this.metaInscriptions = StatParser.filterMetaInscriptions(itemInscriptions);
+        this.localSpecialInscriptions = new SpecialInscriptionsComponent(
+                StatParser.getEffects(itemInscriptions),
+                StatParser.getKeystones(itemInscriptions),
+                StatParser.filterMetaInscriptions(itemInscriptions));
     }
     public void clear(){
         this.equipmentStats = null;
-        this.itemEffects.clear();
-        this.itemKeystones.clear();
-        this.metaInscriptions.clear();
+        this.localSpecialInscriptions.clear();
+    }
+
+    public Set<KeystoneIDs> getItemKeystones(){
+        if (ignore){return new HashSet<>();}
+        return getLocalSpecialInscriptions().getKeystones();
+    }
+    public Set<EffectIDs> getItemEffects(){
+        if (ignore){return new HashSet<>();}
+        return getLocalSpecialInscriptions().getEffects();
+    }
+    public Set<Inscription> getItemMetaInscriptions(){
+        if (ignore){return new HashSet<>();}
+        return getLocalSpecialInscriptions().getMetaInscriptions();
     }
 }

@@ -32,7 +32,7 @@ public class RegenerationTask extends PlayerboundTask {
 
         boolean inCombat = false;
 
-        Set<KeystoneIDs> playerKeystones = getPlayerEquipment(getPlayerID()).getKeystones();
+        Set<KeystoneIDs> playerKeystones = getPlayerEquipment(getPlayerID()).getSpecialInscriptions().getKeystones();
         int regeneratedHealth = playerHealth.regenHealth(inCombat,playerKeystones);
 
         boolean canRegenSoul = canRegenSoul(getPlayerID());
