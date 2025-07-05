@@ -32,18 +32,18 @@ public class InscriptionTemplateBuilder implements InscriptionDefinition.Inscrip
     @Override
     public String visitEffect(InscriptionDefinition.Effect inscription) {
         EffectIDs effect = inscription.getEffectID();
-        String effectName = effect.name().replaceFirst("_"," ").strip();
+        String effectName = effect.name().replace("_"," ").strip();
         String effectInfo = effect.getInfo();
         String effectColor = InscriptedPalette.RELIC.getColorString();
         String infoColor = InscriptedPalette.DARK_GRAY.getColorString();
-        return ("<"+effectColor+"><b>" + effectName + "</b></"+effectColor+">" + "<"+infoColor+"> > " + effectInfo + "</"+infoColor+">");
+        return ("<"+effectColor+"><b>" + effectName + "</b></"+effectColor+">" + "<"+infoColor+"> ⏵ " + effectInfo + "</"+infoColor+">");
     }
 
     @Override
     public String visitKeystone(InscriptionDefinition.Keystone inscription) {
-        String keystoneName = inscription.getKeystoneID().name().replaceFirst("_"," ").strip();
+        String keystoneName = inscription.getKeystoneID().name().replace("_"," ").strip();
         String keystoneColor = InscriptedPalette.RELIC.getColorString();
-        return "<"+keystoneColor+"><b>" + keystoneName + " \uD83D\uDCD6</b></"+keystoneColor+">";
+        return "<"+keystoneColor+"><b>" + keystoneName + " ✎</b></"+keystoneColor+">";
     }
 
     private String buildBaseInscriptionTemplate(InscriptionDefinition.BaseInscription inscriptionData, boolean isPositive, boolean isGlobal){

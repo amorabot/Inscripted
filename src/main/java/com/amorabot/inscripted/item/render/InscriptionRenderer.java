@@ -49,7 +49,7 @@ public class InscriptionRenderer {
             String currentHex = valuesHex;
             if (insc instanceof UniqueInscription){currentHex = InscriptedPalette.RELIC.getColorString();}
             renderedInscriptions.add(getInscriptionAsComponent(insc,padding,currentHex));
-            if (insc.isEffect()){renderedInscriptions.add(Component.text(""));}
+            if (insc.isEffect() || insc.isKeystone()){renderedInscriptions.add(Component.text(""));}
         }
         return renderedInscriptions;
     }

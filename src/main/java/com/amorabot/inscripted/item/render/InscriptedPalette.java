@@ -29,8 +29,8 @@ public enum InscriptedPalette {
     //Rarity Colors
     AUGMENTED("#90cbf5"),
     RUNIC("#ffc517"),
-    //#bf1935,#f23d5b,(wine)#ad1557,#db2a6e, (unique orange)#d46b08
-    RELIC("#a63d7f"),
+    //#bf1935,#f23d5b,(wine)#ad1557,#db2a6e, (unique orange)#d46b08 || #c71844 || #a63d7f
+    RELIC("#bf1347"),
 
     //DEF Colors
     HEALTH("#ed2f5f"),
