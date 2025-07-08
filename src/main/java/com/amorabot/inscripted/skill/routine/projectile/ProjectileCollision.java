@@ -9,7 +9,7 @@ import org.bukkit.util.Vector;
 
 import java.util.List;
 
-import static com.amorabot.inscripted.skill.AbilityRoutines.getLargeHitbox;
+import static com.amorabot.inscripted.skill.Skills.getLargeHitbox;
 
 public class ProjectileCollision {
 

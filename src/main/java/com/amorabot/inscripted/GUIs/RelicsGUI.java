@@ -50,26 +50,7 @@ public class RelicsGUI extends GUI {
         List<GUIButton> relicButtons = new ArrayList<>();
         for (Relics relic : Relics.values()){
             ItemStack itemForm = relic.getItemForm();
-//            ItemMeta relicItemMeta = itemForm.getItemMeta();
-//            List<String> lore = relicItemMeta.getLore();
-//            lore.add("");
-//            lore.add(color("&8 >| " + convertToPrettyString("left-click to generate new relic!")));
-//            itemForm.setItemMeta(relicItemMeta);
-            relicButtons.add(new GUIButton(relic.ordinal(),itemForm) {
-                @Override
-                public void leftClick(Player playerWhoClicked) {
-                    playerWhoClicked.getInventory().addItem(relic.getItemForm());
-                }
 
-                @Override
-                public void rightClick(Player playerWhoClicked) {}
-
-                @Override
-                public void shiftLeftClick(Player playerWhoClicked) {}
-
-                @Override
-                public void shiftRightClick(Player playerWhoClicked) {}
-            });
         }
 
         return relicButtons.toArray(new GUIButton[0]);

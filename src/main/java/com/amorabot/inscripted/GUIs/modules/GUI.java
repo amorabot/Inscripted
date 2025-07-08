@@ -57,30 +57,30 @@ public abstract class GUI implements InventoryHolder {
         return true;
     }
 
-    public void click(Player player, int slot, ClickType type){
-        GUIButton clickedButton = getGUISlot(slot);
-        if (clickedButton == null){
-            Utils.error("Invalid button @" + this.getClass().getSimpleName());
-            return;
-        }
-        switch (type){
-            case LEFT -> {
-                clickedButton.leftClick(player);
-            }
-            case RIGHT -> {
-                clickedButton.rightClick(player);
-            }
-            case SHIFT_LEFT -> {
-                clickedButton.shiftLeftClick(player);
-            }
-            case SHIFT_RIGHT -> {
-                clickedButton.shiftRightClick(player);
-            }
-            default ->{
-                return;
-            }
-        }
-    }
+//    public void click(Player player, int slot, ClickType type){
+//        GUIButton clickedButton = getGUISlot(slot);
+//        if (clickedButton == null){
+//            Utils.error("Invalid button @" + this.getClass().getSimpleName());
+//            return;
+//        }
+//        switch (type){
+//            case LEFT -> {
+//                clickedButton.leftClick(player);
+//            }
+//            case RIGHT -> {
+//                clickedButton.rightClick(player);
+//            }
+//            case SHIFT_LEFT -> {
+//                clickedButton.shiftLeftClick(player);
+//            }
+//            case SHIFT_RIGHT -> {
+//                clickedButton.shiftRightClick(player);
+//            }
+//            default ->{
+//                return;
+//            }
+//        }
+//    }
 
 
     public boolean isEditable() {

@@ -7,10 +7,8 @@ import com.amorabot.inscripted.player.profile.component.AttackData;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
@@ -22,7 +20,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-import static com.amorabot.inscripted.skill.AbilityRoutines.getLargeHitbox;
+import static com.amorabot.inscripted.skill.Skills.getLargeHitbox;
 
 @Getter
 @Setter

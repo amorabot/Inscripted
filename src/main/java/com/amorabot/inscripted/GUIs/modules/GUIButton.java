@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.GUIs.modules;
 
+import com.amorabot.inscripted.gui.button.InterfaceButton;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -8,7 +9,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
-public abstract class GUIButton implements Button {
+public abstract class GUIButton implements InterfaceButton {
 
     private final ItemStack icon;
     private final int slot;

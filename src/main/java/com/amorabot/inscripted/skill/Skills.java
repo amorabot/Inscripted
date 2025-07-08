@@ -20,6 +20,9 @@ import com.amorabot.inscripted.skill.type.Aura;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
+import org.bukkit.entity.Player;
+import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -139,5 +142,14 @@ public enum Skills {
             Utils.error("No Annotation("+annotationClass.getSimpleName()+") data for " + this.name());
         }
         return null;
+    }
+
+    public static BoundingBox getLargeHitbox(Player player){
+        BoundingBox playerAABB = player.getBoundingBox();
+
+        playerAABB.expand(0.25, 0.0, 0.25);
+        playerAABB.expand(new Vector(0, 1, 0), 0.25);
+
+        return playerAABB;
     }
 }

@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.commands;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.gui.instances.RelicSelection;
 import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.components.buffs.Buffs;
 import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
@@ -107,9 +108,8 @@ public class TemplateCommand implements CommandExecutor {
 //
 //                    PlayerBuffManager.addBuffToPlayer(rejuv, player);
                     return true;
-                case "seek":
-                    BowBasicAttacks.standardBowAttackBy(player, PlayerAbilities.BASIC_BOW_ATTACK, SteeringBehaviors.STRAIGHT_LINE, 4);
-//                    BowBasicAttacks.standardBowAttackBy(player, SteeringBehaviors.ARRIVE, 10);
+                case "ui":
+                    new RelicSelection(player).open();
                     return true;
                 case "circle":
                     Location loc = player.getLocation().clone().add(0,1.5,0);
