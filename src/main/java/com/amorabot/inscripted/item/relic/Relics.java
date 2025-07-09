@@ -14,6 +14,7 @@ import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+import java.util.function.Function;
 
 public enum Relics {
 // Weapons
@@ -71,12 +72,12 @@ public enum Relics {
         return relicItemStack;
     }
     public Item generate(){
-        if (isArmor()){
+        if (isIArmor()){
             RelicArmorData relicData = Relics.getRelicArmorsData().get(this);
             GenericRelicData genericData = relicData.data();
             return new Armor(this, genericData.itemLevel(),relicData.type(),true,relicData.armorSlot());
         }
-        if (isWeapon()){
+        if (isIWeapon()){
             RelicWeaponData relicData = Relics.getRelicWeaponsData().get(this);
             GenericRelicData genericData = relicData.data();
             return new Weapon(this, genericData.itemLevel(), relicData.type(),true, EquipmentSlots.WEAPON);
@@ -84,10 +85,10 @@ public enum Relics {
         Utils.error("Invalid relic...");
         return null;
     }
-    public boolean isArmor(){
+    public boolean isIArmor(){
         return relicArmorsData.containsKey(this);
     }
-    public boolean isWeapon(){
+    public boolean isIWeapon(){
         return relicWeaponsData.containsKey(this);
     }
 
@@ -106,12 +107,12 @@ public enum Relics {
             Map<Integer, ParsedUniqueInscription> parsedInscr = new HashMap<>();
             List<UniqueInscriptionDTO> rawInscriptionData = new ArrayList<>();
             List<String> rawFlavorText = new ArrayList<>();
-            if (relic.isArmor()){
+            if (relic.isIArmor()){
                 RelicArmorData relicData = Relics.getRelicArmorsData().get(relic);
                 rawInscriptionData = relicData.data().inscriptions();
                 rawFlavorText = relicData.data().flavorText();
             }
-            if (relic.isWeapon()){ //Feão
+            if (relic.isIWeapon()){ //Feão
                 RelicWeaponData relicData = Relics.getRelicWeaponsData().get(relic);
                 rawInscriptionData = relicData.data().inscriptions();
                 rawFlavorText = relicData.data().flavorText();
@@ -125,5 +126,21 @@ public enum Relics {
 
             relic.flavorText = parseFlavorText(rawFlavorText);
         }
+    }
+    public static boolean isArmor(Relics relic){
+        return relicArmorsData.containsKey(relic);
+    }
+    public static boolean isWeapon(Relics relic){
+        return relicWeaponsData.containsKey(relic);
+    }
+
+    public static List<Relics> filterRelics(Function<Relics,Boolean> filter){
+        List<Relics> filteredRelics = new ArrayList<>();
+        for (Relics relic : Relics.values()){
+            if (filter.apply(relic)){
+                filteredRelics.add(relic);
+            }
+        }
+        return filteredRelics;
     }
 }

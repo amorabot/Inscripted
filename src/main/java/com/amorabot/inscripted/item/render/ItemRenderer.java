@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.item.render;
 
+import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.item.relic.Relics;
 import com.amorabot.inscripted.item.structure.io.ItemDeserializer;
 import com.amorabot.inscripted.player.Archetypes;
@@ -12,6 +13,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -32,6 +36,12 @@ public class ItemRenderer {
             itemMeta.setUnbreakable(true);
             itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+            // Band-aid fix, fixed in paper 1.21.4+
+            itemMeta.addAttributeModifier(Attribute.GENERIC_LUCK, new AttributeModifier(
+                    new NamespacedKey(Inscripted.getPlugin(), "dummy"),
+                    0,
+                    AttributeModifier.Operation.ADD_NUMBER
+            ));
         });
 
         if (identified){

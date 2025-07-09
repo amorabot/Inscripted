@@ -1,19 +1,17 @@
 package com.amorabot.inscripted;
 
 import com.amorabot.inscripted.commands.*;
-import com.amorabot.inscripted.file.item.RelicEditor;
 import com.amorabot.inscripted.file.profile.ProfileDatabase;
 import com.amorabot.inscripted.item.relic.Relics;
 import com.amorabot.inscripted.item.render.GlyphInfo;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
 import com.amorabot.inscripted.handlers.Combat.InscriptedPlayerDeathEventListener;
-import com.amorabot.inscripted.handlers.GUI.GUIHandler;
+import com.amorabot.inscripted.GUIs.GUIHandler;
 import com.amorabot.inscripted.handlers.Inventory.*;
 import com.amorabot.inscripted.handlers.misc.JoinQuitHandler;
 import com.amorabot.inscripted.handlers.misc.SunlightBurnHandler;
 import com.amorabot.inscripted.file.item.InscriptionDataManager;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
-import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.tasks.ActionBarRenderer;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;

@@ -17,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 // https://docs.papermc.io/paper/dev/custom-inventory-holder -> Paper Docs for inventory holder
 @Getter
 public abstract class GUI implements InventoryHolder {
+    //TODO: Make inner enum for button definition for each interface
+
     protected static final ItemStack nullIcon;
     static {
         ItemStack nullItem = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
@@ -129,11 +131,18 @@ public abstract class GUI implements InventoryHolder {
         return (9*(row-1)) + column;
     }
 
-    public static class PaginatedGUI {
 
-    }
 
-    public static class Relic {
+    //TODO:
+    public static class PaginatedGUI extends GUI {
 
+        public PaginatedGUI(Player owner, int rows, boolean editable, boolean renderNulls) {
+            super(owner, rows, editable, renderNulls);
+        }
+
+        @Override
+        public void accept(CustomInterfaceVisitor visitor, InventoryClickEvent event) {
+
+        }
     }
 }

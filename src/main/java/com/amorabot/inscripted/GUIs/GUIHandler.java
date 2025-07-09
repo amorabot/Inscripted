@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.handlers.GUI;
+package com.amorabot.inscripted.GUIs;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.gui.GUI;

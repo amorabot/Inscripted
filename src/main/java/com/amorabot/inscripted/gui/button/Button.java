@@ -1,11 +1,15 @@
 package com.amorabot.inscripted.gui.button;
 
+import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.gui.GUI;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -32,6 +36,12 @@ public class Button implements InterfaceButton {
                     itemMeta.setUnbreakable(true);
                     itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                     itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                    // Band-aid fix, fixed in paper 1.21.4+
+                    itemMeta.addAttributeModifier(Attribute.GENERIC_LUCK, new AttributeModifier(
+                            new NamespacedKey(Inscripted.getPlugin(), "dummy"),
+                            0,
+                            AttributeModifier.Operation.ADD_NUMBER
+                    ));
                     if (enchanted){
                         itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, false);
                         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);

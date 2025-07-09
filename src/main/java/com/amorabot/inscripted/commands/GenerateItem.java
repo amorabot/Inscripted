@@ -1,9 +1,6 @@
 package com.amorabot.inscripted.commands;
 
-//import com.amorabot.inscripted.GUIs.ItemCommandGUI;
-import com.amorabot.inscripted.GUIs.RelicsGUI;
 import com.amorabot.inscripted.Inscripted;
-//import com.amorabot.inscripted.components.Items.Abstract.Item;
 import com.amorabot.inscripted.item.relic.Relics;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.Tiers;
