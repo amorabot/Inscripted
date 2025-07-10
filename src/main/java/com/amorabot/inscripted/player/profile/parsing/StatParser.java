@@ -41,17 +41,39 @@ public class StatParser {
         //Handle instantiation/state of keystone tasks
 
         //Early Keystones trigger
-        //...
+        globalStatPool.applyKeystoneRules(TriggerTimes.EARLY,updatedSpecialInscriptions.getKeystones(),playerData);
 
         //Procedurally group external stats (Buffs, auras, conditional aura buffs...) to insert in the global pool
         //...
 
-        //Late Keystones trigger (Stat Overrides, rules, ...). Those have the final say on the player's profile state
-        triggerKeystoneRules(TriggerTimes.LATE,updatedSpecialInscriptions.getKeystones(),playerData);
+        // Late Keystones trigger (Stat Overrides, rules, ...). Those have the final say on the player's profile state
+        // Ensure LATE rules are applied so meta-stats can have a accurate representation of base values
+        globalStatPool.applyKeystoneRules(TriggerTimes.LATE,updatedSpecialInscriptions.getKeystones(),playerData,
+                "Pre-Meta Stat rule enforcing (Sync'ing mechanism)");
 
-        //After all stat changes, apply attribute bonuses and meta-conversions
+        /*
+        Meta stats are based on the main stat pool. If a rule must be applied over a base stat, overriding it, for example,
+        And a meta stat alters that base stat, then we have a de-sync problem.
+        Example:
+            A Forbidden Pact sets the player life to 1. Then STR bonuses grant that player extra life.
+            Negative STR would result in negative life, and Positive STR would result in more than 1 life (should be fact)
+
+        On the other end, those rules cant be applied AFTER all meta-stats since the referenced converted stat would not be
+        wouldn't be in it's correct state yet.
+        Example: Abyssal DMG per 400 Soul
+            If, let's say, a Keystone sets a player's Soul value to 1 invariably and it happens after the meta conversion.
+            Then the player would have Abyssal DMG coming from a virtual, "would-be", value that's not representative of
+            the 1 Soul Keystone rule.
+
+        So, we must guarantee the referenced stat pool is always updated
+        */
+
+        //After all stat changes, apply meta stat changes -> attribute bonuses and meta-conversions
         applyAttributeBonuses(globalStatPool);
         convertMetaStats(updatedSpecialInscriptions.getMetaInscriptions(),globalStatPool);
+
+        // Ensures that stats affected by rules AND meta-stats are now definitively following stat rules
+        globalStatPool.applyKeystoneRules(TriggerTimes.LATE,updatedSpecialInscriptions.getKeystones(),playerData,"Final Stat rule enforcing");
 
         //Now that all stat changes are applied, get the final profile-level values to be stored
         Map<Stats, double[]> finalStats = globalStatPool.calculateFinalValues();
@@ -73,7 +95,7 @@ public class StatParser {
             // Apply all new keystones
             for (KeystoneIDs newKeystone : updatedKeystones){
                 if (!newKeystone.isRule()){
-                    newKeystone.apply(playerData);
+                    newKeystone.castKeystoneSkill(playerData.getPlayerID());
                 }
             }
         } else { // Then a diff check is needed
@@ -83,7 +105,7 @@ public class StatParser {
                 debugKeystoneSet(striclyNewKeystones,"New Keystones:");
                 for (KeystoneIDs nKey : striclyNewKeystones){
                     if (!nKey.isRule()){
-                        nKey.apply(playerData);
+                        nKey.castKeystoneSkill(playerData.getPlayerID());
                     }
                 }
                 // Uninstantiate any state from to-be-removed keystones
@@ -91,18 +113,6 @@ public class StatParser {
                 uninstantiateKeystones(playerData,oldKeystones);
             } else { // They were the same set to begin with -> No changes
                 if (DEBUG_MODE){Utils.error("No keystone state changes.");}
-            }
-        }
-        //Trigger early keystones
-        triggerKeystoneRules(TriggerTimes.EARLY,specialInscriptions.getKeystones(),playerData);
-    }
-    private static void triggerKeystoneRules(TriggerTimes triggerTime, Set<KeystoneIDs> keystones, PlayerDataContainer playerData){
-        for (KeystoneIDs keystone : keystones){
-            if (keystone.isRule() && keystone.getTriggerTime().equals(triggerTime)){
-                if (DEBUG_MODE){
-                    Utils.log(keystone + " " + triggerTime + " rule trigger.");
-                }
-                keystone.apply(playerData);
             }
         }
     }
@@ -113,7 +123,7 @@ public class StatParser {
                 if (DEBUG_MODE){
                     Utils.log("Uninstantiating keystone: " + oldKeystone);
                 }
-                oldKeystone.apply(playerData);
+                oldKeystone.castKeystoneSkill(playerData.getPlayerID());
             }
         }
     }

@@ -1,7 +1,9 @@
 package com.amorabot.inscripted.item.inscription.definition;
 
+import com.amorabot.inscripted.item.inscription.language.ValueType;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.player.PlayerDataContainer;
+import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.skill.casting.CastSource;
 import com.amorabot.inscripted.skill.type.Aura;
@@ -14,55 +16,57 @@ import java.util.UUID;
 public enum KeystoneIDs {
     FORBIDDEN_PACT(TriggerTimes.LATE, true, "") {
         @Override
-        public void applyKeystoneRule(PlayerDataContainer playerData) {
-            Utils.log("Template Rule for " + this);
+        public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
+            currentPlayerStats.setBaseStatValue(Stats.HEALTH, ValueType.FLAT,new int[]{1});
+            currentPlayerStats.setBaseStatValue(Stats.HEALTH, ValueType.INCREASED,new int[]{0});
+            currentPlayerStats.setMultiplier(Stats.HEALTH, 1D);
         }
     },
     LETHAL_STRIKES(TriggerTimes.LATE, true, "") {
         @Override
-        public void applyKeystoneRule(PlayerDataContainer playerData) {
+        public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
             Utils.log("Template Rule for " + this);
         }
     },
     BLOOD_PACT(TriggerTimes.CONDITIONAL, true, "") {
         @Override
-        public void applyKeystoneRule(PlayerDataContainer playerData) {
+        public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
             Utils.log("Template Rule for " + this);
         }
     },
     ORGAN_FAILURE(TriggerTimes.CONDITIONAL, true, "") {
         @Override
-        public void applyKeystoneRule(PlayerDataContainer playerData) {
+        public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
             Utils.log("Template Rule for " + this);
         }
     },
     FIRE_ATTUNEMENT(TriggerTimes.LATE, true, "") {
         @Override
-        public void applyKeystoneRule(PlayerDataContainer playerData) {
+        public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
             Utils.log("Template Rule for " + this);
         }
     },
     LIGHTNING_ATTUNEMENT(TriggerTimes.LATE, true, "") {
         @Override
-        public void applyKeystoneRule(PlayerDataContainer playerData) {
+        public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
             Utils.log("Template Rule for " + this);
         }
     },
     COLD_ATTUNEMENT(TriggerTimes.LATE, true, "") {
         @Override
-        public void applyKeystoneRule(PlayerDataContainer playerData) {
+        public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
             Utils.log("Template Rule for " + this);
         }
     },
     ELEMENTAL_BLESSING(TriggerTimes.LATE, true, "") {
         @Override
-        public void applyKeystoneRule(PlayerDataContainer playerData) {
+        public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
             Utils.log("Template Rule for " + this);
         }
     },
     AGNOSTIC(TriggerTimes.LATE, true, "") {
         @Override
-        public void applyKeystoneRule(PlayerDataContainer playerData) {
+        public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
 
         }
     },
@@ -84,23 +88,29 @@ public enum KeystoneIDs {
         this.description = description;
     }
 
-    public void apply(PlayerDataContainer playerData){
+    public void apply(PlayerDataContainer playerData, StatPool currentPlayerStats){
         if (isRule()){
-            applyKeystoneRule(playerData);
+            applyKeystoneStatRule(playerData,currentPlayerStats);
             return;
         }
         castKeystoneSkill(playerData.getPlayerID());
     }
-    public void applyKeystoneRule(PlayerDataContainer playerData){
+    public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats){
         //Empty body to be implemented by rule Keystones
-        if (!rule){Utils.error(this + " is not a Keystone Rule.");}
+        if (!rule){
+            Utils.error(this + " is not a Keystone Rule.");
+            return;
+        }
         Utils.log("Unimplemented rule for " + this);
     }
 
     public void castKeystoneSkill(UUID playerID){
         Skills skill = getKeystoneSkill();
-        if (skill==null){Utils.error("Unable to cast " + this);}
-//        new Aura(playerID,skill, CastSource.ITEM, WeaponAttackSpeeds.HEAVY).start(2,0);
+        if (skill==null || isRule()){
+            Utils.error("Unable to cast " + this);
+            return;
+        }
+        new Aura(playerID,skill, CastSource.ITEM, WeaponAttackSpeeds.HEAVY).start(2,0);
         Utils.log("Keystone aura toggle for " + this);
     }
 

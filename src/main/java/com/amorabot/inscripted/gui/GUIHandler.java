@@ -1,8 +1,6 @@
-package com.amorabot.inscripted.GUIs;
+package com.amorabot.inscripted.gui;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.gui.GUI;
-import com.amorabot.inscripted.gui.GUIRouter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

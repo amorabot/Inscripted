@@ -1,7 +1,7 @@
-package com.amorabot.inscripted.GUIs.components;
-
-
-public class ReturnButton{
-
-
-}
+//package com.amorabot.inscripted.GUIs.components;
+//
+//
+//public class ReturnButton{
+//
+//
+//}

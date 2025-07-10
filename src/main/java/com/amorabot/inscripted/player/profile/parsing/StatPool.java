@@ -2,10 +2,9 @@ package com.amorabot.inscripted.player.profile.parsing;
 
 import com.amorabot.inscripted.item.inscription.Inscription;
 import com.amorabot.inscripted.item.inscription.ProceduralInscription;
-import com.amorabot.inscripted.item.inscription.definition.InscriptionDefinition;
-import com.amorabot.inscripted.item.inscription.definition.InscriptionIDs;
-import com.amorabot.inscripted.item.inscription.definition.Stats;
+import com.amorabot.inscripted.item.inscription.definition.*;
 import com.amorabot.inscripted.item.inscription.language.ValueType;
+import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 
@@ -41,6 +40,27 @@ public class StatPool {
     public void clear(){
         baseStats.clear();
         multipliers.clear();
+    }
+
+    public void applyKeystoneRules(TriggerTimes triggerTime, Set<KeystoneIDs> rules, PlayerDataContainer playerData, String... labels){
+        if (DEBUG_MODE && labels!=null && labels.length>0){
+            Utils.log("Applying rules:");
+            for (String label : labels){
+                Utils.log(label);
+            }
+        }
+        //Trigger early keystones
+        triggerKeystoneRules(triggerTime,rules,playerData,this);
+    }
+    private void triggerKeystoneRules(TriggerTimes triggerTime, Set<KeystoneIDs> keystones, PlayerDataContainer playerData, StatPool currentPlayerStats){
+        for (KeystoneIDs keystone : keystones){
+            if (keystone.isRule() && keystone.getTriggerTime().equals(triggerTime)){
+                if (DEBUG_MODE){
+                    Utils.log(keystone + " " + triggerTime + " rule trigger.");
+                }
+                keystone.apply(playerData,currentPlayerStats);
+            }
+        }
     }
 
     public Map<Stats, double[]> calculateFinalValues(){
@@ -93,15 +113,18 @@ public class StatPool {
         }
         getBaseStats().get(stat).put(type, newBaseValue);
     }
-        public double getMultiplier(Stats stat){
+    public double getMultiplier(Stats stat){
         return getMultipliers().getOrDefault(stat,1D);
-    }//-----------------------------------------------------------------------------
+
+    }
+    public void setMultiplier(Stats stat, double value){
+        getMultipliers().put(stat,value);
+    }
+    //-----------------------------------------------------------------------------
 
 
     public void addInscriptionStats(Inscription inscription, Set<Integer> blockedIDs){
         if (inscription.isEffect() || inscription.isKeystone()){return;} // Special inscriptions aren't compiled here
-//        InscriptionIDs inscriptionID = inscription.getInscription();
-//        InscriptionDefinition definitionData = inscriptionID.getDefinitionData();
         InscriptionDefinition definitionData = inscription.getInscriptionDefinition();
         if (definitionData instanceof InscriptionDefinition.Regular regularDef){
             InscriptionDefinition.BaseInscription regularBaseInsc = regularDef.getBaseData();
@@ -138,14 +161,7 @@ public class StatPool {
             return;
         }
         if (type.equals(ValueType.MULTIPLIER)){
-            double storedMulti = multipliers.getOrDefault(stat,1D);
-            double newMulti = ( 100 + values[0] ) / 100D;
-            double finalMulti = storedMulti * newMulti;
-            multipliers.put(stat, finalMulti);
-            if (DEBUG_MODE){
-                Utils.log("Multiplied " + stat + " by " + values[0] + "%" +
-                        "\nFinal Multi.: " + finalMulti);
-            }
+            mergeMultiplierFor(stat,values[0]);
             return;
         }
         if (!baseStats.containsKey(stat)){
@@ -171,6 +187,16 @@ public class StatPool {
         valueMapping.put(type, Utils.vectorSum(existingValues,values));
         if (DEBUG_MODE){
             Utils.log("Added to existing stat: " + stat.name() + " -> " + Arrays.toString(values));
+        }
+    }
+    public void mergeMultiplierFor(Stats stat, double addedValue){
+        double storedMulti = multipliers.getOrDefault(stat,1D);
+        double newMulti = ( 100 + addedValue ) / 100D;
+        double finalMulti = storedMulti * newMulti;
+        multipliers.put(stat, finalMulti);
+        if (DEBUG_MODE){
+            Utils.log("Multiplied " + stat + " by " + addedValue + "%" +
+                    "\nFinal Multi.: " + finalMulti);
         }
     }
 

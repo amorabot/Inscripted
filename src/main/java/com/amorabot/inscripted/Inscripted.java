@@ -6,7 +6,7 @@ import com.amorabot.inscripted.item.relic.Relics;
 import com.amorabot.inscripted.item.render.GlyphInfo;
 import com.amorabot.inscripted.handlers.Combat.DamageHandler;
 import com.amorabot.inscripted.handlers.Combat.InscriptedPlayerDeathEventListener;
-import com.amorabot.inscripted.GUIs.GUIHandler;
+import com.amorabot.inscripted.gui.GUIHandler;
 import com.amorabot.inscripted.handlers.Inventory.*;
 import com.amorabot.inscripted.handlers.misc.JoinQuitHandler;
 import com.amorabot.inscripted.handlers.misc.SunlightBurnHandler;

@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.handlers.Inventory;
 
 import com.amorabot.inscripted.APIs.EventAPI;
-import com.amorabot.inscripted.GUIs.OrbGUI;
+//import com.amorabot.inscripted.GUIs.OrbGUI;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.item.structure.Armor.Armor;
 import com.amorabot.inscripted.item.structure.EquipmentSlots;
@@ -129,9 +129,9 @@ public class PlayerEquipmentHandler implements Listener {
 
         if (event.getClick().equals(ClickType.SWAP_OFFHAND)){
             player.sendMessage("Opening Orb menu!");
-            OrbGUI orbGUI = new OrbGUI();
-            player.openInventory(orbGUI.getInventory());
-            event.setCancelled(true);
+//            OrbGUI orbGUI = new OrbGUI();
+//            player.openInventory(orbGUI.getInventory());
+//            event.setCancelled(true);
             return;
         }
 
