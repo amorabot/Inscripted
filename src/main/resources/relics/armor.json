@@ -63,7 +63,7 @@
         }
       ],
       "flavorText": [
-        "This old tunic","once belonged to","a powerful sage","that stared too","long into the abyss."
+        "This old tunic once belonged","to a powerful sage that","stared too long into the abyss."
       ]
     }
   },
@@ -98,7 +98,7 @@
         }
       ],
       "flavorText": [
-        "The winter's cold","embrace is slowly","approaching."
+        "The winter's cold embrace","is slowly approaching."
       ]
     }
   },
@@ -323,7 +323,7 @@
         }
       ],
       "flavorText": [
-        "Imbalance is the","invitation for ruin."
+        "Imbalance is the invitation for ruin."
       ]
     }
   },
@@ -350,7 +350,7 @@
         }
       ],
       "flavorText": [
-        "The merciful face","of death shall","remain concealed."
+        "The merciful face of death", "shall remain concealed."
       ]
     }
   },
@@ -370,6 +370,37 @@
       ],
       "flavorText": [
         "Nature's beautiful","cycle...","To be wounded","To be healed"
+      ]
+    }
+  },
+  "INCANDESCENT_HEART": {
+    "armorSlot": "CHESTPLATE",
+    "type": "RUNISTEEL",
+    "baseHealth": 1000,
+    "data": {
+      "name": "Incandescent heart",
+      "itemLevel": 35,
+      "inscriptions": [
+        {"definition": "keystone: RIGHTEOUS_FIRE", "values": []},
+        {
+          "definition": "+ global UNIQUE: percentage single_roll fire_resistance",
+          "values": [5,40]
+        },
+        {
+          "definition": "+ global UNIQUE: percentage single_roll max_fire_resistance",
+          "values": [1,2]
+        },
+        {
+          "definition": "+ global UNIQUE: increased single_roll fire_damage",
+          "values": [20,35]
+        },
+        {
+          "definition": "+ global UNIQUE: flat single_roll walk_speed",
+          "values": [15,25]
+        }
+      ],
+      "flavorText": [
+        "Your body and soul burn brightly,","mirroring the unwielding faith of","it's former user."
       ]
     }
   }

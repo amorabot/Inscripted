@@ -2,6 +2,7 @@ package com.amorabot.inscripted.skill.archetypes.wand;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.particle.ParticlePlotter;
+import com.amorabot.inscripted.tasks.base.Skillcast;
 import io.papermc.paper.entity.TeleportFlag;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -13,6 +14,9 @@ public class WandMovement {
 
 
     public static void sorcererMovement(Player player){
+    }
+    public static void warp(Skillcast skillcastInstance){
+        Player player = skillcastInstance.getPlayer();
         SoundAPI.playGenericSoundAtLocation(player, player.getLocation(), "entity.enderman.teleport", 1.0F, 1.3F);
 
         World playerWorld = player.getWorld();
@@ -21,7 +25,6 @@ public class WandMovement {
         int blinkRange = 10;
         Vector initialPosition = playerLocation.toVector().clone();
         Vector targetPosition;
-//        Vector currentPosition = initialPosition.clone();
 
         RayTraceResult result = player.rayTraceBlocks(blinkRange);
         if (result != null && result.getHitBlock() != null){

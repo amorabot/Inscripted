@@ -2,10 +2,13 @@ package com.amorabot.inscripted.tasks.base;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
+import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.skill.casting.CastSource;
+import com.amorabot.inscripted.skill.casting.CastType;
 import com.amorabot.inscripted.skill.routine.SkillcastData;
 import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.skill.routine.SkillcastContext;
+import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
@@ -38,17 +41,23 @@ public abstract class Skillcast extends PlayerboundTask{
 
     @Override
     public void start(long delay, long timer) { // Skills execute routines once by default. Persistent casts will execute a new and independent subtask
-        run();
         register();
     }
     @Override
     public void register(){
-        //TODO: implement standard cooldown instantation
+        PlayerDataContainer playerData = PlayerDataContainer.getDataContainerFor(getPlayerID());
+        if (playerData.skillcastBy(getCastedSkill(),getBaseCooldownMod())){
+            run();
+            return;
+        }
+        Utils.error("Invalid spellcast: In cooldown (" + playerData.fetchAbilityRemainingCooldown(getCastedSkill().getType()) + ").");
     }
     @Override
     public void unregister(){
-        //Remove this skill cast from global CDs
-        //stop this task
+        //Reset the cooldown for this skill
+        PlayerDataContainer playerData = PlayerDataContainer.getDataContainerFor(getPlayerID());
+        playerData.getSkillCooldowns().remove(getCastedSkill().getType());
+        // Stop any subtasks
     }
     @Override
     protected void taskRoutine(Player player) {

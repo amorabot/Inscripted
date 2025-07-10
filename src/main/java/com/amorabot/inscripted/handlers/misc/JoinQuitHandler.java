@@ -1,16 +1,10 @@
 package com.amorabot.inscripted.handlers.misc;
 
-import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
 import com.amorabot.inscripted.Inscripted;
-//import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.file.profile.ProfileDatabase;
 import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
-import com.amorabot.inscripted.managers.PlayerBuffManager;
-import com.amorabot.inscripted.managers.PlayerPassivesManager;
-//import com.amorabot.inscripted.managers.PlayerRegenManager;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.tasks.CombatLogger;
-import com.amorabot.inscripted.tasks.RegenerationTask;
 import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;

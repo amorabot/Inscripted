@@ -43,7 +43,8 @@ public enum Relics {
     THE_SOUL(),
     TRINITY(),
     EXECUTIONERS_MASK(),
-    DRUIDIC_PELTS();
+    DRUIDIC_PELTS(),
+    INCANDESCENT_HEART();
 
     @Getter
     private static final Map<Relics, RelicArmorData> relicArmorsData;

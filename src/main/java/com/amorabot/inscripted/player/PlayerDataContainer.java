@@ -141,7 +141,7 @@ public class PlayerDataContainer implements ProfileObserver {
         return getOnlinePlayerData().containsKey(playerID);
     }
 
-    // Player task methods
+    // Player task methods (HP & Stamina Regeneration, HP Display renderer, Player state tasks in general)
     public void addTask(PlayerboundTask newTask){
         playerboundTasks.put(newTask.getTaskId(),newTask);
     }
@@ -192,7 +192,6 @@ public class PlayerDataContainer implements ProfileObserver {
         if (!skillCooldowns.containsKey(type)){
             return 0L;
         }
-
         //The player already used a skill before, so fetch the GDC in the map
         GlobalCooldown playerGCD = skillCooldowns.get(type);
         return getRemainingCD(playerGCD.getLastCastTime(), playerGCD.getBaseGCD());

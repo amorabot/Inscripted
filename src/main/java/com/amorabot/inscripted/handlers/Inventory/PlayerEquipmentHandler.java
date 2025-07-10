@@ -1,7 +1,6 @@
 package com.amorabot.inscripted.handlers.Inventory;
 
 import com.amorabot.inscripted.APIs.EventAPI;
-//import com.amorabot.inscripted.GUIs.OrbGUI;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.item.structure.Armor.Armor;
 import com.amorabot.inscripted.item.structure.EquipmentSlots;
@@ -12,6 +11,9 @@ import com.amorabot.inscripted.item.structure.io.InscriptedItem;
 import com.amorabot.inscripted.item.structure.io.ItemDeserializer;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.equipment.PlayerEquipment;
+import com.amorabot.inscripted.skill.Skills;
+import com.amorabot.inscripted.skill.casting.CastSource;
+import com.amorabot.inscripted.skill.casting.CastType;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
@@ -29,7 +31,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -82,35 +83,40 @@ public class PlayerEquipmentHandler implements Listener {
         Optional<ItemStack> usedItemOptional = Optional.ofNullable(event.getItem());
         if (usedItemOptional.isEmpty()){
             //Empty hand set of actions
-            Utils.log("empty hand");
+            Utils.log("Fisting whatever the fuck is in front of you");
             return;
         }
         ItemStack usedItem = usedItemOptional.get();
-        PersistentDataContainer dataContainer = usedItem.getItemMeta().getPersistentDataContainer();
-        ItemUsage itemUsage = mapPlayerInteractAction(dataContainer, event.getAction());
+        ItemUsage itemUsage = mapPlayerInteractAction(usedItem, event.getAction());
         switch (itemUsage){
             case NONE -> player.sendMessage("Non functional item usage");
             case ARMOR_RIGHT_CLICK_AIR -> player.sendMessage("Equiping armor!!");
             case ARMOR_LEFT_CLICK_AIR -> player.sendMessage("Punching with armor");
             case WEAPON_LEFT_CLICK_AIR, WEAPON_LEFT_CLICK_BLOCK -> {
-//                Weapon weaponData = FunctionalItemAccessInterface.deserializeWeaponData(dataContainer);
-//                if (weaponData == null){
-//                    player.sendMessage("Invalid weapon attack...");
-//                    return;
+                weaponCast(player,usedItem,CastType.BASIC_ATTACK,69);
+//                if (!player.hasCooldown(usedItem.getType())){
 //                }
-//                basicAttackBy(player, usedItem, weaponData.getSubtype());
             }
-            case WEAPON_RIGHT_CLICK_AIR, WEAPON_RIGHT_CLICK_BLOCK -> {
-//                player.sendMessage("Mobility skill!");
-//                Weapon weaponData = FunctionalItemAccessInterface.deserializeWeaponData(dataContainer);
-//                if (weaponData == null){
-//                    player.sendMessage("Invalid weapon attack...");
-//                    return;
-//                }
-//                AbilityRoutines.playerBaseAbilityCast(player, AbilityTypes.MOVEMENT, weaponData.getSubtype(), weaponData.getAtkSpeed());
+            case WEAPON_RIGHT_CLICK_AIR -> weaponCast(player,usedItem,CastType.MOVEMENT,69);
+            case WEAPON_RIGHT_CLICK_BLOCK -> {
+                Utils.log("Nah, ignoring movement cast on blocks");
             }
             case UNIDED_WEAPON -> player.sendMessage(Utils.color("&l&cThis weapon is not identified!"));
         }
+    }
+    private void weaponCast(Player player, ItemStack heldItem, CastType castType, int variant){
+        // Assumes a valid weapon item
+        Weapon weaponData = ItemDeserializer.deserializeWeaponData(heldItem);
+        Skills basicAttack = getSkillVariant(weaponData,castType,variant);
+        basicAttack.cast(player.getUniqueId(), CastSource.PLAYER,weaponData.getAtkSpeed());
+    }
+    private Skills getSkillVariant(Weapon weaponData, CastType castType, int variant){
+        Skills mappedSkill = Skills.mapSkillcast(weaponData.getWeaponType(), castType, variant);
+        if (mappedSkill == null){
+            Utils.error("Invalid basic attack..., Variant: " + variant);
+            return Skills.FIST;
+        }
+        return mappedSkill;
     }
     @EventHandler(priority = EventPriority.NORMAL)
     public void onInventoryClick(InventoryClickEvent event){
@@ -317,57 +323,34 @@ public class PlayerEquipmentHandler implements Listener {
     private boolean isNotFunctional(ItemStack item){
         return (item == null || !item.hasItemMeta() || item.getType().isAir());
     }
-    private ItemUsage mapPlayerInteractAction(PersistentDataContainer heldItemData, Action interactionType){
-        if (heldItemData == null || heldItemData.isEmpty()){
+    private ItemUsage mapPlayerInteractAction(ItemStack heldItem, Action interactionType){
+        if (heldItem == null || heldItem.getPersistentDataContainer().isEmpty()){
             return ItemUsage.NONE;
         }
-//        boolean equipableArmor = isEquipableArmor(heldItemData);
-        boolean equipableArmor = false;
-//        boolean equipableWeapon = isIdentified(WEAPON_TAG,heldItemData);
-        boolean equipableWeapon = false;
+        // Valid item check
+        boolean validItem = (InscriptedItem.hasInscriptedTag(heldItem) && ItemDeserializer.isIdentified(heldItem));
+        boolean validWeapon = (validItem && ItemDeserializer.isWeapon(heldItem));
+        boolean validArmor = (validItem && ItemDeserializer.isArmor(heldItem));
 
         switch (interactionType){
             case LEFT_CLICK_AIR -> {
-                if (equipableArmor){
-                    return ItemUsage.ARMOR_LEFT_CLICK_AIR;
-                }
-
-                if (equipableWeapon){
-                    return ItemUsage.WEAPON_LEFT_CLICK_AIR;
-                }
-
-//                if (isArmor(heldItemData)){ return ItemUsage.UNIDED_ARMOR; }//Both can be further specified
-//                if (isItemType(WEAPON_TAG,heldItemData)){ return ItemUsage.UNIDED_WEAPON;}
+                if (validArmor){return ItemUsage.ARMOR_LEFT_CLICK_AIR;}
+                if (validWeapon){return ItemUsage.WEAPON_LEFT_CLICK_AIR;}
                 return ItemUsage.NONE;
             }
             case LEFT_CLICK_BLOCK -> {
-                if (equipableArmor){
-                    return ItemUsage.ARMOR_LEFT_CLICK_BLOCK;
-                }
-
-                if (equipableWeapon){
-                    return ItemUsage.WEAPON_LEFT_CLICK_BLOCK;
-                }
+                if (validArmor){return ItemUsage.ARMOR_LEFT_CLICK_BLOCK;}
+                if (validWeapon){return ItemUsage.WEAPON_LEFT_CLICK_BLOCK;}
                 return ItemUsage.NONE;
             }
             case RIGHT_CLICK_AIR -> {
-                if (equipableArmor){
-                    return ItemUsage.ARMOR_RIGHT_CLICK_AIR;
-                }
-
-                if (equipableWeapon){
-                    return ItemUsage.WEAPON_RIGHT_CLICK_AIR;
-                }
+                if (validArmor){return ItemUsage.ARMOR_RIGHT_CLICK_AIR;}
+                if (validWeapon){return ItemUsage.WEAPON_RIGHT_CLICK_AIR;}
                 return ItemUsage.NONE;
             }
             case RIGHT_CLICK_BLOCK -> {
-                if (equipableArmor){
-                    return ItemUsage.ARMOR_RIGHT_CLICK_BLOCK;
-                }
-
-                if (equipableWeapon){
-                    return ItemUsage.WEAPON_RIGHT_CLICK_BLOCK;
-                }
+                if (validArmor){return ItemUsage.ARMOR_RIGHT_CLICK_BLOCK;}
+                if (validWeapon){return ItemUsage.WEAPON_RIGHT_CLICK_BLOCK;}
                 return ItemUsage.NONE;
             }
         }

@@ -1,7 +1,9 @@
 package com.amorabot.inscripted.skill.archetypes.mace;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
+import com.amorabot.inscripted.math.LinalgMath;
 import com.amorabot.inscripted.particle.ParticlePlotter;
+import com.amorabot.inscripted.tasks.base.Skillcast;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -14,8 +16,11 @@ public class MaceMovement {
 
 
     public static void templarMovement(Player player){
+
+    }
+    public static void pull(Skillcast skillcastInstance){
+        Player player = skillcastInstance.getPlayer();
         double radius = 4.7;
-        double innerRadius = 3.7;
         Vector center = player.getLocation().toVector().clone();
         World playerWorld = player.getWorld();
         double maxVelocity = 1.6;
@@ -23,11 +28,9 @@ public class MaceMovement {
         SoundAPI.playGenericSoundAtLocation(player, player.getLocation(), "block.basalt.break", 0.8f, 0.5f);
         SoundAPI.playGenericSoundAtLocation(player, player.getLocation(), "entity.zombie.break_wooden_door", 0.1f, 0.2f);
 
-        double fullRotation = 2*Math.PI;
-        for (double rad = 0; rad <= fullRotation; rad += Math.PI/16){
-            double xPos = Math.sin(rad)*innerRadius;
-            double zPos = Math.cos(rad)*innerRadius;
-            ParticlePlotter.plotColoredCircleAt(center.clone().add(new Vector(xPos,0.2,zPos)), playerWorld, 166, 91, 75, 1.2f, 1, 10);
+        Vector[] points = LinalgMath.plotPointsInsideHorizontalCircle(center.clone(),radius,30);
+        for (Vector point : points){
+            ParticlePlotter.spawnColoredParticleAt(point,playerWorld,166, 91, 75,1.2f,1);
         }
         ParticlePlotter.plotColoredCircleAt(center.clone(), playerWorld, 200,160,200, 1.2f, (float) radius, 60);
 

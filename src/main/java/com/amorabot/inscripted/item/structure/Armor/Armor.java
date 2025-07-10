@@ -59,7 +59,7 @@ public class Armor extends Item {
         this.armorType = type;
         setupInternalItemData();
         this.baseHealth = relicArmorData.baseHealth();
-        this.variance = getRandomHealthVariance();
+        this.variance = 0;
         setName(relicArmorData.data().name());
         InscriptionGenerator.generateUniqueInscriptionSet(relic,this);
     }

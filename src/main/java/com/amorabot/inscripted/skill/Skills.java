@@ -1,22 +1,30 @@
 package com.amorabot.inscripted.skill;
 
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import com.amorabot.inscripted.skill.annotations.AttackSkill;
 import com.amorabot.inscripted.skill.annotations.PersistentSkill;
 import com.amorabot.inscripted.skill.annotations.ProjectileSkill;
 import com.amorabot.inscripted.skill.archetypes.axe.AxeBasicAttacks;
+import com.amorabot.inscripted.skill.archetypes.axe.AxeMovement;
 import com.amorabot.inscripted.skill.archetypes.bow.BowBasicAttacks;
+import com.amorabot.inscripted.skill.archetypes.bow.BowMovement;
 import com.amorabot.inscripted.skill.archetypes.dagger.DaggerBasicAttacks;
+import com.amorabot.inscripted.skill.archetypes.dagger.DaggerMovement;
 import com.amorabot.inscripted.skill.archetypes.mace.MaceBasicAttacks;
+import com.amorabot.inscripted.skill.archetypes.mace.MaceMovement;
 import com.amorabot.inscripted.skill.archetypes.sword.SwordBasicAttacks;
+import com.amorabot.inscripted.skill.archetypes.sword.SwordMovement;
 import com.amorabot.inscripted.skill.archetypes.wand.WandBasicAttacks;
+import com.amorabot.inscripted.skill.archetypes.wand.WandMovement;
 import com.amorabot.inscripted.skill.casting.CastSource;
 import com.amorabot.inscripted.skill.casting.CastType;
 import com.amorabot.inscripted.skill.archetypes.item.ItemAuras;
 import com.amorabot.inscripted.skill.routine.projectile.ProjectileGenerators;
 import com.amorabot.inscripted.skill.type.Attack;
 import com.amorabot.inscripted.skill.type.Aura;
+import com.amorabot.inscripted.skill.type.Movement;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
@@ -53,6 +61,14 @@ public enum Skills {
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {100, 100, 100, 100, 40}, dmgConversion = {0, 0, 0, 0} )
     BASIC_MACE_SLAM(MaceBasicAttacks::standardMaceSlam,CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE,Tags.SPELL},0),
 
+    //Movement skills
+    CHARGE(AxeMovement::charge,CastType.MOVEMENT, new Tags[0],10),
+    LEAP(SwordMovement::leap,CastType.MOVEMENT, new Tags[0],3),
+    ACROBATICS(BowMovement::acrobatics,CastType.MOVEMENT, new Tags[0],5),
+    VANISH(DaggerMovement::vanish,CastType.MOVEMENT, new Tags[0],12),
+    WARP(WandMovement::warp,CastType.MOVEMENT, new Tags[0],7),
+    TECTONIC_PULL(MaceMovement::pull,CastType.MOVEMENT, new Tags[0],7),
+
     // Keystone Auras
     @PersistentSkill( period = 3, maxDuration = -1 )
     PERMAFROST(ItemAuras::permafrost, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),
@@ -87,9 +103,8 @@ public enum Skills {
                 }
                 new Attack.Basic(casterID,this,source,speedModifier).start(0,0);
             }
-            case MOVEMENT -> {
-                //Instantiate a Movement
-            }
+            case MOVEMENT -> //Instantiate a Movement
+                    new Movement(casterID,this,source,speedModifier).start(0,0);
             case UTILITY -> {
                 if (persistent){
                     // Instantiate a Aura
@@ -151,5 +166,73 @@ public enum Skills {
         playerAABB.expand(new Vector(0, 1, 0), 0.25);
 
         return playerAABB;
+    }
+
+    public static Skills mapSkillcast(WeaponTypes weapon, CastType type, int variant){
+        switch (weapon){
+            case AXE -> {
+                switch (type){
+                    case BASIC_ATTACK -> {
+                        //Implement variants later
+                        return BASIC_AXE_SLASH;
+                    }
+                    case MOVEMENT -> {
+                        return CHARGE;
+                    }
+                }
+            }
+            case SWORD -> {
+                switch (type){
+                    case BASIC_ATTACK -> {
+                        return BASIC_SWORD_SLASH;
+                    }
+                    case MOVEMENT -> {
+                        return LEAP;
+                    }
+                }
+            }
+            case BOW -> {
+                switch (type){
+                    case BASIC_ATTACK -> {
+                        return BASIC_BOW_SHOT;
+                    }
+                    case MOVEMENT -> {
+                        return ACROBATICS;
+                    }
+                }
+            }
+            case DAGGER -> {
+                switch (type){
+                    case BASIC_ATTACK -> {
+                        return BASIC_DAGGER_SLASH;
+                    }
+                    case MOVEMENT -> {
+                        return VANISH;
+                    }
+                }
+            }
+            case WAND -> {
+                switch (type){
+                    case BASIC_ATTACK -> {
+                        return BASIC_WAND_ATTACK;
+                    }
+                    case MOVEMENT -> {
+                        return WARP;
+                    }
+                }
+            }
+            case MACE -> {
+                switch (type){
+                    case BASIC_ATTACK -> {
+                        return BASIC_MACE_SLAM;
+                    }
+                    case MOVEMENT -> {
+                        return TECTONIC_PULL;
+                    }
+                }
+            }
+        }
+        //If there's no match, return null;
+        return null;
     }
 }

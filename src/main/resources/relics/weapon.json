@@ -109,7 +109,7 @@
           "values": [10,  80]
         },
         {
-          "definition": "+ local UNIQUE: percentage single_roll bleed_damage",
+          "definition": "+ global UNIQUE: percentage single_roll bleed_damage",
           "values": [12, 15]
         },
         {

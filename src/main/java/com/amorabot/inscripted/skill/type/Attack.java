@@ -39,6 +39,17 @@ public abstract class Attack extends Skillcast.Simple {
         }
 
         @Override
+        public void start(long delay, long timer) {
+            //Assumes the held item at this time is the weapon used to trigger the cast (as it should)
+            if (!player.hasCooldown(player.getInventory().getItemInMainHand().getType())){
+                run();
+                register();
+                return;
+            }
+            Utils.log("Basic attack on cooldown...");
+        }
+
+        @Override
         public void register(){
             final int cooldownReduction = getBaseCooldownMod(); //TODO: Fetch Cooldown Reduction stat
             int usageCooldown = (int) (itemUsageCD * ( (100 + cooldownReduction)/100D ));
@@ -46,10 +57,5 @@ public abstract class Attack extends Skillcast.Simple {
             getPlayer().setCooldown(Material.BOW,usageCooldown);
             swingEffect.apply(getPlayer());
         }
-//
-//        @Override
-//        protected void taskRoutine(Player player) {
-//            getCastData().getCastingContext().getSkillUsed().getSkillRoutine().accept(this);
-//        }
     }
 }
