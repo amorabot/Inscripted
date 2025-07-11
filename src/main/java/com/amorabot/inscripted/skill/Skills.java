@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.skill;
 
+import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.player.profile.parsing.StatPool;
@@ -41,24 +42,24 @@ import java.util.function.Consumer;
 @Getter
 public enum Skills {
     FIST(null, CastType.NEUTRAL, new Tags[]{Tags.NONE},0),
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {110, 90, 60, 60, 30}, dmgConversion = {0, 0, 0, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {10, -10, -40, -40, -70}, dmgConversion = {0, 0, 0, 0} )
     BASIC_AXE_SLASH(AxeBasicAttacks::standardAxeSlash,CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0),
 
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {90, 90, 90, 90, 40}, dmgConversion = {0, 0, 0, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-10, -10, -10, -10, -60}, dmgConversion = {0, 0, 0, 0} )
     BASIC_SWORD_SLASH(SwordBasicAttacks::standardSwordSlash, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0),
 
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {100, 60, 60, 60, 40}, dmgConversion = {0, 0, 0, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, -40, -40, -40, -60}, dmgConversion = {0, 0, 0, 0} )
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.CONE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = false )
     BASIC_BOW_SHOT(BowBasicAttacks::standardBowAttack, CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE}, 0),
 
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {100, 80, 80, 80, 40}, dmgConversion = {0, 0, 0, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, -20, -20, -20, -60}, dmgConversion = {0, 0, 0, 0} )
     BASIC_DAGGER_SLASH(DaggerBasicAttacks::standardDaggerSlash,CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0),
 
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {120, 100, 100, 100, 40}, dmgConversion = {0, 0, 0, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {20, 0, 0, 0, -60}, dmgConversion = {0, 0, 0, 0} )
     @ProjectileSkill( baseProjectiles = 3, spread = ProjectileGenerators.SHOTGUN, defaultSteering = SteeringBehaviors.SEEK, uniqueTarget = true )
     BASIC_WAND_ATTACK(WandBasicAttacks::standardWandAttack, CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE}, 0),
 
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {100, 100, 100, 100, 40}, dmgConversion = {0, 0, 0, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, 0, 0, 0, -60}, dmgConversion = {0, 0, 0, 0} )
     BASIC_MACE_SLAM(MaceBasicAttacks::standardMaceSlam,CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE,Tags.SPELL},0),
 
     //Movement skills
@@ -72,11 +73,13 @@ public enum Skills {
     // Keystone Auras
     @PersistentSkill( period = 3, maxDuration = -1 )
     PERMAFROST(ItemAuras::permafrost, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 15,70, 0,0}, dmgEffectiveness = {0, 0, 150, 0, 0}, dmgConversion = {0, 0, 30, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 15,70, 0,0}, dmgEffectiveness = {0, 0, 50, 0, 0}, dmgConversion = {0, 0, 30, 0} )
     @PersistentSkill( period = 1.5, maxDuration = -1 )
     THUNDERSTRUCK(ItemAuras::thunderstruck, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),
     @PersistentSkill( period = 0.2, maxDuration = -1 )
     RIGHTEOUS_FIRE(ItemAuras::righteousFire, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),
+    @PersistentSkill( period = 10, maxDuration = -1 )
+    WINDS_OF_CHANGE(ItemAuras::windsOfChange, CastType.NEUTRAL, new Tags[]{Tags.AURA},0),
     @PersistentSkill( period = 0.5, maxDuration = -1 )
     BERSERK(ItemAuras::berserk, CastType.NEUTRAL, new Tags[]{Tags.AURA},0);
 
@@ -120,8 +123,13 @@ public enum Skills {
                 }
                 new Aura(casterID,this,source,speedModifier).start(0,0);
             }
-            default -> Utils.error("Fucked skillcast :D");
+            default -> {
+                Utils.error("Fucked skillcast :D");
+            }
         }
+    }
+    private static void invalidAbilityCast(Player caster){
+        SoundAPI.playGenericSoundAtLocation(caster, caster.getLocation(), "block.note_block.basedrum", 0.9F, 1.0F);
     }
     public void applyBonusStats(StatPool globalPlayerStats){ //Skills with bonus stats should override this method
     }

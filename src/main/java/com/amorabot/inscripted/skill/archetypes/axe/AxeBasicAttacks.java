@@ -1,16 +1,11 @@
 package com.amorabot.inscripted.skill.archetypes.axe;
 
-import com.amorabot.inscripted.skill.PlayerAbilities;
 import com.amorabot.inscripted.skill.routine.slash.Slash;
 import com.amorabot.inscripted.skill.routine.slash.SlashPresets;
 import com.amorabot.inscripted.skill.type.Attack;
 import com.amorabot.inscripted.tasks.base.Skillcast;
-import org.bukkit.entity.Player;
 
 public class AxeBasicAttacks {
-    public static void standardAxeSlashBy(Player player, PlayerAbilities mappedAbility){
-    }
-
     public static void standardAxeSlash(Skillcast skillcastInstance){
         if (!(skillcastInstance instanceof Attack.Basic basicAttackInstance)){return;}
         boolean isMirrored = Math.random() > 0.5;

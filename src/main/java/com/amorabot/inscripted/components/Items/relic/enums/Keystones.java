@@ -4,7 +4,6 @@ package com.amorabot.inscripted.components.Items.relic.enums;
 import com.amorabot.inscripted.item.inscription.definition.TriggerTimes;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
-import com.amorabot.inscripted.skill.PlayerAbilities;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -47,7 +46,7 @@ public enum Keystones {
             if (needsInstantiation(playerID)){
                 Player player = Bukkit.getPlayer(playerID);
                 assert player != null;
-                PlayerAbilities.PERMAFROST_PASSIVE.cast(player, null); //Creates a new runnable and store its ID in the passivesManager
+//                PlayerAbilities.PERMAFROST_PASSIVE.cast(player, null); //Creates a new runnable and store its ID in the passivesManager
             }
         }
     },
@@ -59,7 +58,7 @@ public enum Keystones {
             if (needsInstantiation(playerID)){
                 Player player = Bukkit.getPlayer(playerID);
                 assert player != null;
-                PlayerAbilities.WINDS_OF_CHANGE_PASSIVE.cast(player, null);
+//                PlayerAbilities.WINDS_OF_CHANGE_PASSIVE.cast(player, null);
             }
         }
     },
@@ -94,7 +93,7 @@ public enum Keystones {
             if (needsInstantiation(playerID)){
                 Player player = Bukkit.getPlayer(playerID);
                 assert player != null;
-                PlayerAbilities.THUNDERSTRUCK_PASSIVE.cast(player, null);
+//                PlayerAbilities.THUNDERSTRUCK_PASSIVE.cast(player, null);
             }
         }
     },

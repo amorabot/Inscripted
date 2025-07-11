@@ -1,5 +1,7 @@
 package com.amorabot.inscripted.player.profile.parsing;
 
+import com.amorabot.inscripted.combat.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.categories.stat.Stat;
 import com.amorabot.inscripted.item.inscription.Inscription;
 import com.amorabot.inscripted.item.inscription.ProceduralInscription;
 import com.amorabot.inscripted.item.inscription.UniqueInscription;
@@ -44,7 +46,8 @@ public class StatParser {
         globalStatPool.applyKeystoneRules(TriggerTimes.EARLY,updatedSpecialInscriptions.getKeystones(),playerData);
 
         //Procedurally group external stats (Buffs, auras, conditional aura buffs...) to insert in the global pool
-        //...
+        StatPool externalStats = gatherExternalStats(playerData);
+        globalStatPool.merge(externalStats);
 
         // Late Keystones trigger (Stat Overrides, rules, ...). Those have the final say on the player's profile state
         // Ensure LATE rules are applied so meta-stats can have a accurate representation of base values
@@ -86,6 +89,26 @@ public class StatParser {
         //Update the player's profile
         profile.update(playerData.getPlayerID(),finalStats);
         playerData.setGlobalStats(globalStatPool); // Store the up-to-date pool for things like stat checks for skill damages
+    }
+
+    private static StatPool gatherExternalStats(PlayerDataContainer playerData){
+        StatPool externalStats = new StatPool();
+        //Buffs
+        for (Buffs activePlayerBuff : playerData.getActiveBuffs().keySet()){
+            Utils.error("BUFF: " + activePlayerBuff);
+            if (!activePlayerBuff.isStatBuff()){continue;}
+            Stat buffStatsAnnot = (Stat) activePlayerBuff.getBuffAnnotationData();
+            Stats buffedStat = buffStatsAnnot.targetStat();
+            ValueType type = buffStatsAnnot.valueType();
+            int[] value = buffStatsAnnot.amount();
+            Utils.error(buffedStat+": " + type + ", " + Arrays.toString(value));
+            externalStats.insertValue(buffedStat,type,value);
+        }
+        //Whatever external sources
+        //...
+
+//        externalStats.debug("External buffs");
+        return externalStats;
     }
 
     public static void handlePlayerKeystoneStates(Set<KeystoneIDs> oldKeystones, SpecialInscriptionsComponent specialInscriptions, PlayerDataContainer playerData){

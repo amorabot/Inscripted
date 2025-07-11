@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.combat.buffs.categories.healing;
 
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
+import com.amorabot.inscripted.item.inscription.language.ValueType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Healing {
     double baseHealing();
-    ValueTypes healingType();
+    ValueType healingType();
     int period();
     int timesApplied();
 }

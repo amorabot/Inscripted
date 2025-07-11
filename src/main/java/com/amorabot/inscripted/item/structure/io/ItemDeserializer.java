@@ -30,6 +30,7 @@ public class ItemDeserializer implements ItemDataContainerVisitor<Optional<Item>
     }
 
     public static boolean checkDataContainer(ItemStack itemToCheck, NamespacedKey key){
+        if (isNotFunctional(itemToCheck)){return false;}
         ItemMeta itemMeta = itemToCheck.getItemMeta();
         PersistentDataContainer itemPDC = itemMeta.getPersistentDataContainer();
         return itemPDC.has(key);
@@ -40,6 +41,7 @@ public class ItemDeserializer implements ItemDataContainerVisitor<Optional<Item>
         return checkDataContainer(item, Armor.DATA_CONTAINER_KEY);
     }
     public static Armor deserializeArmorData(ItemStack itemStack) {
+        if (isNotFunctional(itemStack)){return null;}
         ItemDeserializer deserializer = new ItemDeserializer();
         Optional<Item> itemData = deserializer.visitArmor(itemStack,null);
         return (Armor) itemData.orElseThrow();
@@ -50,6 +52,7 @@ public class ItemDeserializer implements ItemDataContainerVisitor<Optional<Item>
         return checkDataContainer(item, Weapon.DATA_CONTAINER_KEY);
     }
     public static Weapon deserializeWeaponData(ItemStack itemStack) {
+        if (isNotFunctional(itemStack)){return null;}
         ItemDeserializer deserializer = new ItemDeserializer();
         Optional<Item> itemData = deserializer.visitWeapon(itemStack, null);
         return (Weapon) itemData.orElseThrow();
@@ -77,5 +80,8 @@ public class ItemDeserializer implements ItemDataContainerVisitor<Optional<Item>
         ItemMeta itemMeta = item.getItemMeta();
         PersistentDataContainer itemPDC = itemMeta.getPersistentDataContainer();
         return itemPDC.get(relicKey, PersistentDataType.STRING);
+    }
+    public static boolean isNotFunctional(ItemStack item){
+        return (item == null || !item.hasItemMeta() || item.getType().isAir());
     }
 }

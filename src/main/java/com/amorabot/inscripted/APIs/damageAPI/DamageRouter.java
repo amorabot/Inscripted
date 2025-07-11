@@ -1,140 +1,131 @@
 package com.amorabot.inscripted.APIs.damageAPI;
 
-//import com.amorabot.inscripted.components.Attack;
-//import com.amorabot.inscripted.components.DefenceComponent;
-//import com.amorabot.inscripted.components.EntityProfile;
-//import com.amorabot.inscripted.components.HealthComponent;
 import com.amorabot.inscripted.item.inscription.definition.TriggerTimes;
 import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
-//import com.amorabot.inscripted.components.Mobs.InscriptedMob;
-//import com.amorabot.inscripted.components.Mobs.MobStats;
-//import com.amorabot.inscripted.components.Player.Profile;
-//import com.amorabot.inscripted.file.profile.JSONProfileManager;
-//import com.amorabot.inscripted.managers.PlayerRegenManager;
-import com.amorabot.inscripted.skill.PlayerAbilities;
-//import com.amorabot.inscripted.tasks.CombatLogger;
-//import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
-import com.amorabot.inscripted.utils.Utils;
         import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 
 public class DamageRouter {
 
-    public static void entityDamage(LivingEntity attacker,LivingEntity defender, DamageSource source, PlayerAbilities ability){
-        if (attacker instanceof Player playerAttacker){
-            playerAttack(playerAttacker,defender,source,ability);
-            return;
-        }
-        if (EntityStateManager.isMob(attacker)){
-            Utils.log("Mob attack!!");
-            mobAttack(attacker,defender);
-        }
-    }
-
-    private static void playerAttack(Player player, LivingEntity defender, DamageSource source, PlayerAbilities ability){
-        defender.damage(0.001);
-        if (defender instanceof Player def){
-            if (EntityStateManager.isDead(def)){ //If the player is recieving hits during the death invuln. period
-                Utils.log("Ignoring PvP Hits against " + def.getName());
-                return;
-            }
-            versusPlayer(player, def,source,ability);
-            //....
-            return;
-        }
-
-        if (EntityStateManager.isMob(defender)){
-            versusEntity(player,defender,source,ability);
-            //...
-            return;
-        }
-    }
-    public static void mobAttack(LivingEntity attacker, LivingEntity defender){
-        defender.damage(0.001);
-        if (defender instanceof Player def){
-            if (EntityStateManager.isDead(def)){ //If the player is recieving hits during the death invuln. period
-                Utils.log("Ignoring PvP Hits against " + def.getName());
-                return;
-            }
-            //Ability is only accessed if it was a player attack, can be whatever
-            versusPlayer(attacker, def,DamageSource.HIT, PlayerAbilities.FIST);
-            //....
-            return;
-        }
-        //EvE not a thing for now
-    }
-
-
-    private static void versusPlayer(LivingEntity attacker, Player defender, DamageSource originalSource, PlayerAbilities ability){
-        DamageSource source = originalSource;
-        if (attacker.getUniqueId().equals(defender.getUniqueId()) && !originalSource.equals(DamageSource.SELF)){
-            source = DamageSource.SELF;
-        }
-
-
-//        Attack attackerHit;
-//        EntityProfile attackerProfile;
-
-//        if (attacker instanceof Player p){
-//            attackerProfile = JSONProfileManager.getProfile(p.getUniqueId());
-//        } else { //Its a mob profile
-//            InscriptedMob mobInstance = MobManager.getMobData(defender);
-//            assert mobInstance != null;
-//            attackerProfile = mobInstance.getStats();
+//    public static void entityDamage(LivingEntity attacker,LivingEntity defender, DamageSource source, PlayerAbilities ability){
+//        if (attacker instanceof Player playerAttacker){
+//            playerAttack(playerAttacker,defender,source,ability);
+//            return;
 //        }
-//        attackerProfile = Profile.getEntityProfile(attacker);
-//        attackerHit = attackerProfile.getAttackData();
-
-
-//        Profile defenderProfile = JSONProfileManager.getProfile(defender.getUniqueId());
-//        DefenceComponent defenderDefence = defenderProfile.getDefenceComponent();
-
-        final boolean dodged;
-//        dodged = AttackProcessor.attackResult(attackerHit, defenderDefence);
-
-//        int[] baseDamage = rollDamages(attackerHit.getDamages());
-//        final boolean isCriticalHit = AttackProcessor.isCriticalHit(attackerHit);
-
-        final boolean isSelfDamage = source.equals(DamageSource.SELF);
-
-//        int[] rawHitDamage = AttackProcessor.processAttack(attackerProfile, defenderProfile, baseDamage, isCriticalHit, ability);
-
-//        if (dodged){
-//            CombatEffects.playDodgeEffectsAt(defender, attacker);
-//            AttackProcessor.dodgeAttack(rawHitDamage, 60); //Mutates rawHitDamage
+//        if (EntityStateManager.isMob(attacker)){
+//            Utils.log("Mob attack!!");
+//            mobAttack(attacker,defender);
 //        }
+//    }
 
-//        damageDefendingPlayer(defender, rawHitDamage, isCriticalHit, isSelfDamage, attacker, originalSource);
-    }
-    private static void versusEntity(Player attacker, LivingEntity defender, DamageSource originalSource, PlayerAbilities ability){
-        DamageSource source = originalSource;
-
-//        Profile playerProfile = JSONProfileManager.getProfile(attacker.getUniqueId());
-//        InscriptedMob mobInstance = MobManager.getMobData(defender);
-//        assert mobInstance != null;
-//        MobStats mobStats = mobInstance.getStats();
-
-//        Attack attackerHit = playerProfile.getDamageComponent().getHitData();
-//        DefenceComponent defenderDefence = mobStats.getMobDefence();
-
-        final boolean dodged;
-//        dodged = AttackProcessor.attackResult(attackerHit, defenderDefence);
-
-//        int[] baseDamage = rollDamages(attackerHit.getDamages());
-//        final boolean isCriticalHit = AttackProcessor.isCriticalHit(attackerHit);
-
-        final boolean isSelfDamage = source.equals(DamageSource.SELF);
-
-//        int[] rawHitDamage = AttackProcessor.processAttack(playerProfile, mobStats, baseDamage, isCriticalHit, ability);
-
-//        if (dodged){
-//            CombatEffects.playDodgeEffectsAt(defender, attacker);
-//            AttackProcessor.dodgeAttack(rawHitDamage, 60); //Mutates rawHitDamage
+//    private static void playerAttack(Player player, LivingEntity defender, DamageSource source, PlayerAbilities ability){
+//        defender.damage(0.001);
+//        if (defender instanceof Player def){
+//            if (EntityStateManager.isDead(def)){ //If the player is recieving hits during the death invuln. period
+//                Utils.log("Ignoring PvP Hits against " + def.getName());
+//                return;
+//            }
+////            versusPlayer(player, def,source,ability);
+//            //....
+//            return;
 //        }
+//
+//        if (EntityStateManager.isMob(defender)){
+////            versusEntity(player,defender,source,ability);
+//            //...
+//            return;
+//        }
+//    }
 
-//        damageDefendingMob(defender, rawHitDamage, isCriticalHit, false, attacker, originalSource);
-    }
+
+//    public static void mobAttack(LivingEntity attacker, LivingEntity defender){
+//        defender.damage(0.001);
+//        if (defender instanceof Player def){
+//            if (EntityStateManager.isDead(def)){ //If the player is recieving hits during the death invuln. period
+//                Utils.log("Ignoring PvP Hits against " + def.getName());
+//                return;
+//            }
+//            //Ability is only accessed if it was a player attack, can be whatever
+////            versusPlayer(attacker, def,DamageSource.HIT, PlayerAbilities.FIST);
+//            //....
+//            return;
+//        }
+//        //EvE not a thing for now
+//    }
+
+
+//    private static void versusPlayer(LivingEntity attacker, Player defender, DamageSource originalSource, PlayerAbilities ability){
+//        DamageSource source = originalSource;
+//        if (attacker.getUniqueId().equals(defender.getUniqueId()) && !originalSource.equals(DamageSource.SELF)){
+//            source = DamageSource.SELF;
+//        }
+//
+//
+////        Attack attackerHit;
+////        EntityProfile attackerProfile;
+//
+////        if (attacker instanceof Player p){
+////            attackerProfile = JSONProfileManager.getProfile(p.getUniqueId());
+////        } else { //Its a mob profile
+////            InscriptedMob mobInstance = MobManager.getMobData(defender);
+////            assert mobInstance != null;
+////            attackerProfile = mobInstance.getStats();
+////        }
+////        attackerProfile = Profile.getEntityProfile(attacker);
+////        attackerHit = attackerProfile.getAttackData();
+//
+//
+////        Profile defenderProfile = JSONProfileManager.getProfile(defender.getUniqueId());
+////        DefenceComponent defenderDefence = defenderProfile.getDefenceComponent();
+//
+//        final boolean dodged;
+////        dodged = AttackProcessor.attackResult(attackerHit, defenderDefence);
+//
+////        int[] baseDamage = rollDamages(attackerHit.getDamages());
+////        final boolean isCriticalHit = AttackProcessor.isCriticalHit(attackerHit);
+//
+//        final boolean isSelfDamage = source.equals(DamageSource.SELF);
+//
+////        int[] rawHitDamage = AttackProcessor.processAttack(attackerProfile, defenderProfile, baseDamage, isCriticalHit, ability);
+//
+////        if (dodged){
+////            CombatEffects.playDodgeEffectsAt(defender, attacker);
+////            AttackProcessor.dodgeAttack(rawHitDamage, 60); //Mutates rawHitDamage
+////        }
+//
+////        damageDefendingPlayer(defender, rawHitDamage, isCriticalHit, isSelfDamage, attacker, originalSource);
+//    }
+
+
+//    private static void versusEntity(Player attacker, LivingEntity defender, DamageSource originalSource, PlayerAbilities ability){
+//        DamageSource source = originalSource;
+//
+////        Profile playerProfile = JSONProfileManager.getProfile(attacker.getUniqueId());
+////        InscriptedMob mobInstance = MobManager.getMobData(defender);
+////        assert mobInstance != null;
+////        MobStats mobStats = mobInstance.getStats();
+//
+////        Attack attackerHit = playerProfile.getDamageComponent().getHitData();
+////        DefenceComponent defenderDefence = mobStats.getMobDefence();
+//
+//        final boolean dodged;
+////        dodged = AttackProcessor.attackResult(attackerHit, defenderDefence);
+//
+////        int[] baseDamage = rollDamages(attackerHit.getDamages());
+////        final boolean isCriticalHit = AttackProcessor.isCriticalHit(attackerHit);
+//
+//        final boolean isSelfDamage = source.equals(DamageSource.SELF);
+//
+////        int[] rawHitDamage = AttackProcessor.processAttack(playerProfile, mobStats, baseDamage, isCriticalHit, ability);
+//
+////        if (dodged){
+////            CombatEffects.playDodgeEffectsAt(defender, attacker);
+////            AttackProcessor.dodgeAttack(rawHitDamage, 60); //Mutates rawHitDamage
+////        }
+//
+////        damageDefendingMob(defender, rawHitDamage, isCriticalHit, false, attacker, originalSource);
+//    }
 
 
 

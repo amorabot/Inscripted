@@ -5,6 +5,7 @@ import com.amorabot.inscripted.item.structure.Armor.DefenceTypes;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.Profile;
 import com.amorabot.inscripted.player.profile.component.HealthComponent;
+import com.amorabot.inscripted.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -30,6 +31,7 @@ public class ActionBarRenderer extends BukkitRunnable {
             final int totalHP = healthComponent.getMaxHealth();
             Component hpSection = Component.text(DefenceTypes.HEALTH.getSpecialChar()+" "+ currentHP + "/" + totalHP).color(InscriptedPalette.HEALTH.getColor());
             Component soulSection = null;
+
             if (healthComponent.getSoul()>0){
                 soulSection = Component.text("  |  ").color(TextColor.color(120,120,120));
                 final int currentSoul = healthComponent.getSoul();
@@ -37,11 +39,16 @@ public class ActionBarRenderer extends BukkitRunnable {
                 soulSection = soulSection.append(Component.text(DefenceTypes.SOUL.getSpecialChar()+" "+ currentSoul + "/" + totalSoul).color(InscriptedPalette.SOUL.getColor()));
             }
             if (soulSection==null){
-                currentPlayer.sendActionBar(hpSection.decoration(TextDecoration.ITALIC,false));
+                Component renderedHealth = hpSection.decoration(TextDecoration.ITALIC,false);
+                currentPlayer.sendActionBar(renderedHealth);
                 continue;
             }
 
-            currentPlayer.sendActionBar(hpSection.append(soulSection).decoration(TextDecoration.ITALIC,false));
+            Component renderedHealth = hpSection.append(soulSection).decoration(TextDecoration.ITALIC,false);
+
+            currentPlayer.sendActionBar(renderedHealth);
+
+
 //            Long remainingMovementCD = GlobalCooldownManager.fetchAbilityRemainingCooldown(currentPlayer.getUniqueId(), AbilityTypes.MOVEMENT);
 //            if (remainingMovementCD > 0){
 //                if (remainingMovementCD<4000){

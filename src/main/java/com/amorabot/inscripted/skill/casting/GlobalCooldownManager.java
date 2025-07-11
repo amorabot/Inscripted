@@ -1,8 +1,6 @@
 package com.amorabot.inscripted.skill.casting;
 
 import com.amorabot.inscripted.components.Items.relic.enums.Effects;
-import com.amorabot.inscripted.skill.AbilityTypes;
-import com.amorabot.inscripted.skill.PlayerAbilities;
 import com.amorabot.inscripted.utils.Utils;
 
 import java.util.HashMap;
@@ -13,56 +11,56 @@ public class GlobalCooldownManager {
 
     private static final boolean debugMode = false;
 
-    private static final Map<AbilityTypes, Map<UUID, GlobalCooldown>> abilitiesGDC = new HashMap<>();
+//    private static final Map<AbilityTypes, Map<UUID, GlobalCooldown>> abilitiesGDC = new HashMap<>();
     private static final Map<Effects, Map<UUID, Long>> effectCastTimes = new HashMap<>();
 
 
-    public static boolean skillcastBy(UUID playerID, PlayerAbilities abilityUsed, int cooldownModifier){
-        if (abilityUsed.getCooldownInSeconds()==0){return true;}
-        AbilityTypes type = abilityUsed.getType();
-        int cooldown = (int) (abilityUsed.getCooldownInSeconds()*1000);
-//        Utils.log("Original CD:" + cooldown);
-        if (cooldownModifier!=0){
-            cooldown = (int) Utils.applyPercentageTo(cooldown,cooldownModifier);
-        }
-//        Utils.log("New CD:" + cooldown);
+//    public static boolean skillcastBy(UUID playerID, PlayerAbilities abilityUsed, int cooldownModifier){
+//        if (abilityUsed.getCooldownInSeconds()==0){return true;}
+//        AbilityTypes type = abilityUsed.getType();
+//        int cooldown = (int) (abilityUsed.getCooldownInSeconds()*1000);
+////        Utils.log("Original CD:" + cooldown);
+//        if (cooldownModifier!=0){
+//            cooldown = (int) Utils.applyPercentageTo(cooldown,cooldownModifier);
+//        }
+////        Utils.log("New CD:" + cooldown);
+//
+//        long castTime = System.currentTimeMillis();
+//        if (!abilitiesGDC.containsKey(type)){
+//            Map<UUID, GlobalCooldown> playerCDMap = new HashMap<>();
+//            playerCDMap.put(playerID, new GlobalCooldown(cooldown, castTime));
+//            abilitiesGDC.put(type,playerCDMap);
+//            return true;
+//        }
+//        //The ability being cast is accessible via the GCD map
+//        if (!abilitiesGDC.get(type).containsKey(playerID)){
+//            //Instantiate a new GCD object to be managed for that player
+//            abilitiesGDC.get(type).put(playerID, new GlobalCooldown(cooldown, castTime));
+//            return true;
+//        }
+//        //A GCD object is accessible
+//        GlobalCooldown playerGCD = abilitiesGDC.get(type).get(playerID);
+//        if (playerGCD.canBeCast()){
+//            playerGCD.setBaseGCD(cooldown);
+//            playerGCD.setLastCastTime(castTime);
+//            return true;
+//        }
+//        return false;
+//    }
 
-        long castTime = System.currentTimeMillis();
-        if (!abilitiesGDC.containsKey(type)){
-            Map<UUID, GlobalCooldown> playerCDMap = new HashMap<>();
-            playerCDMap.put(playerID, new GlobalCooldown(cooldown, castTime));
-            abilitiesGDC.put(type,playerCDMap);
-            return true;
-        }
-        //The ability being cast is accessible via the GCD map
-        if (!abilitiesGDC.get(type).containsKey(playerID)){
-            //Instantiate a new GCD object to be managed for that player
-            abilitiesGDC.get(type).put(playerID, new GlobalCooldown(cooldown, castTime));
-            return true;
-        }
-        //A GCD object is accessible
-        GlobalCooldown playerGCD = abilitiesGDC.get(type).get(playerID);
-        if (playerGCD.canBeCast()){
-            playerGCD.setBaseGCD(cooldown);
-            playerGCD.setLastCastTime(castTime);
-            return true;
-        }
-        return false;
-    }
-
-    public static Long fetchAbilityRemainingCooldown(UUID playerID, AbilityTypes abilityType){
-        Map<UUID, GlobalCooldown> GCDMap = abilitiesGDC.get(abilityType);
-        if (GCDMap == null){
-            return 0L;
-        }
-
-        if (!GCDMap.containsKey(playerID)){
-            return 0L;
-        }
-        //The player already used a skill before, so fetch the GDC in the map
-        GlobalCooldown playerGCD = abilitiesGDC.get(abilityType).get(playerID);
-        return getRemainingCD(playerGCD.getLastCastTime(), playerGCD.getBaseGCD());
-    }
+//    public static Long fetchAbilityRemainingCooldown(UUID playerID, AbilityTypes abilityType){
+//        Map<UUID, GlobalCooldown> GCDMap = abilitiesGDC.get(abilityType);
+//        if (GCDMap == null){
+//            return 0L;
+//        }
+//
+//        if (!GCDMap.containsKey(playerID)){
+//            return 0L;
+//        }
+//        //The player already used a skill before, so fetch the GDC in the map
+//        GlobalCooldown playerGCD = abilitiesGDC.get(abilityType).get(playerID);
+//        return getRemainingCD(playerGCD.getLastCastTime(), playerGCD.getBaseGCD());
+//    }
 
     public static boolean effecTriggered(UUID entityID, Effects triggeredEffect){
         if (triggeredEffect.getCooldownInSeconds()==0){return true;}

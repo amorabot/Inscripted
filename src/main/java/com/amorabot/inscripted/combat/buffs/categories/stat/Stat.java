@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.combat.buffs.categories.stat;
 
-import com.amorabot.inscripted.components.Player.stats.PlayerStats;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
+import com.amorabot.inscripted.item.inscription.definition.Stats;
+import com.amorabot.inscripted.item.inscription.language.ValueType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,8 +11,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Stat {
-    int amount();
-    ValueTypes valueType();
-    PlayerStats targetStat();
+    int[] amount();
+    ValueType valueType();
+    Stats targetStat();
     int durationInSeconds();
 }

@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.skill.casting;
 
-import com.amorabot.inscripted.skill.PlayerAbilities;
+import com.amorabot.inscripted.skill.Skills;
 import lombok.Getter;
 
 public class CasterState {
@@ -9,13 +9,13 @@ public class CasterState {
 
     private boolean alternateCasting;
     @Getter
-    private PlayerAbilities lastAbility;
+    private Skills lastSkill;
 
     public CasterState(){
         this.disabledCasting = false;
 
         this.alternateCasting = false;
-        this.lastAbility = null;
+        this.lastSkill = null;
     }
 
     public void toggleDisabledCasting(){
@@ -29,11 +29,11 @@ public class CasterState {
         this.alternateCasting = false;
     }
 
-    public void setLastestAbility(PlayerAbilities ability){
-        this.lastAbility = ability;
+    public void setLastestAbility(Skills ability){
+        this.lastSkill = ability;
     }
     public boolean hasCasted(){
-        return lastAbility != null;
+        return lastSkill != null;
     }
 
 }

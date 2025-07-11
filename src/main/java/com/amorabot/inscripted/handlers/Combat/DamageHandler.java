@@ -6,12 +6,7 @@ import com.amorabot.inscripted.APIs.damageAPI.CombatEffects;
 import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
 import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
 import com.amorabot.inscripted.Inscripted;
-//import com.amorabot.inscripted.components.HealthComponent;
-//import com.amorabot.inscripted.components.Player.Profile;
-//import com.amorabot.inscripted.components.Player.stats.StatCompiler;
-//import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
-import com.amorabot.inscripted.skill.PlayerAbilities;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -50,7 +45,7 @@ public class DamageHandler implements Listener {
 
         if (attacker instanceof Mob m){
             if (defender instanceof Player p){
-                DamageRouter.entityDamage(m,p, DamageSource.HIT, PlayerAbilities.FIST);
+//                DamageRouter.entityDamage(m,p, DamageSource.HIT, PlayerAbilities.FIST);
                 return;
             }
         } else {

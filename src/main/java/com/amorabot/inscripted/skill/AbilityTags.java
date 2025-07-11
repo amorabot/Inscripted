@@ -1,9 +1,9 @@
-package com.amorabot.inscripted.skill;
-
-public enum AbilityTags {
-    NONE,
-    MELEE,
-    SPELL,
-    PROJECTILE,
-    AOE
-}
+//package com.amorabot.inscripted.skill;
+//
+//public enum AbilityTags {
+//    NONE,
+//    MELEE,
+//    SPELL,
+//    PROJECTILE,
+//    AOE
+//}

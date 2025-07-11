@@ -1,9 +1,9 @@
 package com.amorabot.inscripted.combat.buffs;
 
 import com.amorabot.inscripted.APIs.damageAPI.CombatEffects;
+import com.amorabot.inscripted.item.inscription.definition.Stats;
+import com.amorabot.inscripted.item.inscription.language.ValueType;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
-import com.amorabot.inscripted.components.Player.stats.PlayerStats;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
 import com.amorabot.inscripted.combat.buffs.categories.damage.Damage;
 import com.amorabot.inscripted.combat.buffs.categories.healing.Healing;
 import com.amorabot.inscripted.combat.buffs.categories.stat.Stat;
@@ -29,18 +29,18 @@ public enum Buffs {
             CombatEffects.deathEffect(player);
         }
     },
-    @Stat(amount = 20, valueType = ValueTypes.INCREASED, targetStat = PlayerStats.ARMOR, durationInSeconds = 5)
+    @Stat(amount = {20}, valueType = ValueType.INCREASED, targetStat = Stats.ARMOR, durationInSeconds = 5)
     FORTIFY(false),
-    @Healing(baseHealing = 1, healingType = ValueTypes.PERCENT, period = 8, timesApplied = 5)
+    @Healing(baseHealing = 1, healingType = ValueType.PERCENTAGE, period = 8, timesApplied = 5)
     REJUVENATE(false),
-    @Stat(amount = 30, valueType = ValueTypes.FLAT, targetStat = PlayerStats.WALK_SPEED, durationInSeconds = 10)
+    @Stat(amount = {30}, valueType = ValueType.FLAT, targetStat = Stats.WALK_SPEED, durationInSeconds = 10)
     TAILWIND(false){
         @Override
         public void effectOn(Player player){
             ParticlePlotter.spawnParticleAt(player.getLocation().toVector(),player.getWorld(), Particle.END_ROD);
         }
     },
-    @Stat(amount = 40, valueType = ValueTypes.MULTIPLIER, targetStat = PlayerStats.PHYSICAL_DAMAGE, durationInSeconds = 1)
+    @Stat(amount = {40}, valueType = ValueType.MULTIPLIER, targetStat = Stats.PHYSICAL_DAMAGE, durationInSeconds = 1)
     BERSERK(false){
         @Override
         public void effectOn(Player player){
@@ -49,7 +49,7 @@ public enum Buffs {
                     player.getWorld(), Particle.ANGRY_VILLAGER);
         }
     },
-    @Stat(amount = 30, valueType = ValueTypes.FLAT, targetStat = PlayerStats.WALK_SPEED, durationInSeconds = 10)
+    @Stat(amount = {30}, valueType = ValueType.FLAT, targetStat = Stats.WALK_SPEED, durationInSeconds = 10)
     MAIM(true){
         @Override
         public void effectOn(Player player){

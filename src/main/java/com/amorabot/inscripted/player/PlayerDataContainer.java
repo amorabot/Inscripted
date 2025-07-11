@@ -75,7 +75,7 @@ public class PlayerDataContainer implements ProfileObserver {
                 Utils.log("Stat change!");
                 // Event-specific logic
                 //...
-//                StatParser.buildProfile(this);
+                StatParser.buildProfile(this);
             }
             case REEVALUATE_ALL_EQUIPMENT -> {
                 Player targetPlayer = Bukkit.getPlayer(getPlayerID());

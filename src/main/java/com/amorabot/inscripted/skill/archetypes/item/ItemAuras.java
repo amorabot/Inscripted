@@ -2,6 +2,7 @@ package com.amorabot.inscripted.skill.archetypes.item;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.combat.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.categories.healing.HealingBuff;
 import com.amorabot.inscripted.combat.buffs.categories.stat.StatBuff;
 import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
 import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
@@ -184,34 +185,41 @@ public class ItemAuras {
     }
 
 
-//    public static int activateWindsOfChangeFor(Player keystoneHolder, int period){
-//        return new BukkitRunnable() {
-//
-//            final float particlesRadius = 0.8F; //Make it scale with AoE? :D
-//
-//            @Override
-//            public void run() {
-//                if (keystoneHolder.isSneaking()){return;}
-//                Location playerLoc = keystoneHolder.getLocation();
-//                World world = playerLoc.getWorld();
-//
-//                HealingBuff rejuv = new HealingBuff(Buffs.REJUVENATE);
-////                int baseHealing = rejuv.getFinalHealingTick(JSONProfileManager.getProfile(keystoneHolder.getUniqueId()));
-////                rejuv.createHealingTask(baseHealing, keystoneHolder, keystoneHolder);
-//                PlayerBuffManager.addBuffToPlayer(rejuv, keystoneHolder);
-//
-//                Vector centerVec = playerLoc.toVector().clone().subtract(new Vector(0,0.3,0));
-//                ParticlePlotter.plotColoredCircleAt(centerVec, world,
-//                        30,
-//                        210,
-//                        30,
-//                        1F,
-//                        particlesRadius,
-//                        15);
-//                ParticlePlotter.plotCircleAt(centerVec, world, Particle.TOTEM_OF_UNDYING, particlesRadius+0.1F, 25);
-//            }
-//        }.runTaskTimer(Inscripted.getPlugin(), period, period).getTaskId();
-//    }
+    public static void windsOfChange(Skillcast skillcast){
+        if (!checkAuraCast(skillcast)){return;}
+        Aura auraSkillcast = (Aura) skillcast;
+        Player player = skillcast.getPlayer();
+        int periodInTicks = (int) (auraSkillcast.getSubroutinePeriodInSeconds() * 20);
+        BukkitRunnable wofInstance =  new BukkitRunnable() {
+
+            final float particlesRadius = 0.8F;
+
+            @Override
+            public void run() {
+                if (player.isSneaking()){return;}
+                cancelIfInvalidParentAura(auraSkillcast,this);
+                Location playerLoc = player.getLocation();
+                World world = playerLoc.getWorld();
+
+                HealingBuff rejuv = new HealingBuff(Buffs.REJUVENATE);
+                int baseHealing = rejuv.getFinalHealingTick(PlayerDataContainer.getProfile(skillcast.getPlayerID()));
+                rejuv.createHealingTask(baseHealing, player, player);
+                PlayerBuffManager.addBuffToPlayer(rejuv, skillcast.getPlayerID());
+
+                Vector centerVec = playerLoc.toVector().clone().subtract(new Vector(0,0.3,0));
+                ParticlePlotter.plotColoredCircleAt(centerVec, world,
+                        30,
+                        210,
+                        30,
+                        1F,
+                        particlesRadius,
+                        15);
+                ParticlePlotter.plotCircleAt(centerVec, world, Particle.TOTEM_OF_UNDYING, particlesRadius+0.1F, 25);
+            }
+        };
+        int wofInstanceID = wofInstance.runTaskTimer(Inscripted.getPlugin(), periodInTicks, periodInTicks).getTaskId();
+        auraSkillcast.setPersistentRoutineID(wofInstanceID);
+    }
 
     public static void berserk(Skillcast skillcast){
         if (!checkAuraCast(skillcast)){return;}
@@ -239,7 +247,6 @@ public class ItemAuras {
                 boolean activeBuff = playerHealth.isLowLife() == isValidActiveInstance; // !(LowLife ^ Valid)
                 if (activeBuff){
                     if (!lastState){
-                        Utils.error("State change triggered: " + activeBuff);
                         lastState = activeBuff;
                         return;
                     }

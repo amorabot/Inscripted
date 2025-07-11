@@ -2,9 +2,7 @@ package com.amorabot.inscripted.skill.archetypes.wand;
 
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.component.AttackData;
-import com.amorabot.inscripted.skill.PlayerAbilities;
 import com.amorabot.inscripted.skill.Skills;
-import com.amorabot.inscripted.skill.SteeringBehaviors;
 import com.amorabot.inscripted.skill.routine.projectile.Projectile;
 import com.amorabot.inscripted.skill.routine.projectile.ProjectileCollision;
 import com.amorabot.inscripted.skill.routine.projectile.ProjectileConfig;
@@ -13,13 +11,9 @@ import com.amorabot.inscripted.skill.type.Attack;
 import com.amorabot.inscripted.skill.annotations.ProjectileSkill;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class WandBasicAttacks {
-
-    public static void standardWandAttackBy(Player player, PlayerAbilities mappedAbility, SteeringBehaviors behavior, int projectiles){
-    }
 
     public static void standardWandAttack(Skillcast skillcast){
         if (!(skillcast instanceof Attack.Basic basicAttackInstance)){return;}

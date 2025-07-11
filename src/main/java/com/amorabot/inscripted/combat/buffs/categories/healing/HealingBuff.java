@@ -5,6 +5,8 @@ import com.amorabot.inscripted.combat.buffs.BuffTask;
 //import com.amorabot.inscripted.components.Player.Profile;
 import com.amorabot.inscripted.combat.buffs.Buffs;
 import com.amorabot.inscripted.combat.buffs.categories.BuffData;
+import com.amorabot.inscripted.item.inscription.language.ValueType;
+import com.amorabot.inscripted.player.profile.Profile;
 import org.bukkit.entity.Player;
 
 public class HealingBuff implements BuffData {
@@ -64,15 +66,16 @@ public class HealingBuff implements BuffData {
 
     }
 
-//    public int getFinalHealingTick(Profile targetProfile){
-//        Healing healingData = getHealingAnnotationData();
-////        if (healingData.healingType().equals(ValueTypes.FLAT)){
-////            return (int) healingData.baseHealing();
-////        } else {
-////            return (int) (targetProfile.getHealthComponent().getMaxHealth() * (healingData.baseHealing()/100));
-////        }
-//        return 0;
-//    }
+    public int getFinalHealingTick(Profile targetProfile){
+        Healing healingData = getHealingAnnotationData();
+        if (healingData.healingType().equals(ValueType.FLAT)){
+            return (int) healingData.baseHealing();
+        }
+        else if (healingData.healingType().equals(ValueType.PERCENTAGE)) {
+            return (int) (targetProfile.getHealthComponent().getMaxHealth() * (healingData.baseHealing()/100D));
+        }
+        return 42069;
+    }
 
     public Healing getHealingAnnotationData(){
         Healing healingAnnotation = (Healing) getBuff().getBuffAnnotationData();

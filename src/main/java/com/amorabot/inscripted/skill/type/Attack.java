@@ -46,7 +46,7 @@ public abstract class Attack extends Skillcast.Simple {
                 register();
                 return;
             }
-            Utils.log("Basic attack on cooldown...");
+//            Utils.log("Basic attack on cooldown...");
         }
 
         @Override

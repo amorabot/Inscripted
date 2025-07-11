@@ -256,7 +256,6 @@ public class StatPool {
         );
         if (getBaseStats().isEmpty()){
             Utils.log("-------------------------------------------");
-            return;
         }
         Utils.log("--- Multipliers ----------");
         getMultipliers().forEach(

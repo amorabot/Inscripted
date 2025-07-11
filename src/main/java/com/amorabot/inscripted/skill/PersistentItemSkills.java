@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.skill;
-
-public class PersistentItemSkills {
-}
+//package com.amorabot.inscripted.skill;
+//
+//public class PersistentItemSkills {
+//}
