@@ -1,5 +1,7 @@
 package com.amorabot.inscripted.player;
 
+import com.amorabot.inscripted.combat.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.categories.BuffData;
 import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.inscripted.item.inscription.definition.EffectIDs;
 import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
@@ -40,6 +42,8 @@ public class PlayerDataContainer implements ProfileObserver {
 //    private final Map<CastType, Skillcast.Persistent> persistentSkillInstances = new HashMap<>();
     @Getter
     private final Map<Skills, Aura> activeAuras = new HashMap<>();
+    @Getter
+    private final Map<Buffs, BuffData> activeBuffs = new HashMap<>();
 
 
     public PlayerDataContainer(UUID playerID){
@@ -71,7 +75,7 @@ public class PlayerDataContainer implements ProfileObserver {
                 Utils.log("Stat change!");
                 // Event-specific logic
                 //...
-                StatParser.buildProfile(this);
+//                StatParser.buildProfile(this);
             }
             case REEVALUATE_ALL_EQUIPMENT -> {
                 Player targetPlayer = Bukkit.getPlayer(getPlayerID());

@@ -1,19 +1,20 @@
-package com.amorabot.inscripted.components.buffs.categories.healing;
+package com.amorabot.inscripted.combat.buffs.categories.healing;
 
-import com.amorabot.inscripted.components.Buff;
+import com.amorabot.inscripted.combat.buffs.BuffTask;
 import com.amorabot.inscripted.item.structure.Armor.DefenceTypes;
 //import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.components.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.Buffs;
 import com.amorabot.inscripted.item.render.InscriptedPalette;
 //import com.amorabot.inscripted.file.profile.JSONProfileManager;
-import com.amorabot.inscripted.managers.PlayerBuffManager;
-import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
+import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 
-public class HealingBuffTask extends Buff {
+public class HealingBuffTask extends BuffTask {
 
+    @Getter
     private final Buffs buff;
 
     private final int totalTicks;
@@ -70,8 +71,7 @@ public class HealingBuffTask extends Buff {
     public void expire() {
         //Whatever
         Utils.log(buff+" expired for " + target.getName()+"!");
-        PlayerBuffManager.removeBuffFrom(target, buff);
-
+        PlayerBuffManager.removeBuffFrom(target.getUniqueId(), buff);
         this.cancel();
     }
 

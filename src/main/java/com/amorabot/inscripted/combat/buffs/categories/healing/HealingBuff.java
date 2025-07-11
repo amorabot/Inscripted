@@ -1,18 +1,17 @@
-package com.amorabot.inscripted.components.buffs.categories.healing;
+package com.amorabot.inscripted.combat.buffs.categories.healing;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Buff;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
+import com.amorabot.inscripted.combat.buffs.BuffTask;
 //import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.components.buffs.Buffs;
-import com.amorabot.inscripted.components.buffs.categories.BuffData;
+import com.amorabot.inscripted.combat.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.categories.BuffData;
 import org.bukkit.entity.Player;
 
 public class HealingBuff implements BuffData {
 
     private int healingTick;
     private final Buffs buff;
-    private Buff healingTask;
+    private BuffTask healingTask;
     private int taskID;
 
     public HealingBuff(Buffs buff){
@@ -45,7 +44,7 @@ public class HealingBuff implements BuffData {
     }
 
     @Override
-    public Buff getBuffTask() {
+    public BuffTask getBuffTask() {
         return this.healingTask;
     }
 

@@ -76,7 +76,9 @@ public enum Skills {
     @PersistentSkill( period = 1.5, maxDuration = -1 )
     THUNDERSTRUCK(ItemAuras::thunderstruck, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),
     @PersistentSkill( period = 0.2, maxDuration = -1 )
-    RIGHTEOUS_FIRE(ItemAuras::righteousFire, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0);
+    RIGHTEOUS_FIRE(ItemAuras::righteousFire, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),
+    @PersistentSkill( period = 0.5, maxDuration = -1 )
+    BERSERK(ItemAuras::berserk, CastType.NEUTRAL, new Tags[]{Tags.AURA},0);
 
 
 

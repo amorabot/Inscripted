@@ -1,7 +1,7 @@
-package com.amorabot.inscripted.components.buffs.categories;
+package com.amorabot.inscripted.combat.buffs.categories;
 
-import com.amorabot.inscripted.components.Buff;
-import com.amorabot.inscripted.components.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.BuffTask;
+import com.amorabot.inscripted.combat.buffs.Buffs;
 
 public interface BuffData {
     void storeFinalValue(int value);
@@ -10,7 +10,7 @@ public interface BuffData {
     boolean isDebuff();
 
     int getTaskID();
-    Buff getBuffTask();
+    BuffTask getBuffTask();
     void activate();
     void stop(); //TODO: Make default (getTask() + cancelling)
     void delete();

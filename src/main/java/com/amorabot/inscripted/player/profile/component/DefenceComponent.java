@@ -11,7 +11,9 @@ import java.util.UUID;
 
 @Setter
 public class DefenceComponent implements ProfileComponent {
+    @Getter
     private final static int resistanceCap = 75;
+    @Getter
     private final static int abyssalResCap = 60;
 
     @Getter

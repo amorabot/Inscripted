@@ -1,19 +1,21 @@
-package com.amorabot.inscripted.components.buffs.categories.damage;
+package com.amorabot.inscripted.combat.buffs.categories.damage;
 
 import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
 import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
-import com.amorabot.inscripted.components.Buff;
-import com.amorabot.inscripted.components.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.BuffTask;
+import com.amorabot.inscripted.combat.buffs.Buffs;
 //import com.amorabot.inscripted.file.profile.JSONProfileManager;
-import com.amorabot.inscripted.managers.PlayerBuffManager;
+import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.utils.Utils;
+import lombok.Getter;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
-public class DamageDebuffTask extends Buff {
+public class DamageDebuffTask extends BuffTask {
 
+    @Getter
     private final Buffs buff;
 
     private final int totalTicks;
@@ -79,7 +81,7 @@ public class DamageDebuffTask extends Buff {
     public void expire(){
         //Whatever
         Utils.log(buff+" expired for " + defender.getName()+"!");
-        PlayerBuffManager.removeBuffFrom(defender, buff);
+        PlayerBuffManager.removeBuffFrom(defender.getUniqueId(), buff);
 
         this.cancel();
     }

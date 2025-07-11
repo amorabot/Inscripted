@@ -1,26 +1,31 @@
-package com.amorabot.inscripted.components.buffs.categories.stat;
+package com.amorabot.inscripted.combat.buffs.categories.stat;
 
-import com.amorabot.inscripted.components.Buff;
+import com.amorabot.inscripted.combat.buffs.BuffTask;
 //import com.amorabot.inscripted.components.Player.stats.StatCompiler;
-import com.amorabot.inscripted.components.buffs.Buffs;
-import com.amorabot.inscripted.managers.PlayerBuffManager;
+import com.amorabot.inscripted.combat.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
+import com.amorabot.inscripted.player.PlayerDataContainer;
+import com.amorabot.inscripted.player.profile.ProfileEvents;
 import com.amorabot.inscripted.utils.Utils;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.entity.Player;
 
-public class StatBuffCountdownTask extends Buff {
+public class StatBuffCountdown extends BuffTask {
 
+    @Getter
     private final Buffs buff;
     private final Player target;
 
     private final int durationInTicks;
+    @Setter
     private int ticksElapsed = 0;
 
 
-    public StatBuffCountdownTask(Buffs buff, Player player){
+    public StatBuffCountdown(Buffs buff, Player player){
         this.buff = buff;
         this.target = player;
 
-        //TODO: make it effected by player stats? :D
         Stat statBuffData = (Stat) buff.getBuffAnnotationData();
         this.durationInTicks = statBuffData.durationInSeconds() * 20;
     }
@@ -36,13 +41,11 @@ public class StatBuffCountdownTask extends Buff {
         if (ticksElapsed >= durationInTicks){
             Utils.log("Timer expired for " + buff);
             expire();
-            //The buff itself should only call for a recompilation when it's timer runs out: (and is properly removed from memory)
-//            StatCompiler.updateProfile(target.getUniqueId());
             return;
         }
 
         buff.effectOn(target);
-        ticksElapsed++;
+        ticksElapsed+=3; //Period
     }
 
 
@@ -51,8 +54,8 @@ public class StatBuffCountdownTask extends Buff {
     public void expire() {
         //Whatever
         Utils.log("STAT BUFF: "+buff+" expired for " + target.getName()+"!");
-        PlayerBuffManager.removeBuffFrom(target, buff);
-
+        PlayerBuffManager.removeBuffFrom(target.getUniqueId(), buff);
+        PlayerDataContainer.getDataContainerFor(target.getUniqueId()).onNotify(ProfileEvents.EXTERNAL_STAT_CHANGE);
         this.cancel();
     }
 

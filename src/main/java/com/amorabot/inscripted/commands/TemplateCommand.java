@@ -3,22 +3,19 @@ package com.amorabot.inscripted.commands;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.gui.instances.RelicSelection;
 import com.amorabot.inscripted.player.Archetypes;
-import com.amorabot.inscripted.components.buffs.Buffs;
-import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
-import com.amorabot.inscripted.components.buffs.categories.stat.StatBuff;
+import com.amorabot.inscripted.combat.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.categories.damage.DamageBuff;
+import com.amorabot.inscripted.combat.buffs.categories.stat.StatBuff;
 import com.amorabot.inscripted.item.structure.Armor.Armor;
 import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
 import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.Weapon.Weapon;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
-import com.amorabot.inscripted.managers.PlayerBuffManager;
+import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.math.LinalgMath;
 import com.amorabot.inscripted.particle.ParticlePlotter;
-import com.amorabot.inscripted.skill.PlayerAbilities;
-import com.amorabot.inscripted.skill.SteeringBehaviors;
 import com.amorabot.inscripted.skill.routine.projectile.Projectile;
-import com.amorabot.inscripted.skill.archetypes.bow.BowBasicAttacks;
 import com.amorabot.inscripted.math.OrientedBoundingBox;
 import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
@@ -82,23 +79,23 @@ public class TemplateCommand implements CommandExecutor {
                     int[] dot = bleed.convertBaseHit(baseDamage);
                     bleed.createDamageTask(dot, player, true, player);
 
-                    PlayerBuffManager.addBuffToPlayer(bleed, player);
+//                    PlayerBuffManager.addBuffToPlayer(bleed, player);
 //                    bleed.activate();
                     return true;
                 case "stat":
-                    StatBuff fortify = new StatBuff(Buffs.FORTIFY, player);
-                    Utils.log("Applying fortify to " + player.getName());
-                    PlayerBuffManager.addBuffToPlayer(fortify, player);
+                    StatBuff fortify = new StatBuff(Buffs.BERSERK, player);
+                    Utils.log("Applying berserk to " + player.getName());
+                    PlayerBuffManager.addBuffToPlayer(fortify, player.getUniqueId());
                     return true;
                 case "tailwind":
                     StatBuff tailwind = new StatBuff(Buffs.TAILWIND, player);
                     player.sendMessage("Applying tailwind!");
-                    PlayerBuffManager.addBuffToPlayer(tailwind, player);
+                    PlayerBuffManager.addBuffToPlayer(tailwind, player.getUniqueId());
                     return true;
                 case "cripple":
-                    StatBuff cripple = new StatBuff(Buffs.MAIM, player);
-                    player.sendMessage("Applying cripple :(");
-                    PlayerBuffManager.addBuffToPlayer(cripple, player);
+//                    StatBuff cripple = new StatBuff(Buffs.MAIM, player);
+//                    player.sendMessage("Applying cripple :(");
+//                    PlayerBuffManager.addBuffToPlayer(cripple, player);
                     return true;
                 case "rejuv":
 //                    HealingBuff rejuv = new HealingBuff(Buffs.REJUVENATE);

@@ -10,7 +10,7 @@ import com.amorabot.inscripted.Inscripted;
 //import com.amorabot.inscripted.components.Player.Profile;
 //import com.amorabot.inscripted.components.Player.stats.StatCompiler;
 //import com.amorabot.inscripted.file.profile.JSONProfileManager;
-import com.amorabot.inscripted.managers.PlayerBuffManager;
+import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.skill.PlayerAbilities;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -99,7 +99,7 @@ public class DamageHandler implements Listener {
             event.deathMessage(Component.text(deadPlayer.getName() + " ☠").color(NamedTextColor.RED));
         }
 
-        PlayerBuffManager.clearAllBuffsFor(deadPlayer);
+        PlayerBuffManager.clearAllBuffsFor(deadPlayer.getUniqueId());
 
         /*
         If the player's HP is tempered with immediatly, in game death effects are cancelled (Teleport, automatic HP remapping)

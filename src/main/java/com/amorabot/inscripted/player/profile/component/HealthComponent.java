@@ -3,6 +3,7 @@ package com.amorabot.inscripted.player.profile.component;
 import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
 import com.amorabot.inscripted.item.inscription.definition.Stats;
 import com.amorabot.inscripted.player.profile.BaseStats;
+import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -208,7 +209,8 @@ public class HealthComponent implements ProfileComponent {
         return Math.max(0.5, getNormalizedSoul()*basePlayerHearts);
     }
     public boolean isLowLife(){
-        return (getHealth()/getMaxHealth()*(100)) < LOW_LIFE_THRESHOLD;
+        int currentPercentage = (int) (((double)getHealth()/getMaxHealth())*100);
+        return (currentPercentage) < LOW_LIFE_THRESHOLD;
     }
 
 }

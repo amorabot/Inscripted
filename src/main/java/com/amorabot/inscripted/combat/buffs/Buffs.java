@@ -1,17 +1,18 @@
-package com.amorabot.inscripted.components.buffs;
+package com.amorabot.inscripted.combat.buffs;
 
 import com.amorabot.inscripted.APIs.damageAPI.CombatEffects;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.components.Player.stats.PlayerStats;
 import com.amorabot.inscripted.components.Items.DataStructures.Enums.ValueTypes;
-import com.amorabot.inscripted.components.buffs.categories.damage.Damage;
-import com.amorabot.inscripted.components.buffs.categories.healing.Healing;
-import com.amorabot.inscripted.components.buffs.categories.stat.Stat;
+import com.amorabot.inscripted.combat.buffs.categories.damage.Damage;
+import com.amorabot.inscripted.combat.buffs.categories.healing.Healing;
+import com.amorabot.inscripted.combat.buffs.categories.stat.Stat;
 import com.amorabot.inscripted.particle.ParticlePlotter;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -37,6 +38,15 @@ public enum Buffs {
         @Override
         public void effectOn(Player player){
             ParticlePlotter.spawnParticleAt(player.getLocation().toVector(),player.getWorld(), Particle.END_ROD);
+        }
+    },
+    @Stat(amount = 40, valueType = ValueTypes.MULTIPLIER, targetStat = PlayerStats.PHYSICAL_DAMAGE, durationInSeconds = 1)
+    BERSERK(false){
+        @Override
+        public void effectOn(Player player){
+            ParticlePlotter.spawnParticleAt(
+                    player.getLocation().toVector().clone().add(new Vector(0,1.5D, 0)),
+                    player.getWorld(), Particle.ANGRY_VILLAGER);
         }
     },
     @Stat(amount = 30, valueType = ValueTypes.FLAT, targetStat = PlayerStats.WALK_SPEED, durationInSeconds = 10)

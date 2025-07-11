@@ -75,6 +75,7 @@ public class StatPool {
     public double[] calculateStatValue(Stats stat){
         // Get stored values for that stat
         Map<ValueType, int[]> values = getBaseStats().get(stat);
+        if (values==null){return new double[4];}
         // Get stat multiplier
         double multi = getMultipliers().getOrDefault(stat,1D);
         //If its a percent value ( % Bleed chance ), increases or flat values don't matter

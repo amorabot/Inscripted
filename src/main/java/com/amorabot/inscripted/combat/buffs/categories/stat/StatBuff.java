@@ -1,27 +1,25 @@
-package com.amorabot.inscripted.components.buffs.categories.stat;
+package com.amorabot.inscripted.combat.buffs.categories.stat;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Buff;
-import com.amorabot.inscripted.components.buffs.Buffs;
-import com.amorabot.inscripted.components.buffs.categories.BuffData;
+import com.amorabot.inscripted.combat.buffs.BuffTask;
+import com.amorabot.inscripted.combat.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.categories.BuffData;
 import org.bukkit.entity.Player;
 
 public class StatBuff implements BuffData {
 
-//    private int storedValue;
     private final Buffs buff;
-    private final Buff countdownTask;
+    private final BuffTask countdownTask;
     private int taskID;
 
     public StatBuff(Buffs buff, Player target){
         this.buff = buff;
-        this.countdownTask = new StatBuffCountdownTask(this.buff, target);
+        this.countdownTask = new StatBuffCountdown(this.buff, target);
     }
 
 
     @Override
     public void storeFinalValue(int value) {
-//        this.storedValue = value;
     }
 
     @Override
@@ -45,13 +43,13 @@ public class StatBuff implements BuffData {
     }
 
     @Override
-    public Buff getBuffTask() {
+    public BuffTask getBuffTask() {
         return countdownTask;
     }
 
     @Override
     public void activate() {
-        this.taskID = this.countdownTask.runTaskTimer(Inscripted.getPlugin(), 0, 1).getTaskId();
+        this.taskID = this.countdownTask.runTaskTimer(Inscripted.getPlugin(), 0, 5).getTaskId();
     }
 
     @Override

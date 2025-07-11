@@ -4,9 +4,9 @@ package com.amorabot.inscripted.components.Items.relic.enums;
 import com.amorabot.inscripted.item.inscription.definition.TriggerTimes;
 import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
-import com.amorabot.inscripted.components.buffs.Buffs;
-import com.amorabot.inscripted.components.buffs.categories.stat.StatBuff;
-import com.amorabot.inscripted.managers.PlayerBuffManager;
+import com.amorabot.inscripted.combat.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.categories.stat.StatBuff;
+import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.skill.casting.GlobalCooldownManager;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
@@ -96,10 +96,10 @@ public enum Effects {
             "Gracefully land","on your feet","when using your","movement ability.","","Gain Tailwind.","","⏳ 1m cooldown") {
         @Override
         public void execute(LivingEntity caster, LivingEntity target) {
-            if (caster instanceof Player playerCaster){
-                StatBuff tailwind = new StatBuff(Buffs.TAILWIND, playerCaster);
-                PlayerBuffManager.addBuffToPlayer(tailwind, playerCaster);
-            }
+//            if (caster instanceof Player playerCaster){
+//                StatBuff tailwind = new StatBuff(Buffs.TAILWIND, playerCaster);
+//                PlayerBuffManager.addBuffToPlayer(tailwind, playerCaster);
+//            }
         }
 
         @Override
@@ -113,10 +113,10 @@ public enum Effects {
             "Your Bleed debuffs","also apply Maim") {
         @Override
         public void execute(LivingEntity caster, LivingEntity target) {
-            if (target instanceof Player targetCaster){
-                StatBuff maim = new StatBuff(Buffs.MAIM, targetCaster);
-                PlayerBuffManager.addBuffToPlayer(maim, targetCaster);
-            }
+//            if (target instanceof Player targetCaster){
+//                StatBuff maim = new StatBuff(Buffs.MAIM, targetCaster);
+//                PlayerBuffManager.addBuffToPlayer(maim, targetCaster);
+//            }
         }
 
         @Override
@@ -165,10 +165,10 @@ public enum Effects {
             "Swiftly retreat","after a decisive","strike.","","Gain Tailwind on", "critical strikes.") {
         @Override
         public void execute(LivingEntity caster, LivingEntity target) {
-            if (caster instanceof Player playerCaster){
-                StatBuff tailwind = new StatBuff(Buffs.TAILWIND, playerCaster);
-                PlayerBuffManager.addBuffToPlayer(tailwind, playerCaster);
-            }
+//            if (caster instanceof Player playerCaster){
+//                StatBuff tailwind = new StatBuff(Buffs.TAILWIND, playerCaster);
+//                PlayerBuffManager.addBuffToPlayer(tailwind, playerCaster);
+//            }
         }
 
         @Override

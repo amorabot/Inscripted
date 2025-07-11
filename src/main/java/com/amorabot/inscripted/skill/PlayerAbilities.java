@@ -3,23 +3,10 @@ package com.amorabot.inscripted.skill;
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
-import com.amorabot.inscripted.skill.casting.GlobalCooldownManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
-import static com.amorabot.inscripted.skill.archetypes.axe.AxeBasicAttacks.standardAxeSlashBy;
-import static com.amorabot.inscripted.skill.archetypes.axe.AxeMovement.marauderMovement;
-import static com.amorabot.inscripted.skill.archetypes.bow.BowBasicAttacks.standardBowAttackBy;
-import static com.amorabot.inscripted.skill.archetypes.bow.BowMovement.mercenaryMovement;
-import static com.amorabot.inscripted.skill.archetypes.dagger.DaggerBasicAttacks.standardDaggerSlashBy;
-import static com.amorabot.inscripted.skill.archetypes.dagger.DaggerMovement.rogueMovement;
-import static com.amorabot.inscripted.skill.archetypes.mace.MaceBasicAttacks.standardMaceSlamBy;
-import static com.amorabot.inscripted.skill.archetypes.mace.MaceMovement.templarMovement;
-import static com.amorabot.inscripted.skill.archetypes.sword.SwordBasicAttacks.standardSwordSlashBy;
-import static com.amorabot.inscripted.skill.archetypes.sword.SwordMovement.gladiatorMovement;
-import static com.amorabot.inscripted.skill.archetypes.wand.WandBasicAttacks.standardWandAttackBy;
-import static com.amorabot.inscripted.skill.archetypes.wand.WandMovement.sorcererMovement;
 
 @Getter
 public enum PlayerAbilities {
@@ -33,37 +20,37 @@ public enum PlayerAbilities {
     BASIC_AXE_SLASH(new int[5], new float[]{1.1F,1,1,1,1},0, AbilityTypes.BASIC_ATTACK, AbilityTags.MELEE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            standardAxeSlashBy(caster, this);
+//            standardAxeSlashBy(caster, this);
         }
     },
     BASIC_SWORD_SLASH(new int[5], new float[]{1,1,1,1,1},0, AbilityTypes.BASIC_ATTACK, AbilityTags.MELEE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            standardSwordSlashBy(caster,this);
+//            standardSwordSlashBy(caster,this);
         }
     },
     BASIC_BOW_ATTACK(new int[5], new float[]{1,1,1,1,1},0, AbilityTypes.BASIC_ATTACK, AbilityTags.PROJECTILE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            standardBowAttackBy(caster, this, SteeringBehaviors.STRAIGHT_LINE, 1);
+//            standardBowAttackBy(caster, this, SteeringBehaviors.STRAIGHT_LINE, 1);
         }
     },
     BASIC_DAGGER_SLASH(new int[5], new float[]{1,1,1,1,1},0, AbilityTypes.BASIC_ATTACK, AbilityTags.MELEE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            standardDaggerSlashBy(caster,this);
+//            standardDaggerSlashBy(caster,this);
         }
     },
     BASIC_WAND_ATTACK(new int[5], new float[]{1,1,1,1,1},0,AbilityTypes.BASIC_ATTACK, AbilityTags.PROJECTILE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            standardWandAttackBy(caster, this, SteeringBehaviors.ARRIVE, 1);
+//            standardWandAttackBy(caster, this, SteeringBehaviors.ARRIVE, 1);
         }
     },
     BASIC_MACE_SLAM(new int[5], new float[]{1,1,1,1,1},0,AbilityTypes.BASIC_ATTACK, AbilityTags.MELEE, AbilityTags.AOE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            standardMaceSlamBy(caster,this);
+//            standardMaceSlamBy(caster,this);
 //            newMaceBasicAttackFor(caster, this);
         }
     },
@@ -76,11 +63,11 @@ public enum PlayerAbilities {
             AbilityTags.NONE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this, attackSpeed.getAbilityCooldownModifier())){
-                marauderMovement(caster);
-                return;
-            }
-            PlayerAbilities.invalidAbilityCast(caster);
+//            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this, attackSpeed.getAbilityCooldownModifier())){
+//                marauderMovement(caster);
+//                return;
+//            }
+//            PlayerAbilities.invalidAbilityCast(caster);
         }
     },
     LEAP(null, null, 3,
@@ -88,10 +75,10 @@ public enum PlayerAbilities {
             AbilityTags.NONE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this, attackSpeed.getAbilityCooldownModifier())){
-                gladiatorMovement(caster);
-                return;
-            }
+//            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this, attackSpeed.getAbilityCooldownModifier())){
+//                gladiatorMovement(caster);
+//                return;
+//            }
             PlayerAbilities.invalidAbilityCast(caster);
         }
     },
@@ -100,10 +87,10 @@ public enum PlayerAbilities {
             AbilityTags.NONE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this, attackSpeed.getAbilityCooldownModifier())){
-                mercenaryMovement(caster);
-                return;
-            }
+//            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this, attackSpeed.getAbilityCooldownModifier())){
+//                mercenaryMovement(caster);
+//                return;
+//            }
             PlayerAbilities.invalidAbilityCast(caster);
         }
     },
@@ -112,10 +99,10 @@ public enum PlayerAbilities {
             AbilityTags.NONE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this, attackSpeed.getAbilityCooldownModifier())){
-                rogueMovement(caster);
-                return;
-            }
+//            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this, attackSpeed.getAbilityCooldownModifier())){
+//                rogueMovement(caster);
+//                return;
+//            }
             PlayerAbilities.invalidAbilityCast(caster);
         }
     },
@@ -124,10 +111,10 @@ public enum PlayerAbilities {
             AbilityTags.NONE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this, attackSpeed.getAbilityCooldownModifier())){
-                sorcererMovement(caster);
-                return;
-            }
+//            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this, attackSpeed.getAbilityCooldownModifier())){
+//                sorcererMovement(caster);
+//                return;
+//            }
             PlayerAbilities.invalidAbilityCast(caster);
         }
     },
@@ -136,10 +123,10 @@ public enum PlayerAbilities {
             AbilityTags.NONE) {
         @Override
         public void cast(Player caster, WeaponAttackSpeeds attackSpeed) {
-            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this, attackSpeed.getAbilityCooldownModifier())){
-                templarMovement(caster);
-                return;
-            }
+//            if (GlobalCooldownManager.skillcastBy(caster.getUniqueId(),this, attackSpeed.getAbilityCooldownModifier())){
+//                templarMovement(caster);
+//                return;
+//            }
             PlayerAbilities.invalidAbilityCast(caster);
         }
     },

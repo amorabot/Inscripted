@@ -1,12 +1,14 @@
 package com.amorabot.inscripted.skill.archetypes.item;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.buffs.Buffs;
-import com.amorabot.inscripted.components.buffs.categories.healing.HealingBuff;
-import com.amorabot.inscripted.managers.PlayerBuffManager;
-import com.amorabot.inscripted.math.LinalgMath;
+import com.amorabot.inscripted.combat.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.categories.stat.StatBuff;
+import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
+import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.particle.ParticlePlotter;
+import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.component.AttackData;
+import com.amorabot.inscripted.player.profile.component.HealthComponent;
 import com.amorabot.inscripted.skill.type.Aura;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
@@ -182,33 +184,72 @@ public class ItemAuras {
     }
 
 
-    public static int activateWindsOfChangeFor(Player keystoneHolder, int period){
-        return new BukkitRunnable() {
+//    public static int activateWindsOfChangeFor(Player keystoneHolder, int period){
+//        return new BukkitRunnable() {
+//
+//            final float particlesRadius = 0.8F; //Make it scale with AoE? :D
+//
+//            @Override
+//            public void run() {
+//                if (keystoneHolder.isSneaking()){return;}
+//                Location playerLoc = keystoneHolder.getLocation();
+//                World world = playerLoc.getWorld();
+//
+//                HealingBuff rejuv = new HealingBuff(Buffs.REJUVENATE);
+////                int baseHealing = rejuv.getFinalHealingTick(JSONProfileManager.getProfile(keystoneHolder.getUniqueId()));
+////                rejuv.createHealingTask(baseHealing, keystoneHolder, keystoneHolder);
+//                PlayerBuffManager.addBuffToPlayer(rejuv, keystoneHolder);
+//
+//                Vector centerVec = playerLoc.toVector().clone().subtract(new Vector(0,0.3,0));
+//                ParticlePlotter.plotColoredCircleAt(centerVec, world,
+//                        30,
+//                        210,
+//                        30,
+//                        1F,
+//                        particlesRadius,
+//                        15);
+//                ParticlePlotter.plotCircleAt(centerVec, world, Particle.TOTEM_OF_UNDYING, particlesRadius+0.1F, 25);
+//            }
+//        }.runTaskTimer(Inscripted.getPlugin(), period, period).getTaskId();
+//    }
 
-            final float particlesRadius = 0.8F; //Make it scale with AoE? :D
-
+    public static void berserk(Skillcast skillcast){
+        if (!checkAuraCast(skillcast)){return;}
+        Aura auraSkillcast = (Aura) skillcast;
+        int periodInTicks = (int) (auraSkillcast.getSubroutinePeriodInSeconds() * 20);
+        BukkitRunnable berserkSubroutine =  new BukkitRunnable() {
+            boolean lastState = false;
             @Override
             public void run() {
-                if (keystoneHolder.isSneaking()){return;}
-                Location playerLoc = keystoneHolder.getLocation();
-                World world = playerLoc.getWorld();
-
-                HealingBuff rejuv = new HealingBuff(Buffs.REJUVENATE);
-//                int baseHealing = rejuv.getFinalHealingTick(JSONProfileManager.getProfile(keystoneHolder.getUniqueId()));
-//                rejuv.createHealingTask(baseHealing, keystoneHolder, keystoneHolder);
-                PlayerBuffManager.addBuffToPlayer(rejuv, keystoneHolder);
-
-                Vector centerVec = playerLoc.toVector().clone().subtract(new Vector(0,0.3,0));
-                ParticlePlotter.plotColoredCircleAt(centerVec, world,
-                        30,
-                        210,
-                        30,
-                        1F,
-                        particlesRadius,
-                        15);
-                ParticlePlotter.plotCircleAt(centerVec, world, Particle.TOTEM_OF_UNDYING, particlesRadius+0.1F, 25);
+                cancelIfInvalidParentAura(auraSkillcast,this);
+                PlayerDataContainer dataContainer = PlayerDataContainer.getDataContainerFor(skillcast.getPlayerID());
+                boolean hasAuraInstance = dataContainer.getActiveAuras().containsKey(skillcast.getCastedSkill());
+                boolean hasKeystone = dataContainer.getEquipment().getSpecialInscriptions().getKeystones().contains(KeystoneIDs.BERSERK);
+                boolean isValidActiveInstance = hasAuraInstance && hasKeystone;
+                HealthComponent playerHealth = dataContainer.getProfile().getHealthComponent();
+                // Berserk routine
+                /*
+                    Truth table
+                    LL  ACTIVE  (toggle)
+                    T     T       T
+                    T     F       F
+                    F     T       F
+                    F     F       T
+                */
+                boolean activeBuff = playerHealth.isLowLife() == isValidActiveInstance; // !(LowLife ^ Valid)
+                if (activeBuff){
+                    if (!lastState){
+                        Utils.error("State change triggered: " + activeBuff);
+                        lastState = activeBuff;
+                        return;
+                    }
+                    // Trigger the aura's conditional Buff
+                    PlayerBuffManager.addBuffToPlayer(new StatBuff(Buffs.BERSERK, skillcast.getPlayer()),skillcast.getPlayerID());
+                }
             }
-        }.runTaskTimer(Inscripted.getPlugin(), period, period).getTaskId();
+        };
+        int berserkInstanceID = berserkSubroutine.runTaskTimer(Inscripted.getPlugin(),periodInTicks, periodInTicks).getTaskId();
+        auraSkillcast.setPersistentRoutineID(berserkInstanceID);
     }
 
     private static boolean checkAuraCast(Skillcast skillcast){

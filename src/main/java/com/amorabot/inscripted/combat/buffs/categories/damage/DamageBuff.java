@@ -1,10 +1,10 @@
-package com.amorabot.inscripted.components.buffs.categories.damage;
+package com.amorabot.inscripted.combat.buffs.categories.damage;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Buff;
+import com.amorabot.inscripted.combat.buffs.BuffTask;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
-import com.amorabot.inscripted.components.buffs.Buffs;
-import com.amorabot.inscripted.components.buffs.categories.BuffData;
+import com.amorabot.inscripted.combat.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.categories.BuffData;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -12,7 +12,7 @@ public class DamageBuff implements BuffData {
 
     private int damageTick;
     private final Buffs buff;
-    private Buff dotTask;
+    private BuffTask dotTask;
     private int taskID;
 
 
@@ -48,7 +48,7 @@ public class DamageBuff implements BuffData {
     }
 
     @Override
-    public Buff getBuffTask() {
+    public BuffTask getBuffTask() {
         return this.dotTask;
     }
 

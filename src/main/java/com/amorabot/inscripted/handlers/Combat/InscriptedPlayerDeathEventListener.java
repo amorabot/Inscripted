@@ -8,7 +8,7 @@ import com.amorabot.inscripted.Inscripted;
 //import com.amorabot.inscripted.components.HealthComponent;
 //import com.amorabot.inscripted.components.Player.stats.StatCompiler;
 import com.amorabot.inscripted.events.death.InscriptedPlayerDeathEvent;
-import com.amorabot.inscripted.managers.PlayerBuffManager;
+import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.utils.DelayedTask;
 import io.papermc.paper.entity.TeleportFlag;
 import net.kyori.adventure.audience.Audience;
@@ -41,7 +41,7 @@ public class InscriptedPlayerDeathEventListener implements Listener {
         deadPlayer.teleport(respawnLoc, TeleportFlag.EntityState.RETAIN_PASSENGERS);
         PotionEffect blindness = new PotionEffect(PotionEffectType.BLINDNESS, 30, 10, true, false, false);
         blindness.apply(deadPlayer);
-        PlayerBuffManager.clearAllBuffsFor(deadPlayer);
+        PlayerBuffManager.clearAllBuffsFor(deadPlayer.getUniqueId());
         CombatEffects.deathEffect(deadPlayer);
         if (deadPlayer.getKiller() != null) {
             Audience audience = Audience.audience(deadPlayer, deadPlayer.getKiller());

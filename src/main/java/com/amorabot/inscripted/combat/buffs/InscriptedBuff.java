@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.components.buffs;
+package com.amorabot.inscripted.combat.buffs;
 
 public interface InscriptedBuff {
 

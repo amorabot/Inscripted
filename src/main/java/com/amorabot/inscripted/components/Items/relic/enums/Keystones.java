@@ -5,7 +5,6 @@ import com.amorabot.inscripted.item.inscription.definition.TriggerTimes;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.managers.PlayerPassivesManager;
 import com.amorabot.inscripted.skill.PlayerAbilities;
-import com.amorabot.inscripted.skill.archetypes.item.StatToggleMonitors;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -72,8 +71,8 @@ public enum Keystones {
             if (needsInstantiation(playerID)){
                 Player player = Bukkit.getPlayer(playerID);
                 assert player != null;
-                int taskID = StatToggleMonitors.initializeBerserkToggleMonitorFor(player);
-                PlayerPassivesManager.addKeystonePassive(playerID, this, taskID);
+//                int taskID = StatToggleMonitors.initializeBerserkToggleMonitorFor(player);
+//                PlayerPassivesManager.addKeystonePassive(playerID, this, taskID);
             }
         }
         @Override
