@@ -7,6 +7,7 @@ import com.amorabot.inscripted.item.structure.Weapon.Weapon;
 import com.amorabot.inscripted.events.ItemUsage;
 import com.amorabot.inscripted.item.structure.io.InscriptedItem;
 import com.amorabot.inscripted.item.structure.io.ItemDeserializer;
+import com.amorabot.inscripted.managers.CasterStateManager;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.equipment.PlayerEquipment;
 import com.amorabot.inscripted.skill.Skills;
@@ -51,6 +52,7 @@ public class PlayerEquipmentHandler implements Listener {
     @EventHandler
     public void onInvEvent(PlayerSwapHandItemsEvent event){
         Utils.log("Toggling spellcast mode");
+        CasterStateManager.alternateSpellcastingTriggerFor(event.getPlayer(), ItemUsage.NONE);
         event.setCancelled(true);
     }
 
@@ -78,23 +80,40 @@ public class PlayerEquipmentHandler implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerInteract(PlayerInteractEvent event){
         Player player = event.getPlayer();
-        Optional<ItemStack> usedItemOptional = Optional.ofNullable(event.getItem());
-        if (usedItemOptional.isEmpty()){
+        Optional<ItemStack> interactedItem = Optional.ofNullable(event.getItem());
+        if (interactedItem.isEmpty()){
             //Empty hand set of actions
-            Utils.log("Fisting whatever the fuck is in front of you");
+            if (event.getAction().equals(Action.LEFT_CLICK_AIR)){
+                Utils.log("Fisting whatever the fuck is in front of you");
+                return;
+            }
             return;
         }
-        ItemStack usedItem = usedItemOptional.get();
+        ItemStack usedItem = interactedItem.get();
         ItemUsage itemUsage = mapPlayerInteractAction(usedItem, event.getAction());
         switch (itemUsage){
             case NONE -> player.sendMessage("Non functional item usage");
             case ARMOR_RIGHT_CLICK_AIR -> player.sendMessage("Equiping armor!!");
             case ARMOR_LEFT_CLICK_AIR -> player.sendMessage("Punching with armor");
             case WEAPON_LEFT_CLICK_AIR, WEAPON_LEFT_CLICK_BLOCK -> {
+                if (CasterStateManager.getCastingStateFor(player).isAlternateCasting()){
+                    CasterStateManager.alternateSpellcastingTriggerFor(player,itemUsage);
+                    return;
+                }
                 weaponCast(player,usedItem,CastType.BASIC_ATTACK,69);
             }
-            case WEAPON_RIGHT_CLICK_AIR -> weaponCast(player,usedItem,CastType.MOVEMENT,69);
+            case WEAPON_RIGHT_CLICK_AIR -> {
+                if (CasterStateManager.getCastingStateFor(player).isAlternateCasting()){
+                    CasterStateManager.alternateSpellcastingTriggerFor(player,itemUsage);
+                    return;
+                }
+                weaponCast(player,usedItem,CastType.MOVEMENT,69);
+            }
             case WEAPON_RIGHT_CLICK_BLOCK -> {
+                if (CasterStateManager.getCastingStateFor(player).isAlternateCasting()){
+                    CasterStateManager.alternateSpellcastingTriggerFor(player,itemUsage);
+                    return;
+                }
                 Utils.log("Nah, ignoring movement cast on blocks");
             }
             case UNIDED_WEAPON -> player.sendMessage(Utils.color("&l&cThis weapon is not identified!"));
@@ -103,6 +122,7 @@ public class PlayerEquipmentHandler implements Listener {
     private void weaponCast(Player player, ItemStack heldItem, CastType castType, int variant){
         // Assumes a valid weapon item
         Weapon weaponData = ItemDeserializer.deserializeWeaponData(heldItem);
+        if (weaponData==null){return;}
         Skills basicAttack = getSkillVariant(weaponData,castType,variant);
         basicAttack.cast(player.getUniqueId(), CastSource.PLAYER,weaponData.getAtkSpeed());
     }
@@ -116,7 +136,6 @@ public class PlayerEquipmentHandler implements Listener {
     }
     @EventHandler(priority = EventPriority.NORMAL)
     public void onInventoryClick(InventoryClickEvent event){
-        Utils.error("beeg");
 
         if (event.isCancelled()){return;}
 
