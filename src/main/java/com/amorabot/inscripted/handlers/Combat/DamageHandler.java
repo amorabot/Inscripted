@@ -3,22 +3,24 @@ package com.amorabot.inscripted.handlers.Combat;
 import com.amorabot.inscripted.APIs.MessageAPI;
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.APIs.damageAPI.CombatEffects;
-import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
-import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
+import com.amorabot.inscripted.item.structure.io.ItemDeserializer;
+import com.amorabot.inscripted.skill.casting.CastType;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+
+import static com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler.isValidItem;
+import static com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler.weaponCast;
 
 public class DamageHandler implements Listener {
 
@@ -43,23 +45,20 @@ public class DamageHandler implements Listener {
         Entity attacker = event.getDamager();
         Entity defender = event.getEntity();
 
-        if (attacker instanceof Mob m){
-            if (defender instanceof Player p){
-//                DamageRouter.entityDamage(m,p, DamageSource.HIT, PlayerAbilities.FIST);
-                return;
-            }
-        } else {
-            event.setCancelled(true);
-        }
+//        if (attacker instanceof Mob m){
+//            if (defender instanceof Player p){
+////                DamageRouter.entityDamage(m,p, DamageSource.HIT, PlayerAbilities.FIST);
+//                return;
+//            }
+//        } else {
+//            event.setCancelled(true);
+//        }
 
-        if (attacker instanceof Player){
-            Player p = (Player) attacker;
+        if (attacker instanceof Player p){
+
             ItemStack heldItem = p.getInventory().getItemInMainHand();
             if (heldItem.getType().isAir()){ //If the player is punching
-//                Profile playerProfile = JSONProfileManager.getProfile(p.getUniqueId());
-//                if (!playerProfile.getEquipmentComponent().getSlot(ItemTypes.WEAPON).isIgnorable()){ //If punching with a equipped weapon, unequip
-//                    playerProfile.getEquipmentComponent().setSlot(ItemTypes.WEAPON, null);
-//                }
+//                FIST
                 //Temporary---------------------------
                 if (defender instanceof Player){
                     event.setCancelled(true);
@@ -70,6 +69,9 @@ public class DamageHandler implements Listener {
 //                    return;
 //                }
             }
+            boolean validClickedWeapon = isValidItem(heldItem) & ItemDeserializer.isWeapon(heldItem);
+            if (validClickedWeapon) weaponCast(p,heldItem, CastType.BASIC_ATTACK,69);
+
 //            PersistentDataContainer dataContainer = heldItem.getItemMeta().getPersistentDataContainer();
 //            boolean isWeapon = FunctionalItemAccessInterface.isItemType(FunctionalItemAccessInterface.WEAPON_TAG, dataContainer);
 //            if (isWeapon){

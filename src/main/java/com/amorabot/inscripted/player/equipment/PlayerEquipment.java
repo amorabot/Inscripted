@@ -4,7 +4,7 @@ import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.item.structure.Item;
 import com.amorabot.inscripted.player.ProfileObserver;
 import com.amorabot.inscripted.player.Subject;
-import com.amorabot.inscripted.player.profile.ProfileEvents;
+import com.amorabot.inscripted.player.profile.PlayerEvents;
 import com.amorabot.inscripted.player.profile.component.SpecialInscriptionsComponent;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
@@ -62,7 +62,7 @@ public class PlayerEquipment {
                 @Override
                 public void run() {
                     //After 2Ticks, apply changes
-                    profileSubject.notifyListeners(ProfileEvents.EQUIPMENT_CHANGE);
+                    profileSubject.notifyListeners(PlayerEvents.EQUIPMENT_CHANGE);
                     //Re-lock so it can be accessed later
                     locked=true;
                 }

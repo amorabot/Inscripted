@@ -8,7 +8,7 @@ import com.amorabot.inscripted.Inscripted;
 //import com.amorabot.inscripted.item.structure.ItemRarities;
 //import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
 //import com.amorabot.inscripted.components.Items.ItemBuilder;
-import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
+//import com.amorabot.inscripted.components.Items.relic.enums.Keystones;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -61,19 +61,19 @@ public class InscriptedMob {
 //        this.stats = null;
     }
 
-    public boolean takeDamage(int[] atkrDamage, Set<Keystones> atkrKeystones){
-//        MobStats mobStats = getStats();
-//        HealthComponent mobHP = mobStats.getMobHealth();
-//        mobHP.damage(atkrDamage, Set.of(), atkrKeystones);
-////        getHpDisplay().text(getMobHPBar());
-//        if (mobHP.getCurrentHealth()==0){
-//            kill();
-//            if (debugMode){Utils.log("Killing mob!");}
-//            return true;
-//        }
-//        if (debugMode){Utils.log("Mobs updated hp: " + mobHP.getCurrentHealth());}
-        return false;
-    }
+//    public boolean takeDamage(int[] atkrDamage, Set<Keystones> atkrKeystones){
+////        MobStats mobStats = getStats();
+////        HealthComponent mobHP = mobStats.getMobHealth();
+////        mobHP.damage(atkrDamage, Set.of(), atkrKeystones);
+//////        getHpDisplay().text(getMobHPBar());
+////        if (mobHP.getCurrentHealth()==0){
+////            kill();
+////            if (debugMode){Utils.log("Killing mob!");}
+////            return true;
+////        }
+////        if (debugMode){Utils.log("Mobs updated hp: " + mobHP.getCurrentHealth());}
+//        return false;
+//    }
 
     private Component getMobHPBar(){
         return Component.text("");

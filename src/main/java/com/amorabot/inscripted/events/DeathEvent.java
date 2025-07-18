@@ -1,13 +1,9 @@
-package com.amorabot.inscripted.handlers.Combat;
+package com.amorabot.inscripted.events;
 
 import com.amorabot.inscripted.APIs.MessageAPI;
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.APIs.damageAPI.CombatEffects;
 import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
-import com.amorabot.inscripted.Inscripted;
-//import com.amorabot.inscripted.components.HealthComponent;
-//import com.amorabot.inscripted.components.Player.stats.StatCompiler;
-import com.amorabot.inscripted.events.death.InscriptedPlayerDeathEvent;
 import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.utils.DelayedTask;
 import io.papermc.paper.entity.TeleportFlag;
@@ -15,28 +11,18 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.Duration;
 
-public class InscriptedPlayerDeathEventListener implements Listener {
-
+public class DeathEvent {
     private static final int invulnerabilityPeriod = 60; //ticks
 
-    public InscriptedPlayerDeathEventListener(){
-        Bukkit.getPluginManager().registerEvents(this, Inscripted.getPlugin());
-    }
-
-    @EventHandler
-    public void onCustomPlayerDeath(InscriptedPlayerDeathEvent event){
-        Player deadPlayer = event.getDeadPlayer();
+    public static void execute(Player deadPlayer){
         Location respawnLoc = new Location(deadPlayer.getWorld(),-1399,65,-622);
         deadPlayer.teleport(respawnLoc, TeleportFlag.EntityState.RETAIN_PASSENGERS);
         PotionEffect blindness = new PotionEffect(PotionEffectType.BLINDNESS, 30, 10, true, false, false);

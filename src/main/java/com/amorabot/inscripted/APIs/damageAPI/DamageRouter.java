@@ -1,5 +1,7 @@
 package com.amorabot.inscripted.APIs.damageAPI;
 
+import com.amorabot.inscripted.combat.damage.AttackProcessor;
+import com.amorabot.inscripted.combat.damage.DamageSource;
 import com.amorabot.inscripted.item.inscription.definition.TriggerTimes;
 import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
         import org.bukkit.entity.LivingEntity;
@@ -167,7 +169,7 @@ public class DamageRouter {
         //Early hit triggers
         if (!isDot){notifyHitTrigger(TriggerTimes.EARLY, attacker, defender, incomingHit, isCriticalHit);}
 
-        AttackProcessor.bleedAttemptOnPlayer(attacker, defender, incomingHit);
+//        AttackProcessor.bleedAttemptOnPlayer(attacker, defender, incomingHit);
 
         playerDamaged(defender, incomingHit, isSelfDamage, attacker);
 
@@ -214,7 +216,7 @@ public class DamageRouter {
 //            return true;
 //        }
 
-        AttackProcessor.bleedAttemptOnPlayer(attacker, defender, incomingHit);
+//        AttackProcessor.bleedAttemptOnPlayer(attacker, defender, incomingHit);
 
         playerDamaged(defender, incomingHit, isSelfDamage, attacker);
         //Late hit triggers

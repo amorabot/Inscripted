@@ -1,16 +1,23 @@
 package com.amorabot.inscripted.item.inscription.definition;
 
+import com.amorabot.inscripted.combat.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
+import com.amorabot.inscripted.combat.buffs.categories.damage.DamageBuff;
 import com.amorabot.inscripted.item.inscription.language.ValueType;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.component.DefenceComponent;
+import com.amorabot.inscripted.player.profile.component.HealthComponent;
 import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.skill.casting.CastSource;
 import com.amorabot.inscripted.skill.type.Aura;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -41,7 +48,16 @@ public enum KeystoneIDs {
     ORGAN_FAILURE(TriggerTimes.CONDITIONAL, true, "") {
         @Override
         public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
-            Utils.log("Template Rule for " + this);
+            HealthComponent playerHP = playerData.getProfile().getHealthComponent();
+            DamageBuff bleed = new DamageBuff(Buffs.BLEED);
+            int baseBleed = (int) (playerHP.getMaxHealth() * 0.2); // 4x 20% life
+            int[] dot = bleed.convertBaseHit(baseBleed);
+            Player strokinPlayer = Bukkit.getPlayer(playerData.getPlayerID());
+            bleed.createDamageTask(dot, strokinPlayer, true, strokinPlayer);
+
+            PlayerBuffManager.addBuffToPlayer(bleed, playerData.getPlayerID());
+            assert strokinPlayer != null;
+            strokinPlayer.sendMessage(Component.text("ORGAN FAILURE..."));
         }
     },
     FIRE_ATTUNEMENT(TriggerTimes.LATE, true, "") {

@@ -1,7 +1,10 @@
 package com.amorabot.inscripted.player.profile.component;
 
+import com.amorabot.inscripted.combat.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
 import com.amorabot.inscripted.item.inscription.definition.Stats;
+import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.BaseStats;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
@@ -61,8 +64,11 @@ public class HealthComponent implements ProfileComponent {
         return List.of();
     }
 
-    public int regenHealth(boolean inCombat, Set<KeystoneIDs> keystones){
-        boolean isBleeding = false; //TODO: remake buffs
+    public int regenHealth(boolean inCombat, Player playerToRegen){
+        PlayerDataContainer playerData = PlayerDataContainer.getDataContainerFor(playerToRegen.getUniqueId());
+        Set<KeystoneIDs> keystones = playerData.getEquipment().getSpecialInscriptions().getKeystones();
+        if (keystones.contains(KeystoneIDs.BLOOD_PACT)){return 0;}
+        boolean isBleeding = PlayerBuffManager.hasActiveBuff(Buffs.BLEED, playerToRegen.getUniqueId());
         boolean isFullLife = (health == maxHealth);
         if (isFullLife){return 0;} //Stop regening
 
@@ -75,8 +81,9 @@ public class HealthComponent implements ProfileComponent {
             int regenTick = (maxHealth-health);
             health = maxHealth;
             //Regenerated TO full heath, apply organ failure, if applicable
-            //TODO: remake organ failure
-//            Set<KeystoneIDs> keystones = getPlayerEquipment(playerID).getEquipmenKeystones();
+            if (keystones.contains(KeystoneIDs.ORGAN_FAILURE)){
+                KeystoneIDs.ORGAN_FAILURE.apply(playerData,null);
+            }
             return (regenTick);
         }
         //If theres room to regenerate, do
@@ -96,9 +103,9 @@ public class HealthComponent implements ProfileComponent {
         if (bleeding){
             finalAmount = (int) (finalAmount * 0.2);
         }
-//        if (targetKeystones.contains(Keystones.BLOOD_PACT)){
-//            finalAmount = 2*finalAmount;
-//        }
+        if (targetKeystones.contains(KeystoneIDs.BLOOD_PACT)){
+            finalAmount = 2*finalAmount;
+        }
 
         if (health+finalAmount>maxHealth){
             health = maxHealth;
@@ -116,6 +123,7 @@ public class HealthComponent implements ProfileComponent {
         if (mappedHealth==0){
             //TODO: Trigger death event?
 //            execute(player);
+            Utils.error("DEADDDDD");
             return;
         }
         double HPDiff = Math.abs((mappedHealth - player.getHealth()));
@@ -209,8 +217,10 @@ public class HealthComponent implements ProfileComponent {
         return Math.max(0.5, getNormalizedSoul()*basePlayerHearts);
     }
     public boolean isLowLife(){
-        int currentPercentage = (int) (((double)getHealth()/getMaxHealth())*100);
-        return (currentPercentage) < LOW_LIFE_THRESHOLD;
+        return (getCurrentHealthPercentage()) < LOW_LIFE_THRESHOLD;
+    }
+    public int getCurrentHealthPercentage(){
+        return (int) (((double)getHealth()/getMaxHealth())*100);
     }
 
 }

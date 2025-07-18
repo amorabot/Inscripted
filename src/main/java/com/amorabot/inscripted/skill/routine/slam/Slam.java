@@ -1,9 +1,13 @@
 package com.amorabot.inscripted.skill.routine.slam;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.combat.damage.DamageRouter;
+import com.amorabot.inscripted.combat.damage.DamageSource;
 import com.amorabot.inscripted.player.profile.component.AttackData;
+import com.amorabot.inscripted.skill.routine.SkillcastData;
 import com.amorabot.inscripted.skill.routine.slash.SlashConfig;
 import com.amorabot.inscripted.math.LinalgMath;
+import com.amorabot.inscripted.skill.type.Attack;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import lombok.Getter;
 import org.bukkit.Location;
@@ -65,14 +69,23 @@ public class Slam{
                         getImpactRoutine().accept(slamObject);
                         LivingEntity slamOwner = getOwner();
                         double impactRadius = slamData.impactRadius();
-                        final List<LivingEntity> nearbyEntities = (List<LivingEntity>) slamCenter.toLocation(slamOwner.getWorld())
-                                .getNearbyLivingEntities(impactRadius+0.3);
-                        for (LivingEntity entity : nearbyEntities){
-                            if (slamObject.getSkillcast().getCastData().getBlacklistedEntities().contains(entity.getUniqueId())){continue;}
+                        final List<Player> nearbyEntities = (List<Player>) slamCenter.toLocation(slamOwner.getWorld())
+                                .getNearbyPlayers(impactRadius+0.3);
+                        for (Player currentNearbyPlayer : nearbyEntities){
+                            Skillcast slamSkillcast = slamObject.getSkillcast();
+                            SkillcastData scData = slamSkillcast.getCastData();
+                            if (scData.getBlacklistedEntities().contains(currentNearbyPlayer.getUniqueId())){continue;}
 
-                            if (!(slamOwner).hasLineOfSight(entity)){continue;}
-                            slamObject.getSkillcast().getCastData().getAffectedEntities().add(entity.getUniqueId());
-//                            DamageRouter.entityDamage((Player) slamOwner, entity, DamageSource.HIT, getContext().getSkillUsed());
+                            if (!(slamOwner).hasLineOfSight(currentNearbyPlayer)){continue;}
+                            scData.getAffectedEntities().add(currentNearbyPlayer.getUniqueId());
+
+                            AttackData slamAttackData = null;
+                            if (slamSkillcast.getCastedSkill().isAttackSkill()){
+                                Attack slamAttack = (Attack) slamSkillcast;
+                                slamAttackData = slamAttack.getAttackData();
+                            }
+                            if (slamAttackData==null) {continue;}
+                            DamageRouter.hit(getOwner(), currentNearbyPlayer, slamSkillcast,slamAttackData, DamageSource.HIT);
                         }
                         //Post-slam effects can go here
                     }

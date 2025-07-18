@@ -29,7 +29,7 @@ public class CasterStateManager {
         switch (interaction){
             case NONE -> {
                 if (alreadyAlternateCasting){
-                    if (DEBUG_MODE) caster.sendMessage(Component.text("FF Cast").color(NamedTextColor.DARK_GREEN).decorate(TextDecoration.BOLD));
+                    if (DEBUG_MODE) caster.sendMessage(Component.text("Goblin mode activated").color(NamedTextColor.DARK_GREEN).decorate(TextDecoration.BOLD));
                     state.reset();
                     return;
                 }

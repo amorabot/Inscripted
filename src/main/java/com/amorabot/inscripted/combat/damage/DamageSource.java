@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.APIs.damageAPI;
+package com.amorabot.inscripted.combat.damage;
 
 public enum DamageSource {
     HIT,

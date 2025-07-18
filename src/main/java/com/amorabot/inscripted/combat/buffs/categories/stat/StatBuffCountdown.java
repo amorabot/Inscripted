@@ -5,7 +5,7 @@ import com.amorabot.inscripted.combat.buffs.BuffTask;
 import com.amorabot.inscripted.combat.buffs.Buffs;
 import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.player.PlayerDataContainer;
-import com.amorabot.inscripted.player.profile.ProfileEvents;
+import com.amorabot.inscripted.player.profile.PlayerEvents;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,7 +55,7 @@ public class StatBuffCountdown extends BuffTask {
         //Whatever
         Utils.log("STAT BUFF: "+buff+" expired for " + target.getName()+"!");
         PlayerBuffManager.removeBuffFrom(target.getUniqueId(), buff);
-        PlayerDataContainer.getDataContainerFor(target.getUniqueId()).onNotify(ProfileEvents.EXTERNAL_STAT_CHANGE);
+        PlayerDataContainer.getDataContainerFor(target.getUniqueId()).onNotify(PlayerEvents.EXTERNAL_STAT_CHANGE);
         this.cancel();
     }
 

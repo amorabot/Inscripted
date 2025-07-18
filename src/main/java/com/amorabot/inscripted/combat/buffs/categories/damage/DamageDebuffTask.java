@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.combat.buffs.categories.damage;
 
 import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
-import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
+import com.amorabot.inscripted.combat.damage.DamageSource;
 import com.amorabot.inscripted.combat.buffs.BuffTask;
 import com.amorabot.inscripted.combat.buffs.Buffs;
 //import com.amorabot.inscripted.file.profile.JSONProfileManager;

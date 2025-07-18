@@ -1,9 +1,13 @@
 package com.amorabot.inscripted.skill.routine.slash;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.combat.damage.DamageRouter;
+import com.amorabot.inscripted.combat.damage.DamageSource;
 import com.amorabot.inscripted.math.LinalgMath;
 import com.amorabot.inscripted.math.OrientedBoundingBox;
 import com.amorabot.inscripted.player.profile.component.AttackData;
+import com.amorabot.inscripted.skill.routine.SkillcastData;
+import com.amorabot.inscripted.skill.type.Attack;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import lombok.Getter;
 import lombok.Setter;
@@ -81,15 +85,24 @@ public class Slash{
         LivingEntity slashOwner = getSkillcast().getPlayer();
         double finalOffset = getSlashData().finalOffset();
         double attackRadius = getSlashData().baseRadius();
-        final List<LivingEntity> nearbyEntities = (List<LivingEntity>) slashOwner.getLocation().getNearbyLivingEntities(finalOffset+attackRadius+2);
-        List<LivingEntity> affectedEntities = checkCollisions(nearbyEntities);
+        final List<Player> nearbyEntities = (List<Player>) slashOwner.getLocation().getNearbyPlayers(finalOffset+attackRadius+2);
+        List<Player> affectedEntities = checkCollisions(nearbyEntities);
 
-        for (LivingEntity entity : affectedEntities){
-            if (getSkillcast().getCastData().getBlacklistedEntities().contains(entity.getUniqueId())){continue;}
+        for (Player entity : affectedEntities){
+            Skillcast slashSkillcast = getSkillcast();
+            SkillcastData scData = slashSkillcast.getCastData();
+            if (scData.getBlacklistedEntities().contains(entity.getUniqueId())){continue;}
 
             if (!slashOwner.hasLineOfSight(entity)){continue;}
-            getSkillcast().getCastData().getAffectedEntities().add(entity.getUniqueId());
-//TODO            DamageRouter.entityDamage((Player) slashOwner, entity, DamageSource.HIT, getSkillcastData().getCastingContext().getSkillUsed());
+            scData.getAffectedEntities().add(entity.getUniqueId());
+
+            AttackData slashAttackData = null;
+            if (slashSkillcast.getCastedSkill().isAttackSkill()){
+                Attack slashAttack = (Attack) slashSkillcast;
+                slashAttackData = slashAttack.getAttackData();
+            }
+            if (slashAttackData==null) {continue;}
+            DamageRouter.hit(slashSkillcast.getPlayer(), entity, slashSkillcast,slashAttackData, DamageSource.HIT);
         }
     }
 
@@ -135,20 +148,12 @@ public class Slash{
         }.runTaskTimer(Inscripted.getPlugin(),0, 1).getTaskId();
     }
 
-    public List<LivingEntity> checkCollisions(List<LivingEntity> entityList){
-        List<LivingEntity> affectedEntities = new ArrayList<>();
-        for (LivingEntity entity : entityList){
-            if (entity instanceof Player){
-                if (getHitbox().intersects(getLargeHitbox((Player) entity))){
-                    affectedEntities.add(entity);
-                }
+    public List<Player> checkCollisions(List<Player> players){
+        List<Player> affectedEntities = new ArrayList<>();
+        for (Player currentNearbyPlayer : players){
+            if (getHitbox().intersects(getLargeHitbox(currentNearbyPlayer))){
+                affectedEntities.add(currentNearbyPlayer);
             }
-            if (entity instanceof Mob mob){
-                if (getHitbox().intersects(mob.getBoundingBox())){
-                    affectedEntities.add(mob);
-                }
-            }
-            //Different entity handling...
         }
         return affectedEntities;
     }

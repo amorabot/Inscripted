@@ -2,12 +2,15 @@ package com.amorabot.inscripted.player;
 
 import com.amorabot.inscripted.combat.buffs.Buffs;
 import com.amorabot.inscripted.combat.buffs.categories.BuffData;
+import com.amorabot.inscripted.events.DeathEvent;
 import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.inscripted.item.inscription.definition.EffectIDs;
+import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
+import com.amorabot.inscripted.item.inscription.definition.TriggerTimes;
 import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
 import com.amorabot.inscripted.player.profile.Profile;
 import com.amorabot.inscripted.player.equipment.PlayerEquipment;
-import com.amorabot.inscripted.player.profile.ProfileEvents;
+import com.amorabot.inscripted.player.profile.PlayerEvents;
 import com.amorabot.inscripted.player.profile.parsing.StatParser;
 import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import com.amorabot.inscripted.skill.Skills;
@@ -27,6 +30,7 @@ import java.util.*;
 
 @Getter
 public class PlayerDataContainer implements ProfileObserver {
+    private static final boolean DEBUG_MODE = false;
 
     @Getter
     private static final Map<UUID, PlayerDataContainer> onlinePlayerData = new HashMap<>();
@@ -39,6 +43,7 @@ public class PlayerDataContainer implements ProfileObserver {
     private final PlayerEquipment equipment;
     private final Map<Integer,PlayerboundTask> playerboundTasks = new HashMap<>();
     private final Map<CastType, GlobalCooldown> skillCooldowns = new HashMap<>();
+    private final Map<EffectIDs, Long> effectCastTimes = new HashMap<>();
 //    private final Map<CastType, Skillcast.Persistent> persistentSkillInstances = new HashMap<>();
     @Getter
     private final Map<Skills, Aura> activeAuras = new HashMap<>();
@@ -59,8 +64,18 @@ public class PlayerDataContainer implements ProfileObserver {
 
 
     @Override
-    public void onNotify(ProfileEvents event) {
+    public void onNotify(PlayerEvents event) {
         switch (event){
+            case DEATH -> {
+                Player player = Bukkit.getPlayer(playerID);
+                assert player != null;
+                Player killer = player.getKiller();
+                DeathEvent.execute(player);
+
+                if (killer!= null){ //Late death trigger (Can be a troll effect :D)
+                    onNotify(TriggerTimes.LATE, TriggerTypes.ON_DEATH, player, new int[5]);
+                }
+            }
             case EQUIPMENT_CHANGE -> {
                 Utils.log("Equipment change notification!");
                 StatParser.buildProfile(this);
@@ -86,19 +101,17 @@ public class PlayerDataContainer implements ProfileObserver {
         }
     }
     @Override
-    public void onNotify(TriggerTypes combatTrigger, LivingEntity target) {
-        Player player = Bukkit.getPlayer(playerID);
+    public void onNotify(TriggerTimes triggerTime, TriggerTypes combatTrigger, Player target, int[] incomingDamage) {
+        Player caster = Bukkit.getPlayer(playerID);
         Set<EffectIDs> playerEffects = equipment.getSpecialInscriptions().getEffects();
-        switch (combatTrigger){
-            //TODO: make triggerEffects default and 'reverse' triggers (like WHEN_HIT) declarative
-            case ON_HIT -> {
-                triggerEffects(combatTrigger,playerEffects,player,target);
-            }
-        }
+        triggerEffects(triggerTime,combatTrigger,playerEffects,caster,target,incomingDamage);
     }
-    private void triggerEffects(TriggerTypes triggeredEffectType, Set<EffectIDs> playerEffects, LivingEntity caster, LivingEntity target){
+    private void triggerEffects(TriggerTimes triggerTime, TriggerTypes triggeredEffectType, Set<EffectIDs> playerEffects,
+                                Player caster, Player target, int[] incomingDamage){
         for (EffectIDs effect : playerEffects){
             if (!effect.getTrigger().equals(triggeredEffectType)){continue;}
+            if (!triggerTime.equals(effect.getTriggerTime())){return;}
+            effect.trigger(caster,target,incomingDamage);
             Utils.error(triggeredEffectType + " triggered: " + effect);
         }
     }
@@ -191,6 +204,28 @@ public class PlayerDataContainer implements ProfileObserver {
         }
         return false;
     }
+    public boolean effecTriggered(EffectIDs triggeredEffect){
+        if (triggeredEffect.getCooldowInSeconds()==0){return true;}
+        long castTime = System.currentTimeMillis();
+        if (!effectCastTimes.containsKey(triggeredEffect)){
+            effectCastTimes.put(triggeredEffect, castTime);
+            return true;
+        }
+        long lastCastTime = effectCastTimes.get(triggeredEffect);
+        long cooldownInMs = triggeredEffect.getCooldowInSeconds()*1000;
+        long remainingCD = getRemainingCD(lastCastTime, cooldownInMs);
+        if (DEBUG_MODE) {
+            Utils.log(triggeredEffect + " remaining CD: " + remainingCD);
+            Utils.log("Last cast time: " + lastCastTime + " || Effect Cooldown: " + cooldownInMs);
+            Utils.log("Remaining cooldown (ms): " + remainingCD);
+        }
+        if (remainingCD > 0){
+            return false;
+        }
+        //Can be triggered!
+        effectCastTimes.put(triggeredEffect,castTime);
+        return true;
+    }
 
     public Long fetchAbilityRemainingCooldown(CastType type){
         if (!skillCooldowns.containsKey(type)){
@@ -207,5 +242,12 @@ public class PlayerDataContainer implements ProfileObserver {
         } else {
             return cooldownTime - timeElapsed;
         }
+    }
+
+    public boolean hasKeystone(KeystoneIDs keystone){
+        return getEquipment().getSpecialInscriptions().getKeystones().contains(keystone);
+    }
+    public boolean hasEffect(EffectIDs effect){
+        return getEquipment().getSpecialInscriptions().getEffects().contains(effect);
     }
 }

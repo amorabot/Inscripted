@@ -119,14 +119,14 @@ public class PlayerEquipmentHandler implements Listener {
             case UNIDED_WEAPON -> player.sendMessage(Utils.color("&l&cThis weapon is not identified!"));
         }
     }
-    private void weaponCast(Player player, ItemStack heldItem, CastType castType, int variant){
+    public static void weaponCast(Player player, ItemStack heldItem, CastType castType, int variant){
         // Assumes a valid weapon item
         Weapon weaponData = ItemDeserializer.deserializeWeaponData(heldItem);
         if (weaponData==null){return;}
         Skills basicAttack = getSkillVariant(weaponData,castType,variant);
         basicAttack.cast(player.getUniqueId(), CastSource.PLAYER,weaponData.getAtkSpeed());
     }
-    private Skills getSkillVariant(Weapon weaponData, CastType castType, int variant){
+    public static Skills getSkillVariant(Weapon weaponData, CastType castType, int variant){
         Skills mappedSkill = Skills.mapSkillcast(weaponData.getWeaponType(), castType, variant);
         if (mappedSkill == null){
             Utils.error("Invalid basic attack..., Variant: " + variant);

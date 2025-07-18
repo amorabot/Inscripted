@@ -8,7 +8,7 @@ import com.amorabot.inscripted.combat.buffs.categories.healing.Healing;
 import com.amorabot.inscripted.combat.buffs.categories.healing.HealingBuffTask;
 import com.amorabot.inscripted.combat.buffs.categories.stat.StatBuffCountdown;
 import com.amorabot.inscripted.player.PlayerDataContainer;
-import com.amorabot.inscripted.player.profile.ProfileEvents;
+import com.amorabot.inscripted.player.profile.PlayerEvents;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -52,7 +52,7 @@ public class PlayerBuffManager {
         playerBuffMap.put(buff,buffData); //Updating the buff map
 
         if (buff.isStatBuff()){ //Stat buff instantiation
-            dataContainer.onNotify(ProfileEvents.EXTERNAL_STAT_CHANGE);
+            dataContainer.onNotify(PlayerEvents.EXTERNAL_STAT_CHANGE);
         }
 
     }
@@ -160,7 +160,7 @@ public class PlayerBuffManager {
             }
         }
         //After all stat buffs are expired, recompile player data
-        dataContainer.onNotify(ProfileEvents.EXTERNAL_STAT_CHANGE);
+        dataContainer.onNotify(PlayerEvents.EXTERNAL_STAT_CHANGE);
     }
 
     public static void removeBuffFrom(UUID playerID, Buffs buff){
