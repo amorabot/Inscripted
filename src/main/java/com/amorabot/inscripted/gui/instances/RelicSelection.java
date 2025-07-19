@@ -57,7 +57,7 @@ public class RelicSelection extends GUI {
     private Button getArmorSelector(){
         Button armorsButton = new Button((2*9)-1+7, Material.IRON_CHESTPLATE,1,false,
                 Component.text("Relic Armors").color(InscriptedPalette.RELIC.getColor()).decorate(TextDecoration.BOLD),
-                List.of(Component.text("Click to see all Relic Weapons").color(InscriptedPalette.DARK_GRAY.getColor())));
+                List.of(Component.text("Click to see all Relic Armors").color(InscriptedPalette.DARK_GRAY.getColor())));
         armorsButton.setLeftClickFunction(
                 (player, gui) -> filterButtons(Relics::isArmor)
         );

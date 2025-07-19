@@ -16,8 +16,11 @@ public class SkillcastData {
     protected final List<UUID> affectedEntities = new ArrayList<>();
     protected List<UUID> blacklistedEntities = new ArrayList<>();
 
-    public SkillcastData(SkillcastContext context, CastSource source){
+    public SkillcastData(SkillcastContext context, CastSource source, boolean ignoreOwner){
         this.castingContext = context;
         this.source = source;
+        if (ignoreOwner){
+            blacklistedEntities.add(context.getAttackerID());
+        }
     }
 }

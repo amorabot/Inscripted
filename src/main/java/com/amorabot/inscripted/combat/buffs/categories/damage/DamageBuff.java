@@ -90,7 +90,7 @@ public class DamageBuff implements BuffData {
         return finalHitDmg;
     }
 
-    public void createDamageTask(int[] dot, Player defender, boolean isSelfDamage, LivingEntity attacker){
+    public void createDamageTask(int[] dot, Player defender, boolean isSelfDamage, Player attacker){
         this.dotTask = new DamageDebuffTask(this.buff, dot, defender, isSelfDamage, attacker);
     }
 }

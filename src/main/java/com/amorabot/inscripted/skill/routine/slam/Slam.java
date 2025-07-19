@@ -55,9 +55,19 @@ public class Slam{
 
     public void execute() {
         Slam slamObject = this;
+        Player slamOwner = getOwner();
+        Skillcast slamSkillcast = slamObject.getSkillcast();
+        SkillcastData scData = slamSkillcast.getCastData();
+//        scData.getBlacklistedEntities().add(slamOwner.getUniqueId());
+        AttackData slamAttackData = null;
+        if (slamSkillcast.getCastedSkill().isAttackSkill()){
+            Attack slamAttack = (Attack) slamSkillcast;
+            slamAttackData = slamAttack.getAttackData();
+        }
         //Render
         animate();
         //Apply impact effects
+        AttackData finalSlamAttackData = slamAttackData;
         int taskID = new BukkitRunnable(){
             @Override
             public void run() {
@@ -67,25 +77,16 @@ public class Slam{
                     public void run() {
                         //Wait "delayToImpact" frames to instantiate the effects
                         getImpactRoutine().accept(slamObject);
-                        LivingEntity slamOwner = getOwner();
                         double impactRadius = slamData.impactRadius();
-                        final List<Player> nearbyEntities = (List<Player>) slamCenter.toLocation(slamOwner.getWorld())
-                                .getNearbyPlayers(impactRadius+0.3);
+                        final List<Player> nearbyEntities = (List<Player>) slamCenter.toLocation(slamOwner.getWorld()).getNearbyPlayers(impactRadius+0.3);
                         for (Player currentNearbyPlayer : nearbyEntities){
-                            Skillcast slamSkillcast = slamObject.getSkillcast();
-                            SkillcastData scData = slamSkillcast.getCastData();
                             if (scData.getBlacklistedEntities().contains(currentNearbyPlayer.getUniqueId())){continue;}
 
                             if (!(slamOwner).hasLineOfSight(currentNearbyPlayer)){continue;}
                             scData.getAffectedEntities().add(currentNearbyPlayer.getUniqueId());
 
-                            AttackData slamAttackData = null;
-                            if (slamSkillcast.getCastedSkill().isAttackSkill()){
-                                Attack slamAttack = (Attack) slamSkillcast;
-                                slamAttackData = slamAttack.getAttackData();
-                            }
-                            if (slamAttackData==null) {continue;}
-                            DamageRouter.hit(getOwner(), currentNearbyPlayer, slamSkillcast,slamAttackData, DamageSource.HIT);
+                            if (finalSlamAttackData ==null) {continue;}
+                            DamageRouter.hit(getOwner(), currentNearbyPlayer, slamSkillcast, finalSlamAttackData, DamageSource.HIT);
                         }
                         //Post-slam effects can go here
                     }
@@ -95,11 +96,12 @@ public class Slam{
     }
 
     private void animate(){
-        LivingEntity slamOwner = getOwner();
+        Player slamOwner = getOwner();
         Slam slamObject = this;
         boolean sprinting = false;
         //Handle different entities later
-        if (slamOwner != null){sprinting = ((Player) slamOwner).isSprinting();}
+        if (slamOwner != null){sprinting = slamOwner.isSprinting();}
+        assert slamOwner != null;
         Location slashOwnerLoc = slamOwner.getLocation();
         Vector[][] points = plotSlamSlash(slashOwnerLoc, sprinting);
         SlashConfig animationData = getSlamData().slashAnimationData();

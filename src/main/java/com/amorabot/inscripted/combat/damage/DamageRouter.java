@@ -74,6 +74,7 @@ public class DamageRouter {
             return true;
         }
         // Actual hit processing start
+        //TODO: extract bleed chance & dmg for bleedAttempt() call
         AttackProcessor.bleedAttemptOnPlayer(attacker, defender, baseHitData, incomingHit);
         damagePlayer(defender, incomingHit, selfDamage, attacker);
         // Combat log attacker
@@ -107,7 +108,7 @@ public class DamageRouter {
         return false;
     }
     //Handles the effects of a player being hit
-    private static void damagePlayer(Player defender, int[] incomingHit, boolean isSelfDamage, Player attacker){
+    public static void damagePlayer(Player defender, int[] incomingHit, boolean isSelfDamage, Player attacker){
         PlayerDataContainer attackerData = PlayerDataContainer.getDataContainerFor(attacker.getUniqueId());
         PlayerDataContainer defenderData = PlayerDataContainer.getDataContainerFor(defender.getUniqueId());
         Set<KeystoneIDs> attackerKeystones = attackerData.getEquipment().getSpecialInscriptions().getKeystones();

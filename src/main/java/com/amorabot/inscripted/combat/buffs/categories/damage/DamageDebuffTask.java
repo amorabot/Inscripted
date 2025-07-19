@@ -1,11 +1,14 @@
 package com.amorabot.inscripted.combat.buffs.categories.damage;
 
-import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
+import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
+import com.amorabot.inscripted.combat.damage.DamageRouter;
 import com.amorabot.inscripted.combat.damage.DamageSource;
 import com.amorabot.inscripted.combat.buffs.BuffTask;
 import com.amorabot.inscripted.combat.buffs.Buffs;
 //import com.amorabot.inscripted.file.profile.JSONProfileManager;
 import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
+import com.amorabot.inscripted.player.PlayerDataContainer;
+import com.amorabot.inscripted.player.profile.component.HealthComponent;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import org.bukkit.entity.LivingEntity;
@@ -20,7 +23,7 @@ public class DamageDebuffTask extends BuffTask {
 
     private final int totalTicks;
     private final Player defender;
-    private final LivingEntity attacker;
+    private final Player attacker;
     private final int[] damage;
     private final boolean selfDamage;
 
@@ -28,7 +31,7 @@ public class DamageDebuffTask extends BuffTask {
     private int ticks = 0;
     private int skips = 0;
 
-    public DamageDebuffTask(Buffs buff, int[] dot, Player defender, boolean isSelfDamage, LivingEntity attacker){
+    public DamageDebuffTask(Buffs buff, int[] dot, Player defender, boolean isSelfDamage, Player attacker){
         if (!buff.isDamageBuff()){
             //Invalid object, then
             this.buff = null;
@@ -60,20 +63,16 @@ public class DamageDebuffTask extends BuffTask {
             return;
         }
 
-//        if ((ticks>=totalTicks) || JSONProfileManager.getProfile(defender.getUniqueId()).getHealthComponent().getCurrentHealth() == 0){
-//            expire();
-//            return;
-//        }
+        HealthComponent defenderHealth = PlayerDataContainer.getProfile(defender.getUniqueId()).getHealthComponent();
+        if ((ticks>=totalTicks) || defenderHealth.getHealth() == 0 || EntityStateManager.isDead(attacker)){
+            expire();
+            return;
+        }
 
-//        float hurtAnimationOffset = (float)(Utils.getRandomOffset() * 90);
-//        defender.sendHurtAnimation(hurtAnimationOffset);
+        float hurtAnimationOffset = (float)(Utils.getRandomOffset() * 90);
+        defender.sendHurtAnimation(hurtAnimationOffset);
         defender.damage(0.01);
-//        boolean killed = DamageRouter.damagePlayer(defender, damage, false, selfDamage, attacker, DamageSource.DOT);
-        boolean killed = DamageRouter.damageDefendingPlayer(defender, damage, false, selfDamage, attacker, DamageSource.DOT);
-//        if (killed){
-//            expire();
-//            return;
-//        }
+        DamageRouter.damagePlayer(defender,damage,selfDamage,attacker);
         buff.effectOn(defender);
         ticks++;
     }

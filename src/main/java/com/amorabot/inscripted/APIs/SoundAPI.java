@@ -11,6 +11,10 @@ import org.bukkit.entity.Player;
 
 public class SoundAPI {
 
+    public static void playAnvil(Audience audience, Location loc){
+        SoundAPI.playGenericSoundAtLocation(audience,loc,"block.anvil.land",0.7f,0.5f);
+    }
+
     public static void playDodgeFor(Audience audience, Location dodgeLocation){
         playGenericSoundAtLocation(audience,
                 dodgeLocation,

@@ -89,12 +89,16 @@ public enum Skills {
     private final CastType type;
     private final Tags[] skillTags;
     private final int cooldownInSeconds;
+    private boolean ignoreOwner = true;
 
-    Skills(Consumer<Skillcast> routine, CastType type, Tags[] skillTags, int cooldown){
+    Skills(Consumer<Skillcast> routine, CastType type, Tags[] skillTags, int cooldown, boolean... ignoreOwner){
         this.skillRoutine = routine;
         this.type = type;
         this.skillTags = skillTags;
         this.cooldownInSeconds = cooldown;
+        if (ignoreOwner!=null && ignoreOwner.length==1){
+            this.ignoreOwner = ignoreOwner[0];
+        }
     }
 
 

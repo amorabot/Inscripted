@@ -22,7 +22,7 @@ public abstract class Skillcast extends PlayerboundTask{
 
     public Skillcast(UUID playerID, Skills sourceSkill, CastSource castSource, int baseCDMod) {
         super(playerID);
-        this.castData = new SkillcastData(new SkillcastContext(getPlayer(),sourceSkill),castSource);
+        this.castData = new SkillcastData(new SkillcastContext(getPlayer(),sourceSkill),castSource,sourceSkill.isIgnoreOwner());
         this.baseCooldownMod = baseCDMod;
     }
     @Override

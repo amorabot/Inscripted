@@ -14,6 +14,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -21,7 +22,7 @@ import java.util.function.BiConsumer;
 @Getter
 @Setter
 public class Button implements InterfaceButton {
-    private final ItemStack icon;
+    private ItemStack icon;
     private final int slot;
     private BiConsumer<Player, GUI> leftClickFunction;
     private BiConsumer<Player, GUI> rightClickFunction;
@@ -105,5 +106,17 @@ public class Button implements InterfaceButton {
             return;
         }
         shiftRightClickFunction.accept(playerWhoClicked, openGUI);
+    }
+
+    public void applyGlint(){
+        icon.editMeta(
+                itemMeta -> {
+                    itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, false);
+                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                }
+        );
+    }
+    public void removeGlint(){
+        icon.editMeta(ItemMeta::removeEnchantments);
     }
 }

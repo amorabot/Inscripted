@@ -82,15 +82,15 @@ public class Slash{
 
 
     private void checkCollisions(){
-        LivingEntity slashOwner = getSkillcast().getPlayer();
+        Skillcast slashSkillcast = getSkillcast();
+        SkillcastData scData = slashSkillcast.getCastData();
+        Player slashOwner = getSkillcast().getPlayer();
         double finalOffset = getSlashData().finalOffset();
         double attackRadius = getSlashData().baseRadius();
         final List<Player> nearbyEntities = (List<Player>) slashOwner.getLocation().getNearbyPlayers(finalOffset+attackRadius+2);
         List<Player> affectedEntities = checkCollisions(nearbyEntities);
 
         for (Player entity : affectedEntities){
-            Skillcast slashSkillcast = getSkillcast();
-            SkillcastData scData = slashSkillcast.getCastData();
             if (scData.getBlacklistedEntities().contains(entity.getUniqueId())){continue;}
 
             if (!slashOwner.hasLineOfSight(entity)){continue;}
