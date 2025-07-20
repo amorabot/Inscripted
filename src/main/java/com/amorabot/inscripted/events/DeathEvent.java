@@ -23,22 +23,29 @@ public class DeathEvent {
     private static final int invulnerabilityPeriod = 60; //ticks
 
     public static void execute(Player deadPlayer){
-        Location respawnLoc = new Location(deadPlayer.getWorld(),-1399,65,-622);
+        EntityStateManager.setDead(deadPlayer,true);
+
+        Location respawnLoc = new Location(deadPlayer.getWorld(),0,126,-326);
         deadPlayer.teleport(respawnLoc, TeleportFlag.EntityState.RETAIN_PASSENGERS);
         PotionEffect blindness = new PotionEffect(PotionEffectType.BLINDNESS, 30, 10, true, false, false);
         blindness.apply(deadPlayer);
         PlayerBuffManager.clearAllBuffsFor(deadPlayer.getUniqueId());
         CombatEffects.deathEffect(deadPlayer);
-        if (deadPlayer.getKiller() != null) {
+
+        String killerName = "???";
+
+        Player killer = deadPlayer.getKiller();
+        if (killer != null) {
             Audience audience = Audience.audience(deadPlayer, deadPlayer.getKiller());
             SoundAPI.playDeathSoundFor(audience, deadPlayer.getLocation());
             MessageAPI.broadcast(MessageAPI.deathMessage(deadPlayer.getKiller(), deadPlayer));
+            killerName = killer.getName();
         } else {
             MessageAPI.broadcast(Component.text(deadPlayer.getName() + " ☠").color(NamedTextColor.RED));
         }
 
         final Component mainTitleText = Component.text("You Died").color(NamedTextColor.RED);
-        final Component subtitleText = Component.text("to " + deadPlayer.getKiller().getName()).color(NamedTextColor.RED);
+        final Component subtitleText = Component.text("to " + killerName).color(NamedTextColor.RED);
 
         final Title title = Title.title(
                 mainTitleText, subtitleText,

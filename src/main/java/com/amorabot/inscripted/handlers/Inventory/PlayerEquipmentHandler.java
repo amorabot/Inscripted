@@ -37,6 +37,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.amorabot.inscripted.APIs.SoundAPI.playAttackSoundFor;
 import static com.amorabot.inscripted.item.structure.io.ItemDeserializer.isNotFunctional;
 
 //TODO: fragment this class in multiple event handlers
@@ -96,9 +97,15 @@ public class PlayerEquipmentHandler implements Listener {
             case ARMOR_RIGHT_CLICK_AIR -> player.sendMessage("Equiping armor!!");
             case ARMOR_LEFT_CLICK_AIR -> player.sendMessage("Punching with armor");
             case WEAPON_LEFT_CLICK_AIR, WEAPON_LEFT_CLICK_BLOCK -> {
+                Weapon weaponData = ItemDeserializer.deserializeWeaponData(usedItem);
                 if (CasterStateManager.getCastingStateFor(player).isAlternateCasting()){
                     CasterStateManager.alternateSpellcastingTriggerFor(player,itemUsage);
                     return;
+                }
+                if (weaponData!=null){
+                    if (!player.hasCooldown(usedItem.getType())){
+                        playAttackSoundFor(player,player.getLocation(),weaponData.getWeaponType());
+                    }
                 }
                 weaponCast(player,usedItem,CastType.BASIC_ATTACK,69);
             }
@@ -114,7 +121,8 @@ public class PlayerEquipmentHandler implements Listener {
                     CasterStateManager.alternateSpellcastingTriggerFor(player,itemUsage);
                     return;
                 }
-                Utils.log("Nah, ignoring movement cast on blocks");
+                weaponCast(player,usedItem,CastType.MOVEMENT,69);
+//                Utils.log("Nah, ignoring movement cast on blocks");
             }
             case UNIDED_WEAPON -> player.sendMessage(Utils.color("&l&cThis weapon is not identified!"));
         }

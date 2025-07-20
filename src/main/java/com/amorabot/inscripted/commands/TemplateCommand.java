@@ -1,34 +1,32 @@
 package com.amorabot.inscripted.commands;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.displays.DisplayBlock;
 import com.amorabot.inscripted.gui.instances.RelicSelection;
 import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.combat.buffs.Buffs;
 import com.amorabot.inscripted.combat.buffs.categories.damage.DamageBuff;
 import com.amorabot.inscripted.combat.buffs.categories.stat.StatBuff;
-import com.amorabot.inscripted.item.structure.Armor.Armor;
-import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
-import com.amorabot.inscripted.item.structure.EquipmentSlots;
-import com.amorabot.inscripted.item.structure.ItemRarities;
-import com.amorabot.inscripted.item.structure.Weapon.Weapon;
-import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.math.LinalgMath;
 import com.amorabot.inscripted.particle.ParticlePlotter;
 import com.amorabot.inscripted.skill.routine.projectile.Projectile;
 import com.amorabot.inscripted.math.OrientedBoundingBox;
 import com.amorabot.inscripted.utils.ColorUtils;
+import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
 
 public class TemplateCommand implements CommandExecutor {
 
@@ -41,6 +39,7 @@ public class TemplateCommand implements CommandExecutor {
      */
 
     public static Skeleton testDummy = null;
+    private static DisplayBlock testDisplay = null;
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
@@ -93,17 +92,10 @@ public class TemplateCommand implements CommandExecutor {
                     PlayerBuffManager.addBuffToPlayer(tailwind, player.getUniqueId());
                     return true;
                 case "cripple":
-//                    StatBuff cripple = new StatBuff(Buffs.MAIM, player);
-//                    player.sendMessage("Applying cripple :(");
-//                    PlayerBuffManager.addBuffToPlayer(cripple, player);
+
                     return true;
                 case "rejuv":
-//                    HealingBuff rejuv = new HealingBuff(Buffs.REJUVENATE);
-//                    Utils.msgPlayer(player, "Rejuvenating!");
-//                    int baseHealing = rejuv.getFinalHealingTick(JSONProfileManager.getProfile(player.getUniqueId()));
-//                    rejuv.createHealingTask(baseHealing, player, player);
-//
-//                    PlayerBuffManager.addBuffToPlayer(rejuv, player);
+
                     return true;
                 case "ui":
                     new RelicSelection(player).open();
@@ -129,20 +121,46 @@ public class TemplateCommand implements CommandExecutor {
                     if (spreadOBB.intersects(player.getBoundingBox())){Utils.msgPlayer(player, "CollisioN!");}
                     return true;
                 case "modGen":
-                    Weapon testWeapon = new Weapon(90, WeaponTypes.AXE,ItemRarities.RUNIC,true,false);
-                    ItemStack weaponItem = testWeapon.getItemForm();
-                    player.getInventory().addItem(weaponItem);
 
-                    Armor testArmor = new Armor(86, ArmorTypes.ARMORED, ItemRarities.AUGMENTED,true, false, EquipmentSlots.CHESTPLATE);
-                    ItemStack armorItemStack = testArmor.getItemForm();
-                    Armor hybridArmor = new Armor(86, ArmorTypes.ORNATE, ItemRarities.COMMON,true, false, EquipmentSlots.LEGGINGS);
-                    ItemStack hybItemStack = hybridArmor.getItemForm();
-                    Armor soulArmor = new Armor(40, ArmorTypes.RUNISTEEL, ItemRarities.RUNIC,true, false, EquipmentSlots.CHESTPLATE);
-                    ItemStack soulItemStack = soulArmor.getItemForm();
+                    return true;
+                case "tp":
+                    if (testDisplay==null) return false;
+                    new DelayedTask(new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (testDisplay != null){
+                                testDisplay.teleportTo(player.getLocation());
+                                testDisplay.scale(2.5 * Math.random());
+                                testDisplay.setLerpValues(0,20);
 
-                    player.getInventory().addItem(armorItemStack);
-                    player.getInventory().addItem(hybItemStack);
-                    player.getInventory().addItem(soulItemStack);
+//                                testDisplay.getBlock().setDisplayHeight(3);
+//                                testDisplay.teleport(player.getLocation());
+
+//                                Vector pos = player.getLocation().toVector();
+//                                testDisplay.setTeleportDuration(10);
+//                                Transformation delayedTrans = testDisplay.getTransformation();
+//                                testDisplay.setInterpolationDelay(-1);
+//                                testDisplay.setInterpolationDuration(40);
+//                                delayedTrans.getTranslation().set(pos.getX(),pos.getY(),pos.getZ());
+//                                delayedTrans.getTranslation().lerp(new Vector3f((float) pos.getX(), (float) pos.getY(), (float) pos.getZ()),0.5f);
+//                                testDisplay.setTransformation(delayedTrans);
+                            }
+                        }
+                    },20);
+                    return true;
+                case "create":
+                    testDisplay = new DisplayBlock(player.getLocation().toVector(),playerWorld,Material.BLACK_BANNER,100,true);
+                    testDisplay.setTpLerp(10);
+//                    Transformation trans = test.getTransformation();
+//                    trans.getScale().set(10);
+//                    trans.getLeftRotation().y = 0.5f;
+
+                    return true;
+                case "lerp":
+                    if (testDisplay==null) return false;
+                    int lerpDuration = 20;
+                    Matrix4f mat = new Matrix4f().scale(0.5F); // scale to 0.5x - smaller item
+                    testDisplay.animateKeyframes(mat,lerpDuration,baseMatrix -> baseMatrix.rotateY(((float) Math.toRadians(180)) + 0.1F));
                     return true;
             }
         }

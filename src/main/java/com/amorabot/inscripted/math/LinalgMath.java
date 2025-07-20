@@ -4,6 +4,9 @@ import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LinalgMath {
 
     private static double sen(double rads){
@@ -257,6 +260,17 @@ public class LinalgMath {
 
         if (isInverted){perpendicularAxis.multiply(-1);}
         return new Vector[]{perpendicularAxis,initialDirection,slashPlaneNormal};
+    }
+    public static List<Vector> plotCircleBorder(Vector center, double radius, int points){
+        List<Vector> plottedPoints = new ArrayList<>();
+        double angleStep = 2*Math.PI/points;
+        for (double a = 0; a < 2*Math.PI; a+=angleStep){
+            double xPos = Math.sin(a)*radius;
+            double zPos = Math.cos(a)*radius;
+            Vector currentPoint = center.clone().add(new Vector(xPos, 0, zPos));
+            plottedPoints.add(currentPoint);
+        }
+        return plottedPoints;
     }
 
     public static Vector[] plotNonAlignedCircleBorder(Vector center, Vector planeNormal, double radius, int numPoints){

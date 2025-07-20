@@ -8,6 +8,7 @@ import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
 import com.amorabot.inscripted.item.inscription.definition.TriggerTimes;
 import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
 import com.amorabot.inscripted.player.PlayerDataContainer;
+import com.amorabot.inscripted.player.profile.PlayerEvents;
 import com.amorabot.inscripted.player.profile.Profile;
 import com.amorabot.inscripted.player.profile.component.AttackData;
 import com.amorabot.inscripted.player.profile.component.DefenceComponent;
@@ -61,6 +62,11 @@ public class DamageRouter {
     }
     public static boolean hitPlayer(Player attacker, Player defender, AttackData baseHitData, int[] incomingHit, DamageSource damageSource,
                                  boolean criticalHit, boolean selfDamage, boolean isDot){
+        if (EntityStateManager.isPlayerDead(defender)){
+            Utils.error("ded");
+            return true;
+        }
+
         PlayerDataContainer attackerData = PlayerDataContainer.getDataContainerFor(attacker.getUniqueId());
         PlayerDataContainer defenderData = PlayerDataContainer.getDataContainerFor(defender.getUniqueId());
 
@@ -68,9 +74,6 @@ public class DamageRouter {
         double mappedHealth = defenderHealth.getPlayerHearts();
         if (mappedHealth == 0){
             Utils.error("Early death: Attempting to damage player with 0 HP");
-            if (EntityStateManager.isPlayerDead(defender)){
-                Utils.error("ded");
-            }
             return true;
         }
         // Actual hit processing start
@@ -96,7 +99,8 @@ public class DamageRouter {
             HealthComponent.updateHealthHearts(defender,defenderHealth);
             HealthComponent.updateSoulHearts(defender,defenderHealth);
         } else {
-            Utils.log("Defender " + defender.getName() + " actually died to damage!");
+            defender.setKiller(attacker);
+            PlayerDataContainer.getDataContainerFor(defender.getUniqueId()).onNotify(PlayerEvents.DEATH);
             return true;
         }
 

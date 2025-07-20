@@ -4,6 +4,8 @@ import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.combat.buffs.Buffs;
 import com.amorabot.inscripted.combat.buffs.categories.healing.HealingBuff;
 import com.amorabot.inscripted.combat.buffs.categories.stat.StatBuff;
+import com.amorabot.inscripted.combat.damage.DamageRouter;
+import com.amorabot.inscripted.combat.damage.DamageSource;
 import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
 import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.particle.ParticlePlotter;
@@ -83,28 +85,27 @@ public class ItemAuras {
             @Override
             public void run() {
                 cancelIfInvalidParentAura(auraSkillcast,this);
-                thunderstruckRoutine(skillcast.getPlayer(),damageSnapshot,radius);
+                thunderstruckRoutine(skillcast.getPlayer(),skillcast, damageSnapshot,radius);
             }
         };
         int thunderstruckInstanceID = thunderstruckSubroutine.runTaskTimer(Inscripted.getPlugin(),0, periodInTicks).getTaskId();
         auraSkillcast.setPersistentRoutineID(thunderstruckInstanceID);
     }
-    private static void thunderstruckRoutine(Player caster, AttackData auraDamage, float radius){
+    private static void thunderstruckRoutine(Player caster, Skillcast thunderstruckSkillcast, AttackData auraDamage, float radius){
         if (caster.isSneaking()){return;}
         Location playerLoc = caster.getLocation();
         World world = playerLoc.getWorld();
-        ParticlePlotter.plotColoredCircleAt(playerLoc.toVector(), world,
-                240,
-                200,
-                100,
-                1.3F,
-                radius,
-                30);
-        ParticlePlotter.plotCircleAt(playerLoc.toVector(), world, Particle.ELECTRIC_SPARK, radius, 20);
-        List<LivingEntity> nearbyEntities = (List<LivingEntity>) playerLoc.getNearbyLivingEntities(radius+0.1);
-        for (LivingEntity entity : nearbyEntities){
+        ParticlePlotter.plotColoredCircleAt(playerLoc.toVector(), world, 160,160,160, 1.5F, radius, 16);
+        ParticlePlotter.plotDirectionalCircleAt(playerLoc.toVector(),world, Particle.ELECTRIC_SPARK, (radius-0.1f), 16, true, 1.2f);
+        ParticlePlotter.plotDirectionalCircleAt(playerLoc.toVector(),world,Particle.ELECTRIC_SPARK, (radius/2), 16, true, 1.2f);
+        List<Player> nearbyEntities = (List<Player>) playerLoc.getNearbyPlayers(radius+0.1);
+        for (Player entity : nearbyEntities){
             ParticlePlotter.thunderAt(entity.getLocation().clone(), 4, 16);
-            //TODO: Damage entity
+            if (entity.equals(caster)) {
+                DamageRouter.hit(caster,entity,thunderstruckSkillcast,auraDamage, DamageSource.SELF);
+                continue;
+            }
+            DamageRouter.hit(caster,entity,thunderstruckSkillcast,auraDamage, DamageSource.HIT);
         }
     }
 

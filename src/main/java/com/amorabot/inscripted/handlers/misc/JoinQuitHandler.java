@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.handlers.misc;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.combat.EntityStateManager;
 import com.amorabot.inscripted.file.profile.ProfileDatabase;
 import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
 import com.amorabot.inscripted.player.PlayerDataContainer;
@@ -61,18 +62,11 @@ public class JoinQuitHandler implements Listener {
     }
 
     private void initializePlayer(Player player){
-//        PlayerBuffManager.initializePlayer(player);
-//        EntityStateManager.setPlayerMetadata(player);
-        //                                                          min 0  |  max 1
+        EntityStateManager.setPlayerMetadata(player);
         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE)).setBaseValue(1);
         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_ABSORPTION)).setBaseValue(20);
         player.setSaturatedRegenRate(3000);
-
     }
-//    private void destroyPlayerData(Player player){
-//        //Un-instantiate bossbars
-////        PlayerBuffManager.expirePlayerStatBuffs(player);
-//    }
 
     private void showTitleTo(Player player, String mainTitle, String subtitle){
         final Component mainTitleText = Component.text(mainTitle);

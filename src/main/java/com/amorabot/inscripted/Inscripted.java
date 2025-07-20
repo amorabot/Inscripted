@@ -1,5 +1,6 @@
 package com.amorabot.inscripted;
 
+import com.amorabot.inscripted.combat.EntityStateManager;
 import com.amorabot.inscripted.commands.*;
 import com.amorabot.inscripted.file.profile.ProfileDatabase;
 import com.amorabot.inscripted.item.relic.Relics;
@@ -108,6 +109,9 @@ public final class Inscripted extends JavaPlugin {
         getScheduler().cancelTasks(this);
         Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
         if (onlinePlayers.isEmpty()){return;}
+        for (Player onlinePlayer : onlinePlayers){
+            EntityStateManager.setPlayerMetadata(onlinePlayer);
+        }
         ProfileDatabase.reloadOnlinePlayers(onlinePlayers);
 //        JSONProfileManager.reloadOnlinePlayers(Bukkit.getOnlinePlayers());
 //        PlayerRegenManager.reloadOnlinePlayers();
@@ -162,7 +166,7 @@ public final class Inscripted extends JavaPlugin {
         //CUSTOM EVENT LISTENERS
 //        new ArmorEquipListener();
         new InscriptedPlayerDeathEventListener();
-        new WeaponEquipListener();
+//        new WeaponEquipListener();
         new CurrencyUsageListener();
     }
 

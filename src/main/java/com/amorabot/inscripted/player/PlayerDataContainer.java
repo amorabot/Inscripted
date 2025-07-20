@@ -39,7 +39,7 @@ public class PlayerDataContainer implements ProfileObserver {
     private final UUID playerID;
     private final Profile profile;
     @Setter
-    private StatPool globalStats; // Fully compiled global player stats cache ( Equipment + Keystones + External stats + ...)
+    private StatPool globalStats = new StatPool(); // Fully compiled global player stats cache ( Equipment + Keystones + External stats + ...)
     private final PlayerEquipment equipment;
     private final Map<Integer,PlayerboundTask> playerboundTasks = new HashMap<>();
     private final Map<CastType, GlobalCooldown> skillCooldowns = new HashMap<>();

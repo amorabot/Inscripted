@@ -1,6 +1,8 @@
 package com.amorabot.inscripted.tasks.base;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.item.inscription.definition.TriggerTimes;
+import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.skill.casting.CastSource;

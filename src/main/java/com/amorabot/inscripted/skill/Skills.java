@@ -1,8 +1,11 @@
 package com.amorabot.inscripted.skill;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
+import com.amorabot.inscripted.item.inscription.definition.TriggerTimes;
+import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
+import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import com.amorabot.inscripted.skill.annotations.AttackSkill;
 import com.amorabot.inscripted.skill.annotations.PersistentSkill;
@@ -15,6 +18,7 @@ import com.amorabot.inscripted.skill.archetypes.dagger.DaggerBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.dagger.DaggerMovement;
 import com.amorabot.inscripted.skill.archetypes.mace.MaceBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.mace.MaceMovement;
+import com.amorabot.inscripted.skill.archetypes.mace.MaceSpecialAttacks;
 import com.amorabot.inscripted.skill.archetypes.sword.SwordBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.sword.SwordMovement;
 import com.amorabot.inscripted.skill.archetypes.wand.WandBasicAttacks;
@@ -29,6 +33,7 @@ import com.amorabot.inscripted.skill.type.Movement;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -64,20 +69,23 @@ public enum Skills {
 
     //Movement skills
     CHARGE(AxeMovement::charge,CastType.MOVEMENT, new Tags[0],10),
-    LEAP(SwordMovement::leap,CastType.MOVEMENT, new Tags[0],3),
-    ACROBATICS(BowMovement::acrobatics,CastType.MOVEMENT, new Tags[0],5),
+    LEAP(SwordMovement::leap,CastType.MOVEMENT, new Tags[0],3),//TODO: improve visuals
+    ACROBATICS(BowMovement::acrobatics,CastType.MOVEMENT, new Tags[0],5),//TODO: improve visuals
     VANISH(DaggerMovement::vanish,CastType.MOVEMENT, new Tags[0],12),
     WARP(WandMovement::warp,CastType.MOVEMENT, new Tags[0],7),
-    TECTONIC_PULL(MaceMovement::pull,CastType.MOVEMENT, new Tags[0],7),
+    TECTONIC_PULL(MaceMovement::pull,CastType.MOVEMENT, new Tags[0],7),//TODO: improve visuals
+
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 10, 10, 10, -70}, dmgConversion = {0, 0, 0, 0} )
+    EARTHQUAKE(MaceSpecialAttacks::earthquake,CastType.SPECIAL_ATTACK,new Tags[0],2),
 
     // Keystone Auras
     @PersistentSkill( period = 3, maxDuration = -1 )
-    PERMAFROST(ItemAuras::permafrost, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),
+    PERMAFROST(ItemAuras::permafrost, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0), //TODO: improve visuals
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 15,70, 0,0}, dmgEffectiveness = {0, 0, 50, 0, 0}, dmgConversion = {0, 0, 30, 0} )
     @PersistentSkill( period = 1.5, maxDuration = -1 )
     THUNDERSTRUCK(ItemAuras::thunderstruck, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),
     @PersistentSkill( period = 0.2, maxDuration = -1 )
-    RIGHTEOUS_FIRE(ItemAuras::righteousFire, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),
+    RIGHTEOUS_FIRE(ItemAuras::righteousFire, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),//TODO: implement dot damage
     @PersistentSkill( period = 10, maxDuration = -1 )
     WINDS_OF_CHANGE(ItemAuras::windsOfChange, CastType.NEUTRAL, new Tags[]{Tags.AURA},0),
     @PersistentSkill( period = 0.5, maxDuration = -1 )
@@ -91,6 +99,7 @@ public enum Skills {
     private final int cooldownInSeconds;
     private boolean ignoreOwner = true;
 
+    //TODO: implement cast sound function
     Skills(Consumer<Skillcast> routine, CastType type, Tags[] skillTags, int cooldown, boolean... ignoreOwner){
         this.skillRoutine = routine;
         this.type = type;
@@ -113,7 +122,10 @@ public enum Skills {
                 new Attack.Basic(casterID,this,source,speedModifier).start(0,0);
             }
             case MOVEMENT -> //Instantiate a Movement
-                    new Movement(casterID,this,source,speedModifier).start(0,0);
+            {
+                new Movement(casterID,this,source,speedModifier).start(0,0);
+                PlayerDataContainer.getDataContainerFor(casterID).onNotify(TriggerTimes.LATE, TriggerTypes.ON_MOVEMENT, Bukkit.getPlayer(casterID),new int[1]);
+            }
             case UTILITY -> {
                 if (persistent){
                     // Instantiate a Aura
@@ -131,6 +143,8 @@ public enum Skills {
                 Utils.error("Fucked skillcast :D");
             }
         }
+        PlayerDataContainer.getDataContainerFor(casterID).onNotify(TriggerTimes.LATE, TriggerTypes.ON_CAST, Bukkit.getPlayer(casterID),new int[1]);
+
     }
     private static void invalidAbilityCast(Player caster){
         SoundAPI.playGenericSoundAtLocation(caster, caster.getLocation(), "block.note_block.basedrum", 0.9F, 1.0F);

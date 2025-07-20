@@ -91,7 +91,6 @@ public class SoundAPI {
             case MACE -> {
                 playGenericSoundAtLocation(audience, loc, "block.gravel.break", 0.7f, 0.6f);
 //                playGenericSoundAtLocation(audience, loc, "block.basalt.break", 0.8f, 0.5f);
-//                playGenericSoundAtLocation(audience, loc, "entity.zombie.break_wooden_door", 0.1f, 0.2f);
             }
         }
     }

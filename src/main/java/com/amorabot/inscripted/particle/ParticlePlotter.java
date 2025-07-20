@@ -8,7 +8,8 @@ import org.bukkit.util.Vector;
 import static com.amorabot.inscripted.utils.Utils.getRandomOffset;
 //Use block markers for player portals
 //Dust plume for slams (and orb sucess?)
-
+// make the plotted directional particle aim a little higher
+//     cool effect   ParticlePlotter.plotDirectionalCircleAt(slamCenter,world, Particle.CAMPFIRE_COSY_SMOKE,0.3f,12,false,0.3f);
 public class ParticlePlotter {
 
     public static void spawnParticleAt(Vector position, World world, Particle particle){
@@ -81,7 +82,7 @@ public class ParticlePlotter {
         for (double a = 0; a < 2*Math.PI; a+=angleStep){
             double xPos = Math.sin(a)*radius;
             double zPos = Math.cos(a)*radius;
-            Vector currentPoint = center.clone().add(new Vector(xPos, 0.4D, zPos));
+            Vector currentPoint = center.clone().add(new Vector(xPos, 0.1f, zPos));
             Vector dir;
             dir = currentPoint.clone().subtract(center).normalize();
             if (inward){
