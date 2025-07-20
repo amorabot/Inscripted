@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.events;
 
-import com.amorabot.inscripted.components.Items.currency.Currencies;
+import com.amorabot.inscripted.item.currency.Currencies;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

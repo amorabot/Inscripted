@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.combat.damage;
 
-import com.amorabot.inscripted.APIs.damageAPI.CombatEffects;
-import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
+import com.amorabot.inscripted.combat.CombatEffects;
+import com.amorabot.inscripted.combat.EntityStateManager;
 import com.amorabot.inscripted.combat.buffs.Buffs;
 import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;

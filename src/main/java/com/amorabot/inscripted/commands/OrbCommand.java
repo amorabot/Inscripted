@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.commands;
 
-import com.amorabot.inscripted.components.Items.currency.Currencies;
+import com.amorabot.inscripted.item.currency.Currencies;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;

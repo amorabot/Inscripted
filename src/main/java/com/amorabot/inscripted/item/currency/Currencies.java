@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.components.Items.currency;
+package com.amorabot.inscripted.item.currency;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.Inscripted;

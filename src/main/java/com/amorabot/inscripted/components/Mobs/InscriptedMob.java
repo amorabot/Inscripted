@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.components.Mobs;
 
-import com.amorabot.inscripted.APIs.damageAPI.CombatEffects;
-import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
+import com.amorabot.inscripted.combat.CombatEffects;
+import com.amorabot.inscripted.combat.EntityStateManager;
 import com.amorabot.inscripted.Inscripted;
 //import com.amorabot.inscripted.components.HealthComponent;
 //import com.amorabot.inscripted.components.Items.Abstract.Item;
@@ -16,8 +16,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.Set;
 
 @Getter
 public class InscriptedMob {

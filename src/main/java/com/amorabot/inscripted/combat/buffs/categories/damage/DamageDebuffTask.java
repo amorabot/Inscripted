@@ -1,8 +1,7 @@
 package com.amorabot.inscripted.combat.buffs.categories.damage;
 
-import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
+import com.amorabot.inscripted.combat.EntityStateManager;
 import com.amorabot.inscripted.combat.damage.DamageRouter;
-import com.amorabot.inscripted.combat.damage.DamageSource;
 import com.amorabot.inscripted.combat.buffs.BuffTask;
 import com.amorabot.inscripted.combat.buffs.Buffs;
 //import com.amorabot.inscripted.file.profile.JSONProfileManager;
@@ -11,7 +10,6 @@ import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.component.HealthComponent;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;

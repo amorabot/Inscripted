@@ -1,10 +1,8 @@
 package com.amorabot.inscripted.handlers.Inventory;
 
-import com.amorabot.inscripted.APIs.EventAPI;
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.currency.Currencies;
+import com.amorabot.inscripted.item.currency.Currencies;
 import com.amorabot.inscripted.item.structure.io.ItemDeserializer;
-import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

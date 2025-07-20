@@ -1,22 +1,13 @@
 package com.amorabot.inscripted.handlers.Inventory;
 
-import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.currency.Currencies;
 import com.amorabot.inscripted.events.CurrencyUsageEvent;
-import com.amorabot.inscripted.utils.ColorUtils;
 import com.amorabot.inscripted.utils.Utils;
-import net.kyori.adventure.audience.Audience;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.amorabot.inscripted.components.Items.currency.Currencies.rollCorruptionOutcome;
 
 public class CurrencyUsageListener implements Listener {
 

@@ -1,20 +1,17 @@
 package com.amorabot.inscripted.components.Mobs;
 
 import com.amorabot.inscripted.APIs.MedicalCareAPI;
-import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
-import com.amorabot.inscripted.player.profile.component.AttackData;
+import com.amorabot.inscripted.combat.EntityStateManager;
 import com.amorabot.inscripted.player.profile.component.DefenceComponent;
 import com.amorabot.inscripted.player.profile.component.HealthComponent;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
 

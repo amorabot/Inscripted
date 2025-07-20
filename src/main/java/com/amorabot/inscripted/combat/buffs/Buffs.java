@@ -1,6 +1,6 @@
 package com.amorabot.inscripted.combat.buffs;
 
-import com.amorabot.inscripted.APIs.damageAPI.CombatEffects;
+import com.amorabot.inscripted.combat.CombatEffects;
 import com.amorabot.inscripted.item.inscription.definition.Stats;
 import com.amorabot.inscripted.item.inscription.language.ValueType;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;

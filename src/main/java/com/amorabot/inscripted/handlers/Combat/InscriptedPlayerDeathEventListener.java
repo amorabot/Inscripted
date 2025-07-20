@@ -2,8 +2,8 @@ package com.amorabot.inscripted.handlers.Combat;
 
 import com.amorabot.inscripted.APIs.MessageAPI;
 import com.amorabot.inscripted.APIs.SoundAPI;
-import com.amorabot.inscripted.APIs.damageAPI.CombatEffects;
-import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
+import com.amorabot.inscripted.combat.CombatEffects;
+import com.amorabot.inscripted.combat.EntityStateManager;
 import com.amorabot.inscripted.Inscripted;
 //import com.amorabot.inscripted.components.HealthComponent;
 //import com.amorabot.inscripted.components.Player.stats.StatCompiler;

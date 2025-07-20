@@ -1,4 +1,4 @@
-package com.amorabot.inscripted.APIs.damageAPI;
+package com.amorabot.inscripted.combat;
 
 import com.amorabot.inscripted.Inscripted;
 import org.bukkit.entity.LivingEntity;
