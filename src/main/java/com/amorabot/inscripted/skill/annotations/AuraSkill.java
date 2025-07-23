@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface PersistentSkill {
+public @interface AuraSkill {
     double period();
-    double maxDuration();
+    double toggleCooldown();
 }

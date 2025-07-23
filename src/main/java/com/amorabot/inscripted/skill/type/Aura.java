@@ -1,6 +1,5 @@
 package com.amorabot.inscripted.skill.type;
 
-import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.component.AttackData;
@@ -17,7 +16,10 @@ public class Aura extends Skillcast.Persistent {
         super(playerID, sourceSkill, castSource, weaponSpeed);
     }
 
-
+    /*
+     For aura casts, the skill routine defines and starts the subroutine task
+     Then, the aura subroutine ID must be set internally
+    */
     @Override
     public void start(long delay, long timer) {
         if (isInactive()){
@@ -30,6 +32,7 @@ public class Aura extends Skillcast.Persistent {
     @Override
     public void register(){
         Skills auraSkill = getCastedSkill();
+        //TODO: if castSource is not NEUTRAL, check for toggle cooldown
         if (isInactive()){
             PlayerDataContainer dataContainer = PlayerDataContainer.getDataContainerFor(getPlayerID());
             Map<Skills, Aura> activePlayerAuras = dataContainer.getActiveAuras();
@@ -47,9 +50,10 @@ public class Aura extends Skillcast.Persistent {
         Skills auraSkill = getCastedSkill();
         if (!activePlayerAuras.containsKey(auraSkill)){return;}
         //Aura present -> Un-instantiate it
-        Aura removedAura = activePlayerAuras.remove(auraSkill);
-        int removedAuraID = removedAura.getPersistentRoutineID();
-        Inscripted.getScheduler().cancelTask(removedAuraID);
+        activePlayerAuras.get(auraSkill).getSubroutine().shutdown();
+//        Aura removedAura = activePlayerAuras.remove(auraSkill);
+//        int removedAuraID = removedAura.getPersistentRoutineID();
+//        Inscripted.getScheduler().cancelTask(removedAuraID);
     }
 
     public boolean isInactive(){
@@ -61,7 +65,7 @@ public class Aura extends Skillcast.Persistent {
 
     public boolean isDamagingAura(){
         Skills auraSkill = getCastedSkill();
-        return (auraSkill.isPersistent() && auraSkill.isAttackSkill());
+        return (auraSkill.isAura() && auraSkill.isAttackSkill());
     }
     public AttackData getAuraDamage(){
         Skills auraSkill = getCastedSkill();
@@ -70,5 +74,13 @@ public class Aura extends Skillcast.Persistent {
             return null;
         }
         return new AttackData(getPlayerID(),auraSkill,PlayerDataContainer.getDataContainerFor(getPlayerID()).getGlobalStats());
+    }
+    public double getSubroutinePeriodInSeconds(){
+        if (!getCastData().getCastingContext().getSkillUsed().isAura()){return 0;}
+        return getCastedSkill().getAuraSkillData().period();
+    }
+    public double getToggleCooldown(){
+        if (!getCastData().getCastingContext().getSkillUsed().isAura()){return 0;}
+        return getCastedSkill().getAuraSkillData().toggleCooldown();
     }
 }

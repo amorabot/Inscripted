@@ -52,10 +52,11 @@ public class StatBuffCountdown extends BuffTask {
 
     @Override
     public void expire() {
-        //Whatever
         Utils.log("STAT BUFF: "+buff+" expired for " + target.getName()+"!");
-        PlayerBuffManager.removeBuffFrom(target.getUniqueId(), buff);
-        PlayerDataContainer.getDataContainerFor(target.getUniqueId()).onNotify(PlayerEvents.EXTERNAL_STAT_CHANGE);
+        if (target.isOnline()){
+            PlayerBuffManager.removeBuffFrom(target.getUniqueId(), buff);
+            PlayerDataContainer.getDataContainerFor(target.getUniqueId()).onNotify(PlayerEvents.EXTERNAL_STAT_CHANGE);
+        }
         this.cancel();
     }
 

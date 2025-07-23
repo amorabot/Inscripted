@@ -37,7 +37,7 @@ public class MainStatRenderer implements ItemVisitor<List<Component>> {
 
         final int[] localPhys = localWeaponDamage.getDamage(DamageTypes.PHYSICAL);
 
-        final String dmgElement = Utils.convertToPrettyString("DMG:");
+        final String dmgElement = Utils.prettify("DMG:");
         Component dmgComponent = Component.text(dmgElement).appendSpace().color(textColor);
         final String physicalLine = (physicalIcon + " " + localPhys[0] + " - " + localPhys[1]);
         Component coloredDmgComponent = Component.text(physicalLine).color(DamageTypes.PHYSICAL.getDmgColor().getColor());
@@ -61,7 +61,7 @@ public class MainStatRenderer implements ItemVisitor<List<Component>> {
 
         //Render Atk speed line
         Component barComponent = weapon.getAtkSpeed().getAttackSpeedBarComponent();
-        String atkSpeedElement = Utils.convertToPrettyString("Atk Speed:");
+        String atkSpeedElement = Utils.prettify("Atk Speed:");
         Component atkSpeedLine = Component.text(atkSpeedElement).color(textColor).appendSpace().append(barComponent);
         damageLines.add(paddingComponent.append(atkSpeedLine.decoration(TextDecoration.ITALIC,false)));
 
@@ -77,7 +77,7 @@ public class MainStatRenderer implements ItemVisitor<List<Component>> {
         TextColor textColor = InscriptedPalette.NEUTRAL_GRAY.getColor();
 
         //Build HP Line
-        String HP = Utils.convertToPrettyString("HP: ");
+        String HP = Utils.prettify("HP: ");
         Component hpHeader = Component.text(HP).color(textColor).decoration(TextDecoration.ITALIC,false);
         defenceLines.add(Component.text(" ").append(hpHeader));
 
@@ -110,7 +110,7 @@ public class MainStatRenderer implements ItemVisitor<List<Component>> {
         }
 
         //Armor has at least 1 defence, lets build the Def. components
-        String DEF = Utils.convertToPrettyString("DEF: ");
+        String DEF = Utils.prettify("DEF: ");
         Component defHeader = Component.text(DEF).color(textColor).decoration(TextDecoration.ITALIC,false);
         defenceLines.add(Component.text(" ").append(defHeader));
 

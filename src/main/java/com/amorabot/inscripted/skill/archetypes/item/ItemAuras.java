@@ -1,6 +1,5 @@
 package com.amorabot.inscripted.skill.archetypes.item;
 
-import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.combat.buffs.Buffs;
 import com.amorabot.inscripted.combat.buffs.categories.healing.HealingBuff;
 import com.amorabot.inscripted.combat.buffs.categories.stat.StatBuff;
@@ -13,6 +12,7 @@ import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.component.AttackData;
 import com.amorabot.inscripted.player.profile.component.HealthComponent;
 import com.amorabot.inscripted.skill.type.Aura;
+import com.amorabot.inscripted.skill.type.subroutines.AuraSubroutine;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Location;
@@ -30,26 +30,44 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ItemAuras {
 
-    // TODO: Encapsulate skill routine logic inside -> Keystones || Separate class
-
-    public static void permafrost(Skillcast skillcast){
-        if (!checkAuraCast(skillcast)){return;}
-        Aura auraSkillcast = (Aura) skillcast;
-        final int animationSteps = 3;
-        int periodInTicks = (int) (auraSkillcast.getSubroutinePeriodInSeconds() * 20);
-        BukkitRunnable permafrostSubroutine =  new BukkitRunnable() {
+    public static void registerPermafrost(Skillcast skillcast){
+        AuraSubroutine permafrostSubroutine = new AuraSubroutine(skillcast);
+        permafrostSubroutine.setRoutine(new BukkitRunnable() {
             final AtomicInteger counter = new AtomicInteger(1);
+            final int animationSteps = 3;
             @Override
             public void run() {
-                // Subtasks can only run if the parent skillcast is valid
-                cancelIfInvalidParentAura(auraSkillcast,this);
-                permafrostRoutine(skillcast.getPlayer().getLocation(),counter, periodInTicks, animationSteps);
+                if (this.isCancelled()){return;}
+                if (!permafrostSubroutine.checkParentCast(skillcast)) {
+                    permafrostSubroutine.shutdown();
+                    return;
+                }
+                permafrostRoutine(skillcast.getPlayer().getLocation()
+                        ,counter, (int) (((Aura) skillcast).getSubroutinePeriodInSeconds() * 20)
+                        ,animationSteps);
             }
-        };
-        // Subtask instancing
-        int permafrostInstanceID = permafrostSubroutine.runTaskTimer(Inscripted.getPlugin(),0, periodInTicks/animationSteps).getTaskId();
-        auraSkillcast.setPersistentRoutineID(permafrostInstanceID);
+        });
+        permafrostSubroutine.startSubroutine(0);
     }
+
+//    public static void permafrost(Skillcast skillcast){
+////        if (!checkAuraCast(skillcast)){return;}
+////        Aura auraSkillcast = (Aura) skillcast;
+////        final int animationSteps = 3;
+////        int periodInTicks = (int) (auraSkillcast.getSubroutinePeriodInSeconds() * 20);
+////        BukkitRunnable permafrostSubroutine =  new BukkitRunnable() {
+////            final AtomicInteger counter = new AtomicInteger(1);
+////            @Override
+////            public void run() {
+////                // Subtasks can only run if the parent skillcast is valid
+////                cancelIfInvalidParentAura(auraSkillcast,this);
+////                permafrostRoutine(skillcast.getPlayer().getLocation(),counter, periodInTicks, animationSteps);
+////            }
+////        };
+////        // Subtask instancing
+////        int permafrostInstanceID = permafrostSubroutine.runTaskTimer(Inscripted.getPlugin(),0, periodInTicks/animationSteps).getTaskId();
+////        auraSkillcast.setPersistentRoutineID(permafrostInstanceID);
+//    }
     private static void permafrostRoutine(Location centerLocation, AtomicInteger counter, int permafrostPeriod, int animationSteps){
         float radiusStep = (float) 3.0 / animationSteps;
         int colorVariance = 45;
@@ -65,7 +83,7 @@ public class ItemAuras {
         counter.getAndIncrement();
 
         if (counter.get() > 3){
-            PotionEffect slowness = new PotionEffect(PotionEffectType.SLOWNESS, (int)(permafrostPeriod*1.1), 0, true, false, false);
+            PotionEffect slowness = new PotionEffect(PotionEffectType.SLOWNESS, (int)(3*(permafrostPeriod)*1.1), 0, true, false, false);
             ParticlePlotter.plotCircleAt(centerLocation.toVector(),centerLocation.getWorld(), Particle.FALLING_WATER, (float) 3.0, 40);
             for (Player p : centerLocation.getNearbyPlayers((float) 3.0)){
                 slowness.apply(p);
@@ -74,23 +92,40 @@ public class ItemAuras {
         }
     }
 
-
-    public static void thunderstruck(Skillcast skillcast){
-        if (!checkAuraCast(skillcast)){return;}
-        Aura auraSkillcast = (Aura) skillcast;
-        final float radius = 2.5F; //Make it scale with AoE? :D
-        int periodInTicks = (int) (auraSkillcast.getSubroutinePeriodInSeconds() * 20);
-        BukkitRunnable thunderstruckSubroutine =  new BukkitRunnable() {
-            final AttackData damageSnapshot = auraSkillcast.getAuraDamage();
+    public static void registerThunderstruck(Skillcast skillcast){
+        AuraSubroutine thunderstruckSubroutine = new AuraSubroutine(skillcast);
+        thunderstruckSubroutine.setRoutine(new BukkitRunnable() {
+            final AttackData damageSnapshot = ((Aura) skillcast).getAuraDamage();
+            final float radius = 2.5F;
             @Override
             public void run() {
-                cancelIfInvalidParentAura(auraSkillcast,this);
+                if (this.isCancelled()){return;}
+                if (!thunderstruckSubroutine.checkParentCast(skillcast)) {
+                    thunderstruckSubroutine.shutdown();
+                    return;
+                }
                 thunderstruckRoutine(skillcast.getPlayer(),skillcast, damageSnapshot,radius);
             }
-        };
-        int thunderstruckInstanceID = thunderstruckSubroutine.runTaskTimer(Inscripted.getPlugin(),0, periodInTicks).getTaskId();
-        auraSkillcast.setPersistentRoutineID(thunderstruckInstanceID);
+        });
+        thunderstruckSubroutine.startSubroutine(0);
     }
+
+//    public static void thunderstruck(Skillcast skillcast){
+////        if (!checkAuraCast(skillcast)){return;}
+////        Aura auraSkillcast = (Aura) skillcast;
+////        final float radius = 2.5F; //Make it scale with AoE? :D
+////        int periodInTicks = (int) (auraSkillcast.getSubroutinePeriodInSeconds() * 20);
+////        BukkitRunnable thunderstruckSubroutine =  new BukkitRunnable() {
+////            final AttackData damageSnapshot = auraSkillcast.getAuraDamage();
+////            @Override
+////            public void run() {
+////                cancelIfInvalidParentAura(auraSkillcast,this);
+////                thunderstruckRoutine(skillcast.getPlayer(),skillcast, damageSnapshot,radius);
+////            }
+////        };
+////        int thunderstruckInstanceID = thunderstruckSubroutine.runTaskTimer(Inscripted.getPlugin(),0, periodInTicks).getTaskId();
+////        auraSkillcast.setPersistentRoutineID(thunderstruckInstanceID);
+//    }
     private static void thunderstruckRoutine(Player caster, Skillcast thunderstruckSkillcast, AttackData auraDamage, float radius){
         if (caster.isSneaking()){return;}
         Location playerLoc = caster.getLocation();
@@ -109,25 +144,44 @@ public class ItemAuras {
         }
     }
 
-
-    public static void righteousFire(Skillcast skillcast){
-        if (!checkAuraCast(skillcast)){return;}
-        Aura auraSkillcast = (Aura) skillcast;
-        final float radius = 2.7F; //Make it scale with AoE? :D
-        int periodInTicks = (int) (auraSkillcast.getSubroutinePeriodInSeconds() * 20);
-        BukkitRunnable RFSubroutine =  new BukkitRunnable() {
+    public static void registerRighteousFire(Skillcast skillcast){
+        AuraSubroutine rfSubroutine = new AuraSubroutine(skillcast);
+        rfSubroutine.setRoutine(new BukkitRunnable() {
             // TODO: custom built RF AttackData based on caster stats
             double phase = 0;
+            final float radius = 2.7F;
             @Override
             public void run() {
-                cancelIfInvalidParentAura(auraSkillcast,this);
+                if (this.isCancelled()){return;}
+                if (!rfSubroutine.checkParentCast(skillcast)) {
+                    rfSubroutine.shutdown();
+                    return;
+                }
                 righteousFireRoutine(skillcast.getPlayer(),null,radius,phase);
                 phase += 25;
             }
-        };
-        int RFInstanceID = RFSubroutine.runTaskTimer(Inscripted.getPlugin(),0, periodInTicks).getTaskId();
-        auraSkillcast.setPersistentRoutineID(RFInstanceID);
+        });
+        rfSubroutine.startSubroutine(0);
     }
+
+//    public static void righteousFire(Skillcast skillcast){
+////        if (!checkAuraCast(skillcast)){return;}
+////        Aura auraSkillcast = (Aura) skillcast;
+////        final float radius = 2.7F; //Make it scale with AoE? :D
+////        int periodInTicks = (int) (auraSkillcast.getSubroutinePeriodInSeconds() * 20);
+////        BukkitRunnable RFSubroutine =  new BukkitRunnable() {
+////            // TODO: custom built RF AttackData based on caster stats
+////            double phase = 0;
+////            @Override
+////            public void run() {
+////                cancelIfInvalidParentAura(auraSkillcast,this);
+////                righteousFireRoutine(skillcast.getPlayer(),null,radius,phase);
+////                phase += 25;
+////            }
+////        };
+////        int RFInstanceID = RFSubroutine.runTaskTimer(Inscripted.getPlugin(),0, periodInTicks).getTaskId();
+////        auraSkillcast.setPersistentRoutineID(RFInstanceID);
+//    }
     private static void righteousFireRoutine(Player caster, AttackData auraDamage, float radius, double currentPhase){
         renderRFRadius(caster,radius,50, currentPhase);
         List<LivingEntity> nearbyEntities = (List<LivingEntity>) caster.getLocation().getNearbyLivingEntities(radius+0.1);
@@ -185,26 +239,24 @@ public class ItemAuras {
                 10);
     }
 
-
-    public static void windsOfChange(Skillcast skillcast){
-        if (!checkAuraCast(skillcast)){return;}
-        Aura auraSkillcast = (Aura) skillcast;
-        Player player = skillcast.getPlayer();
-        int periodInTicks = (int) (auraSkillcast.getSubroutinePeriodInSeconds() * 20);
-        BukkitRunnable wofInstance =  new BukkitRunnable() {
-
+    public static void registerWindsOfChange(Skillcast skillcast){
+        AuraSubroutine wofSubroutine = new AuraSubroutine(skillcast);
+        wofSubroutine.setRoutine(new BukkitRunnable() {
             final float particlesRadius = 0.8F;
-
+            final Player owner = skillcast.getPlayer();
             @Override
             public void run() {
-                if (player.isSneaking()){return;}
-                cancelIfInvalidParentAura(auraSkillcast,this);
-                Location playerLoc = player.getLocation();
+                if (owner.isSneaking() || this.isCancelled()){return;}
+                if (!wofSubroutine.checkParentCast(skillcast)) {
+                    wofSubroutine.shutdown();
+                    return;
+                }
+                Location playerLoc = owner.getLocation();
                 World world = playerLoc.getWorld();
 
                 HealingBuff rejuv = new HealingBuff(Buffs.REJUVENATE);
                 int baseHealing = rejuv.getFinalHealingTick(PlayerDataContainer.getProfile(skillcast.getPlayerID()));
-                rejuv.createHealingTask(baseHealing, player, player);
+                rejuv.createHealingTask(baseHealing, owner, owner);
                 PlayerBuffManager.addBuffToPlayer(rejuv, skillcast.getPlayerID());
 
                 Vector centerVec = playerLoc.toVector().clone().subtract(new Vector(0,0.3,0));
@@ -217,34 +269,72 @@ public class ItemAuras {
                         15);
                 ParticlePlotter.plotCircleAt(centerVec, world, Particle.TOTEM_OF_UNDYING, particlesRadius+0.1F, 25);
             }
-        };
-        int wofInstanceID = wofInstance.runTaskTimer(Inscripted.getPlugin(), periodInTicks, periodInTicks).getTaskId();
-        auraSkillcast.setPersistentRoutineID(wofInstanceID);
+        });
+
+        wofSubroutine.startSubroutine(5);
     }
 
-    public static void berserk(Skillcast skillcast){
-        if (!checkAuraCast(skillcast)){return;}
-        Aura auraSkillcast = (Aura) skillcast;
-        int periodInTicks = (int) (auraSkillcast.getSubroutinePeriodInSeconds() * 20);
-        BukkitRunnable berserkSubroutine =  new BukkitRunnable() {
+    public static void windsOfChange(Skillcast skillcast){
+//        if (!checkAuraCast(skillcast)){return;}
+//        Aura auraSkillcast = (Aura) skillcast;
+//        Player player = skillcast.getPlayer();
+//        int periodInTicks = (int) (auraSkillcast.getSubroutinePeriodInSeconds() * 20);
+//        BukkitRunnable wofInstance =  new BukkitRunnable() {
+//
+//            final float particlesRadius = 0.8F;
+//
+//            @Override
+//            public void run() {
+//                if (player.isSneaking()){return;}
+//                cancelIfInvalidParentAura(auraSkillcast,this);
+//                Location playerLoc = player.getLocation();
+//                World world = playerLoc.getWorld();
+//
+//                HealingBuff rejuv = new HealingBuff(Buffs.REJUVENATE);
+//                int baseHealing = rejuv.getFinalHealingTick(PlayerDataContainer.getProfile(skillcast.getPlayerID()));
+//                rejuv.createHealingTask(baseHealing, player, player);
+//                PlayerBuffManager.addBuffToPlayer(rejuv, skillcast.getPlayerID());
+//
+//                Vector centerVec = playerLoc.toVector().clone().subtract(new Vector(0,0.3,0));
+//                ParticlePlotter.plotColoredCircleAt(centerVec, world,
+//                        30,
+//                        210,
+//                        30,
+//                        1F,
+//                        particlesRadius,
+//                        15);
+//                ParticlePlotter.plotCircleAt(centerVec, world, Particle.TOTEM_OF_UNDYING, particlesRadius+0.1F, 25);
+//            }
+//        };
+//        int wofInstanceID = wofInstance.runTaskTimer(Inscripted.getPlugin(), periodInTicks, periodInTicks).getTaskId();
+//        auraSkillcast.setPersistentRoutineID(wofInstanceID);
+    }
+
+    /*
+        Truth table
+        LL  ACTIVE  (toggle)
+        T     T       T
+        T     F       F
+        F     T       F
+        F     F       T
+    */
+    public static void registerBerserk(Skillcast skillcast){
+        AuraSubroutine berserkSubroutine = new AuraSubroutine(skillcast);
+        berserkSubroutine.setRoutine(new BukkitRunnable() {
             boolean lastState = false;
             @Override
             public void run() {
-                cancelIfInvalidParentAura(auraSkillcast,this);
+                if (this.isCancelled()){return;}
+                if (!berserkSubroutine.checkParentCast(skillcast)) {
+                    berserkSubroutine.shutdown();
+                    return;
+                }
                 PlayerDataContainer dataContainer = PlayerDataContainer.getDataContainerFor(skillcast.getPlayerID());
                 boolean hasAuraInstance = dataContainer.getActiveAuras().containsKey(skillcast.getCastedSkill());
                 boolean hasKeystone = dataContainer.getEquipment().getSpecialInscriptions().getKeystones().contains(KeystoneIDs.BERSERK);
                 boolean isValidActiveInstance = hasAuraInstance && hasKeystone;
                 HealthComponent playerHealth = dataContainer.getProfile().getHealthComponent();
                 // Berserk routine
-                /*
-                    Truth table
-                    LL  ACTIVE  (toggle)
-                    T     T       T
-                    T     F       F
-                    F     T       F
-                    F     F       T
-                */
                 boolean activeBuff = playerHealth.isLowLife() == isValidActiveInstance; // !(LowLife ^ Valid)
                 if (activeBuff){
                     if (!lastState){
@@ -255,24 +345,53 @@ public class ItemAuras {
                     PlayerBuffManager.addBuffToPlayer(new StatBuff(Buffs.BERSERK, skillcast.getPlayer()),skillcast.getPlayerID());
                 }
             }
-        };
-        int berserkInstanceID = berserkSubroutine.runTaskTimer(Inscripted.getPlugin(),periodInTicks, periodInTicks).getTaskId();
-        auraSkillcast.setPersistentRoutineID(berserkInstanceID);
+        });
+        berserkSubroutine.startSubroutine(0);
     }
 
-    private static boolean checkAuraCast(Skillcast skillcast){
-        boolean isAura = skillcast instanceof Aura;
-        if (!(isAura)){
-            Utils.error("Invalid item aura instancing");
-        }
-        return isAura;
+    public static void berserk(Skillcast skillcast){
+//        if (!checkAuraCast(skillcast)){return;}
+//        Aura auraSkillcast = (Aura) skillcast;
+//        int periodInTicks = (int) (auraSkillcast.getSubroutinePeriodInSeconds() * 20);
+//        BukkitRunnable berserkSubroutine =  new BukkitRunnable() {
+//            boolean lastState = false;
+//            @Override
+//            public void run() {
+//                cancelIfInvalidParentAura(auraSkillcast,this);
+//                PlayerDataContainer dataContainer = PlayerDataContainer.getDataContainerFor(skillcast.getPlayerID());
+//                boolean hasAuraInstance = dataContainer.getActiveAuras().containsKey(skillcast.getCastedSkill());
+//                boolean hasKeystone = dataContainer.getEquipment().getSpecialInscriptions().getKeystones().contains(KeystoneIDs.BERSERK);
+//                boolean isValidActiveInstance = hasAuraInstance && hasKeystone;
+//                HealthComponent playerHealth = dataContainer.getProfile().getHealthComponent();
+//                // Berserk routine
+//                boolean activeBuff = playerHealth.isLowLife() == isValidActiveInstance; // !(LowLife ^ Valid)
+//                if (activeBuff){
+//                    if (!lastState){
+//                        lastState = activeBuff;
+//                        return;
+//                    }
+//                    // Trigger the aura's conditional Buff
+//                    PlayerBuffManager.addBuffToPlayer(new StatBuff(Buffs.BERSERK, skillcast.getPlayer()),skillcast.getPlayerID());
+//                }
+//            }
+//        };
+//        int berserkInstanceID = berserkSubroutine.runTaskTimer(Inscripted.getPlugin(),periodInTicks, periodInTicks).getTaskId();
+//        auraSkillcast.setPersistentRoutineID(berserkInstanceID);
     }
-    private static boolean cancelIfInvalidParentAura(Aura aura, BukkitRunnable subtask){
-        boolean invalidAura = !aura.isValidPersistentCast();
-        if (invalidAura){
-            Utils.error("Cancelling aura subtask...");
-            subtask.cancel();
-        }
-        return invalidAura;
-    }
+
+//    private static boolean checkAuraCast(Skillcast skillcast){
+//        boolean isAura = skillcast instanceof Aura;
+//        if (!(isAura)){
+//            Utils.error("Invalid item aura instancing");
+//        }
+//        return isAura;
+//    }
+//    private static boolean cancelIfInvalidParentAura(Aura aura, BukkitRunnable subtask){
+//        boolean invalidAura = !aura.isValidPersistentCast();
+//        if (invalidAura){
+//            Utils.error("Cancelling aura subtask...");
+//            subtask.cancel();
+//        }
+//        return invalidAura;
+//    }
 }

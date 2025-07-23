@@ -20,7 +20,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.*;
 
 import static com.amorabot.inscripted.utils.Utils.color;
-import static com.amorabot.inscripted.utils.Utils.convertToPrettyString;
+import static com.amorabot.inscripted.utils.Utils.prettify;
 
 public enum Currencies { //TODO: Functional programming solution for orb routines?
 
@@ -357,7 +357,7 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
             List.of("&7Improves a weapon's  ",
                     "&bquality&7, increasing all",
                     "",
-                    "&7       \uD83D\uDDE1 \uD83C\uDFF9&7&l"+convertToPrettyString("DMG"),
+                    "&7       \uD83D\uDDE1 \uD83C\uDFF9&7&l"+ prettify("DMG"),
                     "",
                     "&7local stats by 5%,",
                     "&7up to &f[&b+10&f] &7quality",
@@ -401,9 +401,9 @@ public enum Currencies { //TODO: Functional programming solution for orb routine
                     "",
                     "&7     "
                     + DefenceTypes.HEALTH.getSpecialChar()+ "&7&l"
-                    +convertToPrettyString("HP")+ " &7& "+
+                    + prettify("HP")+ " &7& "+
                     DefenceTypes.ARMOR.getSpecialChar() + "&7&l"+
-                    convertToPrettyString("DEF"),
+                    prettify("DEF"),
                     "",
                     "&7local stats by 5%,",
                     "&7up to &f[&b+10&f] &7quality",

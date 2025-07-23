@@ -46,7 +46,6 @@ public abstract class Attack extends Skillcast.Simple {
                 register();
                 return;
             }
-//            Utils.log("Basic attack on cooldown...");
         }
 
         @Override
@@ -56,7 +55,7 @@ public abstract class Attack extends Skillcast.Simple {
             getPlayer().setCooldown(Material.SHEARS,usageCooldown);
             getPlayer().setCooldown(Material.BOW,usageCooldown);
             if (swingEffect==null){
-                Utils.error("Invalid weapon atk speed");
+                Utils.error("No swing speed modifier.");
                 return;
             }
             swingEffect.apply(getPlayer());

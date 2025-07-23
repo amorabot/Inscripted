@@ -87,11 +87,11 @@ public class DisplayBlock {
                 Display display = block.getBlock();
                 if (display.isValid()){
                     display.remove();
-                    Utils.log("Block removed!");
                 }
             }
         },duration);
     }
+    //TODO: forceFadeout(), save fadeout taskID for later cancelling(if already removed wont do anything, so its fine)
     private static void scheduleFadeout(DisplayBlock block, int totalDuration, int fadeoutDelay){
         new DelayedTask(new BukkitRunnable() {
             @Override

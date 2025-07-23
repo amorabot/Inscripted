@@ -17,20 +17,20 @@ import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.skill.casting.CastType;
 import com.amorabot.inscripted.skill.casting.GlobalCooldown;
 import com.amorabot.inscripted.skill.type.Aura;
+import com.amorabot.inscripted.skill.type.subroutines.PersistentSubroutine;
 import com.amorabot.inscripted.tasks.RegenerationTask;
 import com.amorabot.inscripted.tasks.base.PlayerboundTask;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
 @Getter
 public class PlayerDataContainer implements ProfileObserver {
-    private static final boolean DEBUG_MODE = false;
+    private static final boolean DEBUG_MODE = true;
 
     @Getter
     private static final Map<UUID, PlayerDataContainer> onlinePlayerData = new HashMap<>();
@@ -41,10 +41,10 @@ public class PlayerDataContainer implements ProfileObserver {
     @Setter
     private StatPool globalStats = new StatPool(); // Fully compiled global player stats cache ( Equipment + Keystones + External stats + ...)
     private final PlayerEquipment equipment;
-    private final Map<Integer,PlayerboundTask> playerboundTasks = new HashMap<>();
+    private final Map<Integer,PlayerboundTask> permanentPlayerboundTasks = new HashMap<>();
     private final Map<CastType, GlobalCooldown> skillCooldowns = new HashMap<>();
     private final Map<EffectIDs, Long> effectCastTimes = new HashMap<>();
-//    private final Map<CastType, Skillcast.Persistent> persistentSkillInstances = new HashMap<>();
+    private final Map<CastType, PersistentSubroutine> persistentSubroutines = new HashMap<>();
     @Getter
     private final Map<Skills, Aura> activeAuras = new HashMap<>();
     @Getter
@@ -127,7 +127,11 @@ public class PlayerDataContainer implements ProfileObserver {
         onlinePlayerData.put(playerID, new PlayerDataContainer(playerID));
     }
     public static PlayerDataContainer clearPlayerMemory(UUID playerID){
-        return getOnlinePlayerData().remove(playerID);
+        Utils.log("Memory cleared for :" + playerID);
+        PlayerDataContainer removedPlayerData = getOnlinePlayerData().remove(playerID);
+        removedPlayerData.clearTasks();
+        removedPlayerData.clearPersistentSkillInstances();
+        return removedPlayerData;
     }
 
 
@@ -160,24 +164,24 @@ public class PlayerDataContainer implements ProfileObserver {
 
     // Player task methods (HP & Stamina Regeneration, HP Display renderer, Player state tasks in general)
     public void addTask(PlayerboundTask newTask){
-        playerboundTasks.put(newTask.getTaskId(),newTask);
+        permanentPlayerboundTasks.put(newTask.getTaskId(),newTask);
     }
     public PlayerboundTask getTask(int taskID){
-        return playerboundTasks.getOrDefault(taskID,null);
+        return permanentPlayerboundTasks.getOrDefault(taskID,null);
     }
     public void removeTask(int taskID){
-        PlayerboundTask removedTask = playerboundTasks.remove(taskID);
+        PlayerboundTask removedTask = permanentPlayerboundTasks.remove(taskID);
         if (removedTask != null){
             removedTask.cancel();
         }
     }
     public void clearTasks(){
-        playerboundTasks.forEach(
+        permanentPlayerboundTasks.forEach(
                 (id, playerboundTask) -> {
                     playerboundTask.cancel();
                 }
         );
-        playerboundTasks.clear();
+        permanentPlayerboundTasks.clear();
     }
 
     //Skill casting/cooldown methods
@@ -203,6 +207,37 @@ public class PlayerDataContainer implements ProfileObserver {
             return true;
         }
         return false;
+    }
+    public boolean renewPersistentSkillInstance(Skills skill, PersistentSubroutine skillSubroutine){
+        CastType castType = skill.getType();
+        if (castType.equals(CastType.NEUTRAL)){
+            if (DEBUG_MODE) Utils.log("Neutral casts are not limited to 1 instance.");
+            return false;
+        }
+        if (!persistentSubroutines.containsKey(castType)){
+            persistentSubroutines.put(castType,skillSubroutine);
+            return true;
+        }
+        PersistentSubroutine storedPersistentInstance = persistentSubroutines.get(castType);
+        if (storedPersistentInstance.getRoutine().isCancelled()){ //Safe override, It's already cancelled to begin with
+            persistentSubroutines.put(castType,skillSubroutine);
+            return true;
+        }
+        //Is present and running, cancel and override it
+        if (DEBUG_MODE) Utils.log("Overriding previous running " + castType + " persistent instance.");
+        storedPersistentInstance.shutdown(); //Handles stopping & removing itself
+        persistentSubroutines.put(castType,skillSubroutine);
+        return true;
+    }
+    public void clearPersistentSkillInstances(){
+        persistentSubroutines.forEach(
+                (type, subroutine) -> {
+                    if (!subroutine.getRoutine().isCancelled()){
+                        Utils.log("Cancelling " + type + " persistent instance...");
+
+                    }
+                }
+        );
     }
     public boolean effecTriggered(EffectIDs triggeredEffect){
         if (triggeredEffect.getCooldowInSeconds()==0){return true;}

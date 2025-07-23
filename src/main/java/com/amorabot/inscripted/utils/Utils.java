@@ -87,7 +87,7 @@ public class Utils {
         }
         return PRETTY_CHARACTERS.get(charac);
     }
-    public static String convertToPrettyString(String originalText){
+    public static String prettify(String originalText){
         StringBuilder convertedStringBuilder = new StringBuilder();
         originalText = originalText.toUpperCase();
         for (int i = 0; i < originalText.length(); i++){

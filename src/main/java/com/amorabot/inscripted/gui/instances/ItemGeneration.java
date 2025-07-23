@@ -7,12 +7,10 @@ import com.amorabot.inscripted.gui.button.Button;
 import com.amorabot.inscripted.gui.button.CloseButton;
 import com.amorabot.inscripted.item.render.InscriptedPalette;
 import com.amorabot.inscripted.item.structure.Armor.Armor;
-import com.amorabot.inscripted.item.structure.Armor.ArmorTypes;
 import com.amorabot.inscripted.item.structure.EquipmentSlots;
 import com.amorabot.inscripted.item.structure.ItemRarities;
 import com.amorabot.inscripted.item.structure.Tiers;
 import com.amorabot.inscripted.item.structure.Weapon.Weapon;
-import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
@@ -258,22 +256,22 @@ public class ItemGeneration extends GUI {
         lore.add(getButtonName("  Craftable rarities:", InscriptedPalette.NEUTRAL_GRAY.getColorString()).decoration(TextDecoration.ITALIC,false));
         Component commonName = getButtonName("  Common", InscriptedPalette.WHITE.getColorString())
                 .append(Component.text(
-                        Utils.convertToPrettyString(" >| By default won't have any Inscriptions  "))
+                        Utils.prettify(" >| By default won't have any Inscriptions  "))
                 .color(InscriptedPalette.DARK_GRAY.getColor()).decorate(TextDecoration.ITALIC).decoration(TextDecoration.BOLD,false));
         Component augmentedName = getButtonName("  Augmented", InscriptedPalette.AUGMENTED.getColorString())
                 .append(Component.text(
-                        Utils.convertToPrettyString(" >| Can hold up to 2 Inscriptions  "))
+                        Utils.prettify(" >| Can hold up to 2 Inscriptions  "))
                 .color(InscriptedPalette.DARK_GRAY.getColor()).decorate(TextDecoration.ITALIC).decoration(TextDecoration.BOLD,false));
         Component runicName = getButtonName("  Runic", InscriptedPalette.RUNIC.getColorString())
                 .append(Component.text(
-                        Utils.convertToPrettyString(" >| Can have from 3 up to 6 Inscriptions  "))
+                        Utils.prettify(" >| Can have from 3 up to 6 Inscriptions  "))
                 .color(InscriptedPalette.DARK_GRAY.getColor()).decorate(TextDecoration.ITALIC).decoration(TextDecoration.BOLD,false));
         lore.add(commonName);
         lore.add(augmentedName);
         lore.add(runicName);
         lore.add(emptyLine);
         lore.add(getButtonName("  Relics:", InscriptedPalette.RELIC.getColorString()));
-        lore.add(styleDescriptionLine(Utils.convertToPrettyString("   >| predefined but powerful items.")));
+        lore.add(styleDescriptionLine(Utils.prettify("   >| predefined but powerful items.")));
         lore.add(emptyLine);
         lore.add(styleDescriptionLine("  A item's rarity actively reflects"));
         lore.add(styleDescriptionLine("  the number of Inscriptions you can"));
@@ -386,7 +384,7 @@ public class ItemGeneration extends GUI {
         lore.add(emptyLine);
         for (int i = 0; i < Tiers.values().length; i++) {
             Tiers tier = Tiers.values()[i];
-            Component tierName = Component.text(Utils.convertToPrettyString(tier.name()+": "))
+            Component tierName = Component.text(Utils.prettify(tier.name()+": "))
                     .decorate(TextDecoration.BOLD).color(InscriptedPalette.NEUTRAL_GRAY.getColor());
             if (tier.ordinal()==0){
                 Component desc = styleDescriptionLine("Ilvl 0 - " + tier.getMaxLevel());
@@ -410,7 +408,7 @@ public class ItemGeneration extends GUI {
 
     private Button[] getArchetypeButtons(){
         Button[] buttons = new Button[7];
-        Component descriptionButtonName = Component.text(Utils.convertToPrettyString("Archetypes"))
+        Component descriptionButtonName = Component.text(Utils.prettify("Archetypes"))
                 .color(InscriptedPalette.NEUTRAL_GRAY.getColor()).decorate(TextDecoration.BOLD);
         Component offset = Component.text("   ");
         Component divisor = Component.text(" | ").color(InscriptedPalette.DARK_GRAY.getColor());
@@ -455,7 +453,7 @@ public class ItemGeneration extends GUI {
     }
     private Button generateArchetypeSelectionButton(Archetypes archetype, Component appendage,Material material, int descIconSlot){
         int rowOffset = archetype.ordinal();
-        Component name = Component.text(Utils.convertToPrettyString(archetype.name())).color(archetype.getColorOnPalette().getColor()).decorate(TextDecoration.BOLD);
+        Component name = Component.text(Utils.prettify(archetype.name())).color(archetype.getColorOnPalette().getColor()).decorate(TextDecoration.BOLD);
         name = name.append(appendage);
         List<Integer> archButtonSlots = new ArrayList<>();
         for (int i = 1; i <= 6; i++) {archButtonSlots.add(descIconSlot + i);}
@@ -463,9 +461,9 @@ public class ItemGeneration extends GUI {
                 name,List.of(
                 Component.text("Archetype").color(InscriptedPalette.DARK_GRAY.getColor()),
                 Component.text(""),
-                Component.text(" >| " + Utils.convertToPrettyString(archetype.getArmorType().name()) + " equipment")
+                Component.text(" >| " + Utils.prettify(archetype.getArmorType().name()) + " equipment")
                         .color(InscriptedPalette.DARK_GRAY.getColor()).decoration(TextDecoration.ITALIC, false),
-                Component.text(" >| " + Utils.convertToPrettyString(archetype.getWeaponType().name()+"S"))
+                Component.text(" >| " + Utils.prettify(archetype.getWeaponType().name()+"S"))
                         .color(InscriptedPalette.DARK_GRAY.getColor()).decoration(TextDecoration.ITALIC, false),
                 Component.text(""),
                 Component.text("Click to Select").color(NamedTextColor.GREEN)
@@ -483,13 +481,13 @@ public class ItemGeneration extends GUI {
         return archButton;
     }
     private Component getArchetypeDescriptor(Archetypes archetype, String descr){
-        return Component.text(Utils.convertToPrettyString(archetype.name())).color(archetype.getColorOnPalette().getColor()).decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC,false)
-                .append(Component.text(Utils.convertToPrettyString(" >| "+descr+"  ")).color(InscriptedPalette.DARK_GRAY.getColor())
+        return Component.text(Utils.prettify(archetype.name())).color(archetype.getColorOnPalette().getColor()).decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC,false)
+                .append(Component.text(Utils.prettify(" >| "+descr+"  ")).color(InscriptedPalette.DARK_GRAY.getColor())
                         .decorate(TextDecoration.ITALIC).decoration(TextDecoration.BOLD,false));
     }
 
     private Component getButtonName(String name, String hexColor){
-        return Component.text(Utils.convertToPrettyString(name)).color(TextColor.fromHexString(hexColor)).decorate(TextDecoration.BOLD);
+        return Component.text(Utils.prettify(name)).color(TextColor.fromHexString(hexColor)).decorate(TextDecoration.BOLD);
     }
 
     private void resetEnchantmentGlintFrom(List<Integer> buttonSlots){

@@ -1,15 +1,13 @@
 package com.amorabot.inscripted.tasks.base;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.item.inscription.definition.TriggerTimes;
-import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.skill.casting.CastSource;
-import com.amorabot.inscripted.skill.casting.CastType;
 import com.amorabot.inscripted.skill.routine.SkillcastData;
 import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.skill.routine.SkillcastContext;
+import com.amorabot.inscripted.skill.type.subroutines.PersistentSubroutine;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
@@ -83,7 +81,8 @@ public abstract class Skillcast extends PlayerboundTask{
 
 
 
-
+    @Setter
+    @Getter
     public static abstract class Persistent extends Skillcast {
         /*
         Persistent casts should be stored in a map
@@ -91,24 +90,37 @@ public abstract class Skillcast extends PlayerboundTask{
         Aura casts should be stored on a "Active" map, when toggled, cancel and remove from that map
         When activating a aura, check if that Skill instance, for that player, is already active. If so, toggle(deactivate) it.
         */
-        @Setter
-        @Getter
-        private int persistentRoutineID = -1;
-        //TODO: maxDuration on persistent attacks, Auras are essentially toggles
-        //+ castTime, complementing maxDuration
 
+//        private int persistentRoutineID = -1;
+        private PersistentSubroutine subroutine;
         public Persistent(UUID playerID, Skills sourceSkill, CastSource castSource,  WeaponAttackSpeeds weaponSpeed) {
             super(playerID, sourceSkill, castSource, weaponSpeed.getAbilityCooldownModifier());
+        }
+        /*
+        Cast -> Register cooldown -> if successful, check the current persistent skill map for possible
+        */
+        @Override
+        public void register(){
+            PlayerDataContainer playerData = PlayerDataContainer.getDataContainerFor(getPlayerID());
+            if (playerData.skillcastBy(getCastedSkill(),getBaseCooldownMod())){
+                run();
+                playerData.renewPersistentSkillInstance(getCastedSkill(),subroutine);
+                return;
+            }
+            Utils.error("Invalid spellcast: In cooldown (" + playerData.fetchAbilityRemainingCooldown(getCastedSkill().getType()) + ").");
+        }
+        @Override
+        public void unregister(){
+            //Reset the cooldown for this skill
+            PlayerDataContainer playerData = PlayerDataContainer.getDataContainerFor(getPlayerID());
+            playerData.getSkillCooldowns().remove(getCastedSkill().getType());
+            // Stop any subtasks
         }
 
         @Override
         public void run() {
-            /*
-             For persistent casts, the skill routine defines and starts the subroutine task
-             Then, the persistent subroutine ID must be set internally
-            */
             taskRoutine(getPlayer());
-            if (persistentRoutineID ==-1){
+            if (subroutine == null){
                 abort("Persistent subroutine must be set!");
                 return;
             }
@@ -118,6 +130,14 @@ public abstract class Skillcast extends PlayerboundTask{
             }
         }
 
+        @Override
+        public void abort(String message){
+            //Persistent skills are only run once, no need for original isCancelled() check
+            Utils.error(message);
+            unregister();
+        }
+
+
         public boolean isValidPersistentCast(){
             CastSource source = getCastData().getSource();
             return Inscripted.getPlugin().isEnabled() &&
@@ -125,14 +145,13 @@ public abstract class Skillcast extends PlayerboundTask{
                     !source.equals(CastSource.MONSTER) &&
                     !invalidPlayer();
         }
-
-        public double getSubroutinePeriodInSeconds(){
-            if (!getCastData().getCastingContext().getSkillUsed().isPersistent()){return 0;}
-            return getCastedSkill().getPersistentSkillData().period();
-        }
         public double getSubroutineMaxDurationInSeconds(){
-            if (!getCastData().getCastingContext().getSkillUsed().isPersistent()){return 0;}
-            return getCastedSkill().getPersistentSkillData().maxDuration();
+            if (!getCastedSkill().isDuration()){return 0;}
+            return getCastedSkill().getDurationSkillData().duration();
+        }
+        public int getSubroutineRefreshRate(){
+            if (!getCastedSkill().isDuration()){return 0;}
+            return getCastedSkill().getDurationSkillData().refreshRate();
         }
     }
 }

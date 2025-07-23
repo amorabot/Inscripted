@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ItemRenderer {
-    public static final String inscriptionsHeader = Utils.convertToPrettyString("Inscriptions: ") + "<color>•÷¦[ <n> ]¦÷=--  ";
+    public static final String inscriptionsHeader = Utils.prettify("Inscriptions: ") + "<color>•÷¦[ <n> ]¦÷=--  ";
     public static final String inscriptionsFooter = "-   --  ---   ----=÷• ᚫ •÷=---";
 
     public static void imprintLore(ItemStack item, Item itemData, List<Component> lore, boolean identified){
@@ -93,7 +93,7 @@ public class ItemRenderer {
     }
 
     public static Component getImplicitLine(ProceduralInscription implicit, Archetypes itemArchetype, int padding){
-        Component passiveIndicator = Component.text(Utils.convertToPrettyString("Passive:"));
+        Component passiveIndicator = Component.text(Utils.prettify("Passive:"));
         Component paddingComponent = Component.text(" ".repeat(padding));
         Component implicitComponent = InscriptionRenderer.getImplicitComponent(implicit, itemArchetype);
         return InscriptedPalette.colorizeComponent(
@@ -107,7 +107,7 @@ public class ItemRenderer {
         Component ilvlComponent = InscriptedPalette.colorizeComponent(
                 Component.text(itemData.getIlvl()+"↑").decorate(TextDecoration.BOLD)
                 , InscriptedPalette.WHITE.getColor());
-        Component requitementIndicator = Component.text(Utils.convertToPrettyString("Requirements:"));
+        Component requitementIndicator = Component.text(Utils.prettify("Requirements:"));
         Component paddingComponent = Component.text(" ".repeat(padding));
         renderedRequirements.add
                 (paddingComponent.append(requitementIndicator)

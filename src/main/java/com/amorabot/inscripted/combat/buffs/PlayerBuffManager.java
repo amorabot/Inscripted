@@ -10,6 +10,8 @@ import com.amorabot.inscripted.combat.buffs.categories.stat.StatBuffCountdown;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.PlayerEvents;
 import com.amorabot.inscripted.utils.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -20,6 +22,12 @@ public class PlayerBuffManager {
     private static final boolean DEBUG_MODE = false;
 
     public static void addBuffToPlayer(BuffData buffData, UUID playerID){
+        //TODO: encapsulate isOfflineBuffOwner
+        Player player = Bukkit.getPlayer(playerID);
+        if (player==null || !player.isOnline()){
+            Utils.error("Ignoring buff instancing for offline player...");
+            return;
+        }
         PlayerDataContainer dataContainer = PlayerDataContainer.getDataContainerFor(playerID);
         Buffs buff = buffData.getBuff();
 
@@ -115,6 +123,12 @@ public class PlayerBuffManager {
     }
 
     public static boolean hasActiveBuff(Buffs buff, UUID playerID){
+        Player player = Bukkit.getPlayer(playerID);
+        if (player==null || !player.isOnline()){
+            Utils.error("Ignoring buff instance check for offline player...  (false)");
+            return false;
+        }
+
         PlayerDataContainer dataContainer = PlayerDataContainer.getDataContainerFor(playerID);
         Map<Buffs, BuffData> playerBuffMap = dataContainer.getActiveBuffs();
         if (playerBuffMap.containsKey(buff)){
@@ -124,6 +138,12 @@ public class PlayerBuffManager {
     }
 
     public static void clearAllBuffsFor(UUID playerID){ //TODO: expand with clearing only debuffs
+        Player player = Bukkit.getPlayer(playerID);
+        if (player==null || !player.isOnline()){
+            Utils.error("Ignoring buff clearing for offline player...");
+            return;
+        }
+
         PlayerDataContainer dataContainer = PlayerDataContainer.getDataContainerFor(playerID);
         Map<Buffs, BuffData> playerBuffMap = dataContainer.getActiveBuffs();
         for (Buffs buff : playerBuffMap.keySet()){

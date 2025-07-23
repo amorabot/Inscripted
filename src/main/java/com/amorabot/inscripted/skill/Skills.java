@@ -8,10 +8,12 @@ import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import com.amorabot.inscripted.skill.annotations.AttackSkill;
-import com.amorabot.inscripted.skill.annotations.PersistentSkill;
+import com.amorabot.inscripted.skill.annotations.AuraSkill;
+import com.amorabot.inscripted.skill.annotations.DurationSkill;
 import com.amorabot.inscripted.skill.annotations.ProjectileSkill;
 import com.amorabot.inscripted.skill.archetypes.axe.AxeBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.axe.AxeMovement;
+import com.amorabot.inscripted.skill.archetypes.axe.AxeUtility;
 import com.amorabot.inscripted.skill.archetypes.bow.BowBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.bow.BowMovement;
 import com.amorabot.inscripted.skill.archetypes.dagger.DaggerBasicAttacks;
@@ -30,6 +32,7 @@ import com.amorabot.inscripted.skill.routine.projectile.ProjectileGenerators;
 import com.amorabot.inscripted.skill.type.Attack;
 import com.amorabot.inscripted.skill.type.Aura;
 import com.amorabot.inscripted.skill.type.Movement;
+import com.amorabot.inscripted.skill.type.Utility;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
@@ -46,6 +49,7 @@ import java.util.function.Consumer;
 
 @Getter
 public enum Skills {
+    //Basic attack skills
     FIST(null, CastType.NEUTRAL, new Tags[]{Tags.NONE},0),
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {10, -10, -40, -40, -70}, dmgConversion = {0, 0, 0, 0} )
     BASIC_AXE_SLASH(AxeBasicAttacks::standardAxeSlash,CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0),
@@ -74,22 +78,27 @@ public enum Skills {
     VANISH(DaggerMovement::vanish,CastType.MOVEMENT, new Tags[0],12),
     WARP(WandMovement::warp,CastType.MOVEMENT, new Tags[0],7),
     TECTONIC_PULL(MaceMovement::pull,CastType.MOVEMENT, new Tags[0],7),//TODO: improve visuals
-
+    
+    //Utility Skills
+    @DurationSkill(duration = 12, refreshRate = 5) //TODO: castTime?
+    WAR_BANNER(AxeUtility::warBanner,CastType.UTILITY, new Tags[0],7),
+ 
+    //Special skills
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 10, 10, 10, -70}, dmgConversion = {0, 0, 0, 0} )
     EARTHQUAKE(MaceSpecialAttacks::earthquake,CastType.SPECIAL_ATTACK,new Tags[0],2),
 
     // Keystone Auras
-    @PersistentSkill( period = 3, maxDuration = -1 )
-    PERMAFROST(ItemAuras::permafrost, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0), //TODO: improve visuals
+    @AuraSkill( period = 1, toggleCooldown = -1 )
+    PERMAFROST(ItemAuras::registerPermafrost, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0), //TODO: improve visuals
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 15,70, 0,0}, dmgEffectiveness = {0, 0, 50, 0, 0}, dmgConversion = {0, 0, 30, 0} )
-    @PersistentSkill( period = 1.5, maxDuration = -1 )
-    THUNDERSTRUCK(ItemAuras::thunderstruck, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),
-    @PersistentSkill( period = 0.2, maxDuration = -1 )
-    RIGHTEOUS_FIRE(ItemAuras::righteousFire, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),//TODO: implement dot damage
-    @PersistentSkill( period = 10, maxDuration = -1 )
-    WINDS_OF_CHANGE(ItemAuras::windsOfChange, CastType.NEUTRAL, new Tags[]{Tags.AURA},0),
-    @PersistentSkill( period = 0.5, maxDuration = -1 )
-    BERSERK(ItemAuras::berserk, CastType.NEUTRAL, new Tags[]{Tags.AURA},0);
+    @AuraSkill( period = 1.5, toggleCooldown = -1 )
+    THUNDERSTRUCK(ItemAuras::registerThunderstruck, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),
+    @AuraSkill( period = 0.2, toggleCooldown = -1 )
+    RIGHTEOUS_FIRE(ItemAuras::registerRighteousFire, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),//TODO: implement dot damage
+    @AuraSkill( period = 10, toggleCooldown = -1 )
+    WINDS_OF_CHANGE(ItemAuras::registerWindsOfChange, CastType.NEUTRAL, new Tags[]{Tags.AURA},0),
+    @AuraSkill( period = 0.5, toggleCooldown = -1 )
+    BERSERK(ItemAuras::registerBerserk, CastType.NEUTRAL, new Tags[]{Tags.AURA},0);
 
 
 
@@ -112,7 +121,14 @@ public enum Skills {
 
 
     public void cast(UUID casterID, CastSource source, WeaponAttackSpeeds speedModifier){
-        final boolean persistent = this.isPersistent();
+        final boolean persistent = this.isDuration();
+        if (isAura()){
+            if (source.equals(CastSource.ITEM) && getType().equals(CastType.NEUTRAL)){
+                Utils.log("Item aura cast!");
+            }
+            new Aura(casterID,this,source,speedModifier).start(0,0);
+            return;
+        }
         switch (getType()){
             case BASIC_ATTACK, SPECIAL_ATTACK -> {
                 if (persistent){
@@ -127,17 +143,19 @@ public enum Skills {
                 PlayerDataContainer.getDataContainerFor(casterID).onNotify(TriggerTimes.LATE, TriggerTypes.ON_MOVEMENT, Bukkit.getPlayer(casterID),new int[1]);
             }
             case UTILITY -> {
-                if (persistent){
+                if (isAura()){
                     // Instantiate a Aura
                     new Aura(casterID,this,source,speedModifier).start(0,0);
                 }
                 //Instantiate a Utility
+                new Utility(casterID,this,source,speedModifier).start(0,0);
             }
             case NEUTRAL -> { // Item-related casts
-                if (source.equals(CastSource.ITEM)){
-                    Utils.log("Item Cast!");
-                }
-                new Aura(casterID,this,source,speedModifier).start(0,0);
+                Utils.log("NEUTRAL CASTING");
+//                if (source.equals(CastSource.ITEM)){
+//                    Utils.log("Item Cast!");
+//                }
+//                new Aura(casterID,this,source,speedModifier).start(0,0);
             }
             default -> {
                 Utils.error("Fucked skillcast :D");
@@ -168,11 +186,17 @@ public enum Skills {
         return (getProjectileSkilLData() != null);
     }
 
-    public PersistentSkill getPersistentSkillData(){
-        return (PersistentSkill) getSkillAnottationData(PersistentSkill.class);
+    public AuraSkill getAuraSkillData(){
+        return (AuraSkill) getSkillAnottationData(AuraSkill.class);
     }
-    public boolean isPersistent(){
-        return getPersistentSkillData() != null;
+    public boolean isAura(){
+        return getAuraSkillData() != null;
+    }
+    public DurationSkill getDurationSkillData(){
+        return (DurationSkill) getSkillAnottationData(DurationSkill.class);
+    }
+    public boolean isDuration(){
+        return getDurationSkillData() != null;
     }
 
     private Annotation getSkillAnottationData(Class<? extends Annotation> annotationClass){

@@ -57,8 +57,6 @@ public class JoinQuitHandler implements Listener {
 
         ProfileDatabase.saveProfile(playerUUID);
         PlayerDataContainer.clearPlayerMemory(playerUUID);
-//        combatLog(player);
-//        destroyPlayerData(player);
     }
 
     private void initializePlayer(Player player){
