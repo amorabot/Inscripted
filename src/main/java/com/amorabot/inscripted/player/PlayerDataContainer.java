@@ -18,6 +18,7 @@ import com.amorabot.inscripted.skill.casting.CastType;
 import com.amorabot.inscripted.skill.casting.GlobalCooldown;
 import com.amorabot.inscripted.skill.type.Aura;
 import com.amorabot.inscripted.skill.type.subroutines.PersistentSubroutine;
+import com.amorabot.inscripted.tasks.HealthBarRenderer;
 import com.amorabot.inscripted.tasks.RegenerationTask;
 import com.amorabot.inscripted.tasks.base.PlayerboundTask;
 import com.amorabot.inscripted.utils.Utils;
@@ -121,6 +122,7 @@ public class PlayerDataContainer implements ProfileObserver {
         if (onlinePlayerData.containsKey(playerID)){return;}
         onlinePlayerData.put(playerID, new PlayerDataContainer(playerID,profileData));
         new RegenerationTask(playerID).start(0, RegenerationTask.regenTimerCooldown);
+        new HealthBarRenderer(playerID).start(0,RegenerationTask.regenTimerCooldown);
     }
     public static void instantiatePlayer(UUID playerID){
         if (onlinePlayerData.containsKey(playerID)){return;}
@@ -129,7 +131,7 @@ public class PlayerDataContainer implements ProfileObserver {
     public static PlayerDataContainer clearPlayerMemory(UUID playerID){
         Utils.log("Memory cleared for :" + playerID);
         PlayerDataContainer removedPlayerData = getOnlinePlayerData().remove(playerID);
-        removedPlayerData.clearTasks();
+//        removedPlayerData.clearTasks();
         removedPlayerData.clearPersistentSkillInstances();
         return removedPlayerData;
     }

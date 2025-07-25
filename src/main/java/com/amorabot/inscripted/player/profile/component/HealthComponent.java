@@ -222,5 +222,8 @@ public class HealthComponent implements ProfileComponent {
     public int getCurrentHealthPercentage(){
         return (int) (((double)getHealth()/getMaxHealth())*100);
     }
+    public int getCurrentSoulPercentage(){
+        return (int) (((double)getSoul()/getMaxSoul())*100);
+    }
 
 }

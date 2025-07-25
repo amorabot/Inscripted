@@ -10,6 +10,7 @@ import com.amorabot.inscripted.combat.buffs.categories.stat.StatBuff;
 import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.math.LinalgMath;
 import com.amorabot.inscripted.particle.ParticlePlotter;
+import com.amorabot.inscripted.player.renderer.HealthBarGenerator;
 import com.amorabot.inscripted.skill.routine.projectile.Projectile;
 import com.amorabot.inscripted.math.OrientedBoundingBox;
 import com.amorabot.inscripted.utils.ColorUtils;
@@ -54,6 +55,7 @@ public class TemplateCommand implements CommandExecutor {
             String action = strings[0];
             switch (action){
                 case "bar":
+                    HealthBarGenerator.getHealthBarSegmentsFor(player);
                     break;
                 case "toggle":
                     //Not persistent (ideal for temporary tags/ownership/toggles that are not essential in combat) -> if persistance is needed: scoreboard tags

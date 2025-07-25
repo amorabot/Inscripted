@@ -1,16 +1,13 @@
 package com.amorabot.inscripted.tasks;
 
-import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
 import com.amorabot.inscripted.player.profile.component.HealthComponent;
 import com.amorabot.inscripted.tasks.base.PlayerboundTask;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
-import static com.amorabot.inscripted.player.PlayerDataContainer.getPlayerEquipment;
 import static com.amorabot.inscripted.player.PlayerDataContainer.getProfile;
 
 public class RegenerationTask extends PlayerboundTask {

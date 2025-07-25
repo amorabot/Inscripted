@@ -30,31 +30,43 @@ public enum CustomUnicodeTable {
     P16("\uF031"),
     P32("\uF032"),
 
-    //new assets
-    HP_BAR("\uE010"),
-    HP_ICON("\uE011"),
+    //frame(-1 blank + 1 default rendering)-80->soulSegm-1,soulSegm-1,...,SS-16-64+2(3 blank -1 dft rend)->
+    //new assets \uE010\uE021\uE022\uE025\uE028\uE029\uE011\uE012\uE012\uE012\uE013
+    HP_FRAME("\uE010"),
 
-    HP_HEAD("\uE020"),
-    HP_FULL("\uE021"),
-    HP_TAIL("\uE022"),
-    HP_HALF("\uE023"),
-    EMPTY_HP("\uE024"),
-    EMPTY_HP_TAIL("\uE025"),
+    HP_FULL_HEAD("\uE011"),
+    HP_FULL_MID("\uE012"),
+    HP_FULL_TAIL("\uE013"),
 
-    WARD_HEAD("\uE026"),
-    WARD_FULL("\uE027"),
-    WARD_HALF("\uE028"),
-    WARD_TAIL("\uE029");
+    HP_HALF_HEAD("\uE014"),
+    HP_HALF_MID("\uE015"),
+    HP_HALF_TAIL("\uE016"),
+
+    NO_HP_HEAD("\uE017"),
+    NO_HP_MID("\uE018"),
+    NO_HP_TAIL("\uE019"),
+
+    SOUL_FULL_HEAD("\uE021"),
+    SOUL_FULL_MID("\uE022"),
+    SOUL_FULL_TAIL("\uE023"),
+
+    SOUL_HALF_HEAD("\uE024"),
+    SOUL_HALF_MID("\uE025"),
+    SOUL_HALF_TAIL("\uE026"),
+
+    NO_SOUL_HEAD("\uE027"),
+    NO_SOUL_MID("\uE028"),
+    NO_SOUL_TAIL("\uE029");
 
     @Getter
-    private final String unicodeChar;
+    private final String unicode;
 
     CustomUnicodeTable(String unicode){
-        this.unicodeChar = unicode;
+        this.unicode = unicode;
     }
 
     @Override
     public String toString() {
-        return unicodeChar;
+        return unicode;
     }
 }
