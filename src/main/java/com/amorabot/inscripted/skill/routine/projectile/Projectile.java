@@ -21,6 +21,7 @@ import java.util.function.Function;
 import static com.amorabot.inscripted.utils.Utils.limitVector;
 
 @Getter
+
 public class Projectile{
 
     public static final Vector GRAVITY_VEC = new Vector(0, -0.05, 0);
@@ -51,7 +52,7 @@ public class Projectile{
     private Consumer<Projectile> trailRenderer;
     @Setter
     private Function<Projectile, Boolean> collisionDetection;
-    private Consumer<Skillcast> collisionImpact;
+    private final Consumer<Projectile> collisionImpact;
 
     public Projectile(Skillcast skillcast, AttackData attackData, Vector initialPos, Vector baseVelocity, Vector baseAcceleration, Vector targetPos,
                       double maxTravelDistance,
@@ -93,18 +94,21 @@ public class Projectile{
             int iterations = 0;
             @Override
             public void run() {
-                if (iterations >= maxIterations || origin.distance(target) < 1 || !valid){
+                if (iterations >= maxIterations || !isValid()){
                     this.cancel();
                     return;
                 }
 
                 for (int i = 0; i<subSteps; i++){
                     update();
+                    if (!isValid()){
+                        this.cancel();
+                        return;
+                    }
                     iterations++;
                     //ONLY WORKS ASSUMING PROJECTILES AT FULL-SPEED AT ALL TIMES
                     if ((maxSpeed*iterations)>maxTravelDistance){setValid(false);}
                 }
-
 
             }
         }.runTaskTimer(Inscripted.getPlugin(),0, 1).getTaskId();
@@ -113,16 +117,33 @@ public class Projectile{
     public void update(){
         behavior.steer(this); //Changes velocity
         origin.add(velocity);
-        if (!ignoreBlocks){
-            World projWorld = getProjectileWorld();
-            if (projWorld.getBlockAt(origin.toLocation(projWorld)).isSolid()){setValid(false);}
+
+        boolean destroyed = destroyedOnBlockContact();
+        if (destroyed){
+            setValid(false);
+            return;
         }
         //Render
         trailRenderer.accept(this);
         //Check collisions?
         if (collisionDetection.apply(this)){
-            Utils.log("Collision!");
+            //Whatever
+            Utils.log("Collision");
         }
+    }
+    private boolean destroyedOnBlockContact(){
+        if (!ignoreBlocks){
+            World projWorld = getProjectileWorld();
+            boolean isInsideBlock = projWorld.getBlockAt(origin.toLocation(projWorld)).isSolid();
+            Utils.log("inBlock: " + isInsideBlock + " |  isValid: " + isValid());
+//            projWorld.getBlockAt(origin.toLocation(projWorld)).isSolid()
+            if (isInsideBlock){
+                collisionImpact.accept(this);
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 
     public void applyForce(Vector acceleration){

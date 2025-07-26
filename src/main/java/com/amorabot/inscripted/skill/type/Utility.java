@@ -5,6 +5,7 @@ import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.skill.casting.CastSource;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
+import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
@@ -12,5 +13,9 @@ public class Utility extends Skillcast.Persistent { //Utilities may not be persi
     public Utility(UUID playerID, Skills sourceSkill, CastSource castSource, WeaponAttackSpeeds weaponSpeed) {
         super(playerID, sourceSkill, castSource, weaponSpeed);
         Utils.log("Utility cast!");
+    }
+    public Utility(UUID playerID, Vector skillcastOrigin, Skills sourceSkill, CastSource castSource, WeaponAttackSpeeds weaponSpeed) {
+        super(playerID, skillcastOrigin, sourceSkill, castSource, weaponSpeed);
+        Utils.log("Fixed location Utility cast!");
     }
 }

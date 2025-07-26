@@ -2,10 +2,16 @@ package com.amorabot.inscripted.skill.routine.projectile;
 
 import com.amorabot.inscripted.combat.damage.DamageRouter;
 import com.amorabot.inscripted.combat.damage.DamageSource;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.player.profile.component.AttackData;
+import com.amorabot.inscripted.skill.Skills;
+import com.amorabot.inscripted.skill.archetypes.dagger.DaggerUtility;
+import com.amorabot.inscripted.skill.casting.CastSource;
 import com.amorabot.inscripted.skill.routine.SkillcastData;
 import com.amorabot.inscripted.skill.type.Attack;
+import com.amorabot.inscripted.skill.type.Utility;
 import com.amorabot.inscripted.tasks.base.Skillcast;
+import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
@@ -13,6 +19,7 @@ import org.bukkit.util.Vector;
 
 import java.util.List;
 
+import static com.amorabot.inscripted.skill.Skills.SMOKE_BOMB_CLOUD;
 import static com.amorabot.inscripted.skill.Skills.getLargeHitbox;
 
 public class ProjectileCollision {
@@ -60,8 +67,22 @@ public class ProjectileCollision {
         return false;
     }
 
-    public static void testCollisionExecution(Skillcast originalSkillcast){
-        originalSkillcast.getPlayer().sendMessage("Colided!");
+
+    public static void testCollisionExecution(Projectile collidedProj){
+        collidedProj.getSkillcast().getPlayer().sendMessage("Colided!");
+    }
+
+    public static void smokeBombCollision(Projectile collidedProj){
+        collidedProj.getSkillcast().getPlayer().sendMessage("Smoke bomb collision!");
+//        DaggerUtility.smokeBombCloud(collidedProj.getSkillcast());
+        Skills parentSkillcastSourceSkill = collidedProj.getSkillcast().getCastedSkill();
+        if (!parentSkillcastSourceSkill.equals(Skills.SMOKE_BOMB)){
+            Utils.error("Smoke bomb cloud not instanced by Smokebomb...");
+            return;
+        }
+        new Utility(collidedProj.getSkillcast().getPlayerID(),collidedProj.getOrigin(),Skills.SMOKE_BOMB_CLOUD, CastSource.SUB_SKILL, WeaponAttackSpeeds.NORMAL).start(0,0);
+
+//        SMOKE_BOMB_CLOUD.cast(collidedProj.getSkillcast().getPlayerID(), CastSource.SUB_SKILL, WeaponAttackSpeeds.NORMAL);
     }
 
     //TODO: Seek when found -> constant checks for nearby players and change behavior to seek + change target

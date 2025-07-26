@@ -18,6 +18,7 @@ import com.amorabot.inscripted.skill.archetypes.bow.BowBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.bow.BowMovement;
 import com.amorabot.inscripted.skill.archetypes.dagger.DaggerBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.dagger.DaggerMovement;
+import com.amorabot.inscripted.skill.archetypes.dagger.DaggerUtility;
 import com.amorabot.inscripted.skill.archetypes.mace.MaceBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.mace.MaceMovement;
 import com.amorabot.inscripted.skill.archetypes.mace.MaceSpecialAttacks;
@@ -25,6 +26,8 @@ import com.amorabot.inscripted.skill.archetypes.sword.SwordBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.sword.SwordMovement;
 import com.amorabot.inscripted.skill.archetypes.wand.WandBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.wand.WandMovement;
+import com.amorabot.inscripted.skill.archetypes.wand.WandSpecials;
+import com.amorabot.inscripted.skill.archetypes.wand.WandUtilities;
 import com.amorabot.inscripted.skill.casting.CastSource;
 import com.amorabot.inscripted.skill.casting.CastType;
 import com.amorabot.inscripted.skill.archetypes.item.ItemAuras;
@@ -82,10 +85,22 @@ public enum Skills {
     //Utility Skills
     @DurationSkill(duration = 12, refreshRate = 5) //TODO: castTime?
     WAR_BANNER(AxeUtility::warBanner,CastType.UTILITY, new Tags[0],7),
+    @DurationSkill(duration = 1.5, refreshRate = 3)
+    CRYOSTASIS(WandUtilities::cryostasis,CastType.UTILITY, new Tags[0],3),
+    @AttackSkill( addedBaseDmg = {5,10, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-90, -90, -90, -90, -100}, dmgConversion = {0, 0, 0, 0} )
+    @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.CONE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
+    SMOKE_BOMB(DaggerUtility::smokeBomb,CastType.UTILITY, new Tags[0],4),
  
     //Special skills
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 10, 10, 10, -70}, dmgConversion = {0, 0, 0, 0} )
     EARTHQUAKE(MaceSpecialAttacks::earthquake,CastType.SPECIAL_ATTACK,new Tags[0],2),
+    //Special skills
+    @AttackSkill( addedBaseDmg = {0,0, 15,50, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, 50, -10, -40, -70}, dmgConversion = {40, 0, 0, 0} )
+    METEOR(WandSpecials::meteor,CastType.SPECIAL_ATTACK,new Tags[0],10),
+
+    //Secondary skills (shouldn't be directly mapped/instanced)
+    @DurationSkill(duration = 8, refreshRate = 5)
+    SMOKE_BOMB_CLOUD(DaggerUtility::smokeBombCloud,CastType.NEUTRAL, new Tags[0],0),
 
     // Keystone Auras
     @AuraSkill( period = 1, toggleCooldown = -1 )
@@ -122,13 +137,24 @@ public enum Skills {
 
     public void cast(UUID casterID, CastSource source, WeaponAttackSpeeds speedModifier){
         final boolean persistent = this.isDuration();
-        if (isAura()){
+
+//        if (source.equals(CastSource.SUB_SKILL)){
+//            //Cast subroutine directly
+//
+//        }
+
+        if (isAura()){ //Prioritize annotation data when trying to cast
             if (source.equals(CastSource.ITEM) && getType().equals(CastType.NEUTRAL)){
                 Utils.log("Item aura cast!");
             }
             new Aura(casterID,this,source,speedModifier).start(0,0);
             return;
         }
+        if (isAttackSkill()){
+            new Attack.Basic(casterID,this,source,speedModifier).start(0,0);
+            return;
+        }
+
         switch (getType()){
             case BASIC_ATTACK, SPECIAL_ATTACK -> {
                 if (persistent){

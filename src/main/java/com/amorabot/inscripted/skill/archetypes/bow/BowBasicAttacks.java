@@ -3,7 +3,6 @@ package com.amorabot.inscripted.skill.archetypes.bow;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.component.AttackData;
 import com.amorabot.inscripted.skill.Skills;
-import com.amorabot.inscripted.skill.SteeringBehaviors;
 import com.amorabot.inscripted.skill.routine.projectile.Projectile;
 import com.amorabot.inscripted.skill.routine.projectile.ProjectileCollision;
 import com.amorabot.inscripted.skill.routine.projectile.ProjectileConfig;

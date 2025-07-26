@@ -12,6 +12,7 @@ import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
@@ -20,9 +21,14 @@ public abstract class Skillcast extends PlayerboundTask{
     protected final SkillcastData castData;
     protected final int baseCooldownMod;
 
+    public Skillcast(UUID playerID, Vector skillcastOrigin, Skills sourceSkill, CastSource castSource, int baseCDMod) {
+        super(playerID);
+        this.castData = new SkillcastData(new SkillcastContext(getPlayer(),sourceSkill,skillcastOrigin),castSource,sourceSkill.isIgnoreOwner());
+        this.baseCooldownMod = baseCDMod;
+    }
     public Skillcast(UUID playerID, Skills sourceSkill, CastSource castSource, int baseCDMod) {
         super(playerID);
-        this.castData = new SkillcastData(new SkillcastContext(getPlayer(),sourceSkill),castSource,sourceSkill.isIgnoreOwner());
+        this.castData = new SkillcastData(new SkillcastContext(getPlayer(),sourceSkill,getPlayer().getLocation().toVector()),castSource,sourceSkill.isIgnoreOwner());
         this.baseCooldownMod = baseCDMod;
     }
     @Override
@@ -73,6 +79,9 @@ public abstract class Skillcast extends PlayerboundTask{
 
     public static abstract class Simple extends Skillcast {
 
+        public Simple(UUID playerID, Vector skillcastOrigin, Skills sourceSkill, CastSource castSource, WeaponAttackSpeeds weaponSpeed) {
+            super(playerID,skillcastOrigin, sourceSkill,castSource,weaponSpeed.getAbilityCooldownModifier());
+        }
         public Simple(UUID playerID, Skills sourceSkill, CastSource castSource, WeaponAttackSpeeds weaponSpeed) {
             super(playerID,sourceSkill,castSource,weaponSpeed.getAbilityCooldownModifier());
         }
@@ -93,6 +102,9 @@ public abstract class Skillcast extends PlayerboundTask{
 
 //        private int persistentRoutineID = -1;
         private PersistentSubroutine subroutine;
+        public Persistent(UUID playerID, Vector skillcastOrigin, Skills sourceSkill, CastSource castSource,  WeaponAttackSpeeds weaponSpeed) {
+            super(playerID, skillcastOrigin, sourceSkill, castSource, weaponSpeed.getAbilityCooldownModifier());
+        }
         public Persistent(UUID playerID, Skills sourceSkill, CastSource castSource,  WeaponAttackSpeeds weaponSpeed) {
             super(playerID, sourceSkill, castSource, weaponSpeed.getAbilityCooldownModifier());
         }

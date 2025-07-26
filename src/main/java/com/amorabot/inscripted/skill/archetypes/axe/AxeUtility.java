@@ -39,7 +39,7 @@ public class AxeUtility {
                 ParticlePlotter.plotCircleAt(centerLoc.toVector(), centerLoc.getWorld(), Particle.CRIT, radius-0.25f,points);
                 ParticlePlotter.plotColoredCircleAt(centerLoc.toVector(), centerLoc.getWorld(), 255, 40, 50, 1.2f, radius-0.5f, points);
                 // Update elapsed ticks since the task started
-                warBannerSubroutine.addPeriodToElapsedTime();
+                warBannerSubroutine.addElapsedTime();
             }
         });
 

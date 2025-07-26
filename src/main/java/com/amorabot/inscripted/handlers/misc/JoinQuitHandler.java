@@ -53,6 +53,7 @@ public class JoinQuitHandler implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event){
         Player player = event.getPlayer();
         Utils.log(player.getDisplayName() + " has quit. Saving profile and removing from cache.");
+        Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_JUMP_STRENGTH)).setBaseValue(0.42); //Resetting JumpStrength on quit
         UUID playerUUID = player.getUniqueId();
 
         ProfileDatabase.saveProfile(playerUUID);

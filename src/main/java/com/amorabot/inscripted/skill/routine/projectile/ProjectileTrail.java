@@ -24,4 +24,11 @@ public class ProjectileTrail {
         Vector particleDir = projectile.getVelocity().clone().multiply(-1).normalize();
         ParticlePlotter.spawnDirectionalParticle(pos, particleDir, 1.2F, projWorld, Particle.ELECTRIC_SPARK);
     }
+
+    public static void smokeBombTrail(Projectile projectile){
+        World projWorld = projectile.getProjectileWorld();
+        Vector pos = projectile.getOrigin();
+        ParticlePlotter.spawnColorTransitionParticleAt(pos, projWorld, 255, 255, 255, 200, 220, 220, 0.8F, 2);
+        ParticlePlotter.spawnParticleAt(pos,projWorld,Particle.SMOKE);
+    }
 }

@@ -7,5 +7,5 @@ import java.util.function.Function;
 
 public record ProjectileConfig(boolean hasGravity, boolean ignoreBlocks, boolean destroyOnContact,
                                double maxSpeed, double maxForce, double detectionRange,
-                               Consumer<Projectile> trail, Function<Projectile, Boolean> collisionDetection, Consumer<Skillcast> impactRoutine) {
+                               Consumer<Projectile> trail, Function<Projectile, Boolean> collisionDetection, Consumer<Projectile> impactRoutine) {
 }
