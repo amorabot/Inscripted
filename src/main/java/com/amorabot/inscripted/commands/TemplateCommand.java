@@ -2,6 +2,7 @@ package com.amorabot.inscripted.commands;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.displays.DisplayBlock;
+import com.amorabot.inscripted.displays.Models;
 import com.amorabot.inscripted.gui.instances.RelicSelection;
 import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.combat.buffs.Buffs;
@@ -122,8 +123,8 @@ public class TemplateCommand implements CommandExecutor {
                     spreadOBB.render(playerWorld);
                     if (spreadOBB.intersects(player.getBoundingBox())){Utils.msgPlayer(player, "CollisioN!");}
                     return true;
-                case "modGen":
-
+                case "banner":
+                    Models.instantiateWarBanner(player.getLocation().toVector(),playerWorld,60);
                     return true;
                 case "tp":
                     if (testDisplay==null) return false;

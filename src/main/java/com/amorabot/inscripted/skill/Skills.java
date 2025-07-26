@@ -108,7 +108,7 @@ public enum Skills {
     private final int cooldownInSeconds;
     private boolean ignoreOwner = true;
 
-    //TODO: implement cast sound function
+    //TODO: implement cast sound function, Archetype & variantID
     Skills(Consumer<Skillcast> routine, CastType type, Tags[] skillTags, int cooldown, boolean... ignoreOwner){
         this.skillRoutine = routine;
         this.type = type;

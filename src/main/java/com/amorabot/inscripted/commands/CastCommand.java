@@ -38,7 +38,7 @@ public class CastCommand implements TabExecutor {
         if (strings == null){return false;}
         try{
             Skills skill = Skills.valueOf(strings[0]);
-            skill.cast(playerID,CastSource.PLAYER,WeaponAttackSpeeds.FAST);
+            skill.cast(playerID,CastSource.PLAYER,WeaponAttackSpeeds.NORMAL);
 //            new Attack.Basic(playerID,skill, CastSource.PLAYER, WeaponAttackSpeeds.FAST).start(0,0);
 //            switch (strings[0]){
 //                case "smite":

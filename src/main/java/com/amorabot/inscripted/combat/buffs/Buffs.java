@@ -29,8 +29,13 @@ public enum Buffs {
             CombatEffects.deathEffect(player);
         }
     },
-    @Stat(amount = {20}, valueType = ValueType.INCREASED, targetStat = Stats.ARMOR, durationInSeconds = 5)
-    FORTIFY(false),
+    @Stat(amount = {30}, valueType = ValueType.FLAT, targetStat = Stats.ARMOR, durationInSeconds = 5)
+    FORTIFY(false){
+        @Override
+        public void effectOn(Player player){
+            ParticlePlotter.plotCircleAt(player.getLocation().toVector(), player.getWorld(),Particle.CRIT,0.7f,7);
+        }
+    },
     @Healing(baseHealing = 1, healingType = ValueType.PERCENTAGE, period = 8, timesApplied = 5)
     REJUVENATE(false),
     @Stat(amount = {30}, valueType = ValueType.FLAT, targetStat = Stats.WALK_SPEED, durationInSeconds = 10)
@@ -69,7 +74,7 @@ public enum Buffs {
 
 
     public void effectOn(Player player){
-    }
+    } // What in the abstraction is this
 
     public Annotation getBuffAnnotationData(){ //Exclusive to 1 for now
         try {

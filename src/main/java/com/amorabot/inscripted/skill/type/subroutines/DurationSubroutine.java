@@ -41,7 +41,7 @@ public class DurationSubroutine extends PersistentSubroutine{
             return;
         }
         Skillcast.Persistent durationCast = (Skillcast.Persistent)parentSkillcast;
-        int durationInTicks = (int) (durationCast.getSubroutineMaxDurationInSeconds() * 20);
+//        int durationInTicks = (int) (durationCast.getSubroutineMaxDurationInSeconds() * 20);
         int period = durationCast.getSubroutineRefreshRate();
         routine.runTaskTimer(Inscripted.getPlugin(),delay, period);
         if (DEBUG_MODE) Utils.log("Setting parent duration subroutine");
@@ -49,6 +49,7 @@ public class DurationSubroutine extends PersistentSubroutine{
 
     }
     public void addDelta(int ticks){
+//        Utils.error("Elapsed: " + elapsedTicks + " | ++" + ticks + " | Total dur.: " + getTotalDuration());
         elapsedTicks += ticks;
     }
     public void addPeriodToElapsedTime(){
@@ -68,5 +69,8 @@ public class DurationSubroutine extends PersistentSubroutine{
             routine.cancel();
             return;
         }
+    }
+    public int getTotalDuration(){ //In Ticks
+        return (int) (((Skillcast.Persistent) parentSkillcast).getSubroutineMaxDurationInSeconds() * 20);
     }
 }
