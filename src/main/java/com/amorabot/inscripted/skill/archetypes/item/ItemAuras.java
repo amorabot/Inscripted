@@ -60,7 +60,7 @@ public class ItemAuras {
                 255,
                 1.3F,
                 radiusStep*counter.get(),
-                30);
+                30,false);
         counter.getAndIncrement();
 
         if (counter.get() > 3){
@@ -94,9 +94,9 @@ public class ItemAuras {
         if (caster.isSneaking()){return;}
         Location playerLoc = caster.getLocation();
         World world = playerLoc.getWorld();
-        ParticlePlotter.plotColoredCircleAt(playerLoc.toVector(), world, 160,160,160, 1.5F, radius, 16);
-        ParticlePlotter.plotDirectionalCircleAt(playerLoc.toVector(),world, Particle.ELECTRIC_SPARK, (radius-0.1f), 16, true, 1.2f);
-        ParticlePlotter.plotDirectionalCircleAt(playerLoc.toVector(),world,Particle.ELECTRIC_SPARK, (radius/2), 16, true, 1.2f);
+        ParticlePlotter.plotColoredCircleAt(playerLoc.toVector(), world, 160,160,160, 1.5F, radius, 16,true);
+        ParticlePlotter.plotDirectionalCircleAt(playerLoc.toVector(),world, Particle.ELECTRIC_SPARK, (radius-0.1f), 16, true, 1.2f,true,0.1f);
+        ParticlePlotter.plotDirectionalCircleAt(playerLoc.toVector(),world,Particle.ELECTRIC_SPARK, (radius/2), 16, true, 1.2f,true,0.1f);
         List<Player> nearbyEntities = (List<Player>) playerLoc.getNearbyPlayers(radius+0.1);
         for (Player entity : nearbyEntities){
             ParticlePlotter.thunderAt(entity.getLocation().clone(), 4, 16);
@@ -176,12 +176,12 @@ public class ItemAuras {
                 color[2],
                 1.4F,
                 radius,
-                20);
+                20,true);
         ParticlePlotter.plotColoredCircleAt(center.clone().subtract(offset), world,
                 224, 176, 123,
                 1.2F,
                 radius,
-                10);
+                10,true);
     }
 
     public static void registerWindsOfChange(Skillcast skillcast){
@@ -211,7 +211,7 @@ public class ItemAuras {
                         30,
                         1F,
                         particlesRadius,
-                        15);
+                        15,false);
                 ParticlePlotter.plotCircleAt(centerVec, world, Particle.TOTEM_OF_UNDYING, particlesRadius+0.1F, 25);
             }
         });

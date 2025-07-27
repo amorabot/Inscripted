@@ -7,10 +7,8 @@ import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.skill.casting.CastSource;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
-import org.bukkit.Bukkit;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 public class Aura extends Skillcast.Persistent {

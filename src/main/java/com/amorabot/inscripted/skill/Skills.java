@@ -16,6 +16,8 @@ import com.amorabot.inscripted.skill.archetypes.axe.AxeMovement;
 import com.amorabot.inscripted.skill.archetypes.axe.AxeUtility;
 import com.amorabot.inscripted.skill.archetypes.bow.BowBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.bow.BowMovement;
+import com.amorabot.inscripted.skill.archetypes.bow.BowSpecials;
+import com.amorabot.inscripted.skill.archetypes.bow.BowUtility;
 import com.amorabot.inscripted.skill.archetypes.dagger.DaggerBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.dagger.DaggerMovement;
 import com.amorabot.inscripted.skill.archetypes.dagger.DaggerUtility;
@@ -32,10 +34,7 @@ import com.amorabot.inscripted.skill.casting.CastSource;
 import com.amorabot.inscripted.skill.casting.CastType;
 import com.amorabot.inscripted.skill.archetypes.item.ItemAuras;
 import com.amorabot.inscripted.skill.routine.projectile.ProjectileGenerators;
-import com.amorabot.inscripted.skill.type.Attack;
-import com.amorabot.inscripted.skill.type.Aura;
-import com.amorabot.inscripted.skill.type.Movement;
-import com.amorabot.inscripted.skill.type.Utility;
+import com.amorabot.inscripted.skill.type.*;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
@@ -86,6 +85,8 @@ public enum Skills {
     @DurationSkill(duration = 12, refreshRate = 5) //TODO: castTime?
     WAR_BANNER(AxeUtility::warBanner,CastType.UTILITY, new Tags[0],7),
     @DurationSkill(duration = 1.5, refreshRate = 3)
+    HUNTING_GROUND(BowUtility::huntingGround,CastType.UTILITY, new Tags[0],3),
+    @DurationSkill(duration = 1.5, refreshRate = 3)
     CRYOSTASIS(WandUtilities::cryostasis,CastType.UTILITY, new Tags[0],3),
     @AttackSkill( addedBaseDmg = {5,10, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-90, -90, -90, -90, -100}, dmgConversion = {0, 0, 0, 0} )
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.CONE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
@@ -94,6 +95,10 @@ public enum Skills {
     //Special skills
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 10, 10, 10, -70}, dmgConversion = {0, 0, 0, 0} )
     EARTHQUAKE(MaceSpecialAttacks::earthquake,CastType.SPECIAL_ATTACK,new Tags[0],2),
+    @AttackSkill( addedBaseDmg = {5,5, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-70, -80, -80, -80, -90}, dmgConversion = {0, 0, 0, 0} )
+    @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.BARRAGE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
+    @DurationSkill(duration = 6, refreshRate = 5)
+    RAIN_OF_ARROWS(BowSpecials::rainOfArrows,CastType.SPECIAL_ATTACK,new Tags[0],2),
     //Special skills
     @AttackSkill( addedBaseDmg = {0,0, 15,50, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, 50, -10, -40, -70}, dmgConversion = {40, 0, 0, 0} )
     METEOR(WandSpecials::meteor,CastType.SPECIAL_ATTACK,new Tags[0],10),
@@ -138,11 +143,6 @@ public enum Skills {
     public void cast(UUID casterID, CastSource source, WeaponAttackSpeeds speedModifier){
         final boolean persistent = this.isDuration();
 
-//        if (source.equals(CastSource.SUB_SKILL)){
-//            //Cast subroutine directly
-//
-//        }
-
         if (isAura()){ //Prioritize annotation data when trying to cast
             if (source.equals(CastSource.ITEM) && getType().equals(CastType.NEUTRAL)){
                 Utils.log("Item aura cast!");
@@ -150,7 +150,7 @@ public enum Skills {
             new Aura(casterID,this,source,speedModifier).start(0,0);
             return;
         }
-        if (isAttackSkill()){
+        if (isAttackSkill()&& !isDuration()){
             new Attack.Basic(casterID,this,source,speedModifier).start(0,0);
             return;
         }
@@ -159,7 +159,7 @@ public enum Skills {
             case BASIC_ATTACK, SPECIAL_ATTACK -> {
                 if (persistent){
                     // Instantiate a persistent attack
-                    return;
+                    new PersistentAttack(casterID,this,source,speedModifier).start(0,0);
                 }
                 new Attack.Basic(casterID,this,source,speedModifier).start(0,0);
             }

@@ -32,7 +32,7 @@ public class MaceMovement {
         for (Vector point : points){
             ParticlePlotter.spawnColoredParticleAt(point,playerWorld,166, 91, 75,1.2f,1);
         }
-        ParticlePlotter.plotColoredCircleAt(center.clone(), playerWorld, 200,160,200, 1.2f, (float) radius, 60);
+        ParticlePlotter.plotColoredCircleAt(center.clone(), playerWorld, 200,160,200, 1.2f, (float) radius, 60,true);
 
         List<Player> nearbyPlayers = (List<Player>) center.toLocation(playerWorld).getNearbyPlayers(radius);
         nearbyPlayers.remove(player);

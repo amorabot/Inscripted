@@ -37,12 +37,13 @@ public class WandUtilities {
                 if (this.isCancelled()) return;
                 cryostatisRoutine.cancelIfInvalid();
                 ParticlePlotter.plotColoredCircleAt(
-                        center,world,174, 201, 245,1.7f,radius,points
+                        center,world,174, 201, 245,1.7f,radius,points,false
                 );
+                ParticlePlotter.spawnOffsetParticleAt(center.clone().add(new Vector(0,1,0)),world,Particle.SNOWFLAKE,radius/3,2,radius/3, 7);
                 cryostatisRoutine.addElapsedTime();
                 if (cryostatisRoutine.isExpired()){
-                    ParticlePlotter.plotDirectionalCircleAt(center,world, Particle.FIREWORK,radius,points,true,1.3f);
-                    ParticlePlotter.plotDirectionalCircleAt(center,world, Particle.ELECTRIC_SPARK,radius,points,true,1.3f);
+                    ParticlePlotter.plotDirectionalCircleAt(center,world, Particle.FIREWORK,radius,points,true,1.3f,true,0.1f);
+                    ParticlePlotter.plotDirectionalCircleAt(center,world, Particle.ELECTRIC_SPARK,radius,points,true,1.3f,true,0.1f);
                     PotionEffect slow = new PotionEffect(PotionEffectType.SLOWNESS, debuffDuration, 2, true, false, false);
                     List<Player> affectedPlayers = (List<Player>) world.getNearbyPlayers(center.toLocation(world),radius);
                     for (Player p : affectedPlayers){

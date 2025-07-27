@@ -45,6 +45,22 @@ public enum Buffs {
             ParticlePlotter.spawnParticleAt(player.getLocation().toVector(),player.getWorld(), Particle.END_ROD);
         }
     },
+    @Stat(amount = {30}, valueType = ValueType.INCREASED, targetStat = Stats.ARMOR, durationInSeconds = 12)
+    HUNTING_GROUNDS_EXPOSURE(true){
+        @Override
+        public void effectOn(Player player){
+            Vector overHead = player.getLocation().clone().add(0,2.1,0).toVector();
+            ParticlePlotter.spawnColoredParticleAt(overHead,player.getWorld(), 209, 27, 6, 0.5f, 1);
+            ParticlePlotter.spawnParticleAt(overHead, player.getWorld(), Particle.SMOKE);
+        }
+    },
+    @Stat(amount = {50}, valueType = ValueType.FLAT, targetStat = Stats.ACCURACY, durationInSeconds = 10)
+    HUNTING_GROUNDS_PRECISION(false){
+        @Override
+        public void effectOn(Player player){
+            ParticlePlotter.spawnColoredParticleAt(player.getLocation().clone().add(0,2.1,0).toVector(),player.getWorld(), 94, 156, 53, 0.5f, 1);
+        }
+    },
     @Stat(amount = {40}, valueType = ValueType.MULTIPLIER, targetStat = Stats.PHYSICAL_DAMAGE, durationInSeconds = 1)
     BERSERK(false){
         @Override

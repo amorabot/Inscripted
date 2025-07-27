@@ -34,11 +34,8 @@ public class ProjectileCollision {
         Skillcast projSkillcast = projectile.getSkillcast();
         SkillcastData scData = projectile.getSkillcast().getCastData();
 
-        AttackData projAttackData = null;
-        if (projSkillcast.getCastedSkill().isAttackSkill()){
-            Attack projectileAttack = (Attack) projSkillcast;
-            projAttackData = projectileAttack.getAttackData();
-        }
+        AttackData projAttackData = projectile.getAttackData();
+
         World projWorld = projectile.getProjectileWorld();
         double detectionRange = projectile.getDetectionRange();
         List<Player> nearbyEntities = (List<Player>) currentPosition.toLocation(projWorld).getNearbyPlayers(detectionRange);
@@ -73,16 +70,13 @@ public class ProjectileCollision {
     }
 
     public static void smokeBombCollision(Projectile collidedProj){
-        collidedProj.getSkillcast().getPlayer().sendMessage("Smoke bomb collision!");
-//        DaggerUtility.smokeBombCloud(collidedProj.getSkillcast());
+//        collidedProj.getSkillcast().getPlayer().sendMessage("Smoke bomb collision!");
         Skills parentSkillcastSourceSkill = collidedProj.getSkillcast().getCastedSkill();
         if (!parentSkillcastSourceSkill.equals(Skills.SMOKE_BOMB)){
             Utils.error("Smoke bomb cloud not instanced by Smokebomb...");
             return;
         }
         new Utility(collidedProj.getSkillcast().getPlayerID(),collidedProj.getOrigin(),Skills.SMOKE_BOMB_CLOUD, CastSource.SUB_SKILL, WeaponAttackSpeeds.NORMAL).start(0,0);
-
-//        SMOKE_BOMB_CLOUD.cast(collidedProj.getSkillcast().getPlayerID(), CastSource.SUB_SKILL, WeaponAttackSpeeds.NORMAL);
     }
 
     //TODO: Seek when found -> constant checks for nearby players and change behavior to seek + change target

@@ -24,6 +24,14 @@ public class ProjectileTrail {
         Vector particleDir = projectile.getVelocity().clone().multiply(-1).normalize();
         ParticlePlotter.spawnDirectionalParticle(pos, particleDir, 1.2F, projWorld, Particle.ELECTRIC_SPARK);
     }
+    public static void rainOfArrowsTrail(Projectile projectile){
+        World projWorld = projectile.getProjectileWorld();
+        Vector pos = projectile.getOrigin();
+        Vector particleDir = projectile.getVelocity().clone().normalize();
+        ParticlePlotter.spawnColoredParticleAt(pos, projWorld, 113, 184, 62, 1.2F,1);
+        ParticlePlotter.spawnDirectionalParticle(pos, particleDir, 1.5f, projWorld, Particle.CRIT);
+        ParticlePlotter.spawnDirectionalParticle(pos, particleDir, 0.3f, projWorld, Particle.ASH);
+    }
 
     public static void smokeBombTrail(Projectile projectile){
         World projWorld = projectile.getProjectileWorld();

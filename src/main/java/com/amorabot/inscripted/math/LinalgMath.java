@@ -1,7 +1,9 @@
 package com.amorabot.inscripted.math;
 
+import com.amorabot.inscripted.skill.routine.projectile.Projectile;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -210,6 +212,12 @@ public class LinalgMath {
         perpendicularAxis = facingDir.clone().crossProduct(normal);
 
         return new Vector[]{perpendicularAxis, facingDir, normal};
+    }
+    public static Vector projectHorizontalPlayerRaycast(double raytraceMaxDistance, Player player){
+        Location playerFeetLoc = player.getLocation();
+        Vector lookingDir = playerFeetLoc.getDirection();
+        final Vector raycastVec = Projectile.getRaytracedMaxDistance(playerFeetLoc.clone().add(0,1.5,0),lookingDir,raytraceMaxDistance);
+        return new Vector(raycastVec.getX(),playerFeetLoc.y(),raycastVec.getZ());
     }
 
     public static Vector[] defineOrientation(Location playerLoc,

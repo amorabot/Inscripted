@@ -18,7 +18,7 @@ public class BowMovement {
         Vector dir = player.getLocation().getDirection().clone();
         player.setVelocity(dir.multiply(-vel));
 
-        ParticlePlotter.plotColoredCircleAt(playerLoc.toVector(), playerLoc.getWorld(), 140, 255, 140, 1.2f, 1.2f, 30);
+        ParticlePlotter.plotColoredCircleAt(playerLoc.toVector(), playerLoc.getWorld(), 140, 255, 140, 1.2f, 1.2f, 30,false);
     }
     public static void acrobatics(Skillcast skillcastInstance){
         Player player = skillcastInstance.getPlayer();
@@ -29,6 +29,6 @@ public class BowMovement {
         Vector dir = player.getLocation().getDirection().clone();
         player.setVelocity(dir.multiply(-vel));
 
-        ParticlePlotter.plotColoredCircleAt(playerLoc.toVector(), playerLoc.getWorld(), 140, 255, 140, 1.2f, 1.2f, 30);
+        ParticlePlotter.plotColoredCircleAt(playerLoc.toVector(), playerLoc.getWorld(), 140, 255, 140, 1.2f, 1.2f, 30, false);
     }
 }

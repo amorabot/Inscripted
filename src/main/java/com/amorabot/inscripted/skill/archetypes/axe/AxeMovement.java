@@ -30,6 +30,6 @@ public class AxeMovement {
                 iteration+=1;
             }
         }.runTaskTimer(Inscripted.getPlugin(), 0, 3).getTaskId();
-        ParticlePlotter.plotColoredCircleAt(playerLoc.toVector(), playerLoc.getWorld(), 255, 40, 50, 1.2f, 1.2f, 30);
+        ParticlePlotter.plotColoredCircleAt(playerLoc.toVector(), playerLoc.getWorld(), 255, 40, 50, 1.2f, 1.2f, 30,false);
     }
 }

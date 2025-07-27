@@ -53,13 +53,13 @@ public class MaceSpecialAttacks {
             ringDisplay.setTransformation(transformation);
             ringDisplay.setLerpValues(0,10);
         }
-        ParticlePlotter.plotColoredCircleAt(slamCenter,world,168, 107, 50,1.5f, (float) slamRadius,15);
+        ParticlePlotter.plotColoredCircleAt(slamCenter,world,168, 107, 50,1.5f, (float) slamRadius,15,false);
         Vector[] internalPoints = LinalgMath.plotPointsInsideHorizontalCircle(slamCenter,slamRadius,40);
         for (Vector internalPoint : internalPoints){
             ParticlePlotter.spawnColoredParticleAt(internalPoint,world,168, 107, 50,1.5f,1);
         }
         ParticlePlotter.spawnParticleAt(slamCenter,world, Particle.GUST);
-        ParticlePlotter.plotDirectionalCircleAt(slamCenter,world, Particle.CRIT,0.3f,12,false,1.2f);
+        ParticlePlotter.plotDirectionalCircleAt(slamCenter,world, Particle.CRIT,0.3f,12,false,1.2f,true,0.1f);
         SoundAPI.playGenericSoundAtLocation(eq.getOwner(), slamCenter.toLocation(world), "entity.zombie.break_wooden_door", 0.3f, 0.2f);
     }
 

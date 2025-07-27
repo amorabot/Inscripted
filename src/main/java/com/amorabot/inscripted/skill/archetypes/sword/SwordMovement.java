@@ -21,6 +21,6 @@ public class SwordMovement {
         dir.setY(Math.abs(dir.getY()));
         player.setVelocity(dir.multiply(vel));
 
-        ParticlePlotter.plotColoredCircleAt(playerLoc.toVector(), playerLoc.getWorld(), 255, 255, 50, 1.2f, 1.2f, 30);
+        ParticlePlotter.plotColoredCircleAt(playerLoc.toVector(), playerLoc.getWorld(), 255, 255, 50, 1.2f, 1.2f, 30,false);
     }
 }

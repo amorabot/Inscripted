@@ -30,14 +30,15 @@ public class ParticlePlotter {
 
         particleBuilder.spawn();
     }
-    public static void spawnOffsetParticleAt(Vector position, World world, Particle particle, double offX, double offY, double offZ){
+    public static void spawnOffsetParticleAt(Vector position, World world, Particle particle, double offX, double offY, double offZ, int particles){
         ParticleBuilder particleBuilder = new ParticleBuilder(particle);
         particleBuilder.location(position.toLocation(world));
 
         particleBuilder.offset(offX, offY, offZ);
+        particleBuilder.extra(0);
 
         particleBuilder.receivers(10);
-        particleBuilder.count(0);
+        particleBuilder.count(particles);
         particleBuilder.spawn();
     }
     public static void spawnDifuseParticleAt(Vector position, World world, Particle particle, double velocity){
@@ -77,12 +78,14 @@ public class ParticlePlotter {
             spawnParticleAt(currentPoint, world, particle);
         }
     }
-    public static void plotDirectionalCircleAt(Vector center, World world, Particle particle, float radius, int points, boolean inward, float vel){
+    public static void plotDirectionalCircleAt(Vector center, World world, Particle particle, float radius, int points, boolean inward, float vel, boolean upOffset, float... offset){
         double angleStep = 2*Math.PI/points;
         for (double a = 0; a < 2*Math.PI; a+=angleStep){
             double xPos = Math.sin(a)*radius;
             double zPos = Math.cos(a)*radius;
-            Vector currentPoint = center.clone().add(new Vector(xPos, 0.1f, zPos));
+            float upOff = 0;
+            if (upOffset){ upOff = offset[0]; }
+            Vector currentPoint = center.clone().add(new Vector(xPos, upOff, zPos));
             Vector dir;
             dir = currentPoint.clone().subtract(center).normalize();
             if (inward){
@@ -91,12 +94,14 @@ public class ParticlePlotter {
             spawnDirectionalParticle(currentPoint, dir, vel, world, particle);
         }
     }
-    public static void plotColoredCircleAt(Vector center, World world, int r, int g, int b, float particSize, float radius, int points){
+    public static void plotColoredCircleAt(Vector center, World world, int r, int g, int b, float particSize, float radius, int points, boolean upOffset){
         double angleStep = 2*Math.PI/points;
         for (double a = 0; a < 2*Math.PI; a+=angleStep){
             double xPos = Math.sin(a)*radius;
             double zPos = Math.cos(a)*radius;
-            Vector currentPoint = center.clone().add(new Vector(xPos, 0.4D, zPos));
+            double upOff = 0;
+            if (upOffset){ upOff = 0.4D; }
+            Vector currentPoint = center.clone().add(new Vector(xPos, upOff, zPos));
             spawnColoredParticleAt(currentPoint, world, r,g,b, particSize, 1);
         }
     }

@@ -24,6 +24,7 @@ import static com.amorabot.inscripted.utils.Utils.limitVector;
 
 public class Projectile{
 
+    private static final boolean DEBUG_MODE = false;
     public static final Vector GRAVITY_VEC = new Vector(0, -0.05, 0);
 
     private final Skillcast skillcast;
@@ -135,8 +136,7 @@ public class Projectile{
         if (!ignoreBlocks){
             World projWorld = getProjectileWorld();
             boolean isInsideBlock = projWorld.getBlockAt(origin.toLocation(projWorld)).isSolid();
-            Utils.log("inBlock: " + isInsideBlock + " |  isValid: " + isValid());
-//            projWorld.getBlockAt(origin.toLocation(projWorld)).isSolid()
+            if (DEBUG_MODE) Utils.log("inBlock: " + isInsideBlock + " |  isValid: " + isValid());
             if (isInsideBlock){
                 collisionImpact.accept(this);
                 return true;

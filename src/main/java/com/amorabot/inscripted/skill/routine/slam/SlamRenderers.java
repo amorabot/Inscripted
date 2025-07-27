@@ -12,6 +12,6 @@ public class SlamRenderers {
         double slamRadius = slam.getSlamData().impactRadius();
 
         ParticlePlotter.dustPlumeAt(slamCenter.toLocation(world), 20, 0.12f);
-        ParticlePlotter.plotColoredCircleAt(slamCenter, world, 160,160,160, 1.5F, (float) slamRadius, 16);
+        ParticlePlotter.plotColoredCircleAt(slamCenter, world, 160,160,160, 1.5F, (float) slamRadius, 16,true);
     }
 }
