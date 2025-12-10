@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class CasterStateManager {
 
-    private static final boolean DEBUG_MODE = false;
+    private static final boolean DEBUG_MODE = true;
     private static final Map<UUID, CasterState> playerCasterStateMap = new HashMap<>();
 
     public static void alternateSpellcastingTriggerFor(Player caster, ItemUsage interaction){

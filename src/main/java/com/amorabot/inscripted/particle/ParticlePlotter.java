@@ -130,6 +130,23 @@ public class ParticlePlotter {
         particle.spawn();
     }
 
+    public static void lerpColorTransitionParticle(Vector begin, Vector end, float minDist, World world,
+                                                   int r1, int g1, int b1, int r2, int g2, int b2, float size){
+        int particleCount = (int) Math.round(Math.max(begin.distance(end)/minDist, 1));
+
+        double xStep = (end.getX() - begin.getX())/particleCount;
+        double yStep = (end.getY() - begin.getY())/particleCount;
+        double zStep = (end.getZ() - begin.getZ())/particleCount;
+        Vector step = new Vector(xStep, yStep, zStep);
+        Vector particlePos = begin.clone();
+
+        spawnColorTransitionParticleAt(particlePos,world,r1,g1,b1,r2,g2,b2,size,1);
+        for (int i = 0; i < particleCount; i++) {
+            particlePos.add(step);
+            spawnColorTransitionParticleAt(particlePos,world,r1,g1,b1,r2,g2,b2,size,1);
+        }
+    }
+
     public static void lerpParticlesBetween(Vector begin, Vector end, float minDist, Particle particle, World world){
         int particleCount = (int) Math.round(Math.max(begin.distance(end)/minDist, 1));
 

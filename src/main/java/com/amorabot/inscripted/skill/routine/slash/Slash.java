@@ -13,8 +13,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -57,7 +55,7 @@ public class Slash{
         this.randomized = isRandomized;
 
         Player player = skillcast.getPlayer();
-        Vector[] slashOrientation = LinalgMath.defineOrientation(
+        Vector[] slashOrientation = LinalgMath.defineSlashOrientationAxis(
                 castingLocation,
                 isMirrored,isInverted,isRandomized,
                 15, planeRotation);

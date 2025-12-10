@@ -20,10 +20,11 @@ import com.amorabot.inscripted.skill.archetypes.bow.BowSpecials;
 import com.amorabot.inscripted.skill.archetypes.bow.BowUtility;
 import com.amorabot.inscripted.skill.archetypes.dagger.DaggerBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.dagger.DaggerMovement;
+import com.amorabot.inscripted.skill.archetypes.dagger.DaggerSpecials;
 import com.amorabot.inscripted.skill.archetypes.dagger.DaggerUtility;
 import com.amorabot.inscripted.skill.archetypes.mace.MaceBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.mace.MaceMovement;
-import com.amorabot.inscripted.skill.archetypes.mace.MaceSpecialAttacks;
+import com.amorabot.inscripted.skill.archetypes.mace.MaceSpecials;
 import com.amorabot.inscripted.skill.archetypes.sword.SwordBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.sword.SwordMovement;
 import com.amorabot.inscripted.skill.archetypes.wand.WandBasicAttacks;
@@ -94,14 +95,15 @@ public enum Skills {
  
     //Special skills
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 10, 10, 10, -70}, dmgConversion = {0, 0, 0, 0} )
-    EARTHQUAKE(MaceSpecialAttacks::earthquake,CastType.SPECIAL_ATTACK,new Tags[0],2),
+    EARTHQUAKE(MaceSpecials::earthquake,CastType.SPECIAL_ATTACK,new Tags[0],2),
     @AttackSkill( addedBaseDmg = {5,5, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-70, -80, -80, -80, -90}, dmgConversion = {0, 0, 0, 0} )
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.BARRAGE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
     @DurationSkill(duration = 6, refreshRate = 5)
     RAIN_OF_ARROWS(BowSpecials::rainOfArrows,CastType.SPECIAL_ATTACK,new Tags[0],2),
-    //Special skills
     @AttackSkill( addedBaseDmg = {0,0, 15,50, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, 50, -10, -40, -70}, dmgConversion = {40, 0, 0, 0} )
     METEOR(WandSpecials::meteor,CastType.SPECIAL_ATTACK,new Tags[0],10),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 5,30}, dmgEffectiveness = {0, -30, -30, -30, 70}, dmgConversion = {0, 0, 0, 50} )
+    VIPER_STRIKE(DaggerSpecials::viperStrike,CastType.SPECIAL_ATTACK,new Tags[0],3),
 
     //Secondary skills (shouldn't be directly mapped/instanced)
     @DurationSkill(duration = 8, refreshRate = 5)

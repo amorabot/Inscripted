@@ -220,9 +220,9 @@ public class LinalgMath {
         return new Vector(raycastVec.getX(),playerFeetLoc.y(),raycastVec.getZ());
     }
 
-    public static Vector[] defineOrientation(Location playerLoc,
-                                             boolean isMirrored, boolean isInverted, boolean isRandomized,
-                                             int lowAngleThreshold, double... planeRotation){
+    public static Vector[] defineSlashOrientationAxis(Location playerLoc,
+                                                      boolean isMirrored, boolean isInverted, boolean isRandomized,
+                                                      int lowAngleThreshold, double... planeRotation){
         Vector initialDirection;
         Vector perpendicularAxis;
         Vector slashPlaneNormal;

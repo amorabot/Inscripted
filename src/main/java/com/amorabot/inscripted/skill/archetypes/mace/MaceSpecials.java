@@ -22,7 +22,7 @@ import java.util.List;
 
 import static com.amorabot.inscripted.displays.DisplayBlock.getBlockDisplayAt;
 
-public class MaceSpecialAttacks {
+public class MaceSpecials {
     public static void earthquake(Skillcast skillcastInstance){
         if (!(skillcastInstance instanceof Attack.Basic basicAttackInstance)){return;}
         SlashConfig swingRendererData = new SlashConfig(SlashSegment::standardMaceSwing,
@@ -32,7 +32,7 @@ public class MaceSpecialAttacks {
                 swingRendererData, Math.random() > 0.5, 20,1.2, 3.5, 20, 4);
 
         Slam slam = new Slam(skillcastInstance, basicAttackInstance.getAttackData(),
-                slamConfig, swingRendererData.defaultRenderer(), MaceSpecialAttacks::earthquakeImpact);
+                slamConfig, swingRendererData.defaultRenderer(), MaceSpecials::earthquakeImpact);
     }
     private static void earthquakeImpact(Slam eq){
         Vector slamCenter = eq.getSlamCenter(); //TODO: fix fucked center location (precision varies with horizontal rotation)
