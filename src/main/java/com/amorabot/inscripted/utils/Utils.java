@@ -218,5 +218,12 @@ public class Utils {
         public static double easeOutQuad(double t){
             return 1 - (1 - t) * (1 - t);
         }
+        public static double easeInOutCubic(double t){
+            if (t < 0.5 ){
+                return (4 * t * t * t);
+            } else {
+                return (1 - Math.pow(-2 * t + 2, 3) / 2);
+            }
+        }
     }
 }

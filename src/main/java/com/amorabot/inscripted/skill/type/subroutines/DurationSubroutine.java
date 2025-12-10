@@ -5,11 +5,13 @@ import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.skill.casting.CastType;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
+import lombok.Getter;
 
 import java.util.Map;
 
 public class DurationSubroutine extends PersistentSubroutine{
 
+    @Getter
     private int elapsedTicks = 0;
 
     public  DurationSubroutine(Skillcast parentSkillcast) {

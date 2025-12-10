@@ -1,9 +1,12 @@
 package com.amorabot.inscripted.particle;
 
+import com.amorabot.inscripted.utils.Utils;
 import com.destroystokyo.paper.ParticleBuilder;
 import org.bukkit.*;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.util.Vector;
+
+import java.util.function.Function;
 
 import static com.amorabot.inscripted.utils.Utils.getRandomOffset;
 //Use block markers for player portals
@@ -102,6 +105,18 @@ public class ParticlePlotter {
             double upOff = 0;
             if (upOffset){ upOff = 0.4D; }
             Vector currentPoint = center.clone().add(new Vector(xPos, upOff, zPos));
+            spawnColoredParticleAt(currentPoint, world, r,g,b, particSize, 1);
+        }
+    }
+    public static void animatedColoredCircle(Vector center, World world, int r, int g, int b, float particSize, float radius, int points,
+                                             double phaseToAnimateRad, double progress, Function<Double, Double> easing){
+        double angleStep = 2*Math.PI/points;
+        double animationProgress = easing.apply(progress);
+        double angleOffset = phaseToAnimateRad*animationProgress;
+        for (double a = 0; a < 2*Math.PI; a+=angleStep){
+            double xPos = Math.sin(a+angleOffset)*radius;
+            double zPos = Math.cos(a+angleOffset)*radius;
+            Vector currentPoint = center.clone().add(new Vector(xPos, 0, zPos));
             spawnColoredParticleAt(currentPoint, world, r,g,b, particSize, 1);
         }
     }

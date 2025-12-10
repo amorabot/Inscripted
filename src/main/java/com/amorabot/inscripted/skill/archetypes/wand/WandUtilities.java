@@ -5,6 +5,7 @@ import com.amorabot.inscripted.skill.routine.projectile.Projectile;
 import com.amorabot.inscripted.skill.type.subroutines.DurationSubroutine;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.DelayedTask;
+import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -30,14 +31,15 @@ public class WandUtilities {
 
         cryostatisRoutine.setRoutine(new BukkitRunnable() {
             final float radius = 4f;
-            final int points = 35;
+            final int points = 24;
             final int debuffDuration = 50;
             @Override
             public void run() {
                 if (this.isCancelled()) return;
                 cryostatisRoutine.cancelIfInvalid();
-                ParticlePlotter.plotColoredCircleAt(
-                        center,world,174, 201, 245,1.7f,radius,points,false
+                double progress = ((double)( cryostatisRoutine.getElapsedTicks()) / cryostatisRoutine.getTotalDuration());
+                ParticlePlotter.animatedColoredCircle(
+                        center,world,174, 201, 245,1.5f,radius,points,Math.PI/6,progress, Utils.Easings::easeOutQuad
                 );
                 ParticlePlotter.spawnOffsetParticleAt(center.clone().add(new Vector(0,1,0)),world,Particle.SNOWFLAKE,radius/3,2,radius/3, 7);
                 cryostatisRoutine.addElapsedTime();
