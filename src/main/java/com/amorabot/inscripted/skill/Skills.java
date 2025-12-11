@@ -13,6 +13,7 @@ import com.amorabot.inscripted.skill.annotations.DurationSkill;
 import com.amorabot.inscripted.skill.annotations.ProjectileSkill;
 import com.amorabot.inscripted.skill.archetypes.axe.AxeBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.axe.AxeMovement;
+import com.amorabot.inscripted.skill.archetypes.axe.AxeSpecials;
 import com.amorabot.inscripted.skill.archetypes.axe.AxeUtility;
 import com.amorabot.inscripted.skill.archetypes.bow.BowBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.bow.BowMovement;
@@ -104,6 +105,9 @@ public enum Skills {
     METEOR(WandSpecials::meteor,CastType.SPECIAL_ATTACK,new Tags[0],10),
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 5,30}, dmgEffectiveness = {0, -30, -30, -30, 70}, dmgConversion = {0, 0, 0, 50} )
     VIPER_STRIKE(DaggerSpecials::viperStrike,CastType.SPECIAL_ATTACK,new Tags[0],3),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 10, -10, -10, -70}, dmgConversion = {0, 0, 0, 0} )
+    @DurationSkill(duration = 4, refreshRate = 1)
+    CYCLONE(AxeSpecials::cyclone,CastType.SPECIAL_ATTACK,new Tags[0],2),
 
     //Secondary skills (shouldn't be directly mapped/instanced)
     @DurationSkill(duration = 8, refreshRate = 5)
