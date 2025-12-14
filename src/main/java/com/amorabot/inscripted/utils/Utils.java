@@ -225,5 +225,9 @@ public class Utils {
                 return (1 - Math.pow(-2 * t + 2, 3) / 2);
             }
         }
+        public static double easeOutExpo(double t){
+            if (t == 1) {return 1;}
+            return 1 - Math.pow(2, -10 * t);
+        }
     }
 }

@@ -102,7 +102,9 @@ public enum Skills {
     @DurationSkill(duration = 6, refreshRate = 5)
     RAIN_OF_ARROWS(BowSpecials::rainOfArrows,CastType.SPECIAL_ATTACK,new Tags[0],2),
     @AttackSkill( addedBaseDmg = {0,0, 15,50, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, 50, -10, -40, -70}, dmgConversion = {40, 0, 0, 0} )
-    METEOR(WandSpecials::meteor,CastType.SPECIAL_ATTACK,new Tags[0],10),
+    @DurationSkill(duration = 1.4, refreshRate = 1)
+    @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.BARRAGE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
+    METEOR(WandSpecials::meteor,CastType.SPECIAL_ATTACK,new Tags[0],2),
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 5,30}, dmgEffectiveness = {0, -30, -30, -30, 70}, dmgConversion = {0, 0, 0, 50} )
     VIPER_STRIKE(DaggerSpecials::viperStrike,CastType.SPECIAL_ATTACK,new Tags[0],3),
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 10, -10, -10, -70}, dmgConversion = {0, 0, 0, 0} )
@@ -112,6 +114,8 @@ public enum Skills {
     //Secondary skills (shouldn't be directly mapped/instanced)
     @DurationSkill(duration = 8, refreshRate = 5)
     SMOKE_BOMB_CLOUD(DaggerUtility::smokeBombCloud,CastType.NEUTRAL, new Tags[0],0),
+    @AttackSkill( addedBaseDmg = {0,0, 15,50, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, 50, -10, -40, -70}, dmgConversion = {40, 0, 0, 0} )
+    METEOR_IMPACT(WandSpecials::meteorImpact,CastType.NEUTRAL, new Tags[0],0),
 
     // Keystone Auras
     @AuraSkill( period = 1, toggleCooldown = -1 )

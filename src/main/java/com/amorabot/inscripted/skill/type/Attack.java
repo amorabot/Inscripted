@@ -10,6 +10,7 @@ import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
@@ -26,12 +27,26 @@ public abstract class Attack extends Skillcast.Simple {
         }
         this.attackData = new AttackData(playerID,skillUsed,PlayerDataContainer.getDataContainerFor(playerID).getGlobalStats());
     }
+    public Attack(UUID playerID, Vector skillcastOrigin, Skills skillUsed, CastSource castSource, WeaponAttackSpeeds weaponSpeed) {
+        super(playerID, skillcastOrigin, skillUsed, castSource,weaponSpeed);
+        if (!skillUsed.isAttackSkill()){
+            Utils.error("Invalid base attack skill (" + skillUsed.name() + "). Attack configuration not set.");
+            this.attackData = null;
+            return;
+        }
+        this.attackData = new AttackData(playerID,skillUsed,PlayerDataContainer.getDataContainerFor(playerID).getGlobalStats());
+    }
 
 
     public static class Basic extends Attack{
         private final double itemUsageCD;
         private final PotionEffect swingEffect;
 
+        public Basic(UUID playerID, Vector skillcastOrigin, Skills skillUsed, CastSource castSource, WeaponAttackSpeeds weaponSpeed) {
+            super(playerID, skillcastOrigin, skillUsed, castSource, weaponSpeed);
+            this.itemUsageCD = weaponSpeed.getItemUsageCooldown();
+            this.swingEffect = weaponSpeed.getSwingAnimationBuff();
+        }
         public Basic(UUID playerID, Skills skillUsed, CastSource castSource, WeaponAttackSpeeds weaponSpeed) {
             super(playerID, skillUsed, castSource, weaponSpeed);
             this.itemUsageCD = weaponSpeed.getItemUsageCooldown();

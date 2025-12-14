@@ -39,4 +39,11 @@ public class ProjectileTrail {
         ParticlePlotter.spawnColorTransitionParticleAt(pos, projWorld, 255, 255, 255, 200, 220, 220, 0.8F, 2);
         ParticlePlotter.spawnParticleAt(pos,projWorld,Particle.SMOKE);
     }
+    public static void meteorTrail(Projectile projectile){
+        World projWorld = projectile.getProjectileWorld();
+        Vector pos = projectile.getOrigin();
+        ParticlePlotter.spawnColorTransitionParticleAt(pos, projWorld, 200, 200, 200, 242, 158, 12, 3F, 1);
+        ParticlePlotter.spawnParticleAt(pos,projWorld, Particle.GUST);
+        ParticlePlotter.spawnDirectionalParticle(pos,projectile.getVelocity().clone().normalize().multiply(-1),0.3f,projWorld,Particle.FIREWORK);
+    }
 }

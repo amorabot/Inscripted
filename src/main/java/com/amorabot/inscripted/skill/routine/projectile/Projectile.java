@@ -26,6 +26,8 @@ public class Projectile{
 
     private static final boolean DEBUG_MODE = false;
     public static final Vector GRAVITY_VEC = new Vector(0, -0.05, 0);
+    private static final int maxIterations = 100;
+    private static final int subSteps = 2;
 
     private final Skillcast skillcast;
     private final AttackData attackData;
@@ -62,6 +64,7 @@ public class Projectile{
         this.attackData = attackData;
 
         this.origin = initialPos;
+//        this.velocity = baseVelocity;
         this.velocity = baseVelocity;
         this.baseAcceleration = baseAcceleration;
         this.target = targetPos;
@@ -89,8 +92,6 @@ public class Projectile{
     }
 
     public void execute() {
-        final int maxIterations = 100;
-        final int subSteps = 2;
         int taskID = new BukkitRunnable(){
             int iterations = 0;
             @Override
@@ -99,16 +100,20 @@ public class Projectile{
                     this.cancel();
                     return;
                 }
+                double subStepSpeed = maxSpeed * (1D/subSteps);
 
                 for (int i = 0; i<subSteps; i++){
-                    update();
                     if (!isValid()){
                         this.cancel();
                         return;
                     }
+                    if (DEBUG_MODE){
+                        Utils.log("It.: " + iterations + "Dist.: " + maxSpeed*iterations);
+                    }
+                    update();
                     iterations++;
                     //ONLY WORKS ASSUMING PROJECTILES AT FULL-SPEED AT ALL TIMES
-                    if ((maxSpeed*iterations)>maxTravelDistance){setValid(false);}
+                    if ((subStepSpeed*iterations)>maxTravelDistance){setValid(false);}
                 }
 
             }
@@ -117,7 +122,7 @@ public class Projectile{
 
     public void update(){
         behavior.steer(this); //Changes velocity
-        origin.add(velocity);
+        origin.add(velocity.clone().multiply((1D/subSteps)));
 
         boolean destroyed = destroyedOnBlockContact();
         if (destroyed){

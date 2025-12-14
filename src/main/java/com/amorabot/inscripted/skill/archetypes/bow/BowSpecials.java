@@ -26,7 +26,6 @@ import org.bukkit.util.Vector;
 public class BowSpecials {
     public static void rainOfArrows(Skillcast skillcastInstance){
         if (!(skillcastInstance instanceof PersistentAttack persistentAttack)){return;}
-        Utils.error("CAST");
         AttackData attackData = persistentAttack.getAttackData();
         DurationSkill durationData = persistentAttack.getDurationData();
 
@@ -37,7 +36,7 @@ public class BowSpecials {
         final int points = 20;
         Vector[] targets = LinalgMath.plotPointsInsideHorizontalCircle(center,radius,30);
         Vector projDir = LinalgMath.rotateAroundX(new Vector(0,1,0),Math.toRadians(Math.random()*10));
-        projDir = LinalgMath.rotateAroundX(projDir,Math.toRadians(Math.random()*10));
+        projDir = LinalgMath.rotateAroundZ(projDir,Math.toRadians(Math.random()*10));
 
         //Projectile setup
         final int baseProjectilesPerIteration = 2;
