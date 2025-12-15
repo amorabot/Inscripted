@@ -1,8 +1,10 @@
 package com.amorabot.inscripted.skill;
 
 import com.amorabot.inscripted.APIs.SoundAPI;
+import com.amorabot.inscripted.item.inscription.definition.Stats;
 import com.amorabot.inscripted.item.inscription.definition.TriggerTimes;
 import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
+import com.amorabot.inscripted.item.inscription.language.ValueType;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.player.PlayerDataContainer;
@@ -28,6 +30,7 @@ import com.amorabot.inscripted.skill.archetypes.mace.MaceMovement;
 import com.amorabot.inscripted.skill.archetypes.mace.MaceSpecials;
 import com.amorabot.inscripted.skill.archetypes.sword.SwordBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.sword.SwordMovement;
+import com.amorabot.inscripted.skill.archetypes.sword.SwordSpecials;
 import com.amorabot.inscripted.skill.archetypes.wand.WandBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.wand.WandMovement;
 import com.amorabot.inscripted.skill.archetypes.wand.WandSpecials;
@@ -101,7 +104,7 @@ public enum Skills {
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.BARRAGE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
     @DurationSkill(duration = 6, refreshRate = 5)
     RAIN_OF_ARROWS(BowSpecials::rainOfArrows,CastType.SPECIAL_ATTACK,new Tags[0],2),
-    @AttackSkill( addedBaseDmg = {0,0, 15,50, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, 50, -10, -40, -70}, dmgConversion = {40, 0, 0, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, 0, 0, 0, -70}, dmgConversion = {0, 0, 0, 0} )
     @DurationSkill(duration = 1.4, refreshRate = 1)
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.BARRAGE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
     METEOR(WandSpecials::meteor,CastType.SPECIAL_ATTACK,new Tags[0],2),
@@ -110,6 +113,13 @@ public enum Skills {
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 10, -10, -10, -70}, dmgConversion = {0, 0, 0, 0} )
     @DurationSkill(duration = 4, refreshRate = 1)
     CYCLONE(AxeSpecials::cyclone,CastType.SPECIAL_ATTACK,new Tags[0],2),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {40, -30, -30, -30, -70}, dmgConversion = {0, 0, 0, 0} )
+    LACERATE(SwordSpecials::lacerate,CastType.SPECIAL_ATTACK,new Tags[0],0){
+        @Override
+        public void applyBonusStats(StatPool globalPlayerStats){ //Adding base bleed chance
+            globalPlayerStats.insertValue(Stats.BLEED, ValueType.PERCENTAGE,new int[]{50});
+        }
+    },
 
     //Secondary skills (shouldn't be directly mapped/instanced)
     @DurationSkill(duration = 8, refreshRate = 5)

@@ -10,7 +10,7 @@ public class AxeBasicAttacks {
         if (!(skillcastInstance instanceof Attack.Basic basicAttackInstance)){return;}
         boolean isMirrored = Math.random() > 0.5;
         boolean isInverted = Math.random() > 0.5;
-        new Slash(skillcastInstance, basicAttackInstance.getAttackData(), SlashPresets.STANDARD_AXE.getSlashConfigData(), false,
-                skillcastInstance.getPlayer().getLocation(),isMirrored,isInverted,true, 10,40);
+        new Slash(skillcastInstance, basicAttackInstance.getAttackData(), SlashPresets.STANDARD_AXE.getSlashConfigData(), false, null,
+                isMirrored,isInverted,true, true, 10,40);
     }
 }

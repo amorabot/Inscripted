@@ -11,8 +11,8 @@ public class SwordBasicAttacks {
         if (!(skillcastInstance instanceof Attack.Basic basicAttackInstance)){return;}
         boolean isMirrored = Math.random() > 0.5;
         boolean isInverted = Math.random() > 0.5;
-        new Slash(skillcastInstance, basicAttackInstance.getAttackData(), SlashPresets.STANDARD_SWORD.getSlashConfigData(), false,
-                skillcastInstance.getPlayer().getLocation(),isMirrored,isInverted,false, 30);
+        new Slash(skillcastInstance, basicAttackInstance.getAttackData(), SlashPresets.STANDARD_SWORD.getSlashConfigData(), false,null,
+                isMirrored,isInverted,false, true,30);
     }
 
 }

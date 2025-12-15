@@ -24,6 +24,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AttackData implements ProfileComponent {
+    private static final boolean DEBUG_MODE = false;
 
     private float DPS;
 
@@ -86,6 +87,11 @@ public class AttackData implements ProfileComponent {
         }
         StatPool globalSnapshot = globalPlayerStats.snapshot(); //TODO: Create a filtered version of this snapshot, containing only meaningful stats
         skillUsed.applyBonusStats(globalSnapshot);
+
+        if (DEBUG_MODE){
+            Utils.log("base bleed: " + bleedChance);
+            globalSnapshot.debug("Stats snapshot for " + skillUsed);
+        }
 
         AttackSkill attackSkillData = skillUsed.getAttackSkillData();
         Tags[] skillTags = skillUsed.getSkillTags();

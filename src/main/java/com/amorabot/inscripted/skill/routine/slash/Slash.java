@@ -9,6 +9,7 @@ import com.amorabot.inscripted.player.profile.component.AttackData;
 import com.amorabot.inscripted.skill.routine.SkillcastData;
 import com.amorabot.inscripted.skill.type.Attack;
 import com.amorabot.inscripted.tasks.base.Skillcast;
+import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
@@ -28,6 +29,7 @@ import static com.amorabot.inscripted.skill.Skills.getLargeHitbox;
 @Setter
 public class Slash{
     public static final int[] tipColor = new int[]{247, 242, 198};
+    public static final int defaultAnimationFrames = 2;
 
     private final Skillcast skillcast;
     private final AttackData attackData;
@@ -42,9 +44,10 @@ public class Slash{
     private boolean randomized;
 
     private boolean valid = true;
+    private final boolean cosmetic;
 
-    public Slash(Skillcast skillcast, AttackData attackData, SlashConfig configData, boolean cosmetic,
-                 Location castingLocation, boolean isMirrored, boolean isInverted, boolean isRandomized, double... planeRotation) {
+    public Slash(Skillcast skillcast, AttackData attackData, SlashConfig configData, boolean cosmetic, Location posOverride,
+                 boolean isMirrored, boolean isInverted, boolean isRandomized, boolean autoExecute, double... planeRotation) {
         this.skillcast = skillcast;
         this.attackData = attackData;
         this.segmentRenderer = configData.defaultRenderer();
@@ -54,26 +57,41 @@ public class Slash{
         this.inverted = isInverted;
         this.randomized = isRandomized;
 
+        this.cosmetic = cosmetic;
+
         Player player = skillcast.getPlayer();
+
+        //Valid plotting will only occour when the given orientation is valid
+        Location slashCenterLocation = skillcast.getCastData().getCastingContext().getOrigin().toLocation(player.getWorld(),player.getYaw(),player.getPitch());
+        if (posOverride!=null){
+            slashCenterLocation = posOverride;
+        }
         Vector[] slashOrientation = LinalgMath.defineSlashOrientationAxis(
-                castingLocation,
+                slashCenterLocation,
                 isMirrored,isInverted,isRandomized,
                 15, planeRotation);
 
-        //Valid plotting will only occour when the given orientation is valid
-        this.points = plot(player.getLocation(),player.isSprinting(), slashOrientation);
+        this.points = plot(slashCenterLocation,player.isSprinting(), slashOrientation);
 
         //Once plotted, the points will dictate whether the slash is still valid
         this.valid = checkValidity(points[0]);
         if (!valid){return;}
         defineHitbox(slashOrientation);
-        execute(cosmetic);
+        if (autoExecute){
+            execute();
+        }
     }
 
-//    @Override
-    public void execute(boolean cosmetic) {
-        animate(2);
-        if (!cosmetic){
+    public void execute(int... animationDuration) {
+        if (animationDuration!=null){
+            if (animationDuration.length==0){
+                animate(defaultAnimationFrames);
+            } else {
+                animate(animationDuration[0]);
+            }
+        }
+
+        if (!isCosmetic()){
             checkCollisions();
         }
     }
@@ -120,7 +138,7 @@ public class Slash{
     public void animate(int animationDuration){
         Vector[][] points = getPoints();
         Slash data = this;
-        int framesPerIteration = Math.max(1,(getSlashData().segments()/animationDuration));
+        int framesPerIteration = (int) Math.max(1,((double)(getSlashData().segments())/animationDuration));
         int taskID = new BukkitRunnable(){
             int iteration = 0;
             int totalFrames = 0;

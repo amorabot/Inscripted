@@ -18,7 +18,11 @@ public enum SlashPresets {
     )),
     STANDARD_SLAM_SWING(new SlashConfig(SlashSegment::standardMaceSwing,
             12,70,1.7,0,0.25,0.2,0.5,
-            new int[]{220,160,190}, new double[]{1.1,1},0.7F, 0.25));
+            new int[]{220,160,190}, new double[]{1.1,1},0.7F, 0.25)),
+    LACERATE(new SlashConfig(SlashSegment::bloody,
+            16,96,2.2,0.1, -0.4,
+            0.4,1.2, new int[]{128, 20, 24}, null, 0.8F, 0.1
+    ));
 
     private final SlashConfig slashConfigData;
 

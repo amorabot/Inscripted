@@ -11,7 +11,7 @@ public class DaggerBasicAttacks {
         if (!(skillcastInstance instanceof Attack.Basic basicAttackInstance)){return;}
         boolean isMirrored = Math.random() > 0.5;
         boolean isInverted = Math.random() > 0.5;
-        new Slash(skillcastInstance, basicAttackInstance.getAttackData(), SlashPresets.STANDARD_DAGGER.getSlashConfigData(), false,
-                skillcastInstance.getPlayer().getLocation(),isMirrored,isInverted,false, 45);
+        new Slash(skillcastInstance, basicAttackInstance.getAttackData(), SlashPresets.STANDARD_DAGGER.getSlashConfigData(), false,null,
+                isMirrored,isInverted,false, true,45);
     }
 }

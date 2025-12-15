@@ -5,6 +5,7 @@ import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.component.AttackData;
 import com.amorabot.inscripted.skill.casting.CastSource;
 import com.amorabot.inscripted.skill.Skills;
+import com.amorabot.inscripted.skill.casting.CastType;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
@@ -56,10 +57,19 @@ public abstract class Attack extends Skillcast.Simple {
         @Override
         public void start(long delay, long timer) {
             //Assumes the held item at this time is the weapon used to trigger the cast (as it should)
-            if (!player.hasCooldown(player.getInventory().getItemInMainHand().getType())){
-                run();
-                register();
-                return;
+            if (getCastedSkill().getType().equals(CastType.BASIC_ATTACK)){
+                if (!player.hasCooldown(player.getInventory().getItemInMainHand().getType())){
+                    run();
+                    register();
+                    return;
+                }
+            } else {
+                //Handling SPECIAL_ATTACK's, where the local register() logic is not needed
+                PlayerDataContainer playerData = PlayerDataContainer.getDataContainerFor(getPlayerID());
+                if (playerData.skillcastBy(getCastedSkill(),getBaseCooldownMod())){
+                    run();
+                    return;
+                }
             }
         }
 
