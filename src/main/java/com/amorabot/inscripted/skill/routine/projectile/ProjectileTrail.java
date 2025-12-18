@@ -36,8 +36,9 @@ public class ProjectileTrail {
     public static void smokeBombTrail(Projectile projectile){
         World projWorld = projectile.getProjectileWorld();
         Vector pos = projectile.getOrigin();
-        ParticlePlotter.spawnColorTransitionParticleAt(pos, projWorld, 255, 255, 255, 200, 220, 220, 0.8F, 2);
+        ParticlePlotter.spawnColorTransitionParticleAt(pos, projWorld, 130, 143, 143, 67, 79, 79, 1F, 1);
         ParticlePlotter.spawnParticleAt(pos,projWorld,Particle.SMOKE);
+        ParticlePlotter.spawnParticleAt(pos,projWorld,Particle.ELECTRIC_SPARK);
     }
     public static void meteorTrail(Projectile projectile){
         World projWorld = projectile.getProjectileWorld();

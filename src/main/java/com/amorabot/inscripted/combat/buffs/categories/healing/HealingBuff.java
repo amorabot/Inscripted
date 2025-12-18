@@ -6,7 +6,11 @@ import com.amorabot.inscripted.combat.buffs.BuffTask;
 import com.amorabot.inscripted.combat.buffs.Buffs;
 import com.amorabot.inscripted.combat.buffs.categories.BuffData;
 import com.amorabot.inscripted.item.inscription.language.ValueType;
+import com.amorabot.inscripted.item.render.InscriptedPalette;
+import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.player.profile.Profile;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
 public class HealingBuff implements BuffData {
@@ -64,6 +68,15 @@ public class HealingBuff implements BuffData {
     @Override
     public void delete() {
 
+    }
+
+    @Override
+    public Component getMessage() {
+        Component baseMessage = Component.text(getBuff().getApplyMessage()).color(NamedTextColor.GREEN);
+        int timeApplied = getHealingAnnotationData().timesApplied();
+        String messageString = "[ " + timeApplied + "x +" + healingTick + " ]";
+        Component buffDataMessage = Component.text(messageString).color(InscriptedPalette.DARK_GRAY.getColor());
+        return baseMessage.append(Component.text(" ").append(buffDataMessage));
     }
 
     public int getFinalHealingTick(Profile targetProfile){

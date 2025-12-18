@@ -51,6 +51,27 @@ public class ParticlePlotter {
         particleBuilder.extra(velocity);
         particleBuilder.spawn();
     }
+    public static void coloredDirectional(Vector position, World world, int r, int g, int b, float size, Vector dir, double vel){
+        ParticleBuilder particle = new ParticleBuilder(Particle.DUST);
+        particle.location(position.toLocation(world))
+                .receivers(30)
+                .offset(dir.getX(),dir.getY(),dir.getZ())
+                .count(0)
+                .extra(vel)
+                .color(Color.fromRGB(r,g,b), size);
+
+        particle.spawn();
+    }
+    public static void coloredPotionEffect(Vector position, World world, int alpha, int r, int g, int b, double offX, double offY, double offZ){
+        ParticleBuilder particle = new ParticleBuilder(Particle.ENTITY_EFFECT);
+        particle.location(position.toLocation(world))
+                .receivers(30,true)
+                .offset(offX,offY,offZ)
+                .count(1)
+                .data(Color.fromARGB(alpha, r,g,b));
+
+        particle.spawn();
+    }
     public static void spawnColoredParticleAt(Vector position, World world, int r, int g, int b, float size, int quantity){
         ParticleBuilder particle = new ParticleBuilder(Particle.DUST);
         particle.location(position.toLocation(world));

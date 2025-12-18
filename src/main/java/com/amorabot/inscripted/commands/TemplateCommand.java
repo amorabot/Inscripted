@@ -81,8 +81,8 @@ public class TemplateCommand implements CommandExecutor {
                     int[] dot = bleed.convertBaseHit(baseDamage);
                     bleed.createDamageTask(dot, player, true, player);
 
-//                    PlayerBuffManager.addBuffToPlayer(bleed, player);
-//                    bleed.activate();
+                    PlayerBuffManager.addBuffToPlayer(bleed, player.getUniqueId());
+                    bleed.activate();
                     return true;
                 case "stat":
                     StatBuff fortify = new StatBuff(Buffs.BERSERK, player);

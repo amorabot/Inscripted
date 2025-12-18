@@ -1,9 +1,13 @@
 package com.amorabot.inscripted.skill.archetypes.axe;
 
+import com.amorabot.inscripted.combat.damage.DamageRouter;
+import com.amorabot.inscripted.combat.damage.DamageSource;
 import com.amorabot.inscripted.player.profile.component.AttackData;
 import com.amorabot.inscripted.skill.annotations.DurationSkill;
+import com.amorabot.inscripted.skill.routine.SkillcastData;
 import com.amorabot.inscripted.skill.routine.slash.SlashPresets;
 import com.amorabot.inscripted.skill.routine.slash.SlashSegment;
+import com.amorabot.inscripted.skill.type.Attack;
 import com.amorabot.inscripted.skill.type.PersistentAttack;
 import com.amorabot.inscripted.skill.type.subroutines.DurationSubroutine;
 import com.amorabot.inscripted.tasks.base.Skillcast;
@@ -16,6 +20,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.List;
 import java.util.Objects;
 
 public class AxeSpecials {
@@ -35,7 +40,7 @@ public class AxeSpecials {
 
         cycloneRoutine.setRoutine(new BukkitRunnable() {
             int elapsedFrames = 0;
-            double currentPhase = 0;
+            double currentPhase = Math.random()*Math.PI/3;
             final float radius = 3.6f;
             final double axeLength = 1.8;
             final double amplitude = 1;
@@ -68,7 +73,20 @@ public class AxeSpecials {
                     }
                 }
 
-                //Implement collision
+                // Replicating Slash collision logic
+                SkillcastData cycloneCastData = skillcastInstance.getCastData();
+                final List<Player> nearbyEntities = (List<Player>) eyeLevelPlayerLoc.getNearbyPlayers(radius + 0.2);
+
+                for (Player entity : nearbyEntities){
+                    if (cycloneCastData.getBlacklistedEntities().contains(entity.getUniqueId())){continue;}
+
+                    if (!caster.hasLineOfSight(entity)){continue;}
+                    cycloneCastData.getAffectedEntities().add(entity.getUniqueId());
+
+                    AttackData slashAttackData = cycloneInstance.getAttackData();
+                    if (slashAttackData==null) {continue;}
+                    DamageRouter.hit(caster, entity, cycloneInstance,slashAttackData, DamageSource.HIT);
+                }
 
                 elapsedFrames++;
             }

@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.skill.archetypes.dagger;
 
+import com.amorabot.inscripted.math.LinalgMath;
 import com.amorabot.inscripted.particle.ParticlePlotter;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.component.AttackData;
@@ -63,10 +64,15 @@ public class DaggerUtility {
                 ParticlePlotter.plotDirectionalCircleAt(collisionBlockLoc.toVector().add(new Vector(0,0.1,0)), playerWorld,
                         Particle.CAMPFIRE_COSY_SMOKE,1.7f,15,true,0.05f,false);
                 ParticlePlotter.plotColoredCircleAt(collisionBlockLoc.toVector(),playerWorld,125,125,125,1.3f, radius,points,false);
-                ParticlePlotter.spawnOffsetParticleAt(collisionBlockLoc.toVector(),playerWorld,Particle.SMOKE,radius/2,1.5,radius/2, 15);
-                ParticlePlotter.spawnOffsetParticleAt(collisionBlockLoc.toVector().add(new Vector(0,1.5,0)),playerWorld,
-                        Particle.CAMPFIRE_COSY_SMOKE,radius/3+0.3,0.8,radius/3+0.3, 10);
-                PotionEffect slow = new PotionEffect(PotionEffectType.BLINDNESS, 25, 1, true, false, false);
+
+                List<Vector> rings = LinalgMath.plotCircleBorder(collisionBlockLoc.clone().add(0,0.8,0).toVector(),radius-0.8, points-5);
+                rings.addAll(LinalgMath.plotCircleBorder(collisionBlockLoc.clone().add(0,1.6,0).toVector(),radius-1.6,points-15));
+                for (Vector ringVector : rings){
+                    ParticlePlotter.spawnParticleAt(ringVector,playerWorld,Particle.SMOKE);
+                }
+
+
+                PotionEffect slow = new PotionEffect(PotionEffectType.BLINDNESS, 35, 1, true, false, false);
                 List<Player> affectedPlayers = (List<Player>) collisionBlockLoc.getNearbyPlayers(radius-0.1);
                 for (Player p : affectedPlayers){
                     slow.apply(p);

@@ -13,11 +13,6 @@ import org.bukkit.util.Vector;
 import java.util.List;
 
 public class MaceMovement {
-
-
-    public static void templarMovement(Player player){
-
-    }
     public static void pull(Skillcast skillcastInstance){
         Player player = skillcastInstance.getPlayer();
         double radius = 4.7;
@@ -32,7 +27,7 @@ public class MaceMovement {
         for (Vector point : points){
             ParticlePlotter.spawnColoredParticleAt(point,playerWorld,166, 91, 75,1.2f,1);
         }
-        ParticlePlotter.plotColoredCircleAt(center.clone(), playerWorld, 200,160,200, 1.2f, (float) radius, 60,true);
+        ParticlePlotter.plotColoredCircleAt(center.clone(), playerWorld, 184, 37, 217, 2f, (float) radius, 60,true);
 
         List<Player> nearbyPlayers = (List<Player>) center.toLocation(playerWorld).getNearbyPlayers(radius);
         nearbyPlayers.remove(player);

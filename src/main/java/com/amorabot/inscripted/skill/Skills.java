@@ -104,7 +104,7 @@ public enum Skills {
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.BARRAGE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
     @DurationSkill(duration = 6, refreshRate = 5)
     RAIN_OF_ARROWS(BowSpecials::rainOfArrows,CastType.SPECIAL_ATTACK,new Tags[0],2),
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, 0, 0, 0, -70}, dmgConversion = {0, 0, 0, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-100, -100, -100, -100, -100}, dmgConversion = {0, 0, 0, 0} )
     @DurationSkill(duration = 1.4, refreshRate = 1)
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.BARRAGE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
     METEOR(WandSpecials::meteor,CastType.SPECIAL_ATTACK,new Tags[0],2),
@@ -112,7 +112,7 @@ public enum Skills {
     VIPER_STRIKE(DaggerSpecials::viperStrike,CastType.SPECIAL_ATTACK,new Tags[0],3),
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 10, -10, -10, -70}, dmgConversion = {0, 0, 0, 0} )
     @DurationSkill(duration = 4, refreshRate = 1)
-    CYCLONE(AxeSpecials::cyclone,CastType.SPECIAL_ATTACK,new Tags[0],2),
+    CYCLONE(AxeSpecials::cyclone,CastType.SPECIAL_ATTACK,new Tags[0],2),//Adjust dmg
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {40, -30, -30, -30, -70}, dmgConversion = {0, 0, 0, 0} )
     LACERATE(SwordSpecials::lacerate,CastType.SPECIAL_ATTACK,new Tags[0],0){
         @Override

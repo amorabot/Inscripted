@@ -2,10 +2,13 @@ package com.amorabot.inscripted.combat.buffs.categories.damage;
 
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.combat.buffs.BuffTask;
+import com.amorabot.inscripted.item.render.InscriptedPalette;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.combat.buffs.Buffs;
 import com.amorabot.inscripted.combat.buffs.categories.BuffData;
-import org.bukkit.entity.LivingEntity;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
 
 public class DamageBuff implements BuffData {
@@ -70,6 +73,15 @@ public class DamageBuff implements BuffData {
         if (dotTask == null){return;}
         this.dotTask.cancel();
         this.dotTask = null;
+    }
+
+    @Override
+    public Component getMessage() {
+        Component baseMessage = Component.text(getBuff().getApplyMessage()).color(NamedTextColor.RED);
+        int timeApplied = getDamageAnnotationData().timesApplied();
+        String messageString = "[ " + DamageTypes.PHYSICAL.getCharacter() + " " + timeApplied + "x" + damageTick + " ]";
+        Component buffDataMessage = Component.text(messageString).color(InscriptedPalette.DARK_GRAY.getColor());
+        return baseMessage.append(Component.text(" ").append(buffDataMessage));
     }
 
     public Damage getDamageAnnotationData(){

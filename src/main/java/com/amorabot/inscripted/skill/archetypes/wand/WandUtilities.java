@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.skill.archetypes.wand;
 
+import com.amorabot.inscripted.math.LinalgMath;
 import com.amorabot.inscripted.particle.ParticlePlotter;
 import com.amorabot.inscripted.skill.routine.projectile.Projectile;
 import com.amorabot.inscripted.skill.type.subroutines.DurationSubroutine;
@@ -41,11 +42,13 @@ public class WandUtilities {
                 ParticlePlotter.animatedColoredCircle(
                         center,world,174, 201, 245,1.5f,radius,points,Math.PI/6,progress, Utils.Easings::easeOutQuad
                 );
-                ParticlePlotter.spawnOffsetParticleAt(center.clone().add(new Vector(0,1,0)),world,Particle.SNOWFLAKE,radius/3,2,radius/3, 7);
+                ParticlePlotter.spawnOffsetParticleAt(center.clone().add(new Vector(0,1,0)),world,Particle.SNOWFLAKE,radius/2,2,radius/2, 7);
                 cryostatisRoutine.addElapsedTime();
                 if (cryostatisRoutine.isExpired()){
-                    ParticlePlotter.plotDirectionalCircleAt(center,world, Particle.FIREWORK,radius,points,true,1.3f,true,0.1f);
-                    ParticlePlotter.plotDirectionalCircleAt(center,world, Particle.ELECTRIC_SPARK,radius,points,true,1.3f,true,0.1f);
+                    Vector offsetCenter = center.clone().add(new Vector(0,0.3,0));
+                    for (Vector v : LinalgMath.plotPointsInsideHorizontalCircle(offsetCenter,radius,60)){
+                        ParticlePlotter.spawnColoredParticleAt(v,world,171, 254, 255,1f,1);
+                    }
                     PotionEffect slow = new PotionEffect(PotionEffectType.SLOWNESS, debuffDuration, 2, true, false, false);
                     List<Player> affectedPlayers = (List<Player>) world.getNearbyPlayers(center.toLocation(world),radius);
                     for (Player p : affectedPlayers){

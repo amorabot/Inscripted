@@ -7,9 +7,11 @@ import com.amorabot.inscripted.combat.buffs.categories.damage.DamageDebuffTask;
 import com.amorabot.inscripted.combat.buffs.categories.healing.Healing;
 import com.amorabot.inscripted.combat.buffs.categories.healing.HealingBuffTask;
 import com.amorabot.inscripted.combat.buffs.categories.stat.StatBuffCountdown;
+import com.amorabot.inscripted.item.render.InscriptedPalette;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.PlayerEvents;
 import com.amorabot.inscripted.utils.Utils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -58,6 +60,8 @@ public class PlayerBuffManager {
         //New instance must be started:
         buffData.activate(); //Activating the new buff task
         playerBuffMap.put(buff,buffData); //Updating the buff map
+        player.sendMessage(Component.text(buff.getAlias() + " - ").color(InscriptedPalette.WHITE.getColor())
+                .append(buffData.getMessage()));
 
         if (buff.isStatBuff()){ //Stat buff instantiation
             dataContainer.onNotify(PlayerEvents.EXTERNAL_STAT_CHANGE);

@@ -10,6 +10,7 @@ import com.amorabot.inscripted.player.profile.component.AttackData;
 import com.amorabot.inscripted.skill.type.Attack;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -63,9 +64,11 @@ public class DaggerSpecials {
                         //Left fang
                         ParticlePlotter.lerpColorTransitionParticle(currentHandle.clone().add(offsetVector),currentTip.clone().add(offsetVector),0.25f,playerLoc.getWorld(),
                                 colors[0][0],colors[0][1],colors[0][2], colors[1][0],colors[1][1],colors[1][2],0.5f);
+                        attemptPotionEffect(currentHandle,playerLoc.getWorld(),0.15,colors,fangOffset,0.4,fangOffset);
                         //Right fang
                         ParticlePlotter.lerpColorTransitionParticle(currentHandle.clone().subtract(offsetVector),currentTip.clone().subtract(offsetVector),0.25f,playerLoc.getWorld(),
                                 colors[0][0],colors[0][1],colors[0][2], colors[1][0],colors[1][1],colors[1][2],0.5f);
+                        attemptPotionEffect(currentHandle,playerLoc.getWorld(),0.15,colors,fangOffset,0.4,fangOffset);
 
                         totalFrames++;
                         if (totalFrames>=segments){this.cancel();return;}
@@ -89,5 +92,16 @@ public class DaggerSpecials {
         hitbox.expandDirectional(0,true, fangOffset/2);
         hitbox.expandDirectional(0,false, fangOffset/2);
         return hitbox;
+    }
+    private static void attemptPotionEffect(Vector position, World world, double weight, int[][] effectColors, double offX, double offY, double offZ){
+        if (Math.random()<Math.min(1,weight)){
+            if (Math.random()>0.5){
+                ParticlePlotter.coloredPotionEffect(position,world,200,
+                        effectColors[0][0],effectColors[0][1],effectColors[0][2], offX,offY,offZ);
+            } else {
+                ParticlePlotter.coloredPotionEffect(position,world,200,
+                        effectColors[1][0],effectColors[1][1],effectColors[1][2], offX,offY,offZ);
+            }
+        }
     }
 }

@@ -23,30 +23,37 @@ import java.lang.reflect.Field;
 public enum Buffs {
 
     @Damage(baseDamageType = DamageTypes.PHYSICAL, period = 20, timesApplied = 4)
-    BLEED(true){
+    BLEED("Bleed",true, "You are bleeding..."){
         @Override
         public void effectOn(Player player){
             CombatEffects.deathEffect(player);
         }
     },
-    @Stat(amount = {30}, valueType = ValueType.FLAT, targetStat = Stats.ARMOR, durationInSeconds = 5)
-    FORTIFY(false){
+    @Stat(amount = {20}, valueType = ValueType.INCREASED, targetStat = Stats.ARMOR, durationInSeconds = 5)
+    FORTIFY("Fortify",false, "You feel... protected"){
+        @Override
+        public void effectOn(Player player){
+            ParticlePlotter.plotCircleAt(player.getLocation().toVector(), player.getWorld(),Particle.CRIT,0.7f,7);
+        }
+    },
+    @Stat(amount = {20}, valueType = ValueType.PERCENTAGE, targetStat = Stats.MELEE_DAMAGE, durationInSeconds = 8)
+    ADRENALINE("Adrenaline",false, "You feel a sudden rush of blood..."){
         @Override
         public void effectOn(Player player){
             ParticlePlotter.plotCircleAt(player.getLocation().toVector(), player.getWorld(),Particle.CRIT,0.7f,7);
         }
     },
     @Healing(baseHealing = 1, healingType = ValueType.PERCENTAGE, period = 8, timesApplied = 5)
-    REJUVENATE(false),
+    REJUVENATE("Rejuvenate",false, "You feel... renewed"),
     @Stat(amount = {30}, valueType = ValueType.FLAT, targetStat = Stats.WALK_SPEED, durationInSeconds = 10)
-    TAILWIND(false){
+    TAILWIND("Tailwind",false, "The wind is on your favor"){
         @Override
         public void effectOn(Player player){
             ParticlePlotter.spawnParticleAt(player.getLocation().toVector(),player.getWorld(), Particle.END_ROD);
         }
     },
     @Stat(amount = {30}, valueType = ValueType.INCREASED, targetStat = Stats.ARMOR, durationInSeconds = 12)
-    HUNTING_GROUNDS_EXPOSURE(true){
+    HUNTING_GROUNDS_EXPOSURE("Exposure",true, "You feel... vulnerable"){
         @Override
         public void effectOn(Player player){
             Vector overHead = player.getLocation().clone().add(0,2.1,0).toVector();
@@ -55,14 +62,14 @@ public enum Buffs {
         }
     },
     @Stat(amount = {50}, valueType = ValueType.FLAT, targetStat = Stats.ACCURACY, durationInSeconds = 10)
-    HUNTING_GROUNDS_PRECISION(false){
+    HUNTING_GROUNDS_PRECISION("Precision",false, "You can see clearly and precisely"){
         @Override
         public void effectOn(Player player){
             ParticlePlotter.spawnColoredParticleAt(player.getLocation().clone().add(0,2.1,0).toVector(),player.getWorld(), 94, 156, 53, 0.5f, 1);
         }
     },
     @Stat(amount = {40}, valueType = ValueType.MULTIPLIER, targetStat = Stats.PHYSICAL_DAMAGE, durationInSeconds = 1)
-    BERSERK(false){
+    BERSERK("Berserk",false, "Rage fills you from within"){
         @Override
         public void effectOn(Player player){
             ParticlePlotter.spawnParticleAt(
@@ -71,7 +78,7 @@ public enum Buffs {
         }
     },
     @Stat(amount = {30}, valueType = ValueType.FLAT, targetStat = Stats.WALK_SPEED, durationInSeconds = 10)
-    MAIM(true){
+    MAIM("Maim",true, "Your feel heavy..."){
         @Override
         public void effectOn(Player player){
             ParticlePlotter.spawnOffsetColoredParticleAt(player.getLocation().toVector(),player.getWorld(),
@@ -81,10 +88,15 @@ public enum Buffs {
         }
     };
 
+    @Getter
+    private final String alias;
     private final boolean debuff;
+    private final String applyMessage;
 
-    Buffs(boolean isDebuff){
+    Buffs(String buffAlias, boolean isDebuff, String message){
+        this.alias = buffAlias;
         this.debuff = isDebuff;
+        this.applyMessage = message;
     }
 
 
