@@ -40,7 +40,7 @@ public enum Buffs {
     ADRENALINE("Adrenaline",false, "You feel a sudden rush of blood..."){
         @Override
         public void effectOn(Player player){
-            ParticlePlotter.plotCircleAt(player.getLocation().toVector(), player.getWorld(),Particle.CRIT,0.7f,7);
+            ParticlePlotter.plotCircleAt(player.getLocation().toVector(), player.getWorld(),Particle.RAID_OMEN,0.7f,5);
         }
     },
     @Healing(baseHealing = 1, healingType = ValueType.PERCENTAGE, period = 8, timesApplied = 5)

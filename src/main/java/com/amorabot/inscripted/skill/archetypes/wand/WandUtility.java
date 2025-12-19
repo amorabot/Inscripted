@@ -20,7 +20,7 @@ import org.bukkit.util.Vector;
 import java.util.List;
 import java.util.Objects;
 
-public class WandUtilities {
+public class WandUtility {
     public static void cryostasis(Skillcast skillcastInstance){
         DurationSubroutine cryostatisRoutine = new DurationSubroutine(skillcastInstance);
         final double raytraceMaxDistance = 10;

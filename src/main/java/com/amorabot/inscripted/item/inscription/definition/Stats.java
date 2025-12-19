@@ -22,7 +22,7 @@ public enum Stats {
     MAX_LIGHTNING_RESISTANCE("Maximum Lightning Res."),
     ABYSSAL_RESISTANCE("Abyssal Resistance"),
     PHYSICAL_DAMAGE("Physical Damage"),
-    MELEE_DAMAGE("Melee Damage"),
+    MELEE_DAMAGE("Melee Damage"), //PERCENTAGE
     FIRE_DAMAGE("Fire Damage"),
     COLD_DAMAGE("Cold Damage"),
     LIGHTNING_DAMAGE("Lightning Damage"),

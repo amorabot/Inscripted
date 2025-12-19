@@ -89,7 +89,6 @@ public class AttackData implements ProfileComponent {
         skillUsed.applyBonusStats(globalSnapshot);
 
         if (DEBUG_MODE){
-            Utils.log("base bleed: " + bleedChance);
             globalSnapshot.debug("Stats snapshot for " + skillUsed);
         }
 
@@ -125,6 +124,10 @@ public class AttackData implements ProfileComponent {
             for (DamageTypes dmg : DamageTypes.values()){
                 globalSnapshot.insertValue(dmg.getDmgStat(),ValueType.INCREASED,new int[]{totalDmgIncrease});
             }
+        }
+
+        if (DEBUG_MODE){
+            globalSnapshot.debug("Post-skill bonuses & conversions: " + skillUsed);
         }
 
         //globalSnapshot has been updated, lets get the final values for the AttackData component being constructed

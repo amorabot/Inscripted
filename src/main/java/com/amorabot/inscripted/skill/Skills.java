@@ -28,13 +28,15 @@ import com.amorabot.inscripted.skill.archetypes.dagger.DaggerUtility;
 import com.amorabot.inscripted.skill.archetypes.mace.MaceBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.mace.MaceMovement;
 import com.amorabot.inscripted.skill.archetypes.mace.MaceSpecials;
+import com.amorabot.inscripted.skill.archetypes.mace.MaceUtility;
 import com.amorabot.inscripted.skill.archetypes.sword.SwordBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.sword.SwordMovement;
 import com.amorabot.inscripted.skill.archetypes.sword.SwordSpecials;
+import com.amorabot.inscripted.skill.archetypes.sword.SwordUtility;
 import com.amorabot.inscripted.skill.archetypes.wand.WandBasicAttacks;
 import com.amorabot.inscripted.skill.archetypes.wand.WandMovement;
 import com.amorabot.inscripted.skill.archetypes.wand.WandSpecials;
-import com.amorabot.inscripted.skill.archetypes.wand.WandUtilities;
+import com.amorabot.inscripted.skill.archetypes.wand.WandUtility;
 import com.amorabot.inscripted.skill.casting.CastSource;
 import com.amorabot.inscripted.skill.casting.CastType;
 import com.amorabot.inscripted.skill.archetypes.item.ItemAuras;
@@ -76,7 +78,7 @@ public enum Skills {
     BASIC_WAND_ATTACK(WandBasicAttacks::standardWandAttack, CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE}, 0),
 
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, 0, 0, 0, -60}, dmgConversion = {0, 0, 0, 0} )
-    BASIC_MACE_SLAM(MaceBasicAttacks::standardMaceSlam,CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE,Tags.SPELL},0),
+    BASIC_MACE_SLAM(MaceBasicAttacks::standardMaceSlam,CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE,Tags.AOE},0),
 
     //Movement skills
     CHARGE(AxeMovement::charge,CastType.MOVEMENT, new Tags[0],10),
@@ -87,34 +89,38 @@ public enum Skills {
     TECTONIC_PULL(MaceMovement::pull,CastType.MOVEMENT, new Tags[0],7),//TODO: improve visuals
     
     //Utility Skills
-    @DurationSkill(duration = 12, refreshRate = 5) //TODO: castTime?
-    WAR_BANNER(AxeUtility::warBanner,CastType.UTILITY, new Tags[0],7),
+    @DurationSkill(duration = 12, refreshRate = 5)
+    WAR_BANNER(AxeUtility::warBanner,CastType.UTILITY, new Tags[]{Tags.AOE},7),
+    @DurationSkill(duration = 15, refreshRate = 5)
+    RING_OF_BLADES(SwordUtility::ringOfBlades,CastType.UTILITY, new Tags[]{Tags.AOE},1),
     @DurationSkill(duration = 1.5, refreshRate = 3)
-    HUNTING_GROUND(BowUtility::huntingGround,CastType.UTILITY, new Tags[0],3),
+    HUNTING_GROUND(BowUtility::huntingGround,CastType.UTILITY, new Tags[]{Tags.AOE},3),
     @DurationSkill(duration = 1.5, refreshRate = 3)
-    CRYOSTASIS(WandUtilities::cryostasis,CastType.UTILITY, new Tags[0],3),
+    CRYOSTASIS(WandUtility::cryostasis,CastType.UTILITY, new Tags[]{Tags.AOE},3),
     @AttackSkill( addedBaseDmg = {5,10, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-90, -90, -90, -90, -100}, dmgConversion = {0, 0, 0, 0} )
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.CONE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
-    SMOKE_BOMB(DaggerUtility::smokeBomb,CastType.UTILITY, new Tags[0],4),
+    SMOKE_BOMB(DaggerUtility::smokeBomb,CastType.UTILITY, new Tags[]{Tags.AOE},4),
+    @DurationSkill(duration = 2, refreshRate = 4)
+    CLEANSE(MaceUtility::cleanse,CastType.UTILITY, new Tags[]{Tags.SPELL},1),
  
     //Special skills
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 10, 10, 10, -70}, dmgConversion = {0, 0, 0, 0} )
-    EARTHQUAKE(MaceSpecials::earthquake,CastType.SPECIAL_ATTACK,new Tags[0],2),
+    EARTHQUAKE(MaceSpecials::earthquake,CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE,Tags.AOE},2),
     @AttackSkill( addedBaseDmg = {5,5, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-70, -80, -80, -80, -90}, dmgConversion = {0, 0, 0, 0} )
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.BARRAGE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
     @DurationSkill(duration = 6, refreshRate = 5)
-    RAIN_OF_ARROWS(BowSpecials::rainOfArrows,CastType.SPECIAL_ATTACK,new Tags[0],2),
+    RAIN_OF_ARROWS(BowSpecials::rainOfArrows,CastType.SPECIAL_ATTACK,new Tags[]{Tags.PROJECTILE,Tags.AOE},2),
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-100, -100, -100, -100, -100}, dmgConversion = {0, 0, 0, 0} )
     @DurationSkill(duration = 1.4, refreshRate = 1)
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.BARRAGE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
-    METEOR(WandSpecials::meteor,CastType.SPECIAL_ATTACK,new Tags[0],2),
+    METEOR(WandSpecials::meteor,CastType.SPECIAL_ATTACK,new Tags[]{Tags.PROJECTILE},2),
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 5,30}, dmgEffectiveness = {0, -30, -30, -30, 70}, dmgConversion = {0, 0, 0, 50} )
-    VIPER_STRIKE(DaggerSpecials::viperStrike,CastType.SPECIAL_ATTACK,new Tags[0],3),
+    VIPER_STRIKE(DaggerSpecials::viperStrike,CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE},3),
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 10, -10, -10, -70}, dmgConversion = {0, 0, 0, 0} )
     @DurationSkill(duration = 4, refreshRate = 1)
-    CYCLONE(AxeSpecials::cyclone,CastType.SPECIAL_ATTACK,new Tags[0],2),//Adjust dmg
+    CYCLONE(AxeSpecials::cyclone,CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE,Tags.AOE},2),//Adjust dmg
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {40, -30, -30, -30, -70}, dmgConversion = {0, 0, 0, 0} )
-    LACERATE(SwordSpecials::lacerate,CastType.SPECIAL_ATTACK,new Tags[0],0){
+    LACERATE(SwordSpecials::lacerate,CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE},0){
         @Override
         public void applyBonusStats(StatPool globalPlayerStats){ //Adding base bleed chance
             globalPlayerStats.insertValue(Stats.BLEED, ValueType.PERCENTAGE,new int[]{50});
@@ -125,7 +131,7 @@ public enum Skills {
     @DurationSkill(duration = 8, refreshRate = 5)
     SMOKE_BOMB_CLOUD(DaggerUtility::smokeBombCloud,CastType.NEUTRAL, new Tags[0],0),
     @AttackSkill( addedBaseDmg = {0,0, 15,50, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, 50, -10, -40, -70}, dmgConversion = {40, 0, 0, 0} )
-    METEOR_IMPACT(WandSpecials::meteorImpact,CastType.NEUTRAL, new Tags[0],0),
+    METEOR_IMPACT(WandSpecials::meteorImpact,CastType.NEUTRAL, new Tags[]{Tags.SPELL,Tags.AOE},0),
 
     // Keystone Auras
     @AuraSkill( period = 1, toggleCooldown = -1 )

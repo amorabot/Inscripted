@@ -7,7 +7,6 @@ import com.amorabot.inscripted.skill.annotations.DurationSkill;
 import com.amorabot.inscripted.skill.routine.SkillcastData;
 import com.amorabot.inscripted.skill.routine.slash.SlashPresets;
 import com.amorabot.inscripted.skill.routine.slash.SlashSegment;
-import com.amorabot.inscripted.skill.type.Attack;
 import com.amorabot.inscripted.skill.type.PersistentAttack;
 import com.amorabot.inscripted.skill.type.subroutines.DurationSubroutine;
 import com.amorabot.inscripted.tasks.base.Skillcast;
@@ -83,9 +82,9 @@ public class AxeSpecials {
                     if (!caster.hasLineOfSight(entity)){continue;}
                     cycloneCastData.getAffectedEntities().add(entity.getUniqueId());
 
-                    AttackData slashAttackData = cycloneInstance.getAttackData();
-                    if (slashAttackData==null) {continue;}
-                    DamageRouter.hit(caster, entity, cycloneInstance,slashAttackData, DamageSource.HIT);
+//                    AttackData slashAttackData = cycloneInstance.getAttackData();
+                    if (attackData==null) {continue;}
+                    DamageRouter.hit(caster, entity, cycloneInstance,attackData, DamageSource.HIT);
                 }
 
                 elapsedFrames++;

@@ -21,7 +21,7 @@ import java.util.*;
 
 public class PlayerBuffManager {
 
-    private static final boolean DEBUG_MODE = false;
+    private static final boolean DEBUG_MODE = true;
 
     public static void addBuffToPlayer(BuffData buffData, UUID playerID){
         //TODO: encapsulate isOfflineBuffOwner
@@ -141,7 +141,7 @@ public class PlayerBuffManager {
         return false;
     }
 
-    public static void clearAllBuffsFor(UUID playerID){ //TODO: expand with clearing only debuffs
+    public static void clearAllBuffsFor(UUID playerID){
         Player player = Bukkit.getPlayer(playerID);
         if (player==null || !player.isOnline()){
             Utils.error("Ignoring buff clearing for offline player...");
@@ -165,6 +165,33 @@ public class PlayerBuffManager {
         playerBuffMap.clear();
         if (DEBUG_MODE) {
             Utils.log("Cleared all buffs for " + playerID);
+        }
+    }
+    public static void clearDebuffsFor(UUID playerID){
+        Player player = Bukkit.getPlayer(playerID);
+        if (player==null || !player.isOnline()){
+            Utils.error("Ignoring debbuff clearing for offline player...");
+            return;
+        }
+
+        PlayerDataContainer dataContainer = PlayerDataContainer.getDataContainerFor(playerID);
+        Map<Buffs, BuffData> playerBuffMap = dataContainer.getActiveBuffs();
+        if (playerBuffMap.isEmpty()){return;}
+        for (Buffs buff : playerBuffMap.keySet()){
+            if (!buff.isDebuff()){return;}//Ignore non-debuffs
+            BuffData buffData = playerBuffMap.get(buff);
+            BuffTask buffTask = buffData.getBuffTask();
+            if (buffTask != null){
+                if (!buffTask.isCancelled()){
+                    if (DEBUG_MODE) {
+                        Utils.log("Expriring debuff: " + buff + " | ID: " + playerID);
+                    }
+                    buffTask.expire(); //Also removes the stored data for that buff
+                }
+            }
+        }
+        if (DEBUG_MODE) {
+            Utils.log("Cleared all debuffs for " + playerID);
         }
     }
     public static void expirePlayerStatBuffs(UUID playerID){

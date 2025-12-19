@@ -70,7 +70,7 @@ public enum Tags {
             Map<Stats, Integer> statMap = new HashMap<>();
             Profile playerProfile = PlayerDataContainer.getProfile(playerID);
 
-            statMap.put(Stats.AREA_DAMAGE,playerProfile.getDamageComponent().getMeleeDamage());
+            statMap.put(Stats.AREA_DAMAGE,playerProfile.getDamageComponent().getAreaDamage());
             return statMap;
         }
 
