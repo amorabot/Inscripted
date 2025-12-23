@@ -1,0 +1,19 @@
+{
+  "parent": "minecraft:item/generated",
+
+  "textures": {
+    "layer0": "minecraft:item/bow"
+  },
+  "overrides": [
+    {"predicate": {"custom_model_data": 3},"model": "minecraft:item/t1bow"},
+    {"predicate": {"custom_model_data": 5},"model": "minecraft:item/t1wand"},
+    {"predicate": {"custom_model_data": 9},"model": "minecraft:item/t2bow"},
+    {"predicate": {"custom_model_data": 11},"model": "minecraft:item/t2wand"},
+    {"predicate": {"custom_model_data": 15},"model": "minecraft:item/t3bow"},
+    {"predicate": {"custom_model_data": 17},"model": "minecraft:item/t3wand"},
+    {"predicate": {"custom_model_data": 21},"model": "minecraft:item/t4bow"},
+    {"predicate": {"custom_model_data": 23},"model": "minecraft:item/t4wand"},
+    {"predicate": {"custom_model_data": 27},"model": "minecraft:item/t5bow"},
+    {"predicate": {"custom_model_data": 29},"model": "minecraft:item/t5wand"}
+  ]
+}

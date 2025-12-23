@@ -1,5 +1,6 @@
 package com.amorabot.inscripted.tasks;
 
+import com.amorabot.inscripted.item.render.CustomUnicodeTable;
 import com.amorabot.inscripted.item.render.InscriptedPalette;
 import com.amorabot.inscripted.item.structure.Armor.DefenceTypes;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
@@ -53,20 +54,6 @@ public class ActionBarRenderer extends BukkitRunnable {
             Component renderedHealth = hpSection.append(soulSection).decoration(TextDecoration.ITALIC,false);
 
             currentPlayer.sendActionBar(renderedHealth.append(cdComponent));
-
-
-//            Long remainingMovementCD = GlobalCooldownManager.fetchAbilityRemainingCooldown(currentPlayer.getUniqueId(), AbilityTypes.MOVEMENT);
-//            if (remainingMovementCD > 0){
-//                if (remainingMovementCD<4000){
-//                    cooldownSection += "&8"+ remainingMovementCD/1000 +"⏳M ";
-//                } else {
-//                    cooldownSection += "&8⏳M ";
-//                }
-//            } else {
-//                cooldownSection += "&a⏳M ";
-//            }
-////            cooldownSection += " &7\uD83E\uDDEA12";
-//            TextComponent cooldownCoomponent = LegacyComponentSerializer.legacyAmpersand().deserialize(cooldownSection);
     }
 
 
@@ -90,9 +77,12 @@ public class ActionBarRenderer extends BukkitRunnable {
         String movColor = getSkillIconColor(CastType.MOVEMENT,playerData);
         String utilityColor = getSkillIconColor(CastType.UTILITY,playerData);
         String specialColor = getSkillIconColor(CastType.SPECIAL_ATTACK,playerData);
-        Component movIcon = Component.text("\uE032").decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(movColor));
-        Component utilityIcon = Component.text("\uE031").decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(utilityColor));
-        Component specialIcon = Component.text("\uE030").decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(specialColor));
+//        Component movIcon = Component.text("\uE032").decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(movColor));
+//        Component utilityIcon = Component.text("\uE031").decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(utilityColor));
+//        Component specialIcon = Component.text("\uE030").decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(specialColor));
+        Component movIcon = Component.text(CustomUnicodeTable.MOBILITY_ICON.getUnicode()).decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(movColor));
+        Component utilityIcon = Component.text(CustomUnicodeTable.UTILITY_ICON.getUnicode()).decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(utilityColor));
+        Component specialIcon = Component.text(CustomUnicodeTable.SPECIAL_ATTACK_ICON.getUnicode()).decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(specialColor));
 
         Component altCasting = Component.text("").append(div).append(Component.text(DamageTypes.FIRE.getCharacter()).color(castingColor.getColor())).append(div);
         return altCasting.append(movIcon).append(space).append(utilityIcon).append(space).append(specialIcon).append(div);

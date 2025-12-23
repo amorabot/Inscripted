@@ -1,0 +1,29 @@
+{
+  "parent": "minecraft:item/generated",
+
+  "textures": {
+    "layer0": "minecraft:item/shears"
+  },
+  "overrides": [
+    {"predicate": {"custom_model_data": 1},"model": "minecraft:item/t1axe"},
+    {"predicate": {"custom_model_data": 2},"model": "minecraft:item/t1sword"},
+    {"predicate": {"custom_model_data": 4},"model": "minecraft:item/t1dagger"},
+    {"predicate": {"custom_model_data": 6},"model": "minecraft:item/t1mace"},
+    {"predicate": {"custom_model_data": 7},"model": "minecraft:item/t2axe"},
+    {"predicate": {"custom_model_data": 8},"model": "minecraft:item/t2sword"},
+    {"predicate": {"custom_model_data": 10},"model": "minecraft:item/t2dagger"},
+    {"predicate": {"custom_model_data": 12},"model": "minecraft:item/t2mace"},
+    {"predicate": {"custom_model_data": 13},"model": "minecraft:item/t3axe"},
+    {"predicate": {"custom_model_data": 14},"model": "minecraft:item/t3sword"},
+    {"predicate": {"custom_model_data": 16},"model": "minecraft:item/t3dagger"},
+    {"predicate": {"custom_model_data": 18},"model": "minecraft:item/t3mace"},
+    {"predicate": {"custom_model_data": 19},"model": "minecraft:item/t4axe"},
+    {"predicate": {"custom_model_data": 20},"model": "minecraft:item/t4sword"},
+    {"predicate": {"custom_model_data": 22},"model": "minecraft:item/t4dagger"},
+    {"predicate": {"custom_model_data": 24},"model": "minecraft:item/t4mace"},
+    {"predicate": {"custom_model_data": 25},"model": "minecraft:item/t5axe"},
+    {"predicate": {"custom_model_data": 26},"model": "minecraft:item/t5sword"},
+    {"predicate": {"custom_model_data": 28},"model": "minecraft:item/t5dagger"},
+    {"predicate": {"custom_model_data": 30},"model": "minecraft:item/t5mace"}
+  ]
+}

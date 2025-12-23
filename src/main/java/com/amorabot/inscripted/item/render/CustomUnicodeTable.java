@@ -32,6 +32,11 @@ public enum CustomUnicodeTable {
 
     //frame(-1 blank + 1 default rendering)-80->soulSegm-1,soulSegm-1,...,SS-16-64+2(3 blank -1 dft rend)->
     //new assets \uE010\uE021\uE022\uE025\uE028\uE029\uE011\uE012\uE012\uE012\uE013
+
+    SPECIAL_ATTACK_ICON("\uE030"),
+    UTILITY_ICON("\uE031"),
+    MOBILITY_ICON("\uE032"),
+
     HP_FRAME("\uE010"),
 
     HP_FULL_HEAD("\uE011"),

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/t1axe",
+  "textures": {
+    "layer0": "minecraft:item/t5axe"
+  }
+}

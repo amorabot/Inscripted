@@ -1,0 +1,38 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "minecraft:item/t1bow"
+  },
+"display": {
+	"thirdperson_righthand": {
+            "rotation": [ 0, -90, 55 ],
+            "translation": [ 0, -2, 4 ],
+            "scale": [ 1.1, 1.1, 0.85 ]
+        },
+        "thirdperson_lefthand": {
+            "rotation": [ 0, 90, -55 ],
+            "translation": [ 0, 4.5, 0 ],
+            "scale": [ 1.1, 1.1, 0.85 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, -90, 25 ],
+            "translation": [ 2, 5, 0.9 ],
+            "scale": [ 0.9, 0.9, 0.95 ]
+        },
+        "firstperson_lefthand": {
+            "rotation": [ 0, 90, -25 ],
+            "translation": [ 2, 5, 0.9 ],
+            "scale": [ 1, 1, 0.95 ]
+        },
+        "gui": {
+		"scale":  [ 1, 1, 1 ],
+            "translation":  [ 0, 0, 0 ]
+		},
+		"ground": {
+            "rotation":  [ -90, 0, 90 ],
+            "translation":  [ 0, -1, 0 ],
+			"scale":  [ 0.8, 0.8, 0.9 ]
+		}
+	  }
+     }
+}
