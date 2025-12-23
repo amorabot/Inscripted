@@ -132,7 +132,8 @@ public class StatPool {
             int definitionID = regularBaseInsc.id(regularDef.isGlobal(), regularDef.isPositive());
             if (!blockedIDs.contains(definitionID)){
                 if (DEBUG_MODE){Utils.log("Parsing ID " + definitionID);}
-                insertValue(regularBaseInsc.stat(),regularBaseInsc.type(),inscription.getMappedFinalValues());
+                int[] mappedRegularValues = inscription.getMappedFinalValues();
+                insertValue(regularBaseInsc.stat(),regularBaseInsc.type(),mappedRegularValues);
             }
             return;
         }

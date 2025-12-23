@@ -7,6 +7,7 @@ import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.combat.buffs.Buffs;
 import com.amorabot.inscripted.combat.buffs.categories.BuffData;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
@@ -81,7 +82,8 @@ public class DamageBuff implements BuffData {
         int timeApplied = getDamageAnnotationData().timesApplied();
         String messageString = "[ " + DamageTypes.PHYSICAL.getCharacter() + " " + timeApplied + "x" + damageTick + " ]";
         Component buffDataMessage = Component.text(messageString).color(InscriptedPalette.DARK_GRAY.getColor());
-        return baseMessage.append(Component.text(" ").append(buffDataMessage));
+        return baseMessage.hoverEvent(HoverEvent.showText(buffDataMessage));
+//        return baseMessage.append(Component.text(" ").append(buffDataMessage));
     }
 
     public Damage getDamageAnnotationData(){

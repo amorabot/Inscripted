@@ -5,6 +5,7 @@ import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.combat.CombatEffects;
 import com.amorabot.inscripted.combat.EntityStateManager;
 import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
+import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.utils.DelayedTask;
 import io.papermc.paper.entity.TeleportFlag;
 import net.kyori.adventure.audience.Audience;
@@ -30,6 +31,7 @@ public class DeathEvent {
         PotionEffect blindness = new PotionEffect(PotionEffectType.BLINDNESS, 30, 10, true, false, false);
         blindness.apply(deadPlayer);
         PlayerBuffManager.clearAllBuffsFor(deadPlayer.getUniqueId());
+        PlayerDataContainer.getDataContainerFor(deadPlayer.getUniqueId()).getProfile().getHealthComponent().resetHP(deadPlayer);
         CombatEffects.deathEffect(deadPlayer);
 
         String killerName = "???";

@@ -7,6 +7,7 @@ import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
 import com.amorabot.inscripted.item.inscription.language.ValueType;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
+import com.amorabot.inscripted.player.Archetypes;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.parsing.StatPool;
 import com.amorabot.inscripted.skill.annotations.AttackSkill;
@@ -50,6 +51,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
+import static com.amorabot.inscripted.player.Archetypes.*;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.UUID;
@@ -59,68 +62,68 @@ import java.util.function.Consumer;
 @Getter
 public enum Skills {
     //Basic attack skills
-    FIST(null, CastType.NEUTRAL, new Tags[]{Tags.NONE},0),
+    FIST(null, null, CastType.NEUTRAL, new Tags[]{Tags.NONE},0),
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {10, -10, -40, -40, -70}, dmgConversion = {0, 0, 0, 0} )
-    BASIC_AXE_SLASH(AxeBasicAttacks::standardAxeSlash,CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0),
+    BASIC_AXE_SLASH(AxeBasicAttacks::standardAxeSlash, MARAUDER,CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0),
 
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-10, -10, -10, -10, -60}, dmgConversion = {0, 0, 0, 0} )
-    BASIC_SWORD_SLASH(SwordBasicAttacks::standardSwordSlash, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0),
+    BASIC_SWORD_SLASH(SwordBasicAttacks::standardSwordSlash, GLADIATOR, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0),
 
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, -40, -40, -40, -60}, dmgConversion = {0, 0, 0, 0} )
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.CONE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = false )
-    BASIC_BOW_SHOT(BowBasicAttacks::standardBowAttack, CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE}, 0),
+    BASIC_BOW_SHOT(BowBasicAttacks::standardBowAttack, MERCENARY, CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE}, 0),
 
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, -20, -20, -20, -60}, dmgConversion = {0, 0, 0, 0} )
-    BASIC_DAGGER_SLASH(DaggerBasicAttacks::standardDaggerSlash,CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0),
+    BASIC_DAGGER_SLASH(DaggerBasicAttacks::standardDaggerSlash, ROGUE, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0),
 
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {20, 0, 0, 0, -60}, dmgConversion = {0, 0, 0, 0} )
     @ProjectileSkill( baseProjectiles = 3, spread = ProjectileGenerators.SHOTGUN, defaultSteering = SteeringBehaviors.SEEK, uniqueTarget = true )
-    BASIC_WAND_ATTACK(WandBasicAttacks::standardWandAttack, CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE}, 0),
+    BASIC_WAND_ATTACK(WandBasicAttacks::standardWandAttack, SORCERER, CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE}, 0),
 
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, 0, 0, 0, -60}, dmgConversion = {0, 0, 0, 0} )
-    BASIC_MACE_SLAM(MaceBasicAttacks::standardMaceSlam,CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE,Tags.AOE},0),
+    BASIC_MACE_SLAM(MaceBasicAttacks::standardMaceSlam, TEMPLAR, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE,Tags.AOE},0),
 
     //Movement skills
-    CHARGE(AxeMovement::charge,CastType.MOVEMENT, new Tags[0],10),
-    LEAP(SwordMovement::leap,CastType.MOVEMENT, new Tags[0],3),//TODO: improve visuals
-    ACROBATICS(BowMovement::acrobatics,CastType.MOVEMENT, new Tags[0],5),//TODO: improve visuals
-    VANISH(DaggerMovement::vanish,CastType.MOVEMENT, new Tags[0],12),
-    WARP(WandMovement::warp,CastType.MOVEMENT, new Tags[0],7),
-    TECTONIC_PULL(MaceMovement::pull,CastType.MOVEMENT, new Tags[0],7),//TODO: improve visuals
+    CHARGE(AxeMovement::charge, MARAUDER,CastType.MOVEMENT, new Tags[0],10),
+    LEAP(SwordMovement::leap, GLADIATOR,CastType.MOVEMENT, new Tags[0],3),//TODO: improve visuals
+    ACROBATICS(BowMovement::acrobatics, MERCENARY,CastType.MOVEMENT, new Tags[0],5),//TODO: improve visuals
+    VANISH(DaggerMovement::vanish, ROGUE,CastType.MOVEMENT, new Tags[0],12),
+    WARP(WandMovement::warp, SORCERER,CastType.MOVEMENT, new Tags[0],7),
+    TECTONIC_PULL(MaceMovement::pull, TEMPLAR,CastType.MOVEMENT, new Tags[0],7),//TODO: improve visuals
     
     //Utility Skills
     @DurationSkill(duration = 12, refreshRate = 5)
-    WAR_BANNER(AxeUtility::warBanner,CastType.UTILITY, new Tags[]{Tags.AOE},7),
-    @DurationSkill(duration = 15, refreshRate = 5)
-    RING_OF_BLADES(SwordUtility::ringOfBlades,CastType.UTILITY, new Tags[]{Tags.AOE},1),
+    WAR_BANNER(AxeUtility::warBanner, MARAUDER, CastType.UTILITY, new Tags[]{Tags.AOE},7),
+    @DurationSkill(duration = 10, refreshRate = 5)
+    RING_OF_BLADES(SwordUtility::ringOfBlades, GLADIATOR, CastType.UTILITY, new Tags[]{Tags.AOE},20),
     @DurationSkill(duration = 1.5, refreshRate = 3)
-    HUNTING_GROUND(BowUtility::huntingGround,CastType.UTILITY, new Tags[]{Tags.AOE},3),
+    HUNTING_GROUND(BowUtility::huntingGround, MERCENARY, CastType.UTILITY, new Tags[]{Tags.AOE},10),
     @DurationSkill(duration = 1.5, refreshRate = 3)
-    CRYOSTASIS(WandUtility::cryostasis,CastType.UTILITY, new Tags[]{Tags.AOE},3),
+    CRYOSTASIS(WandUtility::cryostasis, SORCERER, CastType.UTILITY, new Tags[]{Tags.AOE},6),
     @AttackSkill( addedBaseDmg = {5,10, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-90, -90, -90, -90, -100}, dmgConversion = {0, 0, 0, 0} )
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.CONE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
-    SMOKE_BOMB(DaggerUtility::smokeBomb,CastType.UTILITY, new Tags[]{Tags.AOE},4),
+    SMOKE_BOMB(DaggerUtility::smokeBomb, ROGUE, CastType.UTILITY, new Tags[]{Tags.AOE},4),
     @DurationSkill(duration = 2, refreshRate = 4)
-    CLEANSE(MaceUtility::cleanse,CastType.UTILITY, new Tags[]{Tags.SPELL},1),
+    CLEANSE(MaceUtility::cleanse, TEMPLAR, CastType.UTILITY, new Tags[]{Tags.SPELL},30),
  
     //Special skills
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 10, 10, 10, -70}, dmgConversion = {0, 0, 0, 0} )
-    EARTHQUAKE(MaceSpecials::earthquake,CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE,Tags.AOE},2),
+    EARTHQUAKE(MaceSpecials::earthquake, TEMPLAR, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE,Tags.AOE},4),
     @AttackSkill( addedBaseDmg = {5,5, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-70, -80, -80, -80, -90}, dmgConversion = {0, 0, 0, 0} )
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.BARRAGE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
     @DurationSkill(duration = 6, refreshRate = 5)
-    RAIN_OF_ARROWS(BowSpecials::rainOfArrows,CastType.SPECIAL_ATTACK,new Tags[]{Tags.PROJECTILE,Tags.AOE},2),
+    RAIN_OF_ARROWS(BowSpecials::rainOfArrows, MERCENARY, CastType.SPECIAL_ATTACK,new Tags[]{Tags.PROJECTILE,Tags.AOE},7),
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-100, -100, -100, -100, -100}, dmgConversion = {0, 0, 0, 0} )
     @DurationSkill(duration = 1.4, refreshRate = 1)
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.BARRAGE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
-    METEOR(WandSpecials::meteor,CastType.SPECIAL_ATTACK,new Tags[]{Tags.PROJECTILE},2),
+    METEOR(WandSpecials::meteor, SORCERER, CastType.SPECIAL_ATTACK,new Tags[]{Tags.PROJECTILE},6),
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 5,30}, dmgEffectiveness = {0, -30, -30, -30, 70}, dmgConversion = {0, 0, 0, 50} )
-    VIPER_STRIKE(DaggerSpecials::viperStrike,CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE},3),
+    VIPER_STRIKE(DaggerSpecials::viperStrike, ROGUE, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE},3),
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 10, -10, -10, -70}, dmgConversion = {0, 0, 0, 0} )
     @DurationSkill(duration = 4, refreshRate = 1)
-    CYCLONE(AxeSpecials::cyclone,CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE,Tags.AOE},2),//Adjust dmg
+    CYCLONE(AxeSpecials::cyclone, MARAUDER, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE,Tags.AOE},8),//Adjust dmg
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {40, -30, -30, -30, -70}, dmgConversion = {0, 0, 0, 0} )
-    LACERATE(SwordSpecials::lacerate,CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE},0){
+    LACERATE(SwordSpecials::lacerate, GLADIATOR, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE},5){
         @Override
         public void applyBonusStats(StatPool globalPlayerStats){ //Adding base bleed chance
             globalPlayerStats.insertValue(Stats.BLEED, ValueType.PERCENTAGE,new int[]{50});
@@ -129,34 +132,36 @@ public enum Skills {
 
     //Secondary skills (shouldn't be directly mapped/instanced)
     @DurationSkill(duration = 8, refreshRate = 5)
-    SMOKE_BOMB_CLOUD(DaggerUtility::smokeBombCloud,CastType.NEUTRAL, new Tags[0],0),
+    SMOKE_BOMB_CLOUD(DaggerUtility::smokeBombCloud, ROGUE, CastType.NEUTRAL, new Tags[0],0),
     @AttackSkill( addedBaseDmg = {0,0, 15,50, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, 50, -10, -40, -70}, dmgConversion = {40, 0, 0, 0} )
-    METEOR_IMPACT(WandSpecials::meteorImpact,CastType.NEUTRAL, new Tags[]{Tags.SPELL,Tags.AOE},0),
+    METEOR_IMPACT(WandSpecials::meteorImpact, SORCERER, CastType.NEUTRAL, new Tags[]{Tags.SPELL,Tags.AOE},0),
 
     // Keystone Auras
     @AuraSkill( period = 1, toggleCooldown = -1 )
-    PERMAFROST(ItemAuras::registerPermafrost, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0), //TODO: improve visuals
+    PERMAFROST(ItemAuras::registerPermafrost, null, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0), //TODO: improve visuals
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 15,70, 0,0}, dmgEffectiveness = {0, 0, 50, 0, 0}, dmgConversion = {0, 0, 30, 0} )
     @AuraSkill( period = 1.5, toggleCooldown = -1 )
-    THUNDERSTRUCK(ItemAuras::registerThunderstruck, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),
-    @AuraSkill( period = 0.2, toggleCooldown = -1 )
-    RIGHTEOUS_FIRE(ItemAuras::registerRighteousFire, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),//TODO: implement dot damage
-    @AuraSkill( period = 10, toggleCooldown = -1 )
-    WINDS_OF_CHANGE(ItemAuras::registerWindsOfChange, CastType.NEUTRAL, new Tags[]{Tags.AURA},0),
+    THUNDERSTRUCK(ItemAuras::registerThunderstruck, null, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),
     @AuraSkill( period = 0.5, toggleCooldown = -1 )
-    BERSERK(ItemAuras::registerBerserk, CastType.NEUTRAL, new Tags[]{Tags.AURA},0);
+    RIGHTEOUS_FIRE(ItemAuras::registerRighteousFire, null, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),//TODO: implement dot damage
+    @AuraSkill( period = 10, toggleCooldown = -1 )
+    WINDS_OF_CHANGE(ItemAuras::registerWindsOfChange, null, CastType.NEUTRAL, new Tags[]{Tags.AURA},0),
+    @AuraSkill( period = 0.5, toggleCooldown = -1 )
+    BERSERK(ItemAuras::registerBerserk, null, CastType.NEUTRAL, new Tags[]{Tags.AURA},0);
 
 
 
     private final Consumer<Skillcast> skillRoutine;
+    private final Archetypes archetype;
     private final CastType type;
     private final Tags[] skillTags;
     private final int cooldownInSeconds;
     private boolean ignoreOwner = true;
 
     //TODO: implement cast sound function, Archetype & variantID
-    Skills(Consumer<Skillcast> routine, CastType type, Tags[] skillTags, int cooldown, boolean... ignoreOwner){
+    Skills(Consumer<Skillcast> routine, Archetypes archetype, CastType type, Tags[] skillTags, int cooldown, boolean... ignoreOwner){
         this.skillRoutine = routine;
+        this.archetype = archetype;
         this.type = type;
         this.skillTags = skillTags;
         this.cooldownInSeconds = cooldown;
@@ -283,6 +288,12 @@ public enum Skills {
                     case MOVEMENT -> {
                         return CHARGE;
                     }
+                    case UTILITY -> {
+                        return WAR_BANNER;
+                    }
+                    case SPECIAL_ATTACK -> {
+                        return CYCLONE;
+                    }
                 }
             }
             case SWORD -> {
@@ -292,6 +303,12 @@ public enum Skills {
                     }
                     case MOVEMENT -> {
                         return LEAP;
+                    }
+                    case UTILITY -> {
+                        return RING_OF_BLADES;
+                    }
+                    case SPECIAL_ATTACK -> {
+                        return LACERATE;
                     }
                 }
             }
@@ -303,6 +320,12 @@ public enum Skills {
                     case MOVEMENT -> {
                         return ACROBATICS;
                     }
+                    case UTILITY -> {
+                        return HUNTING_GROUND;
+                    }
+                    case SPECIAL_ATTACK -> {
+                        return RAIN_OF_ARROWS;
+                    }
                 }
             }
             case DAGGER -> {
@@ -312,6 +335,12 @@ public enum Skills {
                     }
                     case MOVEMENT -> {
                         return VANISH;
+                    }
+                    case UTILITY -> {
+                        return SMOKE_BOMB;
+                    }
+                    case SPECIAL_ATTACK -> {
+                        return VIPER_STRIKE;
                     }
                 }
             }
@@ -323,6 +352,12 @@ public enum Skills {
                     case MOVEMENT -> {
                         return WARP;
                     }
+                    case UTILITY -> {
+                        return CRYOSTASIS;
+                    }
+                    case SPECIAL_ATTACK -> {
+                        return METEOR;
+                    }
                 }
             }
             case MACE -> {
@@ -332,6 +367,12 @@ public enum Skills {
                     }
                     case MOVEMENT -> {
                         return TECTONIC_PULL;
+                    }
+                    case UTILITY -> {
+                        return CLEANSE;
+                    }
+                    case SPECIAL_ATTACK -> {
+                        return EARTHQUAKE;
                     }
                 }
             }

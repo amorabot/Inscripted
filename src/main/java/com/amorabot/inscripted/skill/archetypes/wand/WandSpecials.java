@@ -1,5 +1,7 @@
 package com.amorabot.inscripted.skill.archetypes.wand;
 
+import com.amorabot.inscripted.combat.damage.DamageRouter;
+import com.amorabot.inscripted.combat.damage.DamageSource;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.math.LinalgMath;
 import com.amorabot.inscripted.particle.ParticlePlotter;
@@ -20,10 +22,13 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class WandSpecials {
 
@@ -83,8 +88,27 @@ public class WandSpecials {
 
     public static void meteorImpact(Skillcast skillcastInstance){
         if (!(skillcastInstance instanceof Attack.Basic basicAttackInstance)){return;}
-        Utils.log("sex");
+        Player caster = skillcastInstance.getPlayer();
+        World world = caster.getWorld();
         Vector castOrigin = skillcastInstance.getCastData().getCastingContext().getOrigin();
-        ParticlePlotter.spawnParticleAt(castOrigin,skillcastInstance.getPlayer().getWorld(), Particle.EXPLOSION);
+        AttackData attackData = basicAttackInstance.getAttackData();
+
+        ParticlePlotter.spawnParticleAt(castOrigin,world, Particle.EXPLOSION);
+        ParticlePlotter.spawnOffsetParticleAt(castOrigin,world,Particle.GUST,1.2,1,1.2,5);
+        for (Vector flame : LinalgMath.plotPointsInsideHorizontalCircle(castOrigin,6,25)){
+            ParticlePlotter.spawnParticleAt(flame,world,Particle.FLAME);
+        }
+
+
+
+        List<Player> nearbyPlayers = (List<Player>) castOrigin.toLocation(world).getNearbyPlayers(4f);
+        List<UUID> blacklistedEntities = skillcastInstance.getCastData().getBlacklistedEntities();
+        for (Player p : nearbyPlayers){
+            if (blacklistedEntities.contains(p.getUniqueId())){
+                continue;
+            }
+            if (attackData==null) {continue;}
+            DamageRouter.hit(caster, p, basicAttackInstance,attackData, DamageSource.HIT);
+        }
     }
 }

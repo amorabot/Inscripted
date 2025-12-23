@@ -64,6 +64,13 @@ public class HealthComponent implements ProfileComponent {
         return List.of();
     }
 
+    public void resetHP(Player player){
+        health = getMaxHealth();
+        soul = getMaxSoul();
+        HealthComponent.updateHealthHearts(player,this);
+        HealthComponent.updateSoulHearts(player,this);
+    }
+
     public int regenHealth(boolean inCombat, Player playerToRegen){
         PlayerDataContainer playerData = PlayerDataContainer.getDataContainerFor(playerToRegen.getUniqueId());
         Set<KeystoneIDs> keystones = playerData.getEquipment().getSpecialInscriptions().getKeystones();

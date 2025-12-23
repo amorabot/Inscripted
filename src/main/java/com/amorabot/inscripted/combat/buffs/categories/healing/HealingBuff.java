@@ -10,6 +10,7 @@ import com.amorabot.inscripted.item.render.InscriptedPalette;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.player.profile.Profile;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
@@ -76,7 +77,8 @@ public class HealingBuff implements BuffData {
         int timeApplied = getHealingAnnotationData().timesApplied();
         String messageString = "[ " + timeApplied + "x +" + healingTick + " ]";
         Component buffDataMessage = Component.text(messageString).color(InscriptedPalette.DARK_GRAY.getColor());
-        return baseMessage.append(Component.text(" ").append(buffDataMessage));
+        return baseMessage.hoverEvent(HoverEvent.showText(buffDataMessage));
+//        return baseMessage.append(Component.text(" ").append(buffDataMessage));
     }
 
     public int getFinalHealingTick(Profile targetProfile){

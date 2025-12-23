@@ -70,11 +70,11 @@ public class ProjectileCollision {
 
 
     public static void testCollisionExecution(Projectile collidedProj){
-        collidedProj.getSkillcast().getPlayer().sendMessage("Colided!");
+//        collidedProj.getSkillcast().getPlayer().sendMessage("Colided!");
     }
 
     public static void smokeBombCollision(Projectile collidedProj){
-        //TODO: Migrar para ProjectileImpacts
+        //TODO: migrate to ProjectileImpacts
         Skills parentSkillcastSourceSkill = collidedProj.getSkillcast().getCastedSkill();
         if (!parentSkillcastSourceSkill.equals(Skills.SMOKE_BOMB)){
             Utils.error("Smoke bomb cloud not instanced by Smokebomb...");

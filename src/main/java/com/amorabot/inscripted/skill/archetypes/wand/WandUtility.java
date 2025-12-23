@@ -47,7 +47,7 @@ public class WandUtility {
                 if (cryostatisRoutine.isExpired()){
                     Vector offsetCenter = center.clone().add(new Vector(0,0.3,0));
                     for (Vector v : LinalgMath.plotPointsInsideHorizontalCircle(offsetCenter,radius,60)){
-                        ParticlePlotter.spawnColoredParticleAt(v,world,171, 254, 255,1f,1);
+                        ParticlePlotter.spawnColoredParticleAt(v,world,174, 201, 245,1f,1);
                     }
                     PotionEffect slow = new PotionEffect(PotionEffectType.SLOWNESS, debuffDuration, 2, true, false, false);
                     List<Player> affectedPlayers = (List<Player>) world.getNearbyPlayers(center.toLocation(world),radius);

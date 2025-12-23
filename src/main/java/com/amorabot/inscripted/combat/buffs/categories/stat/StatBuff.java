@@ -9,6 +9,7 @@ import com.amorabot.inscripted.item.inscription.language.ValueType;
 import com.amorabot.inscripted.item.render.InscriptedPalette;
 import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
@@ -104,6 +105,7 @@ public class StatBuff implements BuffData {
         builder.append(buffStatData.durationInSeconds());
         builder.append("s ]");
         Component statData = Component.text(builder.toString()).color(InscriptedPalette.DARK_GRAY.getColor());
-        return baseMessage.append(Component.text(" ")).append(statData);
+        return baseMessage.hoverEvent(HoverEvent.showText(statData));
+//        return baseMessage.append(Component.text(" ")).append(statData);
     }
 }

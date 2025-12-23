@@ -32,6 +32,14 @@ public class InscriptionValuesMapper implements InscriptionVisitor<int[]>{
         if (storedValuesSizing.length==0){return new int[]{999};}
 
         int[] mappedValues = new int[getFinalValuesArraySize(storedValuesSizing)];
+        int invertionFactor = 1;
+        double basePercentile = inscription.getBasePercentile();
+        boolean invertValues = InscriptionValuesMapper.shouldMappedValuesBeInverted(definition);
+        if (invertValues){
+            invertionFactor = -1;
+            basePercentile = (1-basePercentile);
+        }
+
         int mappedOffset = 0;
         int rawOffset = 0;
 
@@ -39,7 +47,7 @@ public class InscriptionValuesMapper implements InscriptionVisitor<int[]>{
             final int currentSizing = storedValuesSizing[i];
             final int mappedValuesArrayIndex = mappedOffset;
             if (currentSizing == RollType.CONSTANT.getPreRollSize()){
-                mappedValues[mappedValuesArrayIndex] = tableValues[i+rawOffset]; // Store the i'th mapped value (1 to 1) on the corresponding mappedValues index
+                mappedValues[mappedValuesArrayIndex] = tableValues[i+rawOffset]*invertionFactor; // Store the i'th mapped value (1 to 1) on the corresponding mappedValues index
                 mappedOffset++; //We just added a mapped value and the offset should reflect the size of the insertion ( 1 in this case)
                 rawOffset++;
                 continue;
@@ -47,10 +55,11 @@ public class InscriptionValuesMapper implements InscriptionVisitor<int[]>{
             // We are dealing with single and double rolls from now on
             if (currentSizing == RollType.SINGLE_ROLL.getPreRollSize()){
                 // Get the offset values on the raw value table
-                final int v1 = tableValues[rawOffset];
-                final int v2 = tableValues[rawOffset+1];
-                if (inscription.getDebugState()){Utils.log("v1: " + v1 + " " + "v2: " + v2 + "  BP:" + inscription.getBasePercentile());}
-                final int m1 = Utils.getRoundedParametricValue(v1, v2, inscription.getBasePercentile());
+                final int v1 = tableValues[rawOffset]*invertionFactor;
+                final int v2 = tableValues[rawOffset+1]*invertionFactor;
+                if (inscription.getDebugState()){Utils.log("v1: " + v1 + " " + "v2: " + v2 +
+                        "  BP:" + inscription.getBasePercentile() + "Remapped Base Per.: " + basePercentile);}
+                final int m1 = Utils.getRoundedParametricValue(v1, v2, basePercentile);
                 mappedValues[mappedValuesArrayIndex] = m1;
 
                 mappedOffset+= 1;
@@ -61,10 +70,10 @@ public class InscriptionValuesMapper implements InscriptionVisitor<int[]>{
             if (currentSizing == RollType.DOUBLE_ROLL.getPreRollSize()){
                 final int v1 = tableValues[i+rawOffset];
                 final int v2 = tableValues[i+rawOffset+1];
-                final int m1 = Utils.getRoundedParametricValue(v1, v2, inscription.getBasePercentile());
+                final int m1 = Utils.getRoundedParametricValue(v1, v2, basePercentile);
                 final int v3 = tableValues[i+rawOffset+2];
                 final int v4 = tableValues[i+rawOffset+3];
-                final int m2 = Utils.getRoundedParametricValue(v3, v4, inscription.getBasePercentile());
+                final int m2 = Utils.getRoundedParametricValue(v3, v4, basePercentile);
 
                 mappedValues[mappedValuesArrayIndex] = m1;
                 mappedValues[mappedValuesArrayIndex+1] = m2;
@@ -88,5 +97,17 @@ public class InscriptionValuesMapper implements InscriptionVisitor<int[]>{
             variableSize+= Math.floorDiv(i,2);
         }
         return baseSize+variableSize;
+    }
+    public static boolean shouldMappedValuesBeInverted(InscriptionDefinition inscriptionDefinition){
+        boolean regular = inscriptionDefinition instanceof InscriptionDefinition.Regular;
+        boolean hybrid = inscriptionDefinition instanceof InscriptionDefinition.Hybrid;
+        //Meta inscriptions are positive by design
+        if (regular){
+            return !((InscriptionDefinition.Regular) inscriptionDefinition).isPositive();
+        } else if (hybrid){
+            return !((InscriptionDefinition.Hybrid) inscriptionDefinition).isPositive();
+        } else {
+            return false;
+        }
     }
 }

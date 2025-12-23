@@ -99,7 +99,8 @@ public class PlayerEquipmentHandler implements Listener {
             case WEAPON_LEFT_CLICK_AIR, WEAPON_LEFT_CLICK_BLOCK -> {
                 Weapon weaponData = ItemDeserializer.deserializeWeaponData(usedItem);
                 if (CasterStateManager.getCastingStateFor(player).isAlternateCasting()){
-                    CasterStateManager.alternateSpellcastingTriggerFor(player,itemUsage);
+                    CasterStateManager.alternateSpellcastingTriggerFor(player,itemUsage); //Serves only as a notification/update to the CastingState
+                    weaponCast(player,usedItem,CastType.SPECIAL_ATTACK,69);
                     return;
                 }
                 if (weaponData!=null){
@@ -112,6 +113,7 @@ public class PlayerEquipmentHandler implements Listener {
             case WEAPON_RIGHT_CLICK_AIR -> {
                 if (CasterStateManager.getCastingStateFor(player).isAlternateCasting()){
                     CasterStateManager.alternateSpellcastingTriggerFor(player,itemUsage);
+                    weaponCast(player,usedItem,CastType.UTILITY,69);
                     return;
                 }
                 weaponCast(player,usedItem,CastType.MOVEMENT,69);
@@ -119,6 +121,7 @@ public class PlayerEquipmentHandler implements Listener {
             case WEAPON_RIGHT_CLICK_BLOCK -> {
                 if (CasterStateManager.getCastingStateFor(player).isAlternateCasting()){
                     CasterStateManager.alternateSpellcastingTriggerFor(player,itemUsage);
+                    weaponCast(player,usedItem,CastType.UTILITY,69);
                     return;
                 }
                 weaponCast(player,usedItem,CastType.MOVEMENT,69);

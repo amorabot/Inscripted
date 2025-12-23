@@ -18,12 +18,12 @@ import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,6 +32,7 @@ public class ItemAuras {
 
     public static void registerPermafrost(Skillcast skillcast){
         AuraSubroutine permafrostSubroutine = new AuraSubroutine(skillcast);
+        Location centerLoc = skillcast.getPlayer().getLocation();
         permafrostSubroutine.setRoutine(new BukkitRunnable() {
             final AtomicInteger counter = new AtomicInteger(1);
             final int animationSteps = 3;
@@ -42,6 +43,8 @@ public class ItemAuras {
                     permafrostSubroutine.shutdown();
                     return;
                 }
+                ParticlePlotter.plotColoredCircleAt(skillcast.getPlayer().getLocation().toVector(),skillcast.getPlayer().getLocation().getWorld(),
+                        220, 230, 255,1.2f,3f,30,false);
                 permafrostRoutine(skillcast.getPlayer().getLocation()
                         ,counter, (int) (((Aura) skillcast).getSubroutinePeriodInSeconds() * 20)
                         ,animationSteps);
@@ -51,12 +54,12 @@ public class ItemAuras {
     }
     private static void permafrostRoutine(Location centerLocation, AtomicInteger counter, int permafrostPeriod, int animationSteps){
         float radiusStep = (float) 3.0 / animationSteps;
-        int colorVariance = 45;
+        int colorVariance = 120;
         float colorStep = ((float) colorVariance) / animationSteps;
 
         ParticlePlotter.plotColoredCircleAt(centerLocation.toVector(),centerLocation.getWorld(),
-                (int) (200 - (counter.get()-1)*colorStep),
-                (int) (200 - (counter.get()-1)*colorStep),
+                (int) (120 + (counter.get()-1)*colorStep),
+                (int) (120 + (counter.get()-1)*colorStep),
                 255,
                 1.3F,
                 radiusStep*counter.get(),
@@ -65,7 +68,7 @@ public class ItemAuras {
 
         if (counter.get() > 3){
             PotionEffect slowness = new PotionEffect(PotionEffectType.SLOWNESS, (int)(3*(permafrostPeriod)*1.1), 0, true, false, false);
-            ParticlePlotter.plotCircleAt(centerLocation.toVector(),centerLocation.getWorld(), Particle.FALLING_WATER, (float) 3.0, 40);
+            ParticlePlotter.plotCircleAt(centerLocation.toVector(),centerLocation.getWorld(), Particle.SNOWFLAKE, (float) 3.0, 40);
             for (Player p : centerLocation.getNearbyPlayers((float) 3.0)){
                 slowness.apply(p);
             }
@@ -110,8 +113,12 @@ public class ItemAuras {
 
     public static void registerRighteousFire(Skillcast skillcast){
         AuraSubroutine rfSubroutine = new AuraSubroutine(skillcast);
+
+        PlayerDataContainer playerDC = PlayerDataContainer.getDataContainerFor(skillcast.getPlayerID());
+        final AttackData rfHit = new AttackData(skillcast.getPlayerID(), skillcast.getCastedSkill(), playerDC.getGlobalStats());
+        rfHit.resetDamages();
+
         rfSubroutine.setRoutine(new BukkitRunnable() {
-            // TODO: custom built RF AttackData based on caster stats
             double phase = 0;
             final float radius = 2.7F;
             @Override
@@ -121,18 +128,26 @@ public class ItemAuras {
                     rfSubroutine.shutdown();
                     return;
                 }
-                righteousFireRoutine(skillcast.getPlayer(),null,radius,phase);
+                HealthComponent hp = playerDC.getProfile().getHealthComponent();
+                final int selfDamageTick = (int) (hp.getMaxHealth()*0.05);
+                rfHit.setFireDmg(new int[]{selfDamageTick,selfDamageTick});
+
+                righteousFireRoutine(skillcast,rfHit, hp,radius,phase);
                 phase += 25;
             }
         });
         rfSubroutine.startSubroutine(0);
     }
-    private static void righteousFireRoutine(Player caster, AttackData auraDamage, float radius, double currentPhase){
-        renderRFRadius(caster,radius,50, currentPhase);
-        List<LivingEntity> nearbyEntities = (List<LivingEntity>) caster.getLocation().getNearbyLivingEntities(radius+0.1);
-//        for (LivingEntity entity : nearbyEntities){
-//            //TODO: Damage entity
-//        }
+
+    private static void righteousFireRoutine(Skillcast rfSkillcast, AttackData auraDamage, HealthComponent currentHP, float radius, double currentPhase){
+        Player caster = rfSkillcast.getPlayer();
+        double totalHP = currentHP.getHealth() + currentHP.getSoul();
+        if (totalHP <= 2*auraDamage.getFireDmg()[0]){return;}
+        renderRFRadius(caster,radius,40, currentPhase);
+        List<Player> nearbyPlayers = (List<Player>) caster.getLocation().getNearbyPlayers(radius+0.1);
+        for (Player nPlayer : nearbyPlayers) {
+            DamageRouter.hit(caster, nPlayer, rfSkillcast, auraDamage, DamageSource.HIT);
+        }
     }
     private static void renderRFRadius(Player caster, float radius, int numPoints, double currentPhase){
         final int[] color = new int[]{255, 148, 61};
