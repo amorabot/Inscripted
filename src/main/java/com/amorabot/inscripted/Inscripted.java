@@ -14,6 +14,7 @@ import com.amorabot.inscripted.handlers.misc.SunlightBurnHandler;
 import com.amorabot.inscripted.file.item.InscriptionDataManager;
 import com.amorabot.inscripted.item.inscription.table.InscriptionTable;
 import com.amorabot.inscripted.tasks.ActionBarRenderer;
+import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.Bukkit;
@@ -31,7 +32,7 @@ import java.util.logging.Logger;
 public final class Inscripted extends JavaPlugin {
     private static Logger logger;
     private static Inscripted inscriptedPlugin;
-//    private static BukkitTask holoDepleterTask;
+    private static BukkitTask holoDepleterTask;
 //    private static BukkitTask combatLogger;
     private static BukkitTask actionBarRenderer;
     private World world;
@@ -58,7 +59,7 @@ public final class Inscripted extends JavaPlugin {
         eventListenersStartupRoutine();
 
 //        //Damage hologram depleter
-//        holoDepleterTask = CombatHologramsDepleter.getInstance().runTaskTimer(this,(long) (Math.random()*11), 1L);
+        holoDepleterTask = CombatHologramsDepleter.getInstance().runTaskTimer(this,(long) (Math.random()*11), 1L);
 //        //Combat logger
 //        combatLogger = CombatLogger.getInstance().runTaskTimer(this, (long) (Math.random()*11), 20L);
 
@@ -75,9 +76,9 @@ public final class Inscripted extends JavaPlugin {
         Utils.log("Shutting Down...");
         ProfileDatabase.saveLoadedProfiles();
 
-//        if (holoDepleterTask != null && !holoDepleterTask.isCancelled()){
-//            holoDepleterTask.cancel();
-//        }
+        if (holoDepleterTask != null && !holoDepleterTask.isCancelled()){
+            holoDepleterTask.cancel();
+        }
 //        if (combatLogger != null && !combatLogger.isCancelled()){
 //            combatLogger.cancel();
 //        }
@@ -143,6 +144,7 @@ public final class Inscripted extends JavaPlugin {
         getCommand("stats").setExecutor(new StatsCommand());
         getCommand("generateitem").setExecutor(new GenerateItem(this));
         getCommand("show").setExecutor(new Show());
+        getCommand("skills").setExecutor(new SkillsInfo());
         getCommand("template").setExecutor(new TemplateCommand());
 
         //Has tab executor functionality, if its all in MobCommand class, no need to setTabCompleter()

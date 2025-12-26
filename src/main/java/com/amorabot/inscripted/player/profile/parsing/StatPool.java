@@ -26,7 +26,10 @@ public class StatPool {
         this.multipliers = new HashMap<>();
     }
     public StatPool snapshot(){
-        return new StatPool(new HashMap<>(baseStats),new HashMap<>(multipliers));
+        StatPool snapshot = new StatPool();
+        snapshot.mergeBaseStats(baseStats);
+        snapshot.mergeMultipliers(multipliers);
+        return snapshot;
     }
     public static StatPool getItemStats(ProceduralInscription implicit, List<Inscription> itemInscriptions, Map<Stats, int[]> localStats, Set<Integer> alreadyCompiledIDs){
         StatPool globalItemStatPool = new StatPool();
@@ -252,7 +255,7 @@ public class StatPool {
                                 Utils.log(valueType.name()+" -> " + Arrays.toString(values));
                             }
                     );
-                    Utils.log("");
+//                    Utils.log("");
                 }
         );
         if (getBaseStats().isEmpty()){

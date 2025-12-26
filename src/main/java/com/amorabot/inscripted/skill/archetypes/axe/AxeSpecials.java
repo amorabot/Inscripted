@@ -46,6 +46,7 @@ public class AxeSpecials {
             final double oscilationAngleStep = Math.PI/60;
             final double slashAngleStep = Math.PI/36;
             final int animationStepsPerIteration = 6;
+            final int hitFrequency = 4; //Hits every X frames
             @Override
             public void run() {
                 if (this.isCancelled()) return;
@@ -82,8 +83,8 @@ public class AxeSpecials {
                     if (!caster.hasLineOfSight(entity)){continue;}
                     cycloneCastData.getAffectedEntities().add(entity.getUniqueId());
 
-//                    AttackData slashAttackData = cycloneInstance.getAttackData();
                     if (attackData==null) {continue;}
+                    if ((elapsedFrames%hitFrequency!=0)){continue;}
                     DamageRouter.hit(caster, entity, cycloneInstance,attackData, DamageSource.HIT);
                 }
 

@@ -13,11 +13,13 @@ import com.amorabot.inscripted.player.profile.Profile;
 import com.amorabot.inscripted.player.profile.component.AttackData;
 import com.amorabot.inscripted.player.profile.component.DefenceComponent;
 import com.amorabot.inscripted.player.profile.component.HealthComponent;
+import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import com.amorabot.inscripted.tasks.RegenerationTask;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import static com.amorabot.inscripted.combat.damage.AttackProcessor.isCriticalHit;
@@ -25,6 +27,7 @@ import static com.amorabot.inscripted.combat.damage.AttackProcessor.rollDamages;
 
 public class DamageRouter {
     //Will only support PvP for now
+    private static final boolean DEBUG_MODE = false;
 
     public static void hit(Player attacker, Player defender, Skillcast attackerSkill, AttackData skillAttackData, DamageSource damageSource){
         defender.damage(0.001);
@@ -47,6 +50,7 @@ public class DamageRouter {
 
         int[] baseAttackDamage = rollDamages(skillAttackData);
 
+
         int[] processedHitDamage = AttackProcessor.processAttack(attackerData,skillAttackData,defenderData,baseAttackDamage,critical);
         if (dodged){
             CombatEffects.playDodgeEffectsAt(defender,attacker);
@@ -59,11 +63,16 @@ public class DamageRouter {
         if (!dot) {notifyHitTriggers(TriggerTimes.EARLY, attacker, defender, processedHitDamage, critical);}
 
         hitPlayer(attacker,defender,skillAttackData,processedHitDamage,definitiveSource,critical,selfDamage,dot);
+        if (DEBUG_MODE){
+            Utils.log("Base Attack Damage: " + Arrays.toString(baseAttackDamage) + " | Processed Damage: " + Arrays.toString(processedHitDamage));
+        }
     }
     public static boolean hitPlayer(Player attacker, Player defender, AttackData baseHitData, int[] incomingHit, DamageSource damageSource,
                                  boolean criticalHit, boolean selfDamage, boolean isDot){
         if (EntityStateManager.isPlayerDead(defender)){
-            Utils.error("ded");
+            if (DEBUG_MODE){
+                Utils.error("ded");
+            }
             return true;
         }
 
@@ -73,13 +82,17 @@ public class DamageRouter {
         HealthComponent defenderHealth = defenderData.getProfile().getHealthComponent();
         double mappedHealth = defenderHealth.getPlayerHearts();
         if (mappedHealth == 0){
-            Utils.error("Early death: Attempting to damage player with 0 HP");
+            if (DEBUG_MODE){
+                Utils.error("Early death: Attempting to damage player with 0 HP");
+            }
             return true;
         }
         // Actual hit processing start
         //TODO: extract bleed chance & dmg for bleedAttempt() call
         AttackProcessor.bleedAttemptOnPlayer(attacker, defender, baseHitData, incomingHit);
         damagePlayer(defender, incomingHit, selfDamage, attacker);
+
+        CombatHologramsDepleter.getInstance().instantiateDamageHologramAt(defender.getLocation(),incomingHit);
         // Combat log attacker
         //...
 
@@ -105,7 +118,7 @@ public class DamageRouter {
         }
 
         //Combat healing
-        if (!isDot){ // Heal attacker based on non-lethal attack
+        if (!isDot && !selfDamage){ // Heal attacker based on non-lethal attack
             boolean isBleeding = PlayerBuffManager.hasActiveBuff(Buffs.BLEED, attacker.getUniqueId());
             combatHeal(attacker, isBleeding);
         }
@@ -121,7 +134,9 @@ public class DamageRouter {
         defenderData.getProfile().getHealthComponent().damage(incomingHit,defenderKeystones,attackerKeystones);
         RegenerationTask.startSoulRegenCooldownFor(defender.getUniqueId());
         if (!isSelfDamage){
-            Utils.log("Combat logged!");
+            if (DEBUG_MODE){
+                Utils.log("Combat logged!");
+            }
 //            CombatLogger.addToCombat(player);
         }
     }
@@ -132,10 +147,10 @@ public class DamageRouter {
         int lifeHealed = attackerProfile.getDamageComponent().getLifeOnHit();
 
         int finalLifeHealed = attackerProfile.getHealthComponent().healHealth(lifeHealed, isBleeding, attacker, attackerKeystones);
-        Utils.log("Life healed for " + attacker.getDisplayName() + ": " + finalLifeHealed);
-//        if (finalLifeHealed>0){
-//            CombatHologramsDepleter.getInstance().instantiateRegenHologram(attacker.getLocation(), "&2"+finalLifeHealed);
-//        }
+//        Utils.log("Life healed for " + attacker.getDisplayName() + ": " + finalLifeHealed);
+        if (finalLifeHealed>0){
+            CombatHologramsDepleter.getInstance().instantiateRegenHologram(attacker.getLocation(), "&2"+finalLifeHealed);
+        }
     }
     private static void notifyHitTriggers(TriggerTimes timing, Player attacker, Player defender, int[] incomingHit, boolean isCriticalHit){
         PlayerDataContainer attackerData = PlayerDataContainer.getDataContainerFor(attacker.getUniqueId());

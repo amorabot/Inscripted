@@ -33,7 +33,7 @@ public class DaggerUtility {
         int maxRange = 30;
         ProjectileConfig projectileConfig = new ProjectileConfig(true,false,true,
                 15D / 20, 0.04, 0.8,
-                ProjectileTrail::smokeBombTrail, ProjectileCollision::standardDetection, ProjectileCollision::smokeBombCollision);
+                ProjectileTrail::smokeBombTrail, ProjectileCollision::standardSingleProjDetection, ProjectileCollision::smokeBombCollision);
         Location playerLocation = skillcastInstance.getPlayer().getLocation().clone().add(0,1.2,0);
         Vector target = null;
         boolean uniqueTarget = skillcastInstance.getCastedSkill().getProjectileSkilLData().uniqueTarget();

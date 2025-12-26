@@ -127,6 +127,7 @@ public class AttackData implements ProfileComponent {
         }
 
         if (DEBUG_MODE){
+            globalPlayerStats.debug("GLOBAL STATS AFTER SKILL:" + skillUsed);
             globalSnapshot.debug("Post-skill bonuses & conversions: " + skillUsed);
         }
 
@@ -136,33 +137,52 @@ public class AttackData implements ProfileComponent {
     private int[] convert(double[] normalizedConversions, StatPool globalStats){
         int[] basePhysical = globalStats.getBaseStatValue(Stats.PHYSICAL_DAMAGE,ValueType.FLAT);
         int[] totalConverted = new int[2];
+        if (DEBUG_MODE){
+            Utils.log("Base physical to convert: " + Arrays.toString(basePhysical));
+        }
 
         double fireConversion = normalizedConversions[0];
         if (fireConversion>0){
             int[] fire = Arrays.stream(basePhysical).map(phys -> (int) (phys * fireConversion)).toArray();
             globalStats.insertValue(Stats.FIRE_DAMAGE,ValueType.FLAT,fire);
             totalConverted = Utils.vectorSum(totalConverted,fire);
+            if (DEBUG_MODE){
+                Utils.log("Fire damage converted: " + Arrays.toString(fire));
+            }
         }
         double lightningConversion = normalizedConversions[1];
         if (lightningConversion>0){
             int[] lightning = Arrays.stream(basePhysical).map(phys -> (int) (phys * lightningConversion)).toArray();
             globalStats.insertValue(Stats.LIGHTNING_DAMAGE,ValueType.FLAT,lightning);
             totalConverted = Utils.vectorSum(totalConverted,lightning);
+            if (DEBUG_MODE){
+                Utils.log("Lightning damage converted: " + Arrays.toString(lightning));
+            }
         }
         double coldConversion = normalizedConversions[2];
         if (coldConversion>0){
             int[] cold = Arrays.stream(basePhysical).map(phys -> (int) (phys * coldConversion)).toArray();
             globalStats.insertValue(Stats.COLD_DAMAGE,ValueType.FLAT,cold);
             totalConverted = Utils.vectorSum(totalConverted,cold);
+            if (DEBUG_MODE){
+                Utils.log("Cold damage converted: " + Arrays.toString(cold));
+            }
         }
         double abyssalConversion = normalizedConversions[3];
         if (abyssalConversion>0){
             int[] abyssal = Arrays.stream(basePhysical).map(phys -> (int) (phys * abyssalConversion)).toArray();
             globalStats.insertValue(Stats.ABYSSAL_DAMAGE,ValueType.FLAT,abyssal);
             totalConverted = Utils.vectorSum(totalConverted,abyssal);
+            if (DEBUG_MODE){
+                Utils.log("Abyssal damage converted: " + Arrays.toString(abyssal));
+            }
         }
         //Remaining phys -> Subtracting converted from total
-        return Utils.vectorSum(basePhysical, Arrays.stream(totalConverted).map(t -> -t).toArray());
+        int[] remPhys = Utils.vectorSum(basePhysical, Arrays.stream(totalConverted).map(t -> -t).toArray());
+        if (DEBUG_MODE){
+            Utils.log("Remaining phys from conversion: " + Arrays.toString(remPhys));
+        }
+        return remPhys;
     }
     private double[] normalizeConversions(int[] conversions){
         double[] normalizedValues = new double[conversions.length];
@@ -244,5 +264,23 @@ public class AttackData implements ProfileComponent {
             totalDmg += Arrays.stream(dmg).sum();
         }
         DPS = totalDmg;
+    }
+
+    public static Component getDamageAsString(int[] damages){
+        Component dmgComponent = Component.text("-> ");
+        for (int i = 0; i < DamageTypes.values().length; i++) {
+            DamageTypes dmg = DamageTypes.values()[i];
+            int currentDmgValues = damages[i];
+            if (currentDmgValues>0){
+                Component currentDamageString = Component.text(
+                        (dmg.getCharacter() + " " + damages[dmg.ordinal()] + " ")
+                ).color(dmg.getDmgColor().getColor());
+                dmgComponent = dmgComponent.append(currentDamageString);
+            }
+        }
+        if (DEBUG_MODE){
+            Utils.log("Hologram damages:" + Arrays.toString(damages));
+        }
+        return dmgComponent;
     }
 }

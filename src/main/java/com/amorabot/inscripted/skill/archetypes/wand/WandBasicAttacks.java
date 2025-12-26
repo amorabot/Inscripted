@@ -25,7 +25,7 @@ public class WandBasicAttacks {
         int projectiles = PlayerDataContainer.getProfile(skillcast.getPlayerID()).getDamageComponent().getExtraProjectiles() + projData.baseProjectiles();
         ProjectileConfig projectileConfig = new ProjectileConfig(false,false,false,
                 20D / 20, 0.06, 0.9,
-                ProjectileTrail::basicWand, ProjectileCollision::standardDetection, ProjectileCollision::testCollisionExecution);
+                ProjectileTrail::basicWand, ProjectileCollision::standardSingleProjDetection, ProjectileCollision::testCollisionExecution);
         Location playerLocation = skillcast.getPlayer().getLocation().clone().add(0,1.4,0);
         Vector target = null;
         boolean uniqueTarget = skillcast.getCastData().getCastingContext().getSkillUsed().getProjectileSkilLData().uniqueTarget();

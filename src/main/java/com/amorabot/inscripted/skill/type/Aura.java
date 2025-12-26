@@ -51,9 +51,6 @@ public class Aura extends Skillcast.Persistent {
         if (!activePlayerAuras.containsKey(auraSkill)){return;}
         //Aura present -> Un-instantiate it
         activePlayerAuras.get(auraSkill).getSubroutine().shutdown();
-//        Aura removedAura = activePlayerAuras.remove(auraSkill);
-//        int removedAuraID = removedAura.getPersistentRoutineID();
-//        Inscripted.getScheduler().cancelTask(removedAuraID);
     }
 
     public boolean isInactive(){

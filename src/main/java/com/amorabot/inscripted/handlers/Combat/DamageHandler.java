@@ -70,7 +70,11 @@ public class DamageHandler implements Listener {
 //                }
             }
             boolean validClickedWeapon = isValidItem(heldItem) & ItemDeserializer.isWeapon(heldItem);
-            if (validClickedWeapon) weaponCast(p,heldItem, CastType.BASIC_ATTACK,69);
+            if (validClickedWeapon) {
+                weaponCast(p, heldItem, CastType.BASIC_ATTACK, 69);
+                event.setCancelled(true);
+                return;
+            }
 
 //            PersistentDataContainer dataContainer = heldItem.getItemMeta().getPersistentDataContainer();
 //            boolean isWeapon = FunctionalItemAccessInterface.isItemType(FunctionalItemAccessInterface.WEAPON_TAG, dataContainer);

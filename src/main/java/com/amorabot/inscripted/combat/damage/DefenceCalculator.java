@@ -14,7 +14,7 @@ public class DefenceCalculator {
 
     private static float getDefenderPhysicalMitigation(float defenderArmor){
         float boundArmor = Math.max(0, defenderArmor);
-        return 80*(1 - (110 / ( 100 + boundArmor ))); // DamageReduction = 1 - physDmgMulti;
+        return 70*(1 - (110 / ( 100 + boundArmor ))); // DamageReduction = 1 - physDmgMulti;
         /* Armor lower bound should be 0
         0 -> -8.5 phys. mitigaiton
         10 -> 0 PM

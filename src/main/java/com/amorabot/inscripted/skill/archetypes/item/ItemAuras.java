@@ -79,7 +79,6 @@ public class ItemAuras {
     public static void registerThunderstruck(Skillcast skillcast){
         AuraSubroutine thunderstruckSubroutine = new AuraSubroutine(skillcast);
         thunderstruckSubroutine.setRoutine(new BukkitRunnable() {
-            final AttackData damageSnapshot = ((Aura) skillcast).getAuraDamage();
             final float radius = 2.5F;
             @Override
             public void run() {
@@ -88,13 +87,16 @@ public class ItemAuras {
                     thunderstruckSubroutine.shutdown();
                     return;
                 }
-                thunderstruckRoutine(skillcast.getPlayer(),skillcast, damageSnapshot,radius);
+                thunderstruckRoutine(skillcast.getPlayer(),skillcast,radius);
             }
         });
         thunderstruckSubroutine.startSubroutine(0);
     }
-    private static void thunderstruckRoutine(Player caster, Skillcast thunderstruckSkillcast, AttackData auraDamage, float radius){
+    private static void thunderstruckRoutine(Player caster, Skillcast thunderstruckSkillcast, float radius){
         if (caster.isSneaking()){return;}
+        final AttackData auraDamageSnapshot = ((Aura) thunderstruckSkillcast).getAuraDamage();
+        auraDamageSnapshot.setPhysicalDmg(new int[2]);
+
         Location playerLoc = caster.getLocation();
         World world = playerLoc.getWorld();
         ParticlePlotter.plotColoredCircleAt(playerLoc.toVector(), world, 160,160,160, 1.5F, radius, 16,true);
@@ -104,10 +106,10 @@ public class ItemAuras {
         for (Player entity : nearbyEntities){
             ParticlePlotter.thunderAt(entity.getLocation().clone(), 4, 16);
             if (entity.equals(caster)) {
-                DamageRouter.hit(caster,entity,thunderstruckSkillcast,auraDamage, DamageSource.SELF);
+                DamageRouter.hit(caster,entity,thunderstruckSkillcast,auraDamageSnapshot, DamageSource.SELF);
                 continue;
             }
-            DamageRouter.hit(caster,entity,thunderstruckSkillcast,auraDamage, DamageSource.HIT);
+            DamageRouter.hit(caster,entity,thunderstruckSkillcast,auraDamageSnapshot, DamageSource.HIT);
         }
     }
 

@@ -34,7 +34,6 @@ public class WandSpecials {
 
     // Duration -> On Expire -> Meteor impact
     public static void meteor(Skillcast skillcastInstance){
-        Utils.log("SEX");
         if (!(skillcastInstance instanceof PersistentAttack persistentAttack)){return;}
         AttackData attackData = persistentAttack.getAttackData();
         DurationSkill durationData = persistentAttack.getDurationData();

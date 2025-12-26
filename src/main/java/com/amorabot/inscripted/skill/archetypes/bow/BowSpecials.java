@@ -2,22 +2,16 @@ package com.amorabot.inscripted.skill.archetypes.bow;
 
 import com.amorabot.inscripted.math.LinalgMath;
 import com.amorabot.inscripted.particle.ParticlePlotter;
-import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.component.AttackData;
-import com.amorabot.inscripted.skill.Skills;
 import com.amorabot.inscripted.skill.annotations.DurationSkill;
-import com.amorabot.inscripted.skill.annotations.ProjectileSkill;
 import com.amorabot.inscripted.skill.routine.projectile.Projectile;
 import com.amorabot.inscripted.skill.routine.projectile.ProjectileCollision;
 import com.amorabot.inscripted.skill.routine.projectile.ProjectileConfig;
 import com.amorabot.inscripted.skill.routine.projectile.ProjectileTrail;
-import com.amorabot.inscripted.skill.type.Attack;
 import com.amorabot.inscripted.skill.type.PersistentAttack;
 import com.amorabot.inscripted.skill.type.subroutines.DurationSubroutine;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
-import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -39,11 +33,11 @@ public class BowSpecials {
         projDir = LinalgMath.rotateAroundZ(projDir,Math.toRadians(Math.random()*10));
 
         //Projectile setup
-        final int baseProjectilesPerIteration = 2;
+        final int baseProjectilesPerIteration = 4;
         int distance = 15;
         ProjectileConfig projectileConfig = new ProjectileConfig(false,true,true,
-                (30D/20), 0.1, 1,
-                ProjectileTrail::rainOfArrowsTrail, ProjectileCollision::standardDetection, ProjectileCollision::testCollisionExecution);
+                (30D/20), 0.1, 1.6,
+                ProjectileTrail::rainOfArrowsTrail, ProjectileCollision::standardMultiprojDetection, ProjectileCollision::testCollisionExecution);
         final Vector finalProjDir = projDir;
         rainOfArrowsRoutine.setRoutine(new BukkitRunnable() {
             @Override

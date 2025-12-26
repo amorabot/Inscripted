@@ -1,8 +1,11 @@
 package com.amorabot.inscripted.skill.casting;
 
+import lombok.Getter;
+
+@Getter
 public enum CastType {
-    NEUTRAL,
-    BASIC_ATTACK, MOVEMENT, UTILITY, SPECIAL_ATTACK;
+    NEUTRAL("NONE"),
+    BASIC_ATTACK("Left MB"), MOVEMENT("Right MB"), UTILITY("F+RMB"), SPECIAL_ATTACK("F+LMB");
 
     /*
     Examples:
@@ -10,4 +13,8 @@ public enum CastType {
     Player "Fist": NEUTRAL, PLAYER
     Player Skill: MOVEMENT, PLAYER
     */
+    final String command;
+    CastType(String cmd){
+        this.command = cmd;
+    }
 }

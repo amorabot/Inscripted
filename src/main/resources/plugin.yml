@@ -11,6 +11,9 @@ commands:
   cast:
     description: Casts the selected player ability
     usage: /cast
+  skills:
+    description: Retries skill info for the held weapon
+    usage: /skills
   orb:
     description: Command for easy currency access.
     usage: /orb

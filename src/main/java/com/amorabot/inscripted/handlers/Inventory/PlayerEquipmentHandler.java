@@ -42,6 +42,7 @@ import static com.amorabot.inscripted.item.structure.io.ItemDeserializer.isNotFu
 
 //TODO: fragment this class in multiple event handlers
 public class PlayerEquipmentHandler implements Listener {
+    private static final boolean DEBUG_MODE = false; //TODO: implement debug mode on all logs
 
     public PlayerEquipmentHandler(Inscripted plugin){
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -236,7 +237,7 @@ public class PlayerEquipmentHandler implements Listener {
                 }
                 //Both are functional (not necessarily weapons, must be checked)
                 if (attemptedAction == InventoryAction.SWAP_WITH_CURSOR){ //Main hand swapping
-                    player.sendMessage("Swap!");
+//                    player.sendMessage("Swap!");
 
                     if (validClickedWeapon & !validCursorWeapon){
                         weaponEquip(player,null);
@@ -250,7 +251,7 @@ public class PlayerEquipmentHandler implements Listener {
                 }
             }
             case RIGHT -> {
-                player.sendMessage("opening something");
+//                player.sendMessage("opening something");
                 event.setCancelled(true);
             }
         }
@@ -395,7 +396,7 @@ public class PlayerEquipmentHandler implements Listener {
         boolean validArmor = InscriptedItem.hasInscriptedTag(armorItem) && ItemDeserializer.isArmor(armorItem);
         if (validArmor && ItemDeserializer.isIdentified(armorItem)){
             Armor armorData = ItemDeserializer.deserializeArmorData(armorItem);
-            player.sendMessage(armorData.getSlot().name());
+//            player.sendMessage(armorData.getSlot().name()); SLOT EQUIP DEBUG
             playerEquipment.updateEquimentSlot(armorData.getSlot(), armorData);
             return;
         }

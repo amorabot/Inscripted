@@ -7,6 +7,7 @@ import com.amorabot.inscripted.combat.EntityStateManager;
 import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.utils.DelayedTask;
+import com.amorabot.inscripted.utils.Utils;
 import io.papermc.paper.entity.TeleportFlag;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -26,7 +27,7 @@ public class DeathEvent {
     public static void execute(Player deadPlayer){
         EntityStateManager.setDead(deadPlayer,true);
 
-        Location respawnLoc = new Location(deadPlayer.getWorld(),0,126,-326);
+        Location respawnLoc = new Location(deadPlayer.getWorld(),-42,23, -23);
         deadPlayer.teleport(respawnLoc, TeleportFlag.EntityState.RETAIN_PASSENGERS);
         PotionEffect blindness = new PotionEffect(PotionEffectType.BLINDNESS, 30, 10, true, false, false);
         blindness.apply(deadPlayer);
@@ -58,6 +59,7 @@ public class DeathEvent {
             @Override
             public void run() {
                 EntityStateManager.setDead(deadPlayer,false);
+                Utils.log(deadPlayer.name() + " dead state's been reset.");
             }
         }, invulnerabilityPeriod
         );

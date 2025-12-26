@@ -5,6 +5,8 @@ import com.amorabot.inscripted.item.inscription.definition.Stats;
 import com.amorabot.inscripted.item.inscription.definition.TriggerTimes;
 import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
 import com.amorabot.inscripted.item.inscription.language.ValueType;
+import com.amorabot.inscripted.item.render.InscriptedPalette;
+import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
 import com.amorabot.inscripted.player.Archetypes;
@@ -46,6 +48,8 @@ import com.amorabot.inscripted.skill.type.*;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
@@ -55,75 +59,103 @@ import static com.amorabot.inscripted.player.Archetypes.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 //TODO: Move annotation data to skills.yml file
+//TODO: Remake functional structure using runnables that define any custom routines
 
 @Getter
 public enum Skills {
     //Basic attack skills
-    FIST(null, null, CastType.NEUTRAL, new Tags[]{Tags.NONE},0),
+    FIST(null, null, CastType.NEUTRAL, new Tags[]{Tags.NONE},0, "lol where u weapon at"),
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {10, -10, -40, -40, -70}, dmgConversion = {0, 0, 0, 0} )
-    BASIC_AXE_SLASH(AxeBasicAttacks::standardAxeSlash, MARAUDER,CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0),
+    BASIC_AXE_SLASH(AxeBasicAttacks::standardAxeSlash, MARAUDER,CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0,
+            "Standard attack for axes - Widest & slowest slash"),
 
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-10, -10, -10, -10, -60}, dmgConversion = {0, 0, 0, 0} )
-    BASIC_SWORD_SLASH(SwordBasicAttacks::standardSwordSlash, GLADIATOR, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0),
+    BASIC_SWORD_SLASH(SwordBasicAttacks::standardSwordSlash, GLADIATOR, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0,
+            "Standard attack for swords - Most balanced slash overall"),
 
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, -40, -40, -40, -60}, dmgConversion = {0, 0, 0, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {10, -20, -20, -20, -60}, dmgConversion = {0, 0, 0, 0} )
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.CONE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = false )
-    BASIC_BOW_SHOT(BowBasicAttacks::standardBowAttack, MERCENARY, CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE}, 0),
+    BASIC_BOW_SHOT(BowBasicAttacks::standardBowAttack, MERCENARY, CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE}, 0,
+            "Standard bow attack - Faster travel speed"),
 
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, -20, -20, -20, -60}, dmgConversion = {0, 0, 0, 0} )
-    BASIC_DAGGER_SLASH(DaggerBasicAttacks::standardDaggerSlash, ROGUE, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0),
+    BASIC_DAGGER_SLASH(DaggerBasicAttacks::standardDaggerSlash, ROGUE, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0,
+            "Standard attack for daggers - Faster & Shorter range slash"),
 
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {20, 0, 0, 0, -60}, dmgConversion = {0, 0, 0, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 20, 30, 20, -40}, dmgConversion = {0, 0, 0, 0} )
     @ProjectileSkill( baseProjectiles = 3, spread = ProjectileGenerators.SHOTGUN, defaultSteering = SteeringBehaviors.SEEK, uniqueTarget = true )
-    BASIC_WAND_ATTACK(WandBasicAttacks::standardWandAttack, SORCERER, CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE}, 0),
+    BASIC_WAND_ATTACK(WandBasicAttacks::standardWandAttack, SORCERER, CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE}, 0,
+            "Standard wand projectiles - Shoots 3 slower & converging projectiles"),
 
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, 0, 0, 0, -60}, dmgConversion = {0, 0, 0, 0} )
-    BASIC_MACE_SLAM(MaceBasicAttacks::standardMaceSlam, TEMPLAR, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE,Tags.AOE},0),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {20, 60, 60, 60, -60}, dmgConversion = {0, 0, 0, 0} )
+    BASIC_MACE_SLAM(MaceBasicAttacks::standardMaceSlam, TEMPLAR, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE,Tags.AOE},0,
+            "Standard attack for maces - Frontal area slam"),
 
     //Movement skills
-    CHARGE(AxeMovement::charge, MARAUDER,CastType.MOVEMENT, new Tags[0],10),
-    LEAP(SwordMovement::leap, GLADIATOR,CastType.MOVEMENT, new Tags[0],3),//TODO: improve visuals
-    ACROBATICS(BowMovement::acrobatics, MERCENARY,CastType.MOVEMENT, new Tags[0],5),//TODO: improve visuals
-    VANISH(DaggerMovement::vanish, ROGUE,CastType.MOVEMENT, new Tags[0],12),
-    WARP(WandMovement::warp, SORCERER,CastType.MOVEMENT, new Tags[0],7),
-    TECTONIC_PULL(MaceMovement::pull, TEMPLAR,CastType.MOVEMENT, new Tags[0],7),//TODO: improve visuals
+    CHARGE(AxeMovement::charge, MARAUDER,CastType.MOVEMENT, new Tags[0],10,
+            "Frontal & unstoppable 'dash'. You can steer while you're at it"),
+    LEAP(SwordMovement::leap, GLADIATOR,CastType.MOVEMENT, new Tags[0],3,
+            "Frontal leap, simple as that"),//TODO: improve visuals
+    ACROBATICS(BowMovement::acrobatics, MERCENARY,CastType.MOVEMENT, new Tags[0],5,
+            "Leap backwards and shoot yourself in the air"),//TODO: improve visuals
+    VANISH(DaggerMovement::vanish, ROGUE,CastType.MOVEMENT, new Tags[0],12,
+            "Vanish in plain sight and gain Speed 2 during the effect"),
+    WARP(WandMovement::warp, SORCERER,CastType.MOVEMENT, new Tags[0],7,
+            "Directional 'blink' forward"),
+    TECTONIC_PULL(MaceMovement::pull, TEMPLAR,CastType.MOVEMENT, new Tags[0],7,
+            "Pulls any players within range and gives them Slowness 2"),//TODO: improve visuals
     
     //Utility Skills
     @DurationSkill(duration = 12, refreshRate = 5)
-    WAR_BANNER(AxeUtility::warBanner, MARAUDER, CastType.UTILITY, new Tags[]{Tags.AOE},7),
+    WAR_BANNER(AxeUtility::warBanner, MARAUDER, CastType.UTILITY, new Tags[]{Tags.AOE},7,
+            "Defensive 'beacon'. Gives the Fortify buff to whoever enters its area."),
     @DurationSkill(duration = 10, refreshRate = 5)
-    RING_OF_BLADES(SwordUtility::ringOfBlades, GLADIATOR, CastType.UTILITY, new Tags[]{Tags.AOE},20),
+    RING_OF_BLADES(SwordUtility::ringOfBlades, GLADIATOR, CastType.UTILITY, new Tags[]{Tags.AOE},20,
+            "Offensive 'beacon'. Gives the Adrenaline buff to whoever enters its area."),
     @DurationSkill(duration = 1.5, refreshRate = 3)
-    HUNTING_GROUND(BowUtility::huntingGround, MERCENARY, CastType.UTILITY, new Tags[]{Tags.AOE},10),
+    HUNTING_GROUND(BowUtility::huntingGround, MERCENARY, CastType.UTILITY, new Tags[]{Tags.AOE},10,
+            "Cast a physical debuff zone where you are targeting. The debuff is applied when skill expires. Gives you bonus Accuracy on cast."),
     @DurationSkill(duration = 1.5, refreshRate = 3)
-    CRYOSTASIS(WandUtility::cryostasis, SORCERER, CastType.UTILITY, new Tags[]{Tags.AOE},6),
-    @AttackSkill( addedBaseDmg = {5,10, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-90, -90, -90, -90, -100}, dmgConversion = {0, 0, 0, 0} )
+    CRYOSTASIS(WandUtility::cryostasis, SORCERER, CastType.UTILITY, new Tags[]{Tags.AOE},6,
+            "Cast a frozen area where you're targeting. Freezes any players inside it for 2s."),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-100, -100, -100, -100, -100}, dmgConversion = {0, 0, 0, 0} )
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.CONE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
-    SMOKE_BOMB(DaggerUtility::smokeBomb, ROGUE, CastType.UTILITY, new Tags[]{Tags.AOE},4),
+    SMOKE_BOMB(DaggerUtility::smokeBomb, ROGUE, CastType.UTILITY, new Tags[]{Tags.AOE},4,
+            "Throw a smoke bomb that blinds enemies that enter it."),
     @DurationSkill(duration = 2, refreshRate = 4)
-    CLEANSE(MaceUtility::cleanse, TEMPLAR, CastType.UTILITY, new Tags[]{Tags.SPELL},30),
+    CLEANSE(MaceUtility::cleanse, TEMPLAR, CastType.UTILITY, new Tags[]{Tags.SPELL},30,
+            "Clear all debuffs on you!"),
  
     //Special skills
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 10, 10, 10, -70}, dmgConversion = {0, 0, 0, 0} )
-    EARTHQUAKE(MaceSpecials::earthquake, TEMPLAR, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE,Tags.AOE},4),
-    @AttackSkill( addedBaseDmg = {5,5, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-70, -80, -80, -80, -90}, dmgConversion = {0, 0, 0, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {130, 50, 50, 50, -70}, dmgConversion = {0, 0, 0, 0} )
+    EARTHQUAKE(MaceSpecials::earthquake, TEMPLAR, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE,Tags.AOE},4,
+            "Slam the ground and shatter everything around the impact point"),
+    @AttackSkill( addedBaseDmg = {5,5, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-10, -10, 10, -10, -30}, dmgConversion = {0, 0, 0, 0} )
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.BARRAGE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
     @DurationSkill(duration = 6, refreshRate = 5)
-    RAIN_OF_ARROWS(BowSpecials::rainOfArrows, MERCENARY, CastType.SPECIAL_ATTACK,new Tags[]{Tags.PROJECTILE,Tags.AOE},7),
+    RAIN_OF_ARROWS(BowSpecials::rainOfArrows, MERCENARY, CastType.SPECIAL_ATTACK,new Tags[]{Tags.PROJECTILE,Tags.AOE},7,
+            "Rain hell in front of you"),
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-100, -100, -100, -100, -100}, dmgConversion = {0, 0, 0, 0} )
-    @DurationSkill(duration = 1.4, refreshRate = 1)
+    @DurationSkill(duration = 1.2, refreshRate = 1)
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.BARRAGE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
-    METEOR(WandSpecials::meteor, SORCERER, CastType.SPECIAL_ATTACK,new Tags[]{Tags.PROJECTILE},6),
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 5,30}, dmgEffectiveness = {0, -30, -30, -30, 70}, dmgConversion = {0, 0, 0, 50} )
-    VIPER_STRIKE(DaggerSpecials::viperStrike, ROGUE, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE},3),
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 10, -10, -10, -70}, dmgConversion = {0, 0, 0, 0} )
-    @DurationSkill(duration = 4, refreshRate = 1)
-    CYCLONE(AxeSpecials::cyclone, MARAUDER, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE,Tags.AOE},8),//Adjust dmg
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {40, -30, -30, -30, -70}, dmgConversion = {0, 0, 0, 0} )
-    LACERATE(SwordSpecials::lacerate, GLADIATOR, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE},5){
+    METEOR(WandSpecials::meteor, SORCERER, CastType.SPECIAL_ATTACK,new Tags[]{Tags.PROJECTILE},6,
+            "Cast a fucking meteor"),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 5,30}, dmgEffectiveness = {30, -30, -30, -30, 140}, dmgConversion = {0, 0, 0, 50} )
+    VIPER_STRIKE(DaggerSpecials::viperStrike, ROGUE, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE},3,
+            "Strike like a poisonous viper in front of you."),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-70, -75, -95, -95, -95}, dmgConversion = {0, 0, 0, 0} )
+    @DurationSkill(duration = 3.5, refreshRate = 1)
+    CYCLONE(AxeSpecials::cyclone, MARAUDER, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE,Tags.AOE},8,
+            "Spin2win"),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {80, -30, -30, -30, -70}, dmgConversion = {0, 0, 0, 0} )
+    LACERATE(SwordSpecials::lacerate, GLADIATOR, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE},5,
+            "Make your enemies bleed..."){
         @Override
         public void applyBonusStats(StatPool globalPlayerStats){ //Adding base bleed chance
             globalPlayerStats.insertValue(Stats.BLEED, ValueType.PERCENTAGE,new int[]{50});
@@ -132,26 +164,34 @@ public enum Skills {
 
     //Secondary skills (shouldn't be directly mapped/instanced)
     @DurationSkill(duration = 8, refreshRate = 5)
-    SMOKE_BOMB_CLOUD(DaggerUtility::smokeBombCloud, ROGUE, CastType.NEUTRAL, new Tags[0],0),
-    @AttackSkill( addedBaseDmg = {0,0, 15,50, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, 50, -10, -40, -70}, dmgConversion = {40, 0, 0, 0} )
-    METEOR_IMPACT(WandSpecials::meteorImpact, SORCERER, CastType.NEUTRAL, new Tags[]{Tags.SPELL,Tags.AOE},0),
+    SMOKE_BOMB_CLOUD(DaggerUtility::smokeBombCloud, ROGUE, CastType.NEUTRAL, new Tags[0],0,
+            "The 'smoke' part of the bomb", true),
+    @AttackSkill( addedBaseDmg = {0,0, 15,50, 0,0, 0,0, 0,0}, dmgEffectiveness = {200, 250, -10, -40, -70}, dmgConversion = {40, 0, 0, 0} )
+    METEOR_IMPACT(WandSpecials::meteorImpact, SORCERER, CastType.NEUTRAL, new Tags[]{Tags.SPELL,Tags.AOE},0,
+            "The meteor you brought upon this land will crash and deal some damage"),
 
     // Keystone Auras
     @AuraSkill( period = 1, toggleCooldown = -1 )
-    PERMAFROST(ItemAuras::registerPermafrost, null, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0), //TODO: improve visuals
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 15,70, 0,0}, dmgEffectiveness = {0, 0, 50, 0, 0}, dmgConversion = {0, 0, 30, 0} )
+    PERMAFROST(ItemAuras::registerPermafrost, null, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0,
+            "3-pulse aura that slows everyone around you."),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 15,70, 0,0, 0,0}, dmgEffectiveness = {0, -100, 50, -100, -100}, dmgConversion = {0, 40, 0, 0} )
     @AuraSkill( period = 1.5, toggleCooldown = -1 )
-    THUNDERSTRUCK(ItemAuras::registerThunderstruck, null, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),
+    THUNDERSTRUCK(ItemAuras::registerThunderstruck, null, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0,
+            "Get periodically struck by lightning. This skill's lightning damage scales with weapon damage!"),
     @AuraSkill( period = 0.5, toggleCooldown = -1 )
-    RIGHTEOUS_FIRE(ItemAuras::registerRighteousFire, null, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0),//TODO: implement dot damage
+    RIGHTEOUS_FIRE(ItemAuras::registerRighteousFire, null, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0,
+            "Deal 5% of your max. health of Fire DMG to you and any nearby enemy every tick."),
     @AuraSkill( period = 10, toggleCooldown = -1 )
-    WINDS_OF_CHANGE(ItemAuras::registerWindsOfChange, null, CastType.NEUTRAL, new Tags[]{Tags.AURA},0),
+    WINDS_OF_CHANGE(ItemAuras::registerWindsOfChange, null, CastType.NEUTRAL, new Tags[]{Tags.AURA},0,
+            "Periodically heal yourself!"),
     @AuraSkill( period = 0.5, toggleCooldown = -1 )
-    BERSERK(ItemAuras::registerBerserk, null, CastType.NEUTRAL, new Tags[]{Tags.AURA},0);
+    BERSERK(ItemAuras::registerBerserk, null, CastType.NEUTRAL, new Tags[]{Tags.AURA},0,
+            "Amplify your Physical DMG while below 20% Health.");
 
 
 
     private final Consumer<Skillcast> skillRoutine;
+    private final String description;
     private final Archetypes archetype;
     private final CastType type;
     private final Tags[] skillTags;
@@ -159,7 +199,7 @@ public enum Skills {
     private boolean ignoreOwner = true;
 
     //TODO: implement cast sound function, Archetype & variantID
-    Skills(Consumer<Skillcast> routine, Archetypes archetype, CastType type, Tags[] skillTags, int cooldown, boolean... ignoreOwner){
+    Skills(Consumer<Skillcast> routine, Archetypes archetype, CastType type, Tags[] skillTags, int cooldown, String description, boolean... ignoreOwner){
         this.skillRoutine = routine;
         this.archetype = archetype;
         this.type = type;
@@ -168,6 +208,7 @@ public enum Skills {
         if (ignoreOwner!=null && ignoreOwner.length==1){
             this.ignoreOwner = ignoreOwner[0];
         }
+        this.description = description;
     }
 
 
@@ -266,6 +307,60 @@ public enum Skills {
             Utils.error("No Annotation("+annotationClass.getSimpleName()+") data for " + this.name());
         }
         return null;
+    }
+
+    public List<Component> getSkillDataComponents(){
+        List<Component> components = new ArrayList<>();
+        components.add(Component.text(">> " + this + " - " + getType() + " [" + getType().getCommand() + "]")
+                .color(InscriptedPalette.AUGMENTED.getColor()).decorate(TextDecoration.BOLD));
+        components.add(Component.text(getDescription()).color(InscriptedPalette.NEUTRAL_GRAY.getColor()));
+        if (getCooldownInSeconds()>0){
+            components.add(Component.text("Cooldown - " + getCooldownInSeconds() + "s").color(InscriptedPalette.NEUTRAL_GRAY.getColor()));
+        }
+
+        if (isDuration()){
+            components.add(getDurantionSkillComponent(getDurationSkillData()));
+        }
+        if (isAttackSkill()){
+            components.addAll(getAttackSkillComponents(getAttackSkillData()));
+        }
+
+        return components;
+    }
+    public List<Component> getAttackSkillComponents(AttackSkill attackSkill){
+        List<Component> attackComponent = new ArrayList<>();
+        int[] baseDmgs = attackSkill.addedBaseDmg();
+        Component baseDamages = Component.text("Base Damage: ").color(InscriptedPalette.WHITE.getColor());
+        int[] multipliers = attackSkill.dmgEffectiveness();
+        Component multi = Component.text("DMG Effectiveness: ").color(InscriptedPalette.WHITE.getColor());
+        int[] conversions = attackSkill.dmgConversion();
+        Component conversionsComponent = Component.text("Phys-To-Element conversions: ").color(InscriptedPalette.WHITE.getColor());
+        for (int i = 0; i < DamageTypes.values().length; i++) {
+            DamageTypes dmg = DamageTypes.values()[i];
+            //Base dmgs
+            int[] currentBaseDmgValues = new int[]{baseDmgs[2*i+1],baseDmgs[2*i+1]};
+            if (currentBaseDmgValues[0]>0){
+                baseDamages = baseDamages.append(Component.text(
+                        (dmg.getCharacter() + Arrays.toString(currentBaseDmgValues) + " ")
+                ).color(dmg.getDmgColor().getColor()));
+            }
+            //Multi
+            multi = multi.append(Component.text(
+                    (dmg.getCharacter() + (100+multipliers[dmg.ordinal()]) + "% ")
+            ).color(dmg.getDmgColor().getColor()));
+            //Conversions
+            if (dmg.equals(DamageTypes.PHYSICAL)){continue;}
+            conversionsComponent = conversionsComponent.append(Component.text(
+                    (dmg.getCharacter() + (conversions[dmg.ordinal()-1]) + "% ")
+            ).color(dmg.getDmgColor().getColor()));
+        }
+        attackComponent.add(baseDamages);
+        attackComponent.add(multi);
+        attackComponent.add(conversionsComponent);
+        return attackComponent;
+    }
+    public Component getDurantionSkillComponent(DurationSkill durationSkill){
+        return Component.text("Duration - " + durationSkill.duration() + "s").color(InscriptedPalette.NEUTRAL_GRAY.getColor());
     }
 
     public static BoundingBox getLargeHitbox(Player player){
