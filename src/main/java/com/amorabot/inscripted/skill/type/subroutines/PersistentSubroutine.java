@@ -7,7 +7,7 @@ import lombok.Setter;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public abstract class PersistentSubroutine {
-    protected static final boolean DEBUG_MODE = true;
+    protected static final boolean DEBUG_MODE = false;
 
     @Getter
     @Setter

@@ -6,8 +6,10 @@ import com.amorabot.inscripted.combat.buffs.categories.stat.StatBuff;
 import com.amorabot.inscripted.displays.DisplayBlock;
 import com.amorabot.inscripted.math.LinalgMath;
 import com.amorabot.inscripted.particle.ParticlePlotter;
+import com.amorabot.inscripted.skill.routine.projectile.Projectile;
 import com.amorabot.inscripted.skill.type.subroutines.DurationSubroutine;
 import com.amorabot.inscripted.tasks.base.Skillcast;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -24,7 +26,9 @@ public class BowUtility {
     public static void huntingGround(Skillcast skillcastInstance){
         DurationSubroutine huntingGroundRoutine = new DurationSubroutine(skillcastInstance);
         World world = skillcastInstance.getPlayer().getWorld();
-        Vector center = LinalgMath.projectHorizontalPlayerRaycast(20,skillcastInstance.getPlayer());
+        Location playerLoc = skillcastInstance.getPlayer().getLocation();
+        Vector center = Projectile.aimAssistedRaycast(playerLoc,playerLoc.getDirection(),20);
+//        Vector center = LinalgMath.projectHorizontalPlayerRaycast(20,skillcastInstance.getPlayer());
         final float radius = 5f;
         final int points = 40;
         final int debuffDuration = 60;

@@ -24,7 +24,7 @@ public class Aura extends Skillcast.Persistent {
     public void start(long delay, long timer) {
         if (isInactive()){
             Skills auraSkill = getCastedSkill();
-            Utils.log("Creating new " + auraSkill + " instance.");
+            if (DEBUG_MODE) Utils.log("Creating new " + auraSkill + " instance.");
             run(); // If not active, create a new instance
         }
         register(); // Always Register the aura cast
@@ -40,7 +40,7 @@ public class Aura extends Skillcast.Persistent {
             return;
         }
         //Active Aura & new register attempt -> Toggle off
-        Utils.log("Toggling off " + auraSkill + " for player " + getPlayer().getDisplayName());
+        if (DEBUG_MODE) Utils.log("Toggling off " + auraSkill + " for player " + getPlayer().getDisplayName());
         unregister();
     }
     @Override
@@ -67,7 +67,7 @@ public class Aura extends Skillcast.Persistent {
     public AttackData getAuraDamage(){
         Skills auraSkill = getCastedSkill();
         if (!isDamagingAura()){
-            Utils.error(auraSkill + " is has no damage data.");
+            if (DEBUG_MODE) Utils.error(auraSkill + " is has no damage data.");
             return null;
         }
         return new AttackData(getPlayerID(),auraSkill,PlayerDataContainer.getDataContainerFor(getPlayerID()).getGlobalStats());

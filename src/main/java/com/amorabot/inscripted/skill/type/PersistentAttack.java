@@ -21,25 +21,25 @@ public class PersistentAttack extends Skillcast.Persistent {
     public PersistentAttack(UUID playerID, Skills sourceSkill, CastSource castSource, WeaponAttackSpeeds weaponSpeed) {
         super(playerID, sourceSkill, castSource, weaponSpeed);
         if (!sourceSkill.isAttackSkill() || !sourceSkill.isDuration()){
-            Utils.error("Persistent attack data not defined! ( " + sourceSkill + " )");
+            if (DEBUG_MODE) Utils.error("Persistent attack data not defined! ( " + sourceSkill + " )");
             this.attackData = null;
             this.durationData = null;
             return;
         }
         this.attackData = new AttackData(playerID,sourceSkill, PlayerDataContainer.getDataContainerFor(playerID).getGlobalStats());
         this.durationData = sourceSkill.getDurationSkillData();
-        Utils.log("Persistent attack cast!");
+        if (DEBUG_MODE) Utils.log("Persistent attack cast!");
     }
     public PersistentAttack(UUID playerID, Vector skillcastOrigin, Skills sourceSkill, CastSource castSource, WeaponAttackSpeeds weaponSpeed) {
         super(playerID, skillcastOrigin, sourceSkill, castSource, weaponSpeed);
         if (!sourceSkill.isAttackSkill() || !sourceSkill.isDuration()){
-            Utils.error("Persistent attack data not defined! ( " + sourceSkill + " )");
+            if (DEBUG_MODE) Utils.error("Persistent attack data not defined! ( " + sourceSkill + " )");
             this.attackData = null;
             this.durationData = null;
             return;
         }
         this.attackData = new AttackData(playerID,sourceSkill, PlayerDataContainer.getDataContainerFor(playerID).getGlobalStats());
         this.durationData = sourceSkill.getDurationSkillData();
-        Utils.log("Fixed location Persistent attack cast!");
+        if (DEBUG_MODE) Utils.log("Fixed location Persistent attack cast!");
     }
 }

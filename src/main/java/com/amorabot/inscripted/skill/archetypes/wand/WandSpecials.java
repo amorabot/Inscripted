@@ -40,7 +40,9 @@ public class WandSpecials {
 
         DurationSubroutine meteorFallRoutine = new DurationSubroutine(skillcastInstance);
         World world = skillcastInstance.getPlayer().getWorld();
-        Vector center = LinalgMath.projectHorizontalPlayerRaycast(14,skillcastInstance.getPlayer());
+//        Vector center = LinalgMath.projectHorizontalPlayerRaycast(14,skillcastInstance.getPlayer());
+        Location playerLoc = skillcastInstance.getPlayer().getLocation();
+        Vector center = Projectile.aimAssistedRaycast(playerLoc,playerLoc.getDirection(),14);
         Vector projDir = LinalgMath.rotateAroundX(new Vector(0,1,0),Math.toRadians(Math.random()*10));
         projDir = LinalgMath.rotateAroundZ(projDir,Math.toRadians(Math.random()*20));
         final float radius = 3.5f;

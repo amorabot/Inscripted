@@ -27,8 +27,7 @@ public class WandUtility {
         final Location playerLoc = skillcastInstance.getPlayer().getLocation().clone();
         World world = skillcastInstance.getPlayer().getWorld();
         final Vector originalDir = playerLoc.getDirection().clone();
-        final Vector raycastVec = Projectile.getRaytracedMaxDistance(playerLoc.clone().add(0,1.5,0),originalDir,raytraceMaxDistance);
-        final Vector center = new Vector(raycastVec.getX(),playerLoc.y(),raycastVec.getZ());
+        final Vector center = Projectile.aimAssistedRaycast(playerLoc,originalDir,raytraceMaxDistance);
 
         cryostatisRoutine.setRoutine(new BukkitRunnable() {
             final float radius = 4f;

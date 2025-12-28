@@ -5,7 +5,10 @@ import com.amorabot.inscripted.APIs.SoundAPI;
 import com.amorabot.inscripted.combat.CombatEffects;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
+import com.amorabot.inscripted.events.ItemUsage;
+import com.amorabot.inscripted.item.structure.Weapon.Weapon;
 import com.amorabot.inscripted.item.structure.io.ItemDeserializer;
+import com.amorabot.inscripted.managers.CasterStateManager;
 import com.amorabot.inscripted.skill.casting.CastType;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -19,6 +22,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
+import static com.amorabot.inscripted.APIs.SoundAPI.playAttackSoundFor;
 import static com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler.isValidItem;
 import static com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler.weaponCast;
 
@@ -64,25 +68,25 @@ public class DamageHandler implements Listener {
                     event.setCancelled(true);
                     return;
                 }//---------------------------
-//                if (defender instanceof LivingEntity def){ //TODO: check why resulting holograms are not interpolating(FROM THIS CALL ONLY)
-//                    DamageRouter.playerAttack(p, def, DamageSource.HIT);
-//                    return;
-//                }
             }
             boolean validClickedWeapon = isValidItem(heldItem) & ItemDeserializer.isWeapon(heldItem);
             if (validClickedWeapon) {
+                Weapon weaponData = ItemDeserializer.deserializeWeaponData(heldItem);
+                if (CasterStateManager.getCastingStateFor(p).isAlternateCasting()){
+                    CasterStateManager.alternateSpellcastingTriggerFor(p, ItemUsage.WEAPON_LEFT_CLICK_AIR); //Serves only as a notification/update to the CastingState
+                    weaponCast(p,heldItem,CastType.SPECIAL_ATTACK,69);
+                    event.setCancelled(true);
+                    return;
+                }
+                if (weaponData!=null){
+                    if (!p.hasCooldown(heldItem.getType())){
+                        playAttackSoundFor(p,p.getLocation(),weaponData.getWeaponType());
+                    }
+                }
                 weaponCast(p, heldItem, CastType.BASIC_ATTACK, 69);
                 event.setCancelled(true);
                 return;
             }
-
-//            PersistentDataContainer dataContainer = heldItem.getItemMeta().getPersistentDataContainer();
-//            boolean isWeapon = FunctionalItemAccessInterface.isItemType(FunctionalItemAccessInterface.WEAPON_TAG, dataContainer);
-//            if (isWeapon){
-//                Weapon weaponData = FunctionalItemAccessInterface.deserializeWeaponData(dataContainer);
-//                if (weaponData == null){return;}
-//                PlayerEquipmentHandler.basicAttackBy(p,heldItem,weaponData.getSubtype());
-//            }
         }
 
 //        com.amorabot.inscripted.APIs.damageAPI.DamageHandler.handleDamageEntityDamageEvents(event);

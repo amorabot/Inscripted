@@ -187,10 +187,22 @@ public class Projectile{
 
     public static Vector getRaytracedMaxDistance(Location playerLoc, Vector dir, double maxRange){
         RayTraceResult result = playerLoc.getWorld().rayTraceBlocks(playerLoc, dir, maxRange, FluidCollisionMode.NEVER, true);
+
         if (result != null && result.getHitBlock() != null){
             return result.getHitPosition();
         } else {
             return playerLoc.toVector().add(dir.clone().multiply(maxRange));
         }
+    }
+    public static Vector aimAssistedRaycast(Location playerFeet, Vector dir, double maxRange){
+        Location eyeLevelLoc = playerFeet.clone().add(0,1.5,0);
+        RayTraceResult result = eyeLevelLoc.getWorld().rayTraceBlocks(eyeLevelLoc, dir, maxRange, FluidCollisionMode.NEVER, true);
+        if (result==null || result.getHitBlock() == null){//Didnt hit anything
+            if (DEBUG_MODE){
+                Utils.log("Invalid raycast attempt.");
+            }
+            return eyeLevelLoc.toVector().add(dir.clone().multiply(maxRange)).setY(playerFeet.getY());
+        }
+        return result.getHitPosition();
     }
 }

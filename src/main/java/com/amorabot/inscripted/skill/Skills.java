@@ -88,7 +88,7 @@ public enum Skills {
     BASIC_DAGGER_SLASH(DaggerBasicAttacks::standardDaggerSlash, ROGUE, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0,
             "Standard attack for daggers - Faster & Shorter range slash"),
 
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {30, 20, 30, 20, -40}, dmgConversion = {0, 0, 0, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {20, 10, 10, 30, -40}, dmgConversion = {0, 0, 0, 0} )
     @ProjectileSkill( baseProjectiles = 3, spread = ProjectileGenerators.SHOTGUN, defaultSteering = SteeringBehaviors.SEEK, uniqueTarget = true )
     BASIC_WAND_ATTACK(WandBasicAttacks::standardWandAttack, SORCERER, CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE}, 0,
             "Standard wand projectiles - Shoots 3 slower & converging projectiles"),

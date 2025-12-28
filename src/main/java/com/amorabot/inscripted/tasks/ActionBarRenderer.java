@@ -77,12 +77,23 @@ public class ActionBarRenderer extends BukkitRunnable {
         String movColor = getSkillIconColor(CastType.MOVEMENT,playerData);
         String utilityColor = getSkillIconColor(CastType.UTILITY,playerData);
         String specialColor = getSkillIconColor(CastType.SPECIAL_ATTACK,playerData);
-//        Component movIcon = Component.text("\uE032").decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(movColor));
-//        Component utilityIcon = Component.text("\uE031").decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(utilityColor));
-//        Component specialIcon = Component.text("\uE030").decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(specialColor));
         Component movIcon = Component.text(CustomUnicodeTable.MOBILITY_ICON.getUnicode()).decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(movColor));
+        long movementCDSeconds = playerData.fetchAbilityRemainingCooldown(CastType.MOVEMENT)/1000;
+        if (movementCDSeconds > 0){
+            movIcon = movIcon.append(Component.text(movementCDSeconds).color(InscriptedPalette.NEUTRAL_GRAY.getColor()));
+        }
+
         Component utilityIcon = Component.text(CustomUnicodeTable.UTILITY_ICON.getUnicode()).decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(utilityColor));
+        long utilityCDSeconds = playerData.fetchAbilityRemainingCooldown(CastType.UTILITY)/1000;
+        if (utilityCDSeconds > 0){
+            utilityIcon = utilityIcon.append(Component.text(utilityCDSeconds).color(InscriptedPalette.NEUTRAL_GRAY.getColor()));
+        }
+
         Component specialIcon = Component.text(CustomUnicodeTable.SPECIAL_ATTACK_ICON.getUnicode()).decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(specialColor));
+        long specialCDSeconds = playerData.fetchAbilityRemainingCooldown(CastType.SPECIAL_ATTACK)/1000;
+        if (specialCDSeconds > 0){
+            specialIcon = specialIcon.append(Component.text(specialCDSeconds).color(InscriptedPalette.NEUTRAL_GRAY.getColor()));
+        }
 
         Component altCasting = Component.text("").append(div).append(Component.text(DamageTypes.FIRE.getCharacter()).color(castingColor.getColor())).append(div);
         return altCasting.append(movIcon).append(space).append(utilityIcon).append(space).append(specialIcon).append(div);

@@ -91,6 +91,7 @@ public class DaggerSpecials {
         OrientedBoundingBox hitbox = new OrientedBoundingBox(flattenedSlashPoints,orientation);
         hitbox.expandDirectional(0,true, fangOffset/2);
         hitbox.expandDirectional(0,false, fangOffset/2);
+        hitbox.expandFromCenter(1,fangOffset);
         return hitbox;
     }
     private static void attemptPotionEffect(Vector position, World world, double weight, int[][] effectColors, double offX, double offY, double offZ){

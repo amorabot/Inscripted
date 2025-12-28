@@ -133,7 +133,7 @@ ArmorTypes:
       BOOTS: 50
     T2:
       NAME: Infused ringmail
-      SOUL: 100
+      SOUL: 130
       DODGE: 4
       HELMET: 150
       CHESTPLATE: 190
@@ -141,7 +141,7 @@ ArmorTypes:
       BOOTS: 160
     T3:
       NAME: Magic plated
-      SOUL: 200
+      SOUL: 260
       DODGE: 8
       HELMET: 350
       CHESTPLATE: 450
@@ -149,7 +149,7 @@ ArmorTypes:
       BOOTS: 350
     T4:
       NAME: Ancient strapped leather
-      SOUL: 350
+      SOUL: 390
       DODGE: 12
       HELMET: 700
       CHESTPLATE: 1000
@@ -157,7 +157,7 @@ ArmorTypes:
       BOOTS: 700
     T5:
       NAME: Obscure leatherbound
-      SOUL: 450
+      SOUL: 500
       DODGE: 20
       HELMET: 1100
       CHESTPLATE: 1600
@@ -168,35 +168,35 @@ ArmorTypes:
       - SOUL
     T1:
       NAME: Silken
-      SOUL: 69
+      SOUL: 85
       HELMET: 25
       CHESTPLATE: 60
       LEGGINGS: 35
       BOOTS: 30
     T2:
       NAME: Arcane ringmail
-      SOUL: 120
+      SOUL: 160
       HELMET: 75
       CHESTPLATE: 130
       LEGGINGS: 80
       BOOTS: 70
     T3:
       NAME: Iron-plated silk
-      SOUL: 200
+      SOUL: 250
       HELMET: 150
       CHESTPLATE: 350
       LEGGINGS: 190
       BOOTS: 150
     T4:
       NAME: Shining ancient silk
-      SOUL: 400
+      SOUL: 480
       HELMET: 350
       CHESTPLATE: 700
       LEGGINGS: 520
       BOOTS: 300
     T5:
       NAME: Archmage wrappings
-      SOUL: 650
+      SOUL: 760
       HELMET: 550
       CHESTPLATE: 1000
       LEGGINGS: 650
@@ -207,7 +207,7 @@ ArmorTypes:
       - ARMOR
     T1:
       NAME: Simple Battleplate
-      SOUL: 30
+      SOUL: 40
       ARMOR: 5
       HELMET: 50
       CHESTPLATE: 80
@@ -215,7 +215,7 @@ ArmorTypes:
       BOOTS: 60
     T2:
       NAME: Battlemage ringmail
-      SOUL: 50
+      SOUL: 70
       ARMOR: 10
       HELMET: 150
       CHESTPLATE: 190
@@ -223,7 +223,7 @@ ArmorTypes:
       BOOTS: 150
     T3:
       NAME: Enhanced magic steel
-      SOUL: 90
+      SOUL: 100
       ARMOR: 15
       HELMET: 350
       CHESTPLATE: 500
@@ -239,7 +239,7 @@ ArmorTypes:
       BOOTS: 700
     T5:
       NAME: Gilded runic steel
-      SOUL: 250
+      SOUL: 270
       ARMOR: 40
       HELMET: 1500
       CHESTPLATE: 1800

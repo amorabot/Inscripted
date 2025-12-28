@@ -53,7 +53,7 @@ public class PlayerEquipmentHandler implements Listener {
 
     @EventHandler
     public void onInvEvent(PlayerSwapHandItemsEvent event){
-        Utils.log("Toggling spellcast mode");
+        if (DEBUG_MODE) Utils.log("Toggling spellcast mode");
         CasterStateManager.alternateSpellcastingTriggerFor(event.getPlayer(), ItemUsage.NONE);
         event.setCancelled(true);
     }
@@ -86,7 +86,7 @@ public class PlayerEquipmentHandler implements Listener {
         if (interactedItem.isEmpty()){
             //Empty hand set of actions
             if (event.getAction().equals(Action.LEFT_CLICK_AIR)){
-                Utils.log("Fisting whatever the fuck is in front of you");
+                if (DEBUG_MODE) Utils.log("Fisting whatever the fuck is in front of you");
                 return;
             }
             return;
@@ -94,9 +94,15 @@ public class PlayerEquipmentHandler implements Listener {
         ItemStack usedItem = interactedItem.get();
         ItemUsage itemUsage = mapPlayerInteractAction(usedItem, event.getAction());
         switch (itemUsage){
-            case NONE -> player.sendMessage("Non functional item usage");
-            case ARMOR_RIGHT_CLICK_AIR -> player.sendMessage("Equiping armor!!");
-            case ARMOR_LEFT_CLICK_AIR -> player.sendMessage("Punching with armor");
+            case NONE -> {
+                if (DEBUG_MODE) player.sendMessage("Non functional item usage");
+            }
+            case ARMOR_RIGHT_CLICK_AIR -> {
+                if (DEBUG_MODE) player.sendMessage("Armor equipped!");
+            }
+            case ARMOR_LEFT_CLICK_AIR -> {
+                if (DEBUG_MODE) Utils.log("Punching w/ armor");
+            }
             case WEAPON_LEFT_CLICK_AIR, WEAPON_LEFT_CLICK_BLOCK -> {
                 Weapon weaponData = ItemDeserializer.deserializeWeaponData(usedItem);
                 if (CasterStateManager.getCastingStateFor(player).isAlternateCasting()){
@@ -111,22 +117,13 @@ public class PlayerEquipmentHandler implements Listener {
                 }
                 weaponCast(player,usedItem,CastType.BASIC_ATTACK,69);
             }
-            case WEAPON_RIGHT_CLICK_AIR -> {
+            case WEAPON_RIGHT_CLICK_AIR, WEAPON_RIGHT_CLICK_BLOCK -> {
                 if (CasterStateManager.getCastingStateFor(player).isAlternateCasting()){
                     CasterStateManager.alternateSpellcastingTriggerFor(player,itemUsage);
                     weaponCast(player,usedItem,CastType.UTILITY,69);
                     return;
                 }
                 weaponCast(player,usedItem,CastType.MOVEMENT,69);
-            }
-            case WEAPON_RIGHT_CLICK_BLOCK -> {
-                if (CasterStateManager.getCastingStateFor(player).isAlternateCasting()){
-                    CasterStateManager.alternateSpellcastingTriggerFor(player,itemUsage);
-                    weaponCast(player,usedItem,CastType.UTILITY,69);
-                    return;
-                }
-                weaponCast(player,usedItem,CastType.MOVEMENT,69);
-//                Utils.log("Nah, ignoring movement cast on blocks");
             }
             case UNIDED_WEAPON -> player.sendMessage(Utils.color("&l&cThis weapon is not identified!"));
         }
@@ -141,7 +138,7 @@ public class PlayerEquipmentHandler implements Listener {
     public static Skills getSkillVariant(Weapon weaponData, CastType castType, int variant){
         Skills mappedSkill = Skills.mapSkillcast(weaponData.getWeaponType(), castType, variant);
         if (mappedSkill == null){
-            Utils.error("Invalid basic attack..., Variant: " + variant);
+            if (DEBUG_MODE) Utils.error("Invalid basic attack..., Variant: " + variant);
             return Skills.FIST;
         }
         return mappedSkill;
@@ -161,7 +158,7 @@ public class PlayerEquipmentHandler implements Listener {
         PlayerInventory inventory = player.getInventory();
 
         if (event.getClick().equals(ClickType.SWAP_OFFHAND)){
-            player.sendMessage("Opening cool F-Key thingy");
+            if (DEBUG_MODE) player.sendMessage("Opening cool F-Key thingy");
             event.setCancelled(true);
             return;
         }
@@ -174,7 +171,7 @@ public class PlayerEquipmentHandler implements Listener {
 
         //When, for instance, the player has a item in the cursor and they click a armorSlot, it comes as air/null
         if (isNotFunctional(clickedItem) && isNotFunctional(cursorItem)){ //If they are both non functional, ignore the event
-            player.sendMessage("Ignoring: non functional items (clicked item and cursor item");//                    # DEBUG MESSAGE
+            if (DEBUG_MODE) player.sendMessage("Ignoring: non functional items (clicked item and cursor item");//                    # DEBUG MESSAGE
             return;
         }
 
@@ -182,7 +179,7 @@ public class PlayerEquipmentHandler implements Listener {
         //From now on, clickedItem OR cursorItem may be null, test if needed
         switch (clickType){
             case DROP -> { //Q
-                Utils.log("Drop");
+                if (DEBUG_MODE) Utils.log("Drop");
                 //Decide what to do to functional items (in this case, cursor items should be ignored)
                 if (isNotFunctional(clickedItem)){
                     return; //Ignore drops for non functional items
@@ -190,39 +187,36 @@ public class PlayerEquipmentHandler implements Listener {
                 //The clicked item is functional, lets check if it was a equiped armor
                 if (isArmorSlotClick(event)){ //It was a armor armorSlot drop attempt
                     if (isValidItem(clickedItem)){
-                        player.sendMessage("No equipped armor dropping");
+                        player.sendMessage("STOP TRYING TO DROP EQUIPPED ARMOR");
                         event.setCancelled(true);
                         return;
                     }
                 }
                 if (mainHandClick && validClickedWeapon){
-                    player.sendMessage("No main hand dropping");
+                    player.sendMessage("Sorry, you cant drop your equipped weapon like that");
                     event.setCancelled(true);
                     return;
                 }
             }
             case SWAP_OFFHAND -> { //F
                 //F-key with open inventory is a different trigger!
-                player.sendMessage(Utils.color("&9&lTeleportation scroll/rune!!"));
+                if (DEBUG_MODE) player.sendMessage(Utils.color("&9&lTeleportation scroll/rune!!"));
                 event.setCancelled(true);
                 return;
             }
             case LEFT -> {
                 if (!mainHandClick){ //The click was not in the main hand
-                    player.sendMessage("\uE000 click \uE000");
+                    if (DEBUG_MODE) player.sendMessage("\uE000 click \uE000");
                     int clickedSlot = event.getSlot();
                     //Since it was not in the main hand, lets check for armor armorSlot clicks:
                     if (isArmorSlotClick(event)){
-                        player.sendMessage("armorin'");
                         return;
                     }
                     //If its not a armor armorSlot click, ignore for now
                     return;
                 }
 
-
                 //Left clicks on main hand
-
                 //The clicked item doesnt matter, the item that is going to the main hand is not equipable anyway
                 if (isNotFunctional(cursorItem)){
                     weaponEquip(player,null);
@@ -237,8 +231,6 @@ public class PlayerEquipmentHandler implements Listener {
                 }
                 //Both are functional (not necessarily weapons, must be checked)
                 if (attemptedAction == InventoryAction.SWAP_WITH_CURSOR){ //Main hand swapping
-//                    player.sendMessage("Swap!");
-
                     if (validClickedWeapon & !validCursorWeapon){
                         weaponEquip(player,null);
                         return;
@@ -250,10 +242,7 @@ public class PlayerEquipmentHandler implements Listener {
                     }
                 }
             }
-            case RIGHT -> {
-//                player.sendMessage("opening something");
-                event.setCancelled(true);
-            }
+            case RIGHT -> event.setCancelled(true);
         }
         //After all this granular click events, lets check for more general clicks (swaps and shift-clicks)
 

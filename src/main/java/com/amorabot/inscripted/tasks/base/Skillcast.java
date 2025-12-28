@@ -1,6 +1,7 @@
 package com.amorabot.inscripted.tasks.base;
 
 import com.amorabot.inscripted.Inscripted;
+import com.amorabot.inscripted.item.inscription.definition.Stats;
 import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.skill.casting.CastSource;
@@ -18,18 +19,22 @@ import java.util.UUID;
 
 @Getter
 public abstract class Skillcast extends PlayerboundTask{
+    protected static final boolean DEBUG_MODE = false;
+
     protected final SkillcastData castData;
     protected final int baseCooldownMod;
 
     public Skillcast(UUID playerID, Vector skillcastOrigin, Skills sourceSkill, CastSource castSource, int baseCDMod) {
         super(playerID);
         this.castData = new SkillcastData(new SkillcastContext(getPlayer(),sourceSkill,skillcastOrigin),castSource,sourceSkill.isIgnoreOwner());
-        this.baseCooldownMod = baseCDMod;
+        int playerCDR = (int) PlayerDataContainer.getDataContainerFor(playerID).getGlobalStats().calculateStatValue(Stats.COOLDOWN_REDUCTION)[0];
+        this.baseCooldownMod = baseCDMod + playerCDR;
     }
     public Skillcast(UUID playerID, Skills sourceSkill, CastSource castSource, int baseCDMod) {
         super(playerID);
         this.castData = new SkillcastData(new SkillcastContext(getPlayer(),sourceSkill,getPlayer().getLocation().toVector()),castSource,sourceSkill.isIgnoreOwner());
-        this.baseCooldownMod = baseCDMod;
+        int playerCDR = (int) PlayerDataContainer.getDataContainerFor(playerID).getGlobalStats().calculateStatValue(Stats.COOLDOWN_REDUCTION)[0];
+        this.baseCooldownMod = baseCDMod + playerCDR;
     }
     @Override
     public void run() {

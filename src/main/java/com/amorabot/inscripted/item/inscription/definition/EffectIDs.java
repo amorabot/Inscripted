@@ -3,6 +3,8 @@ package com.amorabot.inscripted.item.inscription.definition;
 import com.amorabot.inscripted.combat.buffs.Buffs;
 import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.combat.buffs.categories.stat.StatBuff;
+import com.amorabot.inscripted.item.render.CustomUnicodeTable;
+import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.PlayerEvents;
 import com.amorabot.inscripted.player.profile.Profile;
@@ -17,7 +19,7 @@ import java.util.Arrays;
 
 @Getter
 public enum EffectIDs {
-    THRILL_OF_THE_HUNT(TriggerTypes.ON_HIT, TriggerTimes.LATE, 10) {
+    THRILL_OF_THE_HUNT(TriggerTypes.ON_HIT, TriggerTimes.LATE, 10, "Gain Night Vision on Hit against players below 20% HP.") {
         @Override
         void execute(Player caster, Player target, int[] incomingHit) {
             int durationInSec = 20;
@@ -35,7 +37,8 @@ public enum EffectIDs {
             return (targetHP.isLowLife() & canTriggerEffect);
         }
     },
-    OVERDRIVE(TriggerTypes.WHEN_HIT, TriggerTimes.LATE, 0) {
+    OVERDRIVE(TriggerTypes.WHEN_HIT, TriggerTimes.LATE, 0
+            , "Gain Speed II when hit by " + DamageTypes.LIGHTNING.getCharacter() + " Lightning DMG.") {
         @Override
         void execute(Player caster, Player target, int[] incomingHit) {
             PotionEffect speedBuff = new PotionEffect(PotionEffectType.SPEED, 100, 1, true, false, false);
@@ -53,7 +56,8 @@ public enum EffectIDs {
             return hasLightningDmg;
         }
     },
-    ADRENALINE_RUSH(TriggerTypes.ON_DEATH, TriggerTimes.EARLY, 120) {
+    ADRENALINE_RUSH(TriggerTypes.ON_DEATH, TriggerTimes.EARLY, 120
+            , "Prevent death and heal yourself for 10% of your Max. HP.") {
         @Override
         void execute(Player caster, Player target, int[] incomingHit) {
             PlayerDataContainer casterData = PlayerDataContainer.getDataContainerFor(caster.getUniqueId());
@@ -71,7 +75,8 @@ public enum EffectIDs {
             return casterData.effecTriggered(this);
         }
     },
-    GRACEFUL_LANDING(TriggerTypes.ON_MOVEMENT, TriggerTimes.LATE, 60) {
+    GRACEFUL_LANDING(TriggerTypes.ON_MOVEMENT, TriggerTimes.LATE, 60
+            , "When using " + CustomUnicodeTable.MOBILITY_ICON.getUnicode() + "Mobility skills, Gain the Tailwind buff.") {
         @Override
         void execute(Player caster, Player target, int[] incomingHit) {
             StatBuff tailwind = new StatBuff(Buffs.TAILWIND, caster);
@@ -83,7 +88,7 @@ public enum EffectIDs {
             return casterData.effecTriggered(this);
         }
     },
-    SADISM(TriggerTypes.ON_BLEED, TriggerTimes.LATE, 0) {
+    SADISM(TriggerTypes.ON_BLEED, TriggerTimes.LATE, 0, "Maim & Slow bleeding enemies on Hit.") {
         @Override
         void execute(Player caster, Player target, int[] incomingHit) {
             StatBuff maim = new StatBuff(Buffs.MAIM, target);
@@ -92,7 +97,7 @@ public enum EffectIDs {
         @Override
         public boolean check(Player caster, Player target, int[] incomingHit) {return true;}
     },
-    COUP_DE_GRACE(TriggerTypes.ON_HIT, TriggerTimes.EARLY, 0) {
+    COUP_DE_GRACE(TriggerTypes.ON_HIT, TriggerTimes.EARLY, 0, "Execute enemies below 10% HP on Hit.") {
         @Override
         void execute(Player caster, Player target, int[] incomingHit) {
             target.setKiller(caster);
@@ -112,7 +117,8 @@ public enum EffectIDs {
             return shouldExecute;
         }
     },
-    OPPORTUNIST(TriggerTypes.ON_CRIT, TriggerTimes.EARLY, 0) {
+    OPPORTUNIST(TriggerTypes.ON_CRIT, TriggerTimes.EARLY, 0
+            , "When dealing critical strikes, Gain the Tailwing buff.") {
         @Override
         void execute(Player caster, Player defender, int[] incomingHit) {
             StatBuff tailwind = new StatBuff(Buffs.TAILWIND, caster);
@@ -126,11 +132,13 @@ public enum EffectIDs {
     private final TriggerTypes trigger;
     private final TriggerTimes triggerTime;
     private final int cooldowInSeconds;
+    private final String description;
 
-    EffectIDs(TriggerTypes trigger,TriggerTimes triggerTime,int cdInSeconds){
+    EffectIDs(TriggerTypes trigger,TriggerTimes triggerTime,int cdInSeconds, String description){
         this.trigger = trigger;
         this.triggerTime = triggerTime;
         this.cooldowInSeconds = cdInSeconds;
+        this.description = description;
     }
 
     public String getInfo(){

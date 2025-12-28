@@ -12,6 +12,7 @@ import com.amorabot.inscripted.skill.type.PersistentAttack;
 import com.amorabot.inscripted.skill.type.subroutines.DurationSubroutine;
 import com.amorabot.inscripted.tasks.base.Skillcast;
 import com.amorabot.inscripted.utils.Utils;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -25,7 +26,9 @@ public class BowSpecials {
 
         DurationSubroutine rainOfArrowsRoutine = new DurationSubroutine(skillcastInstance);
         World world = skillcastInstance.getPlayer().getWorld();
-        Vector center = LinalgMath.projectHorizontalPlayerRaycast(14,skillcastInstance.getPlayer());
+        Location playerLoc = skillcastInstance.getPlayer().getLocation();
+        Vector center = Projectile.aimAssistedRaycast(playerLoc,playerLoc.getDirection(),14);
+//        Vector center = LinalgMath.projectHorizontalPlayerRaycast(14,skillcastInstance.getPlayer());
         final float radius = 3.5f;
         final int points = 20;
         Vector[] targets = LinalgMath.plotPointsInsideHorizontalCircle(center,radius,30);

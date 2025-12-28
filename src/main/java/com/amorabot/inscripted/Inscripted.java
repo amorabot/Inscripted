@@ -53,7 +53,6 @@ public final class Inscripted extends JavaPlugin {
         reloadOnlinePlayerData();
 
         Utils.populatePrettyAlphabet();
-//        GlobalCooldownManager.setup();
 
         commandsStartupRoutine();
         eventListenersStartupRoutine();
@@ -85,14 +84,6 @@ public final class Inscripted extends JavaPlugin {
         if (actionBarRenderer != null && !actionBarRenderer.isCancelled()){
             actionBarRenderer.cancel();
         }
-//        PlayerRegenManager.shutdown();
-//        CombatHologramsDepleter.getInstance().shutdown();
-
-//        try {
-//            JSONProfileManager.saveAllToJSON();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
     public static Logger getPluginLogger(){
         return logger;
@@ -115,28 +106,7 @@ public final class Inscripted extends JavaPlugin {
             EntityStateManager.setPlayerMetadata(onlinePlayer);
         }
         ProfileDatabase.reloadOnlinePlayers(onlinePlayers);
-//        JSONProfileManager.reloadOnlinePlayers(Bukkit.getOnlinePlayers());
-//        PlayerRegenManager.reloadOnlinePlayers();
-//        PlayerPassivesManager.reloadOnlinePlayers();
-//        PlayerBuffManager.reloadOnlinePlayers();
-
-//        PlayerInterfaceRenderer.reloadHPDisplays();
-
-//        Relics.setRelicArmorsData(RelicEditor.loadAllArmors());
-//        Relics.setRelicWeaponsData(RelicEditor.loadAllWeapons());
         GlyphInfo.loadMappings();
-
-//        ItemModifiersConfig.setup();
-
-//        if (MobManager.spawningEnabled()){
-//            log("RegisteredSpawners");
-//            for (Spawners s : Spawners.values()){
-//                log(s.toString());
-//            }
-//            MobManager.reinstantiateMobSpawners();
-//        }
-
-//        initializeRelicItemData();
     }
 
     private void commandsStartupRoutine(){
@@ -145,6 +115,7 @@ public final class Inscripted extends JavaPlugin {
         getCommand("generateitem").setExecutor(new GenerateItem(this));
         getCommand("show").setExecutor(new Show());
         getCommand("skills").setExecutor(new SkillsInfo());
+        getCommand("inscriptions").setExecutor(new InscriptionsInfo());
         getCommand("template").setExecutor(new TemplateCommand());
 
         //Has tab executor functionality, if its all in MobCommand class, no need to setTabCompleter()

@@ -23,7 +23,7 @@ public class BowBasicAttacks {
         int maxRange = 25;
         int projectiles = PlayerDataContainer.getProfile(skillcast.getPlayerID()).getDamageComponent().getExtraProjectiles() + projData.baseProjectiles();
         ProjectileConfig projectileConfig = new ProjectileConfig(false,false,true,
-                40D / 20, 0.12, 0.8,
+                45D / 20, 0.12, 1,
                 ProjectileTrail::basicArrow, ProjectileCollision::standardSingleProjDetection, ProjectileCollision::testCollisionExecution);
         Location playerLocation = skillcast.getPlayer().getLocation().clone().add(0,1.2,0);
         Vector target = null;

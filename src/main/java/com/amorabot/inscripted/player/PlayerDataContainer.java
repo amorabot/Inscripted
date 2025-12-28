@@ -28,10 +28,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 public class PlayerDataContainer implements ProfileObserver {
-    private static final boolean DEBUG_MODE = true;
+    private static final boolean DEBUG_MODE = false;
 
     @Getter
     private static final Map<UUID, PlayerDataContainer> onlinePlayerData = new HashMap<>();
@@ -49,7 +50,7 @@ public class PlayerDataContainer implements ProfileObserver {
     @Getter
     private final Map<Skills, Aura> activeAuras = new HashMap<>();
     @Getter
-    private final Map<Buffs, BuffData> activeBuffs = new HashMap<>();
+    private final ConcurrentHashMap<Buffs, BuffData> activeBuffs = new ConcurrentHashMap<>();
 
 
     public PlayerDataContainer(UUID playerID){

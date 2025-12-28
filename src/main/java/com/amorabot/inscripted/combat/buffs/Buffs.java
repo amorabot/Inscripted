@@ -36,7 +36,7 @@ public enum Buffs {
             ParticlePlotter.plotCircleAt(player.getLocation().toVector(), player.getWorld(),Particle.CRIT,0.7f,7);
         }
     },
-    @Stat(amount = {10}, valueType = ValueType.PERCENTAGE, targetStat = Stats.MELEE_DAMAGE, durationInSeconds = 8)
+    @Stat(amount = {10}, valueType = ValueType.PERCENTAGE, targetStat = Stats.MELEE_DAMAGE, durationInSeconds = 3)
     ADRENALINE("Adrenaline",false, "You feel a sudden rush of blood..."){
         @Override
         public void effectOn(Player player){

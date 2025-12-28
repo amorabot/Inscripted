@@ -23,7 +23,7 @@ import java.util.UUID;
 
 @Getter
 public enum KeystoneIDs {
-    FORBIDDEN_PACT(TriggerTimes.LATE, true, "") {
+    FORBIDDEN_PACT(TriggerTimes.LATE, true, "Become Immune to Abyssal DMG, Your life becomes 1.") {
         @Override
         public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
             currentPlayerStats.setBaseStatValue(Stats.HEALTH, ValueType.FLAT,new int[]{1});
@@ -31,7 +31,7 @@ public enum KeystoneIDs {
             currentPlayerStats.setMultiplier(Stats.HEALTH, 1D);
         }
     },
-    LETHAL_STRIKES(TriggerTimes.LATE, true, "") {
+    LETHAL_STRIKES(TriggerTimes.LATE, true, "All of your Shred is converted to Bleed Chance") {
         @Override
         public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
             double[] shred = currentPlayerStats.calculateStatValue(Stats.SHRED);
@@ -39,13 +39,13 @@ public enum KeystoneIDs {
             currentPlayerStats.insertValue(Stats.BLEED,ValueType.PERCENTAGE,new int[]{(int) shred[0]});
         }
     },
-    BLOOD_PACT(TriggerTimes.CONDITIONAL, true, "") {
+    BLOOD_PACT(TriggerTimes.CONDITIONAL, true, "Cannot Regenerate Health, Life gained from hits is Doubled") {
         @Override
         public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
             Utils.log("Template Rule for " + this);
         }
     },
-    ORGAN_FAILURE(TriggerTimes.CONDITIONAL, true, "") {
+    ORGAN_FAILURE(TriggerTimes.CONDITIONAL, true, "Bleed for 80% of your maximum life everytime you regenerate completely") {
         @Override
         public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
             HealthComponent playerHP = playerData.getProfile().getHealthComponent();
@@ -60,7 +60,7 @@ public enum KeystoneIDs {
             strokinPlayer.sendMessage(Component.text("ORGAN FAILURE..."));
         }
     },
-    FIRE_ATTUNEMENT(TriggerTimes.LATE, true, "") {
+    FIRE_ATTUNEMENT(TriggerTimes.LATE, true, "Your Fire Res. is maxed. Lightning & Cold Resistances are halved.") {
         @Override
         public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
             int cappedRes = ((int) currentPlayerStats.calculateStatValue(Stats.MAX_FIRE_RESISTANCE)[0]) + DefenceComponent.getResistanceCap();
@@ -68,7 +68,7 @@ public enum KeystoneIDs {
             currentPlayerStats.setMultiplier(Stats.FIRE_RESISTANCE, 1D);
         }
     },
-    LIGHTNING_ATTUNEMENT(TriggerTimes.LATE, true, "") {
+    LIGHTNING_ATTUNEMENT(TriggerTimes.LATE, true, "Your Lightning Res. is maxed. Fire & Cold Resistances are halved.") {
         @Override
         public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
             int cappedRes = ((int) currentPlayerStats.calculateStatValue(Stats.MAX_LIGHTNING_RESISTANCE)[0]) + DefenceComponent.getResistanceCap();
@@ -76,7 +76,7 @@ public enum KeystoneIDs {
             currentPlayerStats.setMultiplier(Stats.LIGHTNING_RESISTANCE, 1D);
         }
     },
-    COLD_ATTUNEMENT(TriggerTimes.LATE, true, "") {
+    COLD_ATTUNEMENT(TriggerTimes.LATE, true, "Your Cold Res. is maxed. Lightning & Fire Resistances are halved.") {
         @Override
         public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
             int cappedRes = ((int) currentPlayerStats.calculateStatValue(Stats.MAX_COLD_RESISTANCE)[0]) + DefenceComponent.getResistanceCap();
@@ -84,7 +84,7 @@ public enum KeystoneIDs {
             currentPlayerStats.setMultiplier(Stats.COLD_RESISTANCE, 1D);
         }
     },
-    ELEMENTAL_BLESSING(TriggerTimes.LATE, true, "") {
+    ELEMENTAL_BLESSING(TriggerTimes.LATE, true, "Seek balance. Gain 33% Elemental penetration for the element of your highest elemental resistance.") {
         @Override
         public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
             int highestRes = 0;
@@ -117,7 +117,7 @@ public enum KeystoneIDs {
             }
         }
     },
-    AGNOSTIC(TriggerTimes.LATE, true, "") {
+    AGNOSTIC(TriggerTimes.LATE, true, "Your pact with the divine is severed. Deal NO Elemental Damage") {
         @Override
         public void applyKeystoneStatRule(PlayerDataContainer playerData, StatPool currentPlayerStats) {
             currentPlayerStats.setMultiplier(Stats.FIRE_DAMAGE, 0);
@@ -126,11 +126,11 @@ public enum KeystoneIDs {
         }
     },
 
-    BERSERK(TriggerTimes.EARLY, false, ""),
-    WINDS_OF_CHANGE(TriggerTimes.EARLY, false, ""),
-    PERMAFROST(TriggerTimes.EARLY, false, ""),
-    THUNDERSTRUCK(TriggerTimes.EARLY, false, ""),
-    RIGHTEOUS_FIRE(TriggerTimes.EARLY, false, "");
+    BERSERK(TriggerTimes.EARLY, false, "Amplify your Physical DMG by 20% while below 20% Health."),
+    WINDS_OF_CHANGE(TriggerTimes.EARLY, false, "Periodically heal yourself!"),
+    PERMAFROST(TriggerTimes.EARLY, false, "3-pulse aura that slows everyone around you."),
+    THUNDERSTRUCK(TriggerTimes.EARLY, false, "Get periodically struck by lightning. This skill's lightning damage scales with weapon damage!"),
+    RIGHTEOUS_FIRE(TriggerTimes.EARLY, false, "Deal 5% of your max. health of Fire DMG to you and any nearby enemy every tick.");
 
     private final TriggerTimes triggerTime;
     private final String description;

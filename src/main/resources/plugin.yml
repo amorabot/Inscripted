@@ -14,6 +14,9 @@ commands:
   skills:
     description: Retries skill info for the held weapon
     usage: /skills
+  inscriptions:
+    description: Shows descriptions for every special inscription
+    usage: /inscriptions
   orb:
     description: Command for easy currency access.
     usage: /orb

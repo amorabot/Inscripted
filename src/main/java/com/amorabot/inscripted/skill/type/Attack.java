@@ -22,7 +22,7 @@ public abstract class Attack extends Skillcast.Simple {
     public Attack(UUID playerID, Skills skillUsed, CastSource castSource,WeaponAttackSpeeds weaponSpeed) {
         super(playerID, skillUsed, castSource,weaponSpeed);
         if (!skillUsed.isAttackSkill()){
-            Utils.error("Invalid base attack skill (" + skillUsed.name() + "). Attack configuration not set.");
+            if (DEBUG_MODE) Utils.error("Invalid base attack skill (" + skillUsed.name() + "). Attack configuration not set.");
             this.attackData = null;
             return;
         }
@@ -31,7 +31,7 @@ public abstract class Attack extends Skillcast.Simple {
     public Attack(UUID playerID, Vector skillcastOrigin, Skills skillUsed, CastSource castSource, WeaponAttackSpeeds weaponSpeed) {
         super(playerID, skillcastOrigin, skillUsed, castSource,weaponSpeed);
         if (!skillUsed.isAttackSkill()){
-            Utils.error("Invalid base attack skill (" + skillUsed.name() + "). Attack configuration not set.");
+            if (DEBUG_MODE) Utils.error("Invalid base attack skill (" + skillUsed.name() + "). Attack configuration not set.");
             this.attackData = null;
             return;
         }
@@ -80,7 +80,7 @@ public abstract class Attack extends Skillcast.Simple {
             getPlayer().setCooldown(Material.SHEARS,usageCooldown);
             getPlayer().setCooldown(Material.BOW,usageCooldown);
             if (swingEffect==null){
-                Utils.error("No swing speed modifier.");
+                if (DEBUG_MODE) Utils.error("No swing speed modifier.");
                 return;
             }
             swingEffect.apply(getPlayer());
