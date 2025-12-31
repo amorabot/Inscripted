@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/t1dagger",
+  "textures": {
+    "layer0": "minecraft:item/t4dagger"
+  }
+}

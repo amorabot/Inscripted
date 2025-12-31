@@ -58,7 +58,7 @@ public class Utils {
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ColorUtils.translateColorCodes(msg)));
     }
     public static float mapToPercentage(int flatDodge){
-        return Float.valueOf(getPercentString(flatDodge));
+        return Float.parseFloat(getPercentString(flatDodge));
     }
     public static String getPercentString(int flatDodge){
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
@@ -66,7 +66,7 @@ public class Utils {
     }
     public static float toTwoDigitsFloat(float floatToConvert){
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        return Float.valueOf(decimalFormat.format(floatToConvert/100.0f));
+        return Float.parseFloat(decimalFormat.format(floatToConvert/100.0f));
     }
 
     public static void populatePrettyAlphabet(){
@@ -87,7 +87,7 @@ public class Utils {
         }
         return PRETTY_CHARACTERS.get(charac);
     }
-    public static String convertToPrettyString(String originalText){
+    public static String prettify(String originalText){
         StringBuilder convertedStringBuilder = new StringBuilder();
         originalText = originalText.toUpperCase();
         for (int i = 0; i < originalText.length(); i++){
@@ -100,28 +100,6 @@ public class Utils {
             convertedStringBuilder.append(prettyChar);
         }
         return convertedStringBuilder.toString();
-    }
-    public static void populateRomanChars(){
-        ROMAN_CHAR.put("0","∅");
-        ROMAN_CHAR.put("1", "I");
-        ROMAN_CHAR.put("2", "II");
-        ROMAN_CHAR.put("3", "III");
-        ROMAN_CHAR.put("4", "IV");
-        ROMAN_CHAR.put("5", "V");
-        ROMAN_CHAR.put("6", "VI");
-        ROMAN_CHAR.put("7", "VII");
-        ROMAN_CHAR.put("8", "VIII");
-        ROMAN_CHAR.put("9", "IX");
-        ROMAN_CHAR.put("10", "X");
-        ROMAN_CHAR.put("11", "XI");
-        ROMAN_CHAR.put("12", "XII");
-    }
-    public static String getRomanChar(int value){
-        String stringValue = String.valueOf(value);
-        if (!ROMAN_CHAR.containsKey(stringValue)){
-            return "*";
-        }
-        return ROMAN_CHAR.get(stringValue);
     }
 
     public static ItemStack createItem(Material type, int amount, boolean enchanted, boolean unbreakable, boolean hideUnbreakable
@@ -231,5 +209,25 @@ public class Utils {
 //        if (v.isZero()){return v;}
         if (v.lengthSquared() > (limitSize*limitSize)){return v.clone().normalize().multiply(limitSize);}
         return v;
+    }
+
+    public static class Easings{
+        public static double easeOutCirc(double t){
+            return Math.sqrt(1 - Math.pow(t - 1, 2));
+        }
+        public static double easeOutQuad(double t){
+            return 1 - (1 - t) * (1 - t);
+        }
+        public static double easeInOutCubic(double t){
+            if (t < 0.5 ){
+                return (4 * t * t * t);
+            } else {
+                return (1 - Math.pow(-2 * t + 2, 3) / 2);
+            }
+        }
+        public static double easeOutExpo(double t){
+            if (t == 1) {return 1;}
+            return 1 - Math.pow(2, -10 * t);
+        }
     }
 }

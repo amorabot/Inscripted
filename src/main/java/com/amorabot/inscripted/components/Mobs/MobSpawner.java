@@ -1,9 +1,9 @@
 package com.amorabot.inscripted.components.Mobs;
 
-import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
+import com.amorabot.inscripted.combat.EntityStateManager;
 import com.amorabot.inscripted.Inscripted;
 import com.amorabot.inscripted.managers.MobManager;
-import com.amorabot.inscripted.skills.ParticlePlotter;
+import com.amorabot.inscripted.particle.ParticlePlotter;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
@@ -75,30 +75,30 @@ public class MobSpawner {
                 spawnerData.clearDeadMobs();
                 Location attemptLocation = spawnerData.getLocation();
 
-                if (spawnerData.getMobInstances().size()>=spawnerData.getMobLimit()){
-                    Utils.log("Spawner reached full capacity!! Kill some monsters!");
-                    ParticlePlotter.plotColoredCircleAt(
-                            attemptLocation.toVector(), attemptLocation.getWorld(),
-                            200,100,100, 1.1F, spawnerData.getRange(), 60);
-                    return;
-                }
-
-                if (attemptLocation.getNearbyPlayers(spawnerData.getRange()).isEmpty()){
-                    Utils.log("No players inside spawner's range. Aborting spawn attempt.");
-                    ParticlePlotter.plotColoredCircleAt(
-                            attemptLocation.toVector(), attemptLocation.getWorld(),
-                            230,230,0, 1.1F, spawnerData.getRange(), 60);
-                    return;
-                }
-
-                int attemptedPackSize = Utils.getRandomIntBetween(Math.min(spawnerData.getMaxPackSize(),spawnerData.getRemainingCapacity()),0);
-                if (attemptedPackSize==0){Utils.log("Pack size = 0, no mobs spawn at this attempt!");}
-                spawnerData.spawnPack(attemptedPackSize);
-
-                Utils.log("Sucessful attempt!");
-                ParticlePlotter.plotColoredCircleAt(
-                        attemptLocation.toVector(), attemptLocation.getWorld(),
-                        150,230,150, 1.1F, spawnerData.getRange(), 90);
+//                if (spawnerData.getMobInstances().size()>=spawnerData.getMobLimit()){
+//                    Utils.log("Spawner reached full capacity!! Kill some monsters!");
+//                    ParticlePlotter.plotColoredCircleAt(
+//                            attemptLocation.toVector(), attemptLocation.getWorld(),
+//                            200,100,100, 1.1F, spawnerData.getRange(), 60);
+//                    return;
+//                }
+//
+//                if (attemptLocation.getNearbyPlayers(spawnerData.getRange()).isEmpty()){
+//                    Utils.log("No players inside spawner's range. Aborting spawn attempt.");
+//                    ParticlePlotter.plotColoredCircleAt(
+//                            attemptLocation.toVector(), attemptLocation.getWorld(),
+//                            230,230,0, 1.1F, spawnerData.getRange(), 60);
+//                    return;
+//                }
+//
+//                int attemptedPackSize = Utils.getRandomIntBetween(Math.min(spawnerData.getMaxPackSize(),spawnerData.getRemainingCapacity()),0);
+//                if (attemptedPackSize==0){Utils.log("Pack size = 0, no mobs spawn at this attempt!");}
+//                spawnerData.spawnPack(attemptedPackSize);
+//
+//                Utils.log("Sucessful attempt!");
+//                ParticlePlotter.plotColoredCircleAt(
+//                        attemptLocation.toVector(), attemptLocation.getWorld(),
+//                        150,230,150, 1.1F, spawnerData.getRange(), 90);
             }
         }.runTaskTimer(Inscripted.getPlugin(),(int) (100+(Math.random()*61)), spawnerInstance.getPeriod()).getTaskId();
     }

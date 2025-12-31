@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/t1wand",
+  "textures": {
+    "layer0": "minecraft:item/t3wand"
+  }
+}

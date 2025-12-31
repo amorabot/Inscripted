@@ -1,0 +1,107 @@
+package com.amorabot.inscripted.tasks;
+
+import com.amorabot.inscripted.item.render.CustomUnicodeTable;
+import com.amorabot.inscripted.item.render.InscriptedPalette;
+import com.amorabot.inscripted.item.structure.Armor.DefenceTypes;
+import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
+import com.amorabot.inscripted.managers.CasterStateManager;
+import com.amorabot.inscripted.player.PlayerDataContainer;
+import com.amorabot.inscripted.player.profile.Profile;
+import com.amorabot.inscripted.player.profile.component.HealthComponent;
+import com.amorabot.inscripted.skill.casting.CastType;
+import com.amorabot.inscripted.skill.casting.CasterState;
+import com.amorabot.inscripted.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.UUID;
+
+public class ActionBarRenderer extends BukkitRunnable {
+
+    private static final ActionBarRenderer INSTANCE = new ActionBarRenderer();
+    private ActionBarRenderer(){
+    }
+    @Override
+    public void run() {
+        for (Player currentPlayer : Bukkit.getOnlinePlayers()){
+            UUID id = currentPlayer.getUniqueId();
+            Profile playerProfile = PlayerDataContainer.getProfile(id);
+            HealthComponent healthComponent = playerProfile.getHealthComponent();
+            Component cdComponent = getCooldownComponent(currentPlayer);
+
+            final int currentHP = healthComponent.getHealth();
+            final int totalHP = healthComponent.getMaxHealth();
+            Component hpSection = Component.text(DefenceTypes.HEALTH.getSpecialChar()+" "+ currentHP + "/" + totalHP).color(InscriptedPalette.HEALTH.getColor());
+            Component soulSection = null;
+
+            if (healthComponent.getSoul()>0){
+                soulSection = Component.text("  |  ").color(TextColor.color(120,120,120));
+                final int currentSoul = healthComponent.getSoul();
+                final int totalSoul = healthComponent.getMaxSoul();
+                soulSection = soulSection.append(Component.text(DefenceTypes.SOUL.getSpecialChar()+" "+ currentSoul + "/" + totalSoul).color(InscriptedPalette.SOUL.getColor()));
+            }
+            if (soulSection==null){
+                Component renderedHealth = hpSection.decoration(TextDecoration.ITALIC,false);
+                currentPlayer.sendActionBar(renderedHealth.append(cdComponent));
+                continue;
+            }
+
+            Component renderedHealth = hpSection.append(soulSection).decoration(TextDecoration.ITALIC,false);
+
+            currentPlayer.sendActionBar(renderedHealth.append(cdComponent));
+    }
+
+
+    }
+
+    public static ActionBarRenderer getInstance() {
+        return INSTANCE;
+    }
+
+    private Component getCooldownComponent(Player player){
+        PlayerDataContainer playerData = PlayerDataContainer.getDataContainerFor(player.getUniqueId());
+        CasterState casterState = CasterStateManager.getCastingStateFor(player);
+        Component div = Component.text(" | ").decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false).color(InscriptedPalette.NEUTRAL_GRAY.getColor());
+        Component space = Component.text(" ");
+        InscriptedPalette castingColor;
+        if (casterState.isAlternateCasting()){
+            castingColor = InscriptedPalette.SORCERER;
+        } else {
+            castingColor = InscriptedPalette.DARK_GRAY;
+        }
+        String movColor = getSkillIconColor(CastType.MOVEMENT,playerData);
+        String utilityColor = getSkillIconColor(CastType.UTILITY,playerData);
+        String specialColor = getSkillIconColor(CastType.SPECIAL_ATTACK,playerData);
+        Component movIcon = Component.text(CustomUnicodeTable.MOBILITY_ICON.getUnicode()).decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(movColor));
+        long movementCDSeconds = playerData.fetchAbilityRemainingCooldown(CastType.MOVEMENT)/1000;
+        if (movementCDSeconds > 0){
+            movIcon = movIcon.append(Component.text(movementCDSeconds).color(InscriptedPalette.NEUTRAL_GRAY.getColor()));
+        }
+
+        Component utilityIcon = Component.text(CustomUnicodeTable.UTILITY_ICON.getUnicode()).decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(utilityColor));
+        long utilityCDSeconds = playerData.fetchAbilityRemainingCooldown(CastType.UTILITY)/1000;
+        if (utilityCDSeconds > 0){
+            utilityIcon = utilityIcon.append(Component.text(utilityCDSeconds).color(InscriptedPalette.NEUTRAL_GRAY.getColor()));
+        }
+
+        Component specialIcon = Component.text(CustomUnicodeTable.SPECIAL_ATTACK_ICON.getUnicode()).decoration(TextDecoration.ITALIC,false).color(TextColor.fromHexString(specialColor));
+        long specialCDSeconds = playerData.fetchAbilityRemainingCooldown(CastType.SPECIAL_ATTACK)/1000;
+        if (specialCDSeconds > 0){
+            specialIcon = specialIcon.append(Component.text(specialCDSeconds).color(InscriptedPalette.NEUTRAL_GRAY.getColor()));
+        }
+
+        Component altCasting = Component.text("").append(div).append(Component.text(DamageTypes.FIRE.getCharacter()).color(castingColor.getColor())).append(div);
+        return altCasting.append(movIcon).append(space).append(utilityIcon).append(space).append(specialIcon).append(div);
+    }
+    private String getSkillIconColor(CastType type, PlayerDataContainer playerData){
+        if (playerData.fetchAbilityRemainingCooldown(type) == 0){
+            return NamedTextColor.GREEN.asHexString();
+        }
+        return InscriptedPalette.NEUTRAL_GRAY.getColorString();
+    }
+}

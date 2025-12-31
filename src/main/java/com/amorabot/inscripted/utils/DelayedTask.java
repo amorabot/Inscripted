@@ -1,11 +1,12 @@
 package com.amorabot.inscripted.utils;
 
+import com.amorabot.inscripted.Inscripted;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
 public class DelayedTask implements Listener {
-    private static Plugin plugin = null;
+    private static Plugin plugin = Inscripted.getPlugin();
     private int id = -1;
 
     public DelayedTask(Plugin instance){

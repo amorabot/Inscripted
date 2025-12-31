@@ -1,0 +1,38 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "minecraft:item/t4bow"
+  },
+"display": {
+	"thirdperson_righthand": {
+            "rotation": [ 90, 0, 135 ],
+            "translation": [ 0, 1, 2 ],
+            "scale": [ 0.8, 0.8, 0.85 ]
+        },
+        "thirdperson_lefthand": {
+            "rotation": [ 90, 0, -135 ],
+            "translation": [ 0, 1, 2 ],
+            "scale": [ 0.8, 0.8, 0.85 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 110, 0, 135 ],
+            "translation": [ 2, 5, 0.9 ],
+            "scale": [ 0.7, 0.7, 0.95 ]
+        },
+        "firstperson_lefthand": {
+            "rotation": [ 110, 0, -135 ],
+            "translation": [ 2, 5, 0.9 ],
+            "scale": [ 0.7, 0.7, 0.95 ]
+        },
+        "gui": {
+		"scale":  [ 1, 1, 1 ],
+            	"translation":  [ 0, 0, 0 ]
+		},
+		"ground": {
+            	"rotation":  [ -90, 0, 90 ],
+            	"translation":  [ 0, -1, 0 ],
+		"scale":  [ 0.8, 0.8, 0.9 ]
+		}
+	  }
+     }
+}

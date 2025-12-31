@@ -1,7 +1,7 @@
 package com.amorabot.inscripted.APIs;
 
-import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
-import com.amorabot.inscripted.utils.CraftingUtils;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
+import com.amorabot.inscripted.math.MathUtils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Location;
@@ -11,11 +11,15 @@ import org.bukkit.entity.Player;
 
 public class SoundAPI {
 
+    public static void playAnvil(Audience audience, Location loc){
+        SoundAPI.playGenericSoundAtLocation(audience,loc,"block.anvil.land",0.7f,0.5f);
+    }
+
     public static void playDodgeFor(Audience audience, Location dodgeLocation){
         playGenericSoundAtLocation(audience,
                 dodgeLocation,
                 "entity.bat.takeoff",
-                0.4f, 0.3f + CraftingUtils.getRandomNumber(-3,3) * 0.1f);
+                0.4f, 0.3f + MathUtils.getRandomNumber(-3,3) * 0.1f);
     }
 
     public static void playBreakSoundFor(Entity entity){
@@ -87,7 +91,6 @@ public class SoundAPI {
             case MACE -> {
                 playGenericSoundAtLocation(audience, loc, "block.gravel.break", 0.7f, 0.6f);
 //                playGenericSoundAtLocation(audience, loc, "block.basalt.break", 0.8f, 0.5f);
-//                playGenericSoundAtLocation(audience, loc, "entity.zombie.break_wooden_door", 0.1f, 0.2f);
             }
         }
     }

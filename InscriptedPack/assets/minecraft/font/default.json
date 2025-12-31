@@ -1,0 +1,117 @@
+{
+   "providers":[
+      {
+         "type": "space",
+         "advances":{
+            "\uF001":-1,
+            "\uF002":-2,
+            "\uF003":-3,
+            "\uF004":-4,
+            "\uF005":-5,
+            "\uF006":-6,
+            "\uF007":-7,
+            "\uF008":-8,
+            "\uF009":-9,
+            "\uF010":-10,
+            "\uF011":-16,
+            "\uF012":-32, 
+            "\uF013":-64, 
+            "\uF014":-128, 
+            "\uF021": 1, 
+            "\uF022": 2, 
+            "\uF023": 3, 
+            "\uF024": 4, 
+            "\uF025": 5, 
+            "\uF026": 6, 
+            "\uF027": 7, 
+            "\uF028": 8, 
+            "\uF029": 9, 
+            "\uF030": 10, 
+            "\uF031": 16, 
+            "\uF032": 32, 
+            "\uF033": 64 
+         }
+      },
+	  {
+	  "type": "bitmap",
+	  "file": "minecraft:font/sam.png",
+	  "ascent": 20,
+	  "height": 20,
+	  "chars": [
+			"\uE000"
+		  ]
+	  },
+	  {
+	  "type": "bitmap",
+	  "file": "minecraft:font/frame.png",
+	  "ascent": 16,
+	  "height": 16,
+	  "chars": [
+			"\uE010"
+		  ]
+	  },
+	  {
+	  "type": "bitmap",
+	  "file": "minecraft:font/hpfull.png",
+	  "ascent": 16,
+	  "height": 16,
+	  "chars": [
+			"\uE011\uE012\uE013"
+		  ]
+	  },
+	  {
+	  "type": "bitmap",
+	  "file": "minecraft:font/hphalf.png",
+	  "ascent": 16,
+	  "height": 16,
+	  "chars": [
+			"\uE014\uE015\uE016"
+		  ]
+	  },
+	  {
+	  "type": "bitmap",
+	  "file": "minecraft:font/nohp.png",
+	  "ascent": 16,
+	  "height": 16,
+	  "chars": [
+			"\uE017\uE018\uE019"
+		  ]
+	  },
+	  {
+	  "type": "bitmap",
+	  "file": "minecraft:font/soulfull.png",
+	  "ascent": 16,
+	  "height": 16,
+	  "chars": [
+			"\uE021\uE022\uE023"
+		  ]
+	  },
+	  {
+	  "type": "bitmap",
+	  "file": "minecraft:font/soulhalf.png",
+	  "ascent": 16,
+	  "height": 16,
+	  "chars": [
+			"\uE024\uE025\uE026"
+		  ]
+	  },
+	  {
+	  "type": "bitmap",
+	  "file": "minecraft:font/nosoul.png",
+	  "ascent": 16,
+	  "height": 16,
+	  "chars": [
+			"\uE027\uE028\uE029"
+		  ]
+	  },
+	  {
+	  "type": "bitmap",
+	  "file": "minecraft:font/skillicons.png",
+	  "ascent": 16,
+	  "height": 16,
+	  "chars": [
+			"\uE030\uE031\uE032"
+		  ]
+	  }
+   ]
+}

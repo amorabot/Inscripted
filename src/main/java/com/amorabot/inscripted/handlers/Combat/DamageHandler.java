@@ -2,35 +2,29 @@ package com.amorabot.inscripted.handlers.Combat;
 
 import com.amorabot.inscripted.APIs.MessageAPI;
 import com.amorabot.inscripted.APIs.SoundAPI;
-import com.amorabot.inscripted.APIs.damageAPI.CombatEffects;
-import com.amorabot.inscripted.APIs.damageAPI.DamageRouter;
-import com.amorabot.inscripted.APIs.damageAPI.DamageSource;
+import com.amorabot.inscripted.combat.CombatEffects;
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.HealthComponent;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.ItemTypes;
-import com.amorabot.inscripted.components.Items.Weapon.Weapon;
-import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.components.Player.stats.StatCompiler;
-import com.amorabot.inscripted.events.FunctionalItemAccessInterface;
-import com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler;
-import com.amorabot.inscripted.managers.JSONProfileManager;
-import com.amorabot.inscripted.managers.PlayerBuffManager;
-import com.amorabot.inscripted.skills.PlayerAbilities;
-import com.amorabot.inscripted.utils.DelayedTask;
+import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
+import com.amorabot.inscripted.events.ItemUsage;
+import com.amorabot.inscripted.item.structure.Weapon.Weapon;
+import com.amorabot.inscripted.item.structure.io.ItemDeserializer;
+import com.amorabot.inscripted.managers.CasterStateManager;
+import com.amorabot.inscripted.skill.casting.CastType;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.scheduler.BukkitRunnable;
+
+import static com.amorabot.inscripted.APIs.SoundAPI.playAttackSoundFor;
+import static com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler.isValidItem;
+import static com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler.weaponCast;
 
 public class DamageHandler implements Listener {
 
@@ -55,39 +49,43 @@ public class DamageHandler implements Listener {
         Entity attacker = event.getDamager();
         Entity defender = event.getEntity();
 
-        if (attacker instanceof Mob m){
-            if (defender instanceof Player p){
-                DamageRouter.entityDamage(m,p, DamageSource.HIT, PlayerAbilities.FIST);
-                return;
-            }
-        } else {
-            event.setCancelled(true);
-        }
+//        if (attacker instanceof Mob m){
+//            if (defender instanceof Player p){
+////                DamageRouter.entityDamage(m,p, DamageSource.HIT, PlayerAbilities.FIST);
+//                return;
+//            }
+//        } else {
+//            event.setCancelled(true);
+//        }
 
-        if (attacker instanceof Player){
-            Player p = (Player) attacker;
+        if (attacker instanceof Player p){
+
             ItemStack heldItem = p.getInventory().getItemInMainHand();
             if (heldItem.getType().isAir()){ //If the player is punching
-                Profile playerProfile = JSONProfileManager.getProfile(p.getUniqueId());
-                if (!playerProfile.getEquipmentComponent().getSlot(ItemTypes.WEAPON).isIgnorable()){ //If punching with a equipped weapon, unequip
-                    playerProfile.getEquipmentComponent().setSlot(ItemTypes.WEAPON, null);
-                }
+//                FIST
                 //Temporary---------------------------
                 if (defender instanceof Player){
                     event.setCancelled(true);
                     return;
                 }//---------------------------
-//                if (defender instanceof LivingEntity def){ //TODO: check why resulting holograms are not interpolating(FROM THIS CALL ONLY)
-//                    DamageRouter.playerAttack(p, def, DamageSource.HIT);
-//                    return;
-//                }
             }
-            PersistentDataContainer dataContainer = heldItem.getItemMeta().getPersistentDataContainer();
-            boolean isWeapon = FunctionalItemAccessInterface.isItemType(FunctionalItemAccessInterface.WEAPON_TAG, dataContainer);
-            if (isWeapon){
-                Weapon weaponData = FunctionalItemAccessInterface.deserializeWeaponData(dataContainer);
-                if (weaponData == null){return;}
-                PlayerEquipmentHandler.basicAttackBy(p,heldItem,weaponData.getSubtype());
+            boolean validClickedWeapon = isValidItem(heldItem) & ItemDeserializer.isWeapon(heldItem);
+            if (validClickedWeapon) {
+                Weapon weaponData = ItemDeserializer.deserializeWeaponData(heldItem);
+                if (CasterStateManager.getCastingStateFor(p).isAlternateCasting()){
+                    CasterStateManager.alternateSpellcastingTriggerFor(p, ItemUsage.WEAPON_LEFT_CLICK_AIR); //Serves only as a notification/update to the CastingState
+                    weaponCast(p,heldItem,CastType.SPECIAL_ATTACK,69);
+                    event.setCancelled(true);
+                    return;
+                }
+                if (weaponData!=null){
+                    if (!p.hasCooldown(heldItem.getType())){
+                        playAttackSoundFor(p,p.getLocation(),weaponData.getWeaponType());
+                    }
+                }
+                weaponCast(p, heldItem, CastType.BASIC_ATTACK, 69);
+                event.setCancelled(true);
+                return;
             }
         }
 
@@ -106,21 +104,21 @@ public class DamageHandler implements Listener {
             event.deathMessage(Component.text(deadPlayer.getName() + " ☠").color(NamedTextColor.RED));
         }
 
-        PlayerBuffManager.clearAllBuffsFor(deadPlayer);
+        PlayerBuffManager.clearAllBuffsFor(deadPlayer.getUniqueId());
 
         /*
         If the player's HP is tempered with immediatly, in game death effects are cancelled (Teleport, automatic HP remapping)
         When implementing custom deaths (predefined respawns, etc...), keep this in mind
         */
-        new DelayedTask(new BukkitRunnable() {
-            @Override
-            public void run() {
-                StatCompiler.updateProfile(deadPlayer.getUniqueId());
-
-                HealthComponent.replenishHitPoints(deadPlayer);
-            }
-        }, 5
-        );
+//        new DelayedTask(new BukkitRunnable() {
+//            @Override
+//            public void run() {
+////                StatCompiler.updateProfile(deadPlayer.getUniqueId());
+//
+////                HealthComponent.replenishHitPoints(deadPlayer);
+//            }
+//        }, 5
+//        );
 
         CombatEffects.deathEffect(deadPlayer);
         //Death effect -> TODO: Move this block to CombatEffects class

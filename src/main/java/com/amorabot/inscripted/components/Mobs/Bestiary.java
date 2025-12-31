@@ -1,47 +1,43 @@
 package com.amorabot.inscripted.components.Mobs;
 
 import com.amorabot.inscripted.APIs.MedicalCareAPI;
-import com.amorabot.inscripted.APIs.damageAPI.EntityStateManager;
-import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Attack;
-import com.amorabot.inscripted.components.DefenceComponent;
-import com.amorabot.inscripted.components.HealthComponent;
-import com.amorabot.inscripted.utils.Utils;
+import com.amorabot.inscripted.combat.EntityStateManager;
+import com.amorabot.inscripted.player.profile.component.DefenceComponent;
+import com.amorabot.inscripted.player.profile.component.HealthComponent;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
 
 @Getter
 public enum Bestiary {
 
+
     RATAO(EntityType.SILVERFISH, 30, "Ratão",
             new int[]{60,120,  0,0,  0,0,  0,0,  0,0}, 110, 5, 0, 0, 0, 0, 0, 0,0,
             new HealthComponent(400,0),
-            new DefenceComponent(0,20,20,30,70,20),
+            new DefenceComponent(),
             List.of(),
             List.of("minecraft:climb_on_top_of_powder_snow","minecraft:silverfish_merge_with_stone","minecraft:silverfish_wake_up_friends"),
             5,0.3);
 
 
 
-    @Getter
-    private static final NamespacedKey mobPDCKey = new NamespacedKey(Inscripted.getPlugin(), "INSCRIPTED_MOB");
-    @Getter
-    private static final NamespacedKey idPDCKey = new NamespacedKey(Inscripted.getPlugin(), "SPAWNER_ID");
+//    @Getter
+//    private static final NamespacedKey mobPDCKey = new NamespacedKey(Inscripted.getPlugin(), "INSCRIPTED_MOB");
+//    @Getter
+//    private static final NamespacedKey idPDCKey = new NamespacedKey(Inscripted.getPlugin(), "SPAWNER_ID");
 
 
     private final EntityType type;
     private final Component displayName;
-    private final MobStats stats;
+//    private final MobStats stats;
 
     private final List<String> customAddedGoals;
     private final List<String> removedGoals;
@@ -56,12 +52,13 @@ public enum Bestiary {
              double sizeMod, double speedMod
              ){
         this.type = type;
-        this.stats = new MobStats(level,new Attack(
-                new int[]{damage[0],damage[1]},
-                new int[]{damage[2],damage[3]},new int[]{damage[4],damage[5]},new int[]{damage[6],damage[7]},
-                new int[]{damage[8],damage[9]}, acc, critChance, critDmg, shred, maelstrom, bleedChance,  firePen, coldPen, lightningPen),
-                healthPreset,
-                defensePreset);
+//        this.stats = new MobStats(level,new AttackData(
+//                new int[]{damage[0],damage[1]},
+//                new int[]{damage[2],damage[3]},new int[]{damage[4],damage[5]},new int[]{damage[6],damage[7]},
+//                new int[]{damage[8],damage[9]}, acc, critChance, critDmg, shred, maelstrom, bleedChance,  firePen, coldPen, lightningPen),
+//                healthPreset,
+//                defensePreset);
+//        this.stats=null;
         this.displayName = Component.text(displayName).appendSpace().append(Component.text("[Lv."+level+"]").color(NamedTextColor.GRAY));
 
         this.customAddedGoals = addGoals;
@@ -86,8 +83,8 @@ public enum Bestiary {
         EntityStateManager.setInscriptedMobMeta(mob,spawnerData);
         //Keeping stat data in memory might be more advantageous for mobs
         //The Bestiary entry and SpawnerID can both be stored on the PDC so the stat data can be restored on restarts
-        mob.getPersistentDataContainer().set(getMobPDCKey(), PersistentDataType.STRING, this.toString());
-        mob.getPersistentDataContainer().set(getIdPDCKey(), PersistentDataType.STRING, spawnerData);
+//        mob.getPersistentDataContainer().set(getMobPDCKey(), PersistentDataType.STRING, this.toString());
+//        mob.getPersistentDataContainer().set(getIdPDCKey(), PersistentDataType.STRING, spawnerData);
 
         //Adding custom AI goals
         //...
@@ -102,16 +99,18 @@ public enum Bestiary {
     }
 
     public static Bestiary getBestiaryEntryFor(LivingEntity mob){
-        String bestiaryEntry = mob.getPersistentDataContainer().get(Bestiary.getMobPDCKey(), PersistentDataType.STRING);
-        try {
-            return Bestiary.valueOf(bestiaryEntry);
-        } catch (IllegalArgumentException e) {
-            Utils.error("Unable to map bestiary entry: " + bestiaryEntry);
-            throw new RuntimeException(e);
-        }
+//        String bestiaryEntry = mob.getPersistentDataContainer().get(Bestiary.getMobPDCKey(), PersistentDataType.STRING);
+//        try {
+//            return Bestiary.valueOf(bestiaryEntry);
+//        } catch (IllegalArgumentException e) {
+//            Utils.error("Unable to map bestiary entry: " + bestiaryEntry);
+//            throw new RuntimeException(e);
+//        }
+        return null;
     }
     public static String getSpawnerIdFor(LivingEntity mob){
-        return mob.getPersistentDataContainer().getOrDefault(Bestiary.getIdPDCKey(), PersistentDataType.STRING, "INVALID MOB");
+        return "";
+//        return mob.getPersistentDataContainer().getOrDefault(Bestiary.getIdPDCKey(), PersistentDataType.STRING, "INVALID MOB");
     }
 
 

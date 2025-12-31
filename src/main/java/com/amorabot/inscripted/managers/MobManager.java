@@ -21,16 +21,16 @@ public class MobManager {
 
 
     //Nullable
-    public static InscriptedMob getMobData(LivingEntity mob){
-        String spawnerKey = Bestiary.getSpawnerIdFor(mob);
-        if (!spawnerMap.containsKey(spawnerKey)){
-            Utils.error("Spawner key ("+spawnerKey+") not initialized.");
-            return null;
-        }
-
-        MobSpawner loadedSpawner = spawnerMap.get(spawnerKey);
-        return loadedSpawner.getMobByID(mob.getUniqueId());
-    }
+//    public static InscriptedMob getMobData(LivingEntity mob){
+//        String spawnerKey = Bestiary.getSpawnerIdFor(mob);
+//        if (!spawnerMap.containsKey(spawnerKey)){
+//            Utils.error("Spawner key ("+spawnerKey+") not initialized.");
+//            return null;
+//        }
+//
+//        MobSpawner loadedSpawner = spawnerMap.get(spawnerKey);
+//        return loadedSpawner.getMobByID(mob.getUniqueId());
+//    }
 
 
 
@@ -46,23 +46,23 @@ public class MobManager {
         assert mainWorld != null;
         for (LivingEntity l : mainWorld.getLivingEntities()){
             //Mob metadata is not persistent!! Cant rely on it here since it's wiped at this point
-            if (l.getPersistentDataContainer().has(Bestiary.getIdPDCKey())){
-                String spawnerKey = Bestiary.getSpawnerIdFor(l);
-                if (!spawnerMap.containsKey(spawnerKey)){
-                    try {
-                        Spawners mappedSpawnerKey = Spawners.valueOf(spawnerKey);
-                        MobSpawner spawnerData = mappedSpawnerKey.getSpawnerData();
-                        //Instantiate this entity directly into the spawner
-                        spawnerData.reinstantiateMob(l);
-                    } catch (IllegalArgumentException ex){
-                        Utils.error("Invalid mob spawner key. (Reload re-instantiation)");
-                    }
-                    continue;
-                }
-                //Entities for that spawner have already been re-instantiated, lets access the spawner directly
-                MobSpawner storedSpawner = spawnerMap.get(spawnerKey);
-                storedSpawner.reinstantiateMob(l);
-            }
+//            if (l.getPersistentDataContainer().has(Bestiary.getIdPDCKey())){
+//                String spawnerKey = Bestiary.getSpawnerIdFor(l);
+//                if (!spawnerMap.containsKey(spawnerKey)){
+//                    try {
+//                        Spawners mappedSpawnerKey = Spawners.valueOf(spawnerKey);
+//                        MobSpawner spawnerData = mappedSpawnerKey.getSpawnerData();
+//                        //Instantiate this entity directly into the spawner
+//                        spawnerData.reinstantiateMob(l);
+//                    } catch (IllegalArgumentException ex){
+//                        Utils.error("Invalid mob spawner key. (Reload re-instantiation)");
+//                    }
+//                    continue;
+//                }
+//                //Entities for that spawner have already been re-instantiated, lets access the spawner directly
+//                MobSpawner storedSpawner = spawnerMap.get(spawnerKey);
+//                storedSpawner.reinstantiateMob(l);
+//            }
         }
     }
 

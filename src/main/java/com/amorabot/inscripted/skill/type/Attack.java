@@ -1,0 +1,89 @@
+package com.amorabot.inscripted.skill.type;
+
+import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
+import com.amorabot.inscripted.player.PlayerDataContainer;
+import com.amorabot.inscripted.player.profile.component.AttackData;
+import com.amorabot.inscripted.skill.casting.CastSource;
+import com.amorabot.inscripted.skill.Skills;
+import com.amorabot.inscripted.skill.casting.CastType;
+import com.amorabot.inscripted.tasks.base.Skillcast;
+import com.amorabot.inscripted.utils.Utils;
+import lombok.Getter;
+import org.bukkit.Material;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.util.Vector;
+
+import java.util.UUID;
+
+@Getter
+public abstract class Attack extends Skillcast.Simple {
+    protected final AttackData attackData;
+
+    public Attack(UUID playerID, Skills skillUsed, CastSource castSource,WeaponAttackSpeeds weaponSpeed) {
+        super(playerID, skillUsed, castSource,weaponSpeed);
+        if (!skillUsed.isAttackSkill()){
+            if (DEBUG_MODE) Utils.error("Invalid base attack skill (" + skillUsed.name() + "). Attack configuration not set.");
+            this.attackData = null;
+            return;
+        }
+        this.attackData = new AttackData(playerID,skillUsed,PlayerDataContainer.getDataContainerFor(playerID).getGlobalStats());
+    }
+    public Attack(UUID playerID, Vector skillcastOrigin, Skills skillUsed, CastSource castSource, WeaponAttackSpeeds weaponSpeed) {
+        super(playerID, skillcastOrigin, skillUsed, castSource,weaponSpeed);
+        if (!skillUsed.isAttackSkill()){
+            if (DEBUG_MODE) Utils.error("Invalid base attack skill (" + skillUsed.name() + "). Attack configuration not set.");
+            this.attackData = null;
+            return;
+        }
+        this.attackData = new AttackData(playerID,skillUsed,PlayerDataContainer.getDataContainerFor(playerID).getGlobalStats());
+    }
+
+
+    public static class Basic extends Attack{
+        private final double itemUsageCD;
+        private final PotionEffect swingEffect;
+
+        public Basic(UUID playerID, Vector skillcastOrigin, Skills skillUsed, CastSource castSource, WeaponAttackSpeeds weaponSpeed) {
+            super(playerID, skillcastOrigin, skillUsed, castSource, weaponSpeed);
+            this.itemUsageCD = weaponSpeed.getItemUsageCooldown();
+            this.swingEffect = weaponSpeed.getSwingAnimationBuff();
+        }
+        public Basic(UUID playerID, Skills skillUsed, CastSource castSource, WeaponAttackSpeeds weaponSpeed) {
+            super(playerID, skillUsed, castSource, weaponSpeed);
+            this.itemUsageCD = weaponSpeed.getItemUsageCooldown();
+            this.swingEffect = weaponSpeed.getSwingAnimationBuff();
+        }
+
+        @Override
+        public void start(long delay, long timer) {
+            //Assumes the held item at this time is the weapon used to trigger the cast (as it should)
+            if (getCastedSkill().getType().equals(CastType.BASIC_ATTACK)){
+                if (!player.hasCooldown(player.getInventory().getItemInMainHand().getType())){
+                    run();
+                    register();
+                    return;
+                }
+            } else {
+                //Handling SPECIAL_ATTACK's, where the local register() logic is not needed
+                PlayerDataContainer playerData = PlayerDataContainer.getDataContainerFor(getPlayerID());
+                if (playerData.skillcastBy(getCastedSkill(),getBaseCooldownMod())){
+                    run();
+                    return;
+                }
+            }
+        }
+
+        @Override
+        public void register(){
+            final int cooldownReduction = getBaseCooldownMod(); //TODO: Fetch Cooldown Reduction stat
+            int usageCooldown = (int) (itemUsageCD * ( (100 + cooldownReduction)/100D ));
+            getPlayer().setCooldown(Material.SHEARS,usageCooldown);
+            getPlayer().setCooldown(Material.BOW,usageCooldown);
+            if (swingEffect==null){
+                if (DEBUG_MODE) Utils.error("No swing speed modifier.");
+                return;
+            }
+            swingEffect.apply(getPlayer());
+        }
+    }
+}

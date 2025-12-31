@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/t1bow",
+  "textures": {
+    "layer0": "minecraft:item/t3bow"
+  }
+}

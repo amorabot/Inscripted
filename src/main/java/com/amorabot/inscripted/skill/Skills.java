@@ -1,0 +1,478 @@
+package com.amorabot.inscripted.skill;
+
+import com.amorabot.inscripted.APIs.SoundAPI;
+import com.amorabot.inscripted.item.inscription.definition.Stats;
+import com.amorabot.inscripted.item.inscription.definition.TriggerTimes;
+import com.amorabot.inscripted.item.inscription.definition.TriggerTypes;
+import com.amorabot.inscripted.item.inscription.language.ValueType;
+import com.amorabot.inscripted.item.render.InscriptedPalette;
+import com.amorabot.inscripted.item.structure.Weapon.DamageTypes;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponAttackSpeeds;
+import com.amorabot.inscripted.item.structure.Weapon.WeaponTypes;
+import com.amorabot.inscripted.player.Archetypes;
+import com.amorabot.inscripted.player.PlayerDataContainer;
+import com.amorabot.inscripted.player.profile.parsing.StatPool;
+import com.amorabot.inscripted.skill.annotations.AttackSkill;
+import com.amorabot.inscripted.skill.annotations.AuraSkill;
+import com.amorabot.inscripted.skill.annotations.DurationSkill;
+import com.amorabot.inscripted.skill.annotations.ProjectileSkill;
+import com.amorabot.inscripted.skill.archetypes.axe.AxeBasicAttacks;
+import com.amorabot.inscripted.skill.archetypes.axe.AxeMovement;
+import com.amorabot.inscripted.skill.archetypes.axe.AxeSpecials;
+import com.amorabot.inscripted.skill.archetypes.axe.AxeUtility;
+import com.amorabot.inscripted.skill.archetypes.bow.BowBasicAttacks;
+import com.amorabot.inscripted.skill.archetypes.bow.BowMovement;
+import com.amorabot.inscripted.skill.archetypes.bow.BowSpecials;
+import com.amorabot.inscripted.skill.archetypes.bow.BowUtility;
+import com.amorabot.inscripted.skill.archetypes.dagger.DaggerBasicAttacks;
+import com.amorabot.inscripted.skill.archetypes.dagger.DaggerMovement;
+import com.amorabot.inscripted.skill.archetypes.dagger.DaggerSpecials;
+import com.amorabot.inscripted.skill.archetypes.dagger.DaggerUtility;
+import com.amorabot.inscripted.skill.archetypes.mace.MaceBasicAttacks;
+import com.amorabot.inscripted.skill.archetypes.mace.MaceMovement;
+import com.amorabot.inscripted.skill.archetypes.mace.MaceSpecials;
+import com.amorabot.inscripted.skill.archetypes.mace.MaceUtility;
+import com.amorabot.inscripted.skill.archetypes.sword.SwordBasicAttacks;
+import com.amorabot.inscripted.skill.archetypes.sword.SwordMovement;
+import com.amorabot.inscripted.skill.archetypes.sword.SwordSpecials;
+import com.amorabot.inscripted.skill.archetypes.sword.SwordUtility;
+import com.amorabot.inscripted.skill.archetypes.wand.WandBasicAttacks;
+import com.amorabot.inscripted.skill.archetypes.wand.WandMovement;
+import com.amorabot.inscripted.skill.archetypes.wand.WandSpecials;
+import com.amorabot.inscripted.skill.archetypes.wand.WandUtility;
+import com.amorabot.inscripted.skill.casting.CastSource;
+import com.amorabot.inscripted.skill.casting.CastType;
+import com.amorabot.inscripted.skill.archetypes.item.ItemAuras;
+import com.amorabot.inscripted.skill.routine.projectile.ProjectileGenerators;
+import com.amorabot.inscripted.skill.type.*;
+import com.amorabot.inscripted.tasks.base.Skillcast;
+import com.amorabot.inscripted.utils.Utils;
+import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
+
+import static com.amorabot.inscripted.player.Archetypes.*;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Consumer;
+//TODO: Move annotation data to skills.yml file
+//TODO: Remake functional structure using runnables that define any custom routines
+
+@Getter
+public enum Skills {
+    //Basic attack skills
+    FIST(null, null, CastType.NEUTRAL, new Tags[]{Tags.NONE},0, "lol where u weapon at"),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {10, -10, -40, -40, -70}, dmgConversion = {0, 0, 0, 0} )
+    BASIC_AXE_SLASH(AxeBasicAttacks::standardAxeSlash, MARAUDER,CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0,
+            "Standard attack for axes - Widest & slowest slash"),
+
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, -10, -10, -10, -60}, dmgConversion = {0, 0, 0, 0} )
+    BASIC_SWORD_SLASH(SwordBasicAttacks::standardSwordSlash, GLADIATOR, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0,
+            "Standard attack for swords - Most balanced slash overall"),
+
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {10, -20, -20, -20, -60}, dmgConversion = {0, 0, 0, 0} )
+    @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.CONE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = false )
+    BASIC_BOW_SHOT(BowBasicAttacks::standardBowAttack, MERCENARY, CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE}, 0,
+            "Standard bow attack - Faster travel speed"),
+
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, -20, -20, -20, -60}, dmgConversion = {0, 0, 0, 0} )
+    BASIC_DAGGER_SLASH(DaggerBasicAttacks::standardDaggerSlash, ROGUE, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0,
+            "Standard attack for daggers - Faster & Shorter range slash"),
+
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {20, 10, 10, 30, -40}, dmgConversion = {0, 0, 0, 0} )
+    @ProjectileSkill( baseProjectiles = 3, spread = ProjectileGenerators.SHOTGUN, defaultSteering = SteeringBehaviors.SEEK, uniqueTarget = true )
+    BASIC_WAND_ATTACK(WandBasicAttacks::standardWandAttack, SORCERER, CastType.BASIC_ATTACK, new Tags[]{Tags.PROJECTILE}, 0,
+            "Standard wand projectiles - Shoots 3 slower & converging projectiles"),
+
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {20, 60, 60, 60, -60}, dmgConversion = {0, 0, 0, 0} )
+    BASIC_MACE_SLAM(MaceBasicAttacks::standardMaceSlam, TEMPLAR, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE,Tags.AOE},0,
+            "Standard attack for maces - Frontal area slam"),
+
+    //Movement skills
+    CHARGE(AxeMovement::charge, MARAUDER,CastType.MOVEMENT, new Tags[0],10,
+            "Frontal & unstoppable 'dash'. You can steer while you're at it"),
+    LEAP(SwordMovement::leap, GLADIATOR,CastType.MOVEMENT, new Tags[0],3,
+            "Frontal leap, simple as that"),//TODO: improve visuals
+    ACROBATICS(BowMovement::acrobatics, MERCENARY,CastType.MOVEMENT, new Tags[0],5,
+            "Leap backwards and shoot yourself in the air"),//TODO: improve visuals
+    VANISH(DaggerMovement::vanish, ROGUE,CastType.MOVEMENT, new Tags[0],12,
+            "Vanish in plain sight and gain Speed 2 during the effect"),
+    WARP(WandMovement::warp, SORCERER,CastType.MOVEMENT, new Tags[0],7,
+            "Directional 'blink' forward"),
+    TECTONIC_PULL(MaceMovement::pull, TEMPLAR,CastType.MOVEMENT, new Tags[0],7,
+            "Pulls any players within range and gives them Slowness 2"),//TODO: improve visuals
+    
+    //Utility Skills
+    @DurationSkill(duration = 12, refreshRate = 5)
+    WAR_BANNER(AxeUtility::warBanner, MARAUDER, CastType.UTILITY, new Tags[]{Tags.AOE},7,
+            "Defensive 'beacon'. Gives the Fortify buff to whoever enters its area."),
+    @DurationSkill(duration = 10, refreshRate = 5)
+    RING_OF_BLADES(SwordUtility::ringOfBlades, GLADIATOR, CastType.UTILITY, new Tags[]{Tags.AOE},20,
+            "Offensive 'beacon'. Gives the Adrenaline buff to whoever enters its area."),
+    @DurationSkill(duration = 1.5, refreshRate = 3)
+    HUNTING_GROUND(BowUtility::huntingGround, MERCENARY, CastType.UTILITY, new Tags[]{Tags.AOE},10,
+            "Cast a physical debuff zone where you are targeting. The debuff is applied when skill expires. Gives you bonus Accuracy on cast."),
+    @DurationSkill(duration = 1.4, refreshRate = 3)
+    CRYOSTASIS(WandUtility::cryostasis, SORCERER, CastType.UTILITY, new Tags[]{Tags.AOE},6,
+            "Cast a frozen area where you're targeting. Freezes any players inside it for 2s."),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-100, -100, -100, -100, -100}, dmgConversion = {0, 0, 0, 0} )
+    @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.CONE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
+    SMOKE_BOMB(DaggerUtility::smokeBomb, ROGUE, CastType.UTILITY, new Tags[]{Tags.AOE},4,
+            "Throw a smoke bomb that blinds enemies that enter it."),
+    @DurationSkill(duration = 2, refreshRate = 4)
+    CLEANSE(MaceUtility::cleanse, TEMPLAR, CastType.UTILITY, new Tags[]{Tags.SPELL},20,
+            "Clear all debuffs on you!"),
+ 
+    //Special skills
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {190, 50, 50, 50, -70}, dmgConversion = {0, 0, 0, 0} )
+    EARTHQUAKE(MaceSpecials::earthquake, TEMPLAR, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE,Tags.AOE},4,
+            "Slam the ground and shatter everything around the impact point"),
+    @AttackSkill( addedBaseDmg = {5,5, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-10, -10, 10, -10, -30}, dmgConversion = {0, 0, 0, 0} )
+    @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.BARRAGE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
+    @DurationSkill(duration = 6, refreshRate = 5)
+    RAIN_OF_ARROWS(BowSpecials::rainOfArrows, MERCENARY, CastType.SPECIAL_ATTACK,new Tags[]{Tags.PROJECTILE,Tags.AOE},7,
+            "Rain hell in front of you"),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-100, -100, -100, -100, -100}, dmgConversion = {0, 0, 0, 0} )
+    @DurationSkill(duration = 1.1, refreshRate = 1)
+    @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.BARRAGE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
+    METEOR(WandSpecials::meteor, SORCERER, CastType.SPECIAL_ATTACK,new Tags[]{Tags.PROJECTILE},6,
+            "Cast a fucking meteor"),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 5,30}, dmgEffectiveness = {30, -30, -30, -30, 140}, dmgConversion = {0, 0, 0, 50} )
+    VIPER_STRIKE(DaggerSpecials::viperStrike, ROGUE, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE},3,
+            "Strike like a poisonous viper in front of you."),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-70, -75, -95, -95, -95}, dmgConversion = {0, 0, 0, 0} )
+    @DurationSkill(duration = 3.5, refreshRate = 1)
+    CYCLONE(AxeSpecials::cyclone, MARAUDER, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE,Tags.AOE},8,
+            "Spin2win"),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {120, -30, -30, -30, -70}, dmgConversion = {0, 0, 0, 0} )
+    LACERATE(SwordSpecials::lacerate, GLADIATOR, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE},5,
+            "Make your enemies bleed..."){
+        @Override
+        public void applyBonusStats(StatPool globalPlayerStats){ //Adding base bleed chance
+            globalPlayerStats.insertValue(Stats.BLEED, ValueType.PERCENTAGE,new int[]{50});
+        }
+    },
+
+    //Secondary skills (shouldn't be directly mapped/instanced)
+    @DurationSkill(duration = 8, refreshRate = 5)
+    SMOKE_BOMB_CLOUD(DaggerUtility::smokeBombCloud, ROGUE, CastType.NEUTRAL, new Tags[0],0,
+            "The 'smoke' part of the bomb", true),
+    @AttackSkill( addedBaseDmg = {0,0, 15,50, 0,0, 0,0, 0,0}, dmgEffectiveness = {500, 550, -10, -40, -70}, dmgConversion = {50, 0, 0, 0} )
+    METEOR_IMPACT(WandSpecials::meteorImpact, SORCERER, CastType.NEUTRAL, new Tags[]{Tags.SPELL,Tags.AOE},0,
+            "The meteor you brought upon this land will crash and deal some damage"),
+
+    // Keystone Auras
+    @AuraSkill( period = 1, toggleCooldown = -1 )
+    PERMAFROST(ItemAuras::registerPermafrost, null, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0,
+            "3-pulse aura that slows everyone around you."),
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 15,70, 0,0, 0,0}, dmgEffectiveness = {0, -100, 50, -100, -100}, dmgConversion = {0, 40, 0, 0} )
+    @AuraSkill( period = 1.5, toggleCooldown = -1 )
+    THUNDERSTRUCK(ItemAuras::registerThunderstruck, null, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0,
+            "Get periodically struck by lightning. This skill's lightning damage scales with weapon damage!"),
+    @AuraSkill( period = 0.5, toggleCooldown = -1 )
+    RIGHTEOUS_FIRE(ItemAuras::registerRighteousFire, null, CastType.NEUTRAL, new Tags[]{Tags.AOE,Tags.AURA},0,
+            "Deal 5% of your max. health of Fire DMG to you and any nearby enemy every tick."),
+    @AuraSkill( period = 10, toggleCooldown = -1 )
+    WINDS_OF_CHANGE(ItemAuras::registerWindsOfChange, null, CastType.NEUTRAL, new Tags[]{Tags.AURA},0,
+            "Periodically heal yourself!"),
+    @AuraSkill( period = 0.5, toggleCooldown = -1 )
+    BERSERK(ItemAuras::registerBerserk, null, CastType.NEUTRAL, new Tags[]{Tags.AURA},0,
+            "Amplify your Physical DMG while below 20% Health.");
+
+
+
+    private final Consumer<Skillcast> skillRoutine;
+    private final String description;
+    private final Archetypes archetype;
+    private final CastType type;
+    private final Tags[] skillTags;
+    private final int cooldownInSeconds;
+    private boolean ignoreOwner = true;
+
+    //TODO: implement cast sound function, Archetype & variantID
+    Skills(Consumer<Skillcast> routine, Archetypes archetype, CastType type, Tags[] skillTags, int cooldown, String description, boolean... ignoreOwner){
+        this.skillRoutine = routine;
+        this.archetype = archetype;
+        this.type = type;
+        this.skillTags = skillTags;
+        this.cooldownInSeconds = cooldown;
+        if (ignoreOwner!=null && ignoreOwner.length==1){
+            this.ignoreOwner = ignoreOwner[0];
+        }
+        this.description = description;
+    }
+
+
+    public void cast(UUID casterID, CastSource source, WeaponAttackSpeeds speedModifier){
+        final boolean persistent = this.isDuration();
+
+        if (isAura()){ //Prioritize annotation data when trying to cast
+            if (source.equals(CastSource.ITEM) && getType().equals(CastType.NEUTRAL)){
+                Utils.log("Item aura cast!");
+            }
+            new Aura(casterID,this,source,speedModifier).start(0,0);
+            return;
+        }
+        if (isAttackSkill()&& !isDuration()){
+            new Attack.Basic(casterID,this,source,speedModifier).start(0,0);
+            return;
+        }
+
+        switch (getType()){
+            case BASIC_ATTACK, SPECIAL_ATTACK -> {
+                if (persistent){
+                    // Instantiate a persistent attack
+                    new PersistentAttack(casterID,this,source,speedModifier).start(0,0);
+                }
+                new Attack.Basic(casterID,this,source,speedModifier).start(0,0);
+            }
+            case MOVEMENT -> //Instantiate a Movement
+            {
+                new Movement(casterID,this,source,speedModifier).start(0,0);
+                PlayerDataContainer.getDataContainerFor(casterID).onNotify(TriggerTimes.LATE, TriggerTypes.ON_MOVEMENT, Bukkit.getPlayer(casterID),new int[1]);
+            }
+            case UTILITY -> {
+                if (isAura()){
+                    // Instantiate a Aura
+                    new Aura(casterID,this,source,speedModifier).start(0,0);
+                }
+                //Instantiate a Utility
+                new Utility(casterID,this,source,speedModifier).start(0,0);
+            }
+            case NEUTRAL -> { // Item-related casts
+                Utils.log("NEUTRAL CASTING");
+//                if (source.equals(CastSource.ITEM)){
+//                    Utils.log("Item Cast!");
+//                }
+//                new Aura(casterID,this,source,speedModifier).start(0,0);
+            }
+            default -> {
+                Utils.error("Fucked skillcast :D");
+            }
+        }
+        PlayerDataContainer.getDataContainerFor(casterID).onNotify(TriggerTimes.LATE, TriggerTypes.ON_CAST, Bukkit.getPlayer(casterID),new int[1]);
+
+    }
+    private static void invalidAbilityCast(Player caster){
+        SoundAPI.playGenericSoundAtLocation(caster, caster.getLocation(), "block.note_block.basedrum", 0.9F, 1.0F);
+    }
+    public void applyBonusStats(StatPool globalPlayerStats){ //Skills with bonus stats should override this method
+    }
+
+
+    public AttackSkill getAttackSkillData(){
+        return (AttackSkill) getSkillAnottationData(AttackSkill.class);
+    }
+    public boolean isAttackSkill(){
+        return (getAttackSkillData() != null);
+    }
+
+
+    public ProjectileSkill getProjectileSkilLData(){
+        return (ProjectileSkill) getSkillAnottationData(ProjectileSkill.class);
+    }
+    public boolean isProjectileSkill(){
+        return (getProjectileSkilLData() != null);
+    }
+
+    public AuraSkill getAuraSkillData(){
+        return (AuraSkill) getSkillAnottationData(AuraSkill.class);
+    }
+    public boolean isAura(){
+        return getAuraSkillData() != null;
+    }
+    public DurationSkill getDurationSkillData(){
+        return (DurationSkill) getSkillAnottationData(DurationSkill.class);
+    }
+    public boolean isDuration(){
+        return getDurationSkillData() != null;
+    }
+
+    private Annotation getSkillAnottationData(Class<? extends Annotation> annotationClass){
+        try {
+            Field skill = Skills.class.getField(this.name());
+            if (skill.isAnnotationPresent(annotationClass)){
+                return skill.getAnnotation(annotationClass);
+            }
+        } catch (NoSuchFieldException e) {
+            Utils.error("No Annotation("+annotationClass.getSimpleName()+") data for " + this.name());
+        }
+        return null;
+    }
+
+    public List<Component> getSkillDataComponents(){
+        List<Component> components = new ArrayList<>();
+        components.add(Component.text(">> " + this + " - " + getType() + " [" + getType().getCommand() + "]")
+                .color(InscriptedPalette.AUGMENTED.getColor()).decorate(TextDecoration.BOLD));
+        components.add(Component.text(getDescription()).color(InscriptedPalette.NEUTRAL_GRAY.getColor()));
+        if (getCooldownInSeconds()>0){
+            components.add(Component.text("Cooldown - " + getCooldownInSeconds() + "s").color(InscriptedPalette.NEUTRAL_GRAY.getColor()));
+        }
+
+        if (isDuration()){
+            components.add(getDurantionSkillComponent(getDurationSkillData()));
+        }
+        if (isAttackSkill()){
+            components.addAll(getAttackSkillComponents(getAttackSkillData()));
+        }
+
+        return components;
+    }
+    public List<Component> getAttackSkillComponents(AttackSkill attackSkill){
+        List<Component> attackComponent = new ArrayList<>();
+        int[] baseDmgs = attackSkill.addedBaseDmg();
+        Component baseDamages = Component.text("Base Damage: ").color(InscriptedPalette.WHITE.getColor());
+        int[] multipliers = attackSkill.dmgEffectiveness();
+        Component multi = Component.text("DMG Effectiveness: ").color(InscriptedPalette.WHITE.getColor());
+        int[] conversions = attackSkill.dmgConversion();
+        Component conversionsComponent = Component.text("Phys-To-Element conversions: ").color(InscriptedPalette.WHITE.getColor());
+        for (int i = 0; i < DamageTypes.values().length; i++) {
+            DamageTypes dmg = DamageTypes.values()[i];
+            //Base dmgs
+            int[] currentBaseDmgValues = new int[]{baseDmgs[2*i+1],baseDmgs[2*i+1]};
+            if (currentBaseDmgValues[0]>0){
+                baseDamages = baseDamages.append(Component.text(
+                        (dmg.getCharacter() + Arrays.toString(currentBaseDmgValues) + " ")
+                ).color(dmg.getDmgColor().getColor()));
+            }
+            //Multi
+            multi = multi.append(Component.text(
+                    (dmg.getCharacter() + (100+multipliers[dmg.ordinal()]) + "% ")
+            ).color(dmg.getDmgColor().getColor()));
+            //Conversions
+            if (dmg.equals(DamageTypes.PHYSICAL)){continue;}
+            conversionsComponent = conversionsComponent.append(Component.text(
+                    (dmg.getCharacter() + (conversions[dmg.ordinal()-1]) + "% ")
+            ).color(dmg.getDmgColor().getColor()));
+        }
+        attackComponent.add(baseDamages);
+        attackComponent.add(multi);
+        attackComponent.add(conversionsComponent);
+        return attackComponent;
+    }
+    public Component getDurantionSkillComponent(DurationSkill durationSkill){
+        return Component.text("Duration - " + durationSkill.duration() + "s").color(InscriptedPalette.NEUTRAL_GRAY.getColor());
+    }
+
+    public static BoundingBox getLargeHitbox(Player player){
+        BoundingBox playerAABB = player.getBoundingBox();
+
+        playerAABB.expand(0.25, 0.0, 0.25);
+        playerAABB.expand(new Vector(0, 1, 0), 0.25);
+
+        return playerAABB;
+    }
+
+    public static Skills mapSkillcast(WeaponTypes weapon, CastType type, int variant){
+        switch (weapon){
+            case AXE -> {
+                switch (type){
+                    case BASIC_ATTACK -> {
+                        //Implement variants later
+                        return BASIC_AXE_SLASH;
+                    }
+                    case MOVEMENT -> {
+                        return CHARGE;
+                    }
+                    case UTILITY -> {
+                        return WAR_BANNER;
+                    }
+                    case SPECIAL_ATTACK -> {
+                        return CYCLONE;
+                    }
+                }
+            }
+            case SWORD -> {
+                switch (type){
+                    case BASIC_ATTACK -> {
+                        return BASIC_SWORD_SLASH;
+                    }
+                    case MOVEMENT -> {
+                        return LEAP;
+                    }
+                    case UTILITY -> {
+                        return RING_OF_BLADES;
+                    }
+                    case SPECIAL_ATTACK -> {
+                        return LACERATE;
+                    }
+                }
+            }
+            case BOW -> {
+                switch (type){
+                    case BASIC_ATTACK -> {
+                        return BASIC_BOW_SHOT;
+                    }
+                    case MOVEMENT -> {
+                        return ACROBATICS;
+                    }
+                    case UTILITY -> {
+                        return HUNTING_GROUND;
+                    }
+                    case SPECIAL_ATTACK -> {
+                        return RAIN_OF_ARROWS;
+                    }
+                }
+            }
+            case DAGGER -> {
+                switch (type){
+                    case BASIC_ATTACK -> {
+                        return BASIC_DAGGER_SLASH;
+                    }
+                    case MOVEMENT -> {
+                        return VANISH;
+                    }
+                    case UTILITY -> {
+                        return SMOKE_BOMB;
+                    }
+                    case SPECIAL_ATTACK -> {
+                        return VIPER_STRIKE;
+                    }
+                }
+            }
+            case WAND -> {
+                switch (type){
+                    case BASIC_ATTACK -> {
+                        return BASIC_WAND_ATTACK;
+                    }
+                    case MOVEMENT -> {
+                        return WARP;
+                    }
+                    case UTILITY -> {
+                        return CRYOSTASIS;
+                    }
+                    case SPECIAL_ATTACK -> {
+                        return METEOR;
+                    }
+                }
+            }
+            case MACE -> {
+                switch (type){
+                    case BASIC_ATTACK -> {
+                        return BASIC_MACE_SLAM;
+                    }
+                    case MOVEMENT -> {
+                        return TECTONIC_PULL;
+                    }
+                    case UTILITY -> {
+                        return CLEANSE;
+                    }
+                    case SPECIAL_ATTACK -> {
+                        return EARTHQUAKE;
+                    }
+                }
+            }
+        }
+        //If there's no match, return null;
+        return null;
+    }
+}

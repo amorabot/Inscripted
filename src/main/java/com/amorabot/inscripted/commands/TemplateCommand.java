@@ -1,50 +1,34 @@
 package com.amorabot.inscripted.commands;
 
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.HealthComponent;
-import com.amorabot.inscripted.components.Items.DataStructures.Enums.*;
-import com.amorabot.inscripted.components.Items.ItemBuilder;
-import com.amorabot.inscripted.components.Items.Weapon.Weapon;
-import com.amorabot.inscripted.components.Items.Weapon.WeaponTypes;
-import com.amorabot.inscripted.components.Items.modifiers.Inscription;
-import com.amorabot.inscripted.components.Items.modifiers.InscriptionID;
-import com.amorabot.inscripted.components.Items.modifiers.data.Meta;
-import com.amorabot.inscripted.components.Player.Profile;
-import com.amorabot.inscripted.components.Player.archetypes.Archetypes;
-import com.amorabot.inscripted.components.buffs.Buffs;
-import com.amorabot.inscripted.components.buffs.categories.damage.DamageBuff;
-import com.amorabot.inscripted.components.buffs.categories.healing.HealingBuff;
-import com.amorabot.inscripted.components.buffs.categories.stat.StatBuff;
-import com.amorabot.inscripted.components.renderers.ItemInterfaceRenderer;
-import com.amorabot.inscripted.inscriptions.InscriptionTable;
-import com.amorabot.inscripted.managers.JSONProfileManager;
-import com.amorabot.inscripted.managers.PlayerBuffManager;
-import com.amorabot.inscripted.skills.math.LinalgMath;
-import com.amorabot.inscripted.skills.ParticlePlotter;
-import com.amorabot.inscripted.skills.PlayerAbilities;
-import com.amorabot.inscripted.skills.SteeringBehaviors;
-import com.amorabot.inscripted.skills.attackInstances.projectile.Projectile;
-import com.amorabot.inscripted.skills.archetypes.bow.BowBasicAttacks;
-import com.amorabot.inscripted.skills.math.OrientedBoundingBox;
+import com.amorabot.inscripted.displays.DisplayBlock;
+import com.amorabot.inscripted.displays.Models;
+import com.amorabot.inscripted.gui.instances.RelicSelection;
+import com.amorabot.inscripted.player.Archetypes;
+import com.amorabot.inscripted.combat.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.categories.damage.DamageBuff;
+import com.amorabot.inscripted.combat.buffs.categories.stat.StatBuff;
+import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
+import com.amorabot.inscripted.math.LinalgMath;
+import com.amorabot.inscripted.particle.ParticlePlotter;
+import com.amorabot.inscripted.player.renderer.HealthBarGenerator;
+import com.amorabot.inscripted.skill.routine.projectile.Projectile;
+import com.amorabot.inscripted.math.OrientedBoundingBox;
 import com.amorabot.inscripted.utils.ColorUtils;
+import com.amorabot.inscripted.utils.DelayedTask;
 import com.amorabot.inscripted.utils.Utils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Display;
+import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.TextDisplay;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import org.joml.Matrix4f;
 
 public class TemplateCommand implements CommandExecutor {
 
@@ -57,6 +41,7 @@ public class TemplateCommand implements CommandExecutor {
      */
 
     public static Skeleton testDummy = null;
+    private static DisplayBlock testDisplay = null;
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
@@ -70,36 +55,8 @@ public class TemplateCommand implements CommandExecutor {
         if (strings.length == 1){
             String action = strings[0];
             switch (action){
-                case "mod":
-                    for (InscriptionID inscription : InscriptionID.values()){
-                        if (inscription.getData().getAffixType().equals(Affix.IMPLICIT)){
-                            player.sendMessage(inscription.getDisplayName() + "  IMPLICIT!!  " + inscription.getTotalTiers());
-                            continue;
-                        }
-                        try {
-                            if (InscriptionID.class.getField(inscription.name()).isAnnotationPresent(Meta.class)){
-                                player.sendMessage("TESTANDO METAMOD!");
-                            }
-                        } catch (NoSuchFieldException e) {
-                            player.sendMessage("NOT A METAMOD");
-                            throw new RuntimeException(e);
-                        }
-                        player.sendMessage(inscription.getDisplayName() + "   " + inscription.getTotalTiers());
-                    }
-                    break;
                 case "bar":
-                    Component bar = JSONProfileManager.getProfile(player.getUniqueId()).getHealthComponent().getHealthBarComponent();
-//                    player.sendMessage(bar);
-                    Inscripted.getPlugin().getWorld().spawn(player.getLocation(), TextDisplay.class, textDisplay -> {
-                        textDisplay.text(bar);
-                        textDisplay.setBillboard(Display.Billboard.CENTER);
-                        textDisplay.setAlignment(TextDisplay.TextAlignment.CENTER);
-                        textDisplay.setTextOpacity((byte) 255);
-
-//                        textDisplay.setInterpolationDelay(1);
-//                        textDisplay.setInterpolationDuration(14);
-                        textDisplay.setPersistent(false);
-                    });
+                    HealthBarGenerator.getHealthBarSegmentsFor(player);
                     break;
                 case "toggle":
                     //Not persistent (ideal for temporary tags/ownership/toggles that are not essential in combat) -> if persistance is needed: scoreboard tags
@@ -112,16 +69,10 @@ public class TemplateCommand implements CommandExecutor {
                     }
                     return true;
                 case "color":
-                    String temp = "&"+ Archetypes.GLADIATOR.getColor() + " :D " + "&7testando";
+                    String temp = "&"+ Archetypes.GLADIATOR.getColorOnPalette() + " :D " + "&7testando";
                     player.sendMessage(temp);
                     player.sendMessage(ColorUtils.decolor(temp));
                     player.sendMessage(ColorUtils.translateColorCodes(temp));
-                    return true;
-                case "unalive":
-//                    Profile.execute(player);
-                    player.setKiller(player);
-                    HealthComponent.execute(player);
-//                    JSONProfileManager.getProfile(player.getUniqueId()).updatePlayerHearts(player);
                     return true;
                 case "bleed":
                     DamageBuff bleed = new DamageBuff(Buffs.BLEED);
@@ -130,35 +81,27 @@ public class TemplateCommand implements CommandExecutor {
                     int[] dot = bleed.convertBaseHit(baseDamage);
                     bleed.createDamageTask(dot, player, true, player);
 
-                    PlayerBuffManager.addBuffToPlayer(bleed, player);
-//                    bleed.activate();
+                    PlayerBuffManager.addBuffToPlayer(bleed, player.getUniqueId());
+                    bleed.activate();
                     return true;
                 case "stat":
-                    StatBuff fortify = new StatBuff(Buffs.FORTIFY, player);
-                    Utils.log("Applying fortify to " + player.getName());
-                    PlayerBuffManager.addBuffToPlayer(fortify, player);
+                    StatBuff fortify = new StatBuff(Buffs.BERSERK, player);
+                    Utils.log("Applying berserk to " + player.getName());
+                    PlayerBuffManager.addBuffToPlayer(fortify, player.getUniqueId());
                     return true;
                 case "tailwind":
                     StatBuff tailwind = new StatBuff(Buffs.TAILWIND, player);
                     player.sendMessage("Applying tailwind!");
-                    PlayerBuffManager.addBuffToPlayer(tailwind, player);
+                    PlayerBuffManager.addBuffToPlayer(tailwind, player.getUniqueId());
                     return true;
                 case "cripple":
-                    StatBuff cripple = new StatBuff(Buffs.MAIM, player);
-                    player.sendMessage("Applying cripple :(");
-                    PlayerBuffManager.addBuffToPlayer(cripple, player);
+
                     return true;
                 case "rejuv":
-                    HealingBuff rejuv = new HealingBuff(Buffs.REJUVENATE);
-                    Utils.msgPlayer(player, "Rejuvenating!");
-                    int baseHealing = rejuv.getFinalHealingTick(JSONProfileManager.getProfile(player.getUniqueId()));
-                    rejuv.createHealingTask(baseHealing, player, player);
 
-                    PlayerBuffManager.addBuffToPlayer(rejuv, player);
                     return true;
-                case "seek":
-                    BowBasicAttacks.standardBowAttackBy(player, PlayerAbilities.BASIC_BOW_ATTACK, SteeringBehaviors.STRAIGHT_LINE, 4);
-//                    BowBasicAttacks.standardBowAttackBy(player, SteeringBehaviors.ARRIVE, 10);
+                case "ui":
+                    new RelicSelection(player).open();
                     return true;
                 case "circle":
                     Location loc = player.getLocation().clone().add(0,1.5,0);
@@ -180,37 +123,47 @@ public class TemplateCommand implements CommandExecutor {
                     spreadOBB.render(playerWorld);
                     if (spreadOBB.intersects(player.getBoundingBox())){Utils.msgPlayer(player, "CollisioN!");}
                     return true;
-                case "modGen":
-                    InscriptionTable axeTable = new InscriptionTable("AXE");
-                    axeTable.debug();
-
-                    for (int i = 0; i< 5; i++){
-                        final int ilvl = Utils.getRandomIntBetween(0,100);
-                        Utils.log("Batch: " + i + " =========("+ilvl+")=========");
-                        Set<InscriptionID> blockedPrefixes = new HashSet<>();
-                        Inscription prefixA = axeTable.getRandomInscription(Affix.PREFIX, ilvl, blockedPrefixes);
-                        Inscription prefixB = axeTable.getRandomInscription(Affix.PREFIX, ilvl, blockedPrefixes);
-
-                        Set<InscriptionID> blockedSuffixes = new HashSet<>();
-                        Inscription suffixA = axeTable.getRandomInscription(Affix.SUFFIX, ilvl, blockedSuffixes);
-                        Inscription suffixB = axeTable.getRandomInscription(Affix.SUFFIX, ilvl, blockedSuffixes);
-
-                        try {
-                            Utils.log("prefix A: " + prefixA.getInscription() + " tier: " + prefixA.getTier());
-                            Utils.log("prefix B: " + prefixB.getInscription() + " tier: " + prefixB.getTier());
-
-                            Utils.log("suffix A: " + suffixA.getInscription() + " tier: " + suffixA.getTier());
-                            Utils.log("suffix B: " + suffixB.getInscription() + " tier: " + suffixB.getTier());
-                        } catch (NullPointerException ex){
-                            Utils.log("Invalid insc. gen attempt");
-                        }
-                    }
+                case "banner":
+                    Models.instantiateWarBanner(player.getLocation().toVector(),playerWorld,60);
                     return true;
-                case "testColor":
-                    ItemStack heldItem = player.getInventory().getItemInMainHand();
-                    ItemInterfaceRenderer.setDisplayName("Awooga buga nuga",heldItem,ItemRarities.COMMON,false,4);
-//                    ItemInterfaceRenderer.setDisplayName("Runeec Bunguschungus",heldItem,ItemRarities.AUGMENTED,false,4);
-//                    ItemInterfaceRenderer.setDisplayName("Bingoos",heldItem,ItemRarities.RUNIC,false,7);
+                case "tp":
+                    if (testDisplay==null) return false;
+                    new DelayedTask(new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (testDisplay != null){
+                                testDisplay.teleportTo(player.getLocation());
+                                testDisplay.scale(2.5 * Math.random());
+                                testDisplay.setLerpValues(0,20);
+
+//                                testDisplay.getBlock().setDisplayHeight(3);
+//                                testDisplay.teleport(player.getLocation());
+
+//                                Vector pos = player.getLocation().toVector();
+//                                testDisplay.setTeleportDuration(10);
+//                                Transformation delayedTrans = testDisplay.getTransformation();
+//                                testDisplay.setInterpolationDelay(-1);
+//                                testDisplay.setInterpolationDuration(40);
+//                                delayedTrans.getTranslation().set(pos.getX(),pos.getY(),pos.getZ());
+//                                delayedTrans.getTranslation().lerp(new Vector3f((float) pos.getX(), (float) pos.getY(), (float) pos.getZ()),0.5f);
+//                                testDisplay.setTransformation(delayedTrans);
+                            }
+                        }
+                    },20);
+                    return true;
+                case "create":
+                    testDisplay = new DisplayBlock(player.getLocation().toVector(),playerWorld,Material.BLACK_BANNER,100,true);
+                    testDisplay.setTpLerp(10);
+//                    Transformation trans = test.getTransformation();
+//                    trans.getScale().set(10);
+//                    trans.getLeftRotation().y = 0.5f;
+
+                    return true;
+                case "lerp":
+                    if (testDisplay==null) return false;
+                    int lerpDuration = 20;
+                    Matrix4f mat = new Matrix4f().scale(0.5F); // scale to 0.5x - smaller item
+                    testDisplay.animateKeyframes(mat,lerpDuration,baseMatrix -> baseMatrix.rotateY(((float) Math.toRadians(180)) + 0.1F));
                     return true;
             }
         }

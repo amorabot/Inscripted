@@ -1,8 +1,8 @@
 package com.amorabot.inscripted.handlers.Inventory;
 
-import com.amorabot.inscripted.APIs.EventAPI;
 import com.amorabot.inscripted.Inscripted;
-import com.amorabot.inscripted.components.Items.currency.Currencies;
+import com.amorabot.inscripted.item.currency.Currencies;
+import com.amorabot.inscripted.item.structure.io.ItemDeserializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +13,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import static com.amorabot.inscripted.handlers.Inventory.PlayerEquipmentHandler.isValidItem;
+import static com.amorabot.inscripted.item.structure.io.ItemDeserializer.isNotFunctional;
+
 public class InventoryHandler implements Listener {
 
     public InventoryHandler(){
@@ -20,7 +23,7 @@ public class InventoryHandler implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOW)
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onInventoryClick(InventoryClickEvent event) { //Prioritary click-handling
         if(event.isCancelled()){
             return;
         }
@@ -39,16 +42,16 @@ public class InventoryHandler implements Listener {
         Player player = (Player) event.getWhoClicked();
         PlayerInventory playerInventory = player.getInventory();
 
-//        if (event.getInventory() != playerInventory){
-//            player.sendMessage("Negating out-of-inventory clicks @" + this.getClass().getSimpleName());
-//            return;
-//        }
         ItemStack clickedItem = event.getCurrentItem();
         ItemStack cursorItem = event.getCursor();
 
         if (attemptedAction == InventoryAction.SWAP_WITH_CURSOR){
             if (event.getSlot() == playerInventory.getHeldItemSlot()){
-                player.sendMessage("No currency usage on main hand....");
+                if (isValidItem(cursorItem) && ItemDeserializer.isWeapon(cursorItem)){
+                    //Let the less-prioritary PlayerEqyipmentHandler handle this event
+                    return;
+                }
+                player.sendMessage("No currency usage on main hand...."); //Allow and attempt recompilation everytime? Might be too expensive
                 event.setCancelled(true);
                 return;
             }
@@ -58,14 +61,14 @@ public class InventoryHandler implements Listener {
                     if (isNotFunctional(clickedItem)){
                         return;
                     }
-                    EventAPI.currencyUsage(player,clickedItem,cursorItem);
+//                    EventAPI.currencyUsage(player,clickedItem,cursorItem);
                     event.setCancelled(true);
                 }
             }
         }
     }
 
-    private boolean isNotFunctional(ItemStack item){
-        return (item == null || !item.hasItemMeta() || item.getType().isAir());
-    }
+//    private boolean isNotFunctional(ItemStack item){
+//        return (item == null || !item.hasItemMeta() || item.getType().isAir());
+//    }
 }

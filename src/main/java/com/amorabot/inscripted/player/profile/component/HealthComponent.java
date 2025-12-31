@@ -1,0 +1,236 @@
+package com.amorabot.inscripted.player.profile.component;
+
+import com.amorabot.inscripted.combat.buffs.Buffs;
+import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
+import com.amorabot.inscripted.item.inscription.definition.KeystoneIDs;
+import com.amorabot.inscripted.item.inscription.definition.Stats;
+import com.amorabot.inscripted.player.PlayerDataContainer;
+import com.amorabot.inscripted.player.profile.BaseStats;
+import com.amorabot.inscripted.utils.Utils;
+import lombok.Getter;
+import lombok.Setter;
+import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Player;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+@Getter
+@Setter
+public class HealthComponent implements ProfileComponent {
+
+    public static final int LOW_LIFE_THRESHOLD = 20;
+
+    private int health;
+    private int maxHealth;
+    private int healthRegen;
+
+    private int soul;
+    private int maxSoul;
+    private int soulRecovery;
+
+    public HealthComponent(){
+        this.health = BaseStats.HEALTH.getValue();
+        this.maxHealth = BaseStats.HEALTH.getValue();
+        this.healthRegen = BaseStats.HEALTH_REGEN.getValue();
+
+        this.soul=0;
+        this.maxSoul=0;
+        this.soulRecovery=BaseStats.SOUL_RECOVERY.getValue();
+    }
+    public HealthComponent(int maxHealth, int maxSoul){ //For Mobs
+        setMaxHealth(maxHealth);
+        setHealth(maxHealth);
+        setMaxSoul(maxSoul);
+        setSoul(maxSoul);
+        setHealthRegen(0);
+    }
+
+    @Override
+    public void updateComponent(UUID playerID,Map<Stats, double[]> finalStats) {
+        setMaxHealth(getSingleValueFrom(Stats.HEALTH,finalStats));
+        setMaxSoul(getSingleValueFrom(Stats.SOUL,finalStats));
+        setHealthRegen(getSingleValueFrom(Stats.HEALTH_REGEN,finalStats));
+        setSoulRecovery(getSingleValueFrom(Stats.SOUL_RECOVERY_RATE,finalStats));
+
+        //Capping overflowing HP/Soul
+        if (health > getMaxHealth()){health = getMaxHealth();}
+        if (soul > getMaxSoul()){soul = getMaxSoul();}
+    }
+    @Override
+    public List<Component> asTextComponent() {
+        return List.of();
+    }
+
+    public void resetHP(Player player){
+        health = getMaxHealth();
+        soul = getMaxSoul();
+        HealthComponent.updateHealthHearts(player,this);
+        HealthComponent.updateSoulHearts(player,this);
+    }
+
+    public int regenHealth(boolean inCombat, Player playerToRegen){
+        PlayerDataContainer playerData = PlayerDataContainer.getDataContainerFor(playerToRegen.getUniqueId());
+        Set<KeystoneIDs> keystones = playerData.getEquipment().getSpecialInscriptions().getKeystones();
+        if (keystones.contains(KeystoneIDs.BLOOD_PACT)){return 0;}
+        boolean isBleeding = PlayerBuffManager.hasActiveBuff(Buffs.BLEED, playerToRegen.getUniqueId());
+        boolean isFullLife = (health == maxHealth);
+        if (isFullLife){return 0;} //Stop regening
+
+        int baseRegenTick = healthRegen;
+        if (isBleeding){baseRegenTick = (int) (baseRegenTick * 0.2);}
+        if (inCombat){baseRegenTick = baseRegenTick/2;}
+
+        //If this tick would surpass maxHP, cap it to maxHP
+        if (health+baseRegenTick>maxHealth){
+            int regenTick = (maxHealth-health);
+            health = maxHealth;
+            //Regenerated TO full heath, apply organ failure, if applicable
+            if (keystones.contains(KeystoneIDs.ORGAN_FAILURE)){
+                KeystoneIDs.ORGAN_FAILURE.apply(playerData,null);
+            }
+            return (regenTick);
+        }
+        //If theres room to regenerate, do
+        if (health+baseRegenTick <= maxHealth){
+            this.health += baseRegenTick;
+        }
+        return baseRegenTick;
+    }
+
+    public int healHealth(int amount, boolean bleeding, Player target, Set<KeystoneIDs> targetKeystones){
+        boolean isFullLife = health == maxHealth;
+        if (isFullLife){
+            return 0;
+        }
+
+        int finalAmount = amount;
+        if (bleeding){
+            finalAmount = (int) (finalAmount * 0.2);
+        }
+        if (targetKeystones.contains(KeystoneIDs.BLOOD_PACT)){
+            finalAmount = 2*finalAmount;
+        }
+
+        if (health+finalAmount>maxHealth){
+            health = maxHealth;
+            updateHealthHearts(target, this);
+            return (int) (maxHealth - health);
+        }
+        if (health+finalAmount <= maxHealth){
+            this.health += finalAmount;
+            updateHealthHearts(target, this);
+        }
+        return finalAmount;
+    }
+    public static void updateHealthHearts(Player player, HealthComponent playerHP){
+        double mappedHealth = playerHP.getPlayerHearts();
+        if (mappedHealth==0){
+            //TODO: Trigger death event?
+//            execute(player);
+            Utils.error("DEADDDDD");
+            return;
+        }
+        double HPDiff = Math.abs((mappedHealth - player.getHealth()));
+        if (HPDiff >= 0.5D){
+            player.setHealth(mappedHealth);
+        }
+    }
+    public static void updateSoulHearts(Player player, HealthComponent playerHP){
+        double mappedWard = playerHP.getPlayerSoulHearts();
+        double wardDiff = Math.abs((mappedWard - player.getAbsorptionAmount()));
+        if (wardDiff >= 0.5D){
+            player.setAbsorptionAmount(mappedWard);
+        }
+    }
+
+    public void damage(int[] incomingDamage, Set<KeystoneIDs> defKeystones, Set<KeystoneIDs> atkrKeystones){
+        int damage = 0;
+        for (int dmg : incomingDamage){
+            damage += dmg;
+        }
+        //If theres abyssal damage, target life first and the rest applies to Ward and then life
+        if (incomingDamage[4] != 0){
+            damageHealth(incomingDamage[4]);
+            damage -= incomingDamage[4];
+        }
+        damage = damageWard(damage); //Will consume any ward before spilling the damage to life
+
+        damageHealth(damage);
+    }
+    public void damageHealth(int damage){
+        if (health-damage > 0){ //If the damage wont kill the entity, do:
+            health -= damage;
+            return;
+        }
+        //Death event should be handled outside the component
+        health = 0;
+    }
+    private int damageWard(int damage){ //Returns de damage value that overflows to life
+        if (soul == 0){ //If there's no ward, just return the base damage, it should cascade to life
+            return damage;
+        }
+        if (soul-damage >= 0){ //If the damage wont deplete ward, do:
+            soul -= damage;
+            return 0;
+        }
+        int overflowDamage = damage - (int) soul;
+        soul = 0;
+        return overflowDamage;
+    }
+
+
+
+
+    public int regenSoul(boolean inCombat){ //Standard ward regen call
+        int soulRegen = (int) (getMaxSoul() * (getSoulRecovery()/100F));
+        if (inCombat){
+            soulRegen = soulRegen/2;
+        }
+        //In the specific case its already been capped out, ignore
+        if (soul == maxSoul){
+            return 0;
+        }
+        //If this tick of regen surpasses the max ward, cap it to max ward
+        if (soul+soulRegen>maxSoul){
+            int soulRegenTick = (maxSoul - soul);
+            soul = maxSoul;
+            return soulRegenTick;
+        }
+        //If theres room to regenerate, do
+        if (soul+soulRegen <= maxSoul){
+            this.soul += soulRegen;
+        }
+        return soulRegen;
+    }
+
+    public float getNormalizedHP(){
+        return Math.min((float) health /maxHealth, 1F);
+    }
+    public double getPlayerHearts(){
+        final int basePlayerHearts = 20;
+        if (health == 0){return 0;}
+        return Math.max(0.5, getNormalizedHP()*basePlayerHearts);
+    }
+
+    public float getNormalizedSoul(){
+        return Math.min((float) soul /maxSoul, 1F);
+    }
+    public double getPlayerSoulHearts(){
+        int basePlayerHearts = 20;
+        if (soul == 0){return 0;}
+        return Math.max(0.5, getNormalizedSoul()*basePlayerHearts);
+    }
+    public boolean isLowLife(){
+        return (getCurrentHealthPercentage()) < LOW_LIFE_THRESHOLD;
+    }
+    public int getCurrentHealthPercentage(){
+        return (int) (((double)getHealth()/getMaxHealth())*100);
+    }
+    public int getCurrentSoulPercentage(){
+        return (int) (((double)getSoul()/getMaxSoul())*100);
+    }
+
+}
