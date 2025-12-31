@@ -25,7 +25,7 @@ public enum InscriptionIDs {
     ADDED_FIRE("+ local PREFIX: flat double_roll fire_damage",10),
     ADDED_COLD("+ local PREFIX: flat double_roll cold_damage",10),
     ADDED_LIGHTNING("+ local PREFIX: flat double_roll lightning_damage",10),
-    ADDED_ABYSSAL("+ local PREFIX: flat double_roll physical_damage",1),
+    ADDED_ABYSSAL("+ local PREFIX: flat double_roll abyssal_damage",1),
     LOCAL_FIRE_PERCENT("+ local PREFIX: increased single_roll fire_damage",5),
     LOCAL_COLD_PERCENT("+ local PREFIX: increased single_roll cold_damage",5),
     LOCAL_LIGHTNING_PERCENT("+ local PREFIX: increased single_roll lightning_damage",5),

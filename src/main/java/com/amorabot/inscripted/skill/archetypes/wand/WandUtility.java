@@ -32,7 +32,7 @@ public class WandUtility {
         cryostatisRoutine.setRoutine(new BukkitRunnable() {
             final float radius = 4f;
             final int points = 24;
-            final int debuffDuration = 50;
+            final int debuffDuration = 60;
             @Override
             public void run() {
                 if (this.isCancelled()) return;
@@ -48,7 +48,7 @@ public class WandUtility {
                     for (Vector v : LinalgMath.plotPointsInsideHorizontalCircle(offsetCenter,radius,60)){
                         ParticlePlotter.spawnColoredParticleAt(v,world,174, 201, 245,1f,1);
                     }
-                    PotionEffect slow = new PotionEffect(PotionEffectType.SLOWNESS, debuffDuration, 2, true, false, false);
+                    PotionEffect slow = new PotionEffect(PotionEffectType.SLOWNESS, debuffDuration, 20, true, false, false);
                     List<Player> affectedPlayers = (List<Player>) world.getNearbyPlayers(center.toLocation(world),radius);
                     for (Player p : affectedPlayers){
                         Objects.requireNonNull(p.getAttribute(Attribute.GENERIC_JUMP_STRENGTH)).setBaseValue(0);

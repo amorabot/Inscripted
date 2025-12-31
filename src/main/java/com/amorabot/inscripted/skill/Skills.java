@@ -75,7 +75,7 @@ public enum Skills {
     BASIC_AXE_SLASH(AxeBasicAttacks::standardAxeSlash, MARAUDER,CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0,
             "Standard attack for axes - Widest & slowest slash"),
 
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-10, -10, -10, -10, -60}, dmgConversion = {0, 0, 0, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {0, -10, -10, -10, -60}, dmgConversion = {0, 0, 0, 0} )
     BASIC_SWORD_SLASH(SwordBasicAttacks::standardSwordSlash, GLADIATOR, CastType.BASIC_ATTACK, new Tags[]{Tags.MELEE},0,
             "Standard attack for swords - Most balanced slash overall"),
 
@@ -121,7 +121,7 @@ public enum Skills {
     @DurationSkill(duration = 1.5, refreshRate = 3)
     HUNTING_GROUND(BowUtility::huntingGround, MERCENARY, CastType.UTILITY, new Tags[]{Tags.AOE},10,
             "Cast a physical debuff zone where you are targeting. The debuff is applied when skill expires. Gives you bonus Accuracy on cast."),
-    @DurationSkill(duration = 1.5, refreshRate = 3)
+    @DurationSkill(duration = 1.4, refreshRate = 3)
     CRYOSTASIS(WandUtility::cryostasis, SORCERER, CastType.UTILITY, new Tags[]{Tags.AOE},6,
             "Cast a frozen area where you're targeting. Freezes any players inside it for 2s."),
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-100, -100, -100, -100, -100}, dmgConversion = {0, 0, 0, 0} )
@@ -129,11 +129,11 @@ public enum Skills {
     SMOKE_BOMB(DaggerUtility::smokeBomb, ROGUE, CastType.UTILITY, new Tags[]{Tags.AOE},4,
             "Throw a smoke bomb that blinds enemies that enter it."),
     @DurationSkill(duration = 2, refreshRate = 4)
-    CLEANSE(MaceUtility::cleanse, TEMPLAR, CastType.UTILITY, new Tags[]{Tags.SPELL},30,
+    CLEANSE(MaceUtility::cleanse, TEMPLAR, CastType.UTILITY, new Tags[]{Tags.SPELL},20,
             "Clear all debuffs on you!"),
  
     //Special skills
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {130, 50, 50, 50, -70}, dmgConversion = {0, 0, 0, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {190, 50, 50, 50, -70}, dmgConversion = {0, 0, 0, 0} )
     EARTHQUAKE(MaceSpecials::earthquake, TEMPLAR, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE,Tags.AOE},4,
             "Slam the ground and shatter everything around the impact point"),
     @AttackSkill( addedBaseDmg = {5,5, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-10, -10, 10, -10, -30}, dmgConversion = {0, 0, 0, 0} )
@@ -142,7 +142,7 @@ public enum Skills {
     RAIN_OF_ARROWS(BowSpecials::rainOfArrows, MERCENARY, CastType.SPECIAL_ATTACK,new Tags[]{Tags.PROJECTILE,Tags.AOE},7,
             "Rain hell in front of you"),
     @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {-100, -100, -100, -100, -100}, dmgConversion = {0, 0, 0, 0} )
-    @DurationSkill(duration = 1.2, refreshRate = 1)
+    @DurationSkill(duration = 1.1, refreshRate = 1)
     @ProjectileSkill( baseProjectiles = 1, spread = ProjectileGenerators.BARRAGE, defaultSteering = SteeringBehaviors.STRAIGHT_LINE, uniqueTarget = true )
     METEOR(WandSpecials::meteor, SORCERER, CastType.SPECIAL_ATTACK,new Tags[]{Tags.PROJECTILE},6,
             "Cast a fucking meteor"),
@@ -153,7 +153,7 @@ public enum Skills {
     @DurationSkill(duration = 3.5, refreshRate = 1)
     CYCLONE(AxeSpecials::cyclone, MARAUDER, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE,Tags.AOE},8,
             "Spin2win"),
-    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {80, -30, -30, -30, -70}, dmgConversion = {0, 0, 0, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 0,0, 0,0, 0,0, 0,0}, dmgEffectiveness = {120, -30, -30, -30, -70}, dmgConversion = {0, 0, 0, 0} )
     LACERATE(SwordSpecials::lacerate, GLADIATOR, CastType.SPECIAL_ATTACK,new Tags[]{Tags.MELEE},5,
             "Make your enemies bleed..."){
         @Override
@@ -166,7 +166,7 @@ public enum Skills {
     @DurationSkill(duration = 8, refreshRate = 5)
     SMOKE_BOMB_CLOUD(DaggerUtility::smokeBombCloud, ROGUE, CastType.NEUTRAL, new Tags[0],0,
             "The 'smoke' part of the bomb", true),
-    @AttackSkill( addedBaseDmg = {0,0, 15,50, 0,0, 0,0, 0,0}, dmgEffectiveness = {200, 250, -10, -40, -70}, dmgConversion = {40, 0, 0, 0} )
+    @AttackSkill( addedBaseDmg = {0,0, 15,50, 0,0, 0,0, 0,0}, dmgEffectiveness = {500, 550, -10, -40, -70}, dmgConversion = {50, 0, 0, 0} )
     METEOR_IMPACT(WandSpecials::meteorImpact, SORCERER, CastType.NEUTRAL, new Tags[]{Tags.SPELL,Tags.AOE},0,
             "The meteor you brought upon this land will crash and deal some damage"),
 

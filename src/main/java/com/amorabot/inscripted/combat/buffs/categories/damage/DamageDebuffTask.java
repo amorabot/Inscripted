@@ -8,6 +8,7 @@ import com.amorabot.inscripted.combat.buffs.Buffs;
 import com.amorabot.inscripted.combat.buffs.PlayerBuffManager;
 import com.amorabot.inscripted.player.PlayerDataContainer;
 import com.amorabot.inscripted.player.profile.component.HealthComponent;
+import com.amorabot.inscripted.tasks.CombatHologramsDepleter;
 import com.amorabot.inscripted.utils.Utils;
 import lombok.Getter;
 import org.bukkit.entity.Player;
@@ -72,6 +73,8 @@ public class DamageDebuffTask extends BuffTask {
         defender.damage(0.01);
         DamageRouter.damagePlayer(defender,damage,selfDamage,attacker);
         buff.effectOn(defender);
+        //Bleed debugging
+        CombatHologramsDepleter.getInstance().instantiateDamageHologramAt(defender.getLocation(),damage);
         ticks++;
     }
 
