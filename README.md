@@ -8,7 +8,9 @@ Taking inspiration from other RPGs and custom Minecraft RPG servers I've played 
 
 I mainly wanted to create a item system that felt alive and dynamic, taking massive inspiration from games like Path of Exile, and a combat system that enables a diverse Player vs. Player experience and where every class (or Archetype, in Inscripted's case) has a clear purpose (inspired by Tibia in some aspects), while taking a "You-are-what-you-wear" approach to character customization.
 
-Down below there is showcase of the project's current state, covering its design and visuals. Feel free to dowload the pre-built .jar for the latest GitHub release or check out the copious amounts of jank in the repo and build it yourself! I'd love to hear any feedback!
+![showcase](https://github.com/user-attachments/assets/eb9f63f6-b9b8-486f-8de4-8d2c16622fdd)
+
+Down below there is a showcase of the project's current state, covering its design and visuals. Feel free to dowload the pre-built .jar for the latest GitHub release or check out the copious amounts of jank in the repo and build it yourself! I'd love to hear any feedback!
 
 ### If you want to contact me, you can do so via:
   - Discord: <b>@amorabot</b>
@@ -20,6 +22,7 @@ Down below there is showcase of the project's current state, covering its design
 - v1: https://www.youtube.com/watch?v=7vwqPahws5U
 - v3 (1): https://www.youtube.com/watch?v=3HJHwcDx894
 - v3 (2): https://www.youtube.com/watch?v=OdptyzORqxc
+- v4 (Current): https://www.youtube.com/watch?v=aF69257Mge0
 
 ![2024-05-07_21 52 34](https://github.com/amorabot/Inscripted/assets/16783145/a5820915-be36-45b0-ac10-8bf4d91aedbd)
 
